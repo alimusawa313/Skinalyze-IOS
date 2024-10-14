@@ -61,7 +61,7 @@
 		2E4FB57D2CBA95A70075AB95 /* ProductModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductModel.swift; sourceTree = "<group>"; };
 		2E4FB57F2CBA95D20075AB95 /* ProductViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductViewModel.swift; sourceTree = "<group>"; };
 		2E6465592CBB78FE00E905D9 /* ProductSearchSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSearchSheet.swift; sourceTree = "<group>"; };
-		2E718EF92CA16313001E53EB /* Skinalyze.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skinalyze.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2E718EF92CA16313001E53EB /* Skinalyze_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skinalyze_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E718EFC2CA16313001E53EB /* SkinalyzeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkinalyzeApp.swift; sourceTree = "<group>"; };
 		2E718EFE2CA16313001E53EB /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		2E718F002CA16315001E53EB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -170,7 +170,7 @@
 		2E718EFA2CA16313001E53EB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2E718EF92CA16313001E53EB /* Skinalyze.app */,
+				2E718EF92CA16313001E53EB /* Skinalyze_iOS.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -260,7 +260,7 @@
 			);
 			name = Skinalyze;
 			productName = Skinalyze;
-			productReference = 2E718EF92CA16313001E53EB /* Skinalyze.app */;
+			productReference = 2E718EF92CA16313001E53EB /* Skinalyze_iOS.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -488,7 +488,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.Patani.Skinalyze;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Skinalyze_iOS;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -519,7 +519,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.Patani.Skinalyze;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Skinalyze_iOS;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
