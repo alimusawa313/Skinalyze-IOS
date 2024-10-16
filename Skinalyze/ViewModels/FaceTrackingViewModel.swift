@@ -100,7 +100,7 @@ class FaceTrackingViewModel: NSObject, ObservableObject {
             height: boundingBox.height * screenSize.height
         )
         
-        let ovalWidth: CGFloat = 350
+        let ovalWidth: CGFloat = 400
         let ovalHeight: CGFloat = 450
         let circleCenter = CGPoint(x: screenSize.width / 2, y: screenSize.height / 2)
         let ovalRect = CGRect(
@@ -111,31 +111,31 @@ class FaceTrackingViewModel: NSObject, ObservableObject {
         )
         
         // Check if the face is within the oval
-        //        if ovalRect.contains(faceRect) {
-        //            // If the face is inside the oval, check its size
-        //            let faceWidth = faceRect.width
-        /////adjust disini --------------------------------------------------------------------------------------
-        ////             Define acceptable width range for "Normal"
-        //            let normalWidthMin: CGFloat = 180 // Adjust this value as needed
-        //            let normalWidthMax: CGFloat = 350 // Adjust this value as needed
-        //
-        //            // Update distance status based on face width
-        //            if faceWidth < normalWidthMin {
-        //                self.faceDistanceStatus = "Too Far"
-        //                self.isFaceInCircle = false
-        //            } else if faceWidth > normalWidthMax {
-        //                self.faceDistanceStatus = "Out of Range"
-        //                self.isFaceInCircle = false
-        //            } else {
-        // If the face width is within acceptable range
-        self.faceDistanceStatus = "Normal"
-        self.isFaceInCircle = true
-        //            }
-        //        } else {
-        //            // If the face is outside the oval, set status to out of range
-        //            self.isFaceInCircle = false
-        //            self.faceDistanceStatus = "Out of Range"
-        //        }
+//        if ovalRect.contains(faceRect) {
+            // If the face is inside the oval, check its size
+//            let faceWidth = faceRect.width
+            ///adjust disini --------------------------------------------------------------------------------------
+            //             Define acceptable width range for "Normal"
+//            let normalWidthMin: CGFloat = 250 // Adjust this value as needed
+//            let normalWidthMax: CGFloat = 320 // Adjust this value as needed
+            
+            // Update distance status based on face width
+//            if faceWidth < normalWidthMin {
+//                self.faceDistanceStatus = "Too Far"
+//                self.isFaceInCircle = false
+//            } else if faceWidth > normalWidthMax {
+//                self.faceDistanceStatus = "Out of Range"
+//                self.isFaceInCircle = false
+//            } else {
+                //         If the face width is within acceptable range
+                self.faceDistanceStatus = "Normal"
+                self.isFaceInCircle = true
+//            }
+//        } else {
+//            // If the face is outside the oval, set status to out of range
+//            self.isFaceInCircle = false
+//            self.faceDistanceStatus = "Out of Range"
+//        }
     }
     
     

@@ -43,7 +43,6 @@ struct ChatView: View {
     @State private var showLoading: Bool = false
     @State private var showOptions: Bool = true
     
-    @Binding var path: [String]
 
     @AppStorage("userName") private var userName: String = ""
     @AppStorage("userAge") private var userAge: Int = 0 // Change to Int
@@ -277,7 +276,7 @@ struct ChatView: View {
                 .background(.brownPrimary)
             } else if currentQuestionIndex == 5, showOptions { // Use Skincare
                 VStack(spacing: 10) {
-                    NavigationLink(destination:ProductUsedView(path: $path)){
+                    NavigationLink(destination:ProductUsedView(isFromStartup: true)){
                         Text("Yes")
                             .frame(maxWidth: .infinity)
                             .padding()
@@ -286,7 +285,7 @@ struct ChatView: View {
                             .foregroundColor(.black)
                             .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
                     }
-                    NavigationLink(destination:ProductUsedView(path: $path)){
+                    NavigationLink(destination:ProductUsedView(isFromStartup: true)){
                         Text("No")
                             .frame(maxWidth: .infinity)
                             .padding()

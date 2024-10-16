@@ -9,15 +9,21 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State private var path: [String] = []
-
     var body: some View {
-        NavigationStack{
-            ChatView(path: $path)
-        }
+        
+            MainView()
     }
 }
 
 //#Preview {
 //    ContentView()
+//}
+
+//enum ViewType: Hashable {
+////    case second
+////    case third(message: String)
+//    case log
+//    case camScanView
+//    case capturedImagesView(images: [UIImage])
+//    case anlyzResultView(images: [UIImage])
 //}

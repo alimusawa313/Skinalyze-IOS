@@ -3,6 +3,8 @@ import SwiftUI
 
 struct ProfileView: View {
     
+    @EnvironmentObject var router: Router
+    
     @AppStorage("userName") private var userName: String = ""
     @AppStorage("userAge") private var userAge: Int = 0 // Change to Int
     @AppStorage("userGender") private var userGender: String = ""
@@ -10,7 +12,6 @@ struct ProfileView: View {
     @AppStorage("skinSensitivity") private var skinSensitivity: String = ""
     @AppStorage("useSkincare") private var useSkincare: String = ""
     
-    @Binding var path: [String]
     
     var body: some View {
             VStack{
@@ -99,7 +100,7 @@ struct ProfileView: View {
                     Text("Product Used")
                         .fontWeight(.semibold)
                         .font(.system(size: 20))
-                    NavigationLink(destination: ProductUsedView(path: $path)){
+//                    NavigationLink(destination: ProductUsedView(isFromStartup: false)){
                         VStack(spacing: 0) {
                             HStack {
                                 Text("Saved Products")
@@ -119,8 +120,12 @@ struct ProfileView: View {
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
                                 .stroke(Color.brownSecondary, lineWidth: 1) // Border luar abu-abu tipis
+                            
                         )
-                    }
+                        .onTapGesture {
+                            router.navigate(to: .prodUsed(isFromStartup: false))
+                        }
+//                    }
                 }
                 Spacer()
             }

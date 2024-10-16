@@ -10,6 +10,9 @@ import SwiftData
 
 @main
 struct SkinalyzeApp: App {
+    
+    @StateObject var router = Router()
+    
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Result.self
@@ -24,10 +27,30 @@ struct SkinalyzeApp: App {
     }()
     var body: some Scene {
         WindowGroup {
-            NavigationStack{
+            NavigationStack(path: $router.navPath){
                 ContentView()
-//                ProductUsedView()
+                    .navigationDestination(for: Router.Destination.self) { destination in
+                        switch destination {
+                        case .anlyzResultView(let image):
+                            AnalyzedResultView(images: image)
+                                .environmentObject(router)
+                        case .log:
+                            LogView()
+                        case .camScanView:
+                            CameraScanView()
+                                .environmentObject(router)
+                        case .capturedImagesView(images: let images):
+                            CapturedImagesView(images: images)
+                                .environmentObject(router)
+                        case .prodUsed(isFromStartup: let isFromStartup):
+                            ProductUsedView(isFromStartup: isFromStartup)
+                        case .compareImagesView(selectedLogs: let selectedLogs):
+                            CompareView(selectedLogs: selectedLogs)
+                        }
+                    }
+                    .environmentObject(router)
             }
+            .accentColor(Color(hex: "5E0000"))
         }
         .modelContainer(sharedModelContainer)
     }

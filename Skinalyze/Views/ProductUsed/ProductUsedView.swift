@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ProductUsedView: View {
+    var isFromStartup: Bool
     @StateObject var viewModel = SkincareProductViewModel()
     @State private var showCleanserSheet = false
     @State private var showTonerSheet = false
@@ -20,20 +21,21 @@ struct ProductUsedView: View {
     @AppStorage("moisturizerUsedID") private var moisturizerUsedID: Int = 0
     @AppStorage("sunscreenUsedID") private var sunscreenUsedID: Int = 0
     
-    @Binding var path: [String]
-    
     var body: some View {
         VStack {
-            Text("Add Your Skincare Products")
-                .foregroundColor(.black)
-                .font(.title2)
-                .bold()
-                .padding(.bottom, 5)
-            Text("To log the skincare products you're using today. You can review your past products in the scan results.")
-                .multilineTextAlignment(.center)
-                .foregroundColor(.black.opacity(0.7))
-                .font(.subheadline)
-                .padding(.horizontal, 24)
+//            if isFromStartup{
+                Text("Add Your Skincare Products")
+                    .foregroundColor(.black)
+                    .font(.title2)
+                    .bold()
+                    .padding(.bottom, 5)
+                Text("To log the skincare products you're using today. You can review your past products in the scan results.")
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.black.opacity(0.7))
+                    .font(.subheadline)
+                    .padding(.horizontal, 24)
+//            }
+            
             HStack(spacing: 20) {
                 VStack(alignment: .leading) {
                     Text("Cleanser")
@@ -264,7 +266,7 @@ struct ProductUsedView: View {
             //
             //                }
             //            }
-            if cleanserUsedID != 0 && tonerUsedID != 0 && moisturizerUsedID != 0 && sunscreenUsedID != 0 {
+            if cleanserUsedID != 0 && tonerUsedID != 0 && moisturizerUsedID != 0 && sunscreenUsedID != 0 && isFromStartup{
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Done") {
                         // Aksi yang ingin kamu lakukan saat tombol ditekan
@@ -283,7 +285,7 @@ struct ProductUsedView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden()
         .navigationDestination(isPresented: $moveToCamScanner){
-            CameraScanView(path: $path)
+            CameraScanView()
         }
     }
 }

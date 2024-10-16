@@ -23,6 +23,16 @@
 		036679E02CBD1B51009196C6 /* acneObj7480.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 036679DA2CBD1B51009196C6 /* acneObj7480.mlmodel */; };
 		036679E12CBD1B51009196C6 /* acneObj28100.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 036679DC2CBD1B51009196C6 /* acneObj28100.mlpackage */; };
 		036679E22CBD1B51009196C6 /* acneObj15000.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 036679DB2CBD1B51009196C6 /* acneObj15000.mlmodel */; };
+		03FF23632CBDAD07008AB1B1 /* ContentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FF23622CBDAD07008AB1B1 /* ContentCell.swift */; };
+		03FF23652CBDB201008AB1B1 /* AnalyzedResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FF23642CBDB201008AB1B1 /* AnalyzedResultView.swift */; };
+		03FF23672CBDB64C008AB1B1 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FF23662CBDB64C008AB1B1 /* Color.swift */; };
+		03FF23692CBDBB01008AB1B1 /* IngridientModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FF23682CBDBB01008AB1B1 /* IngridientModel.swift */; };
+		03FF236B2CBDBD37008AB1B1 /* RowItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FF236A2CBDBD37008AB1B1 /* RowItemCell.swift */; };
+		03FF23922CBDDEB0008AB1B1 /* CameraSheetTutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FF23912CBDDEB0008AB1B1 /* CameraSheetTutor.swift */; };
+		03FF23B32CBE57B1008AB1B1 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FF23B22CBE57B1008AB1B1 /* Router.swift */; };
+		03FF23B62CBE6EB2008AB1B1 /* CompareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FF23B52CBE6EB2008AB1B1 /* CompareView.swift */; };
+		03FF23B82CBF5425008AB1B1 /* AcneRowItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FF23B72CBF5425008AB1B1 /* AcneRowItem.swift */; };
+		03FF23BA2CBF8A10008AB1B1 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FF23B92CBF8A10008AB1B1 /* CameraView.swift */; };
 		2E21EAE22CBBB29F00A71FF3 /* SkincareProducts.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E21EAE12CBBB29F00A71FF3 /* SkincareProducts.json */; };
 		2E21EAE62CBCA89300A71FF3 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E21EAE52CBCA89300A71FF3 /* ProfileView.swift */; };
 		2E21EAE82CBCB4BB00A71FF3 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E21EAE72CBCB4BB00A71FF3 /* EditProfileView.swift */; };
@@ -54,6 +64,16 @@
 		036679DB2CBD1B51009196C6 /* acneObj15000.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = acneObj15000.mlmodel; sourceTree = "<group>"; };
 		036679DC2CBD1B51009196C6 /* acneObj28100.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = acneObj28100.mlpackage; sourceTree = "<group>"; };
 		036679DD2CBD1B51009196C6 /* acneObj28200.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = acneObj28200.mlmodel; sourceTree = "<group>"; };
+		03FF23622CBDAD07008AB1B1 /* ContentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentCell.swift; sourceTree = "<group>"; };
+		03FF23642CBDB201008AB1B1 /* AnalyzedResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyzedResultView.swift; sourceTree = "<group>"; };
+		03FF23662CBDB64C008AB1B1 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
+		03FF23682CBDBB01008AB1B1 /* IngridientModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngridientModel.swift; sourceTree = "<group>"; };
+		03FF236A2CBDBD37008AB1B1 /* RowItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowItemCell.swift; sourceTree = "<group>"; };
+		03FF23912CBDDEB0008AB1B1 /* CameraSheetTutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraSheetTutor.swift; sourceTree = "<group>"; };
+		03FF23B22CBE57B1008AB1B1 /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
+		03FF23B52CBE6EB2008AB1B1 /* CompareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompareView.swift; sourceTree = "<group>"; };
+		03FF23B72CBF5425008AB1B1 /* AcneRowItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcneRowItem.swift; sourceTree = "<group>"; };
+		03FF23B92CBF8A10008AB1B1 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		2E21EAE12CBBB29F00A71FF3 /* SkincareProducts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SkincareProducts.json; sourceTree = "<group>"; };
 		2E21EAE52CBCA89300A71FF3 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		2E21EAE72CBCB4BB00A71FF3 /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
@@ -84,6 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				036679BC2CBD1ADA009196C6 /* ImageBase64Converter.swift */,
+				03FF23662CBDB64C008AB1B1 /* Color.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -94,6 +115,7 @@
 				036679C72CBD1B3D009196C6 /* CameraScanView.swift */,
 				036679C82CBD1B3D009196C6 /* CapturedImagesView.swift */,
 				036679C92CBD1B3D009196C6 /* CardStackView.swift */,
+				03FF23B92CBF8A10008AB1B1 /* CameraView.swift */,
 			);
 			path = Camera;
 			sourceTree = "<group>";
@@ -101,7 +123,11 @@
 		036679CC2CBD1B3D009196C6 /* Items */ = {
 			isa = PBXGroup;
 			children = (
+				03FF23622CBDAD07008AB1B1 /* ContentCell.swift */,
 				036679CB2CBD1B3D009196C6 /* SeverityIndicator.swift */,
+				03FF236A2CBDBD37008AB1B1 /* RowItemCell.swift */,
+				03FF23912CBDDEB0008AB1B1 /* CameraSheetTutor.swift */,
+				03FF23B72CBF5425008AB1B1 /* AcneRowItem.swift */,
 			);
 			path = Items;
 			sourceTree = "<group>";
@@ -126,6 +152,7 @@
 			isa = PBXGroup;
 			children = (
 				036679D12CBD1B3D009196C6 /* ResultView.swift */,
+				03FF23642CBDB201008AB1B1 /* AnalyzedResultView.swift */,
 			);
 			path = Result;
 			sourceTree = "<group>";
@@ -139,6 +166,22 @@
 				036679DD2CBD1B51009196C6 /* acneObj28200.mlmodel */,
 			);
 			path = AIModel;
+			sourceTree = "<group>";
+		};
+		03FF23B12CBE57AB008AB1B1 /* Router */ = {
+			isa = PBXGroup;
+			children = (
+				03FF23B22CBE57B1008AB1B1 /* Router.swift */,
+			);
+			path = Router;
+			sourceTree = "<group>";
+		};
+		03FF23B42CBE6E9D008AB1B1 /* Compare */ = {
+			isa = PBXGroup;
+			children = (
+				03FF23B52CBE6EB2008AB1B1 /* CompareView.swift */,
+			);
+			path = Compare;
 			sourceTree = "<group>";
 		};
 		2E21EAE32CBCA87100A71FF3 /* Profile */ = {
@@ -178,6 +221,7 @@
 		2E718EFB2CA16313001E53EB /* Skinalyze */ = {
 			isa = PBXGroup;
 			children = (
+				03FF23B12CBE57AB008AB1B1 /* Router */,
 				036679DE2CBD1B51009196C6 /* AIModel */,
 				036679BD2CBD1ADA009196C6 /* Tools */,
 				2E718EFC2CA16313001E53EB /* SkinalyzeApp.swift */,
@@ -203,6 +247,7 @@
 		2E8A765B2CB61C070052E9FD /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				03FF23B42CBE6E9D008AB1B1 /* Compare */,
 				036679CA2CBD1B3D009196C6 /* Camera */,
 				036679CC2CBD1B3D009196C6 /* Items */,
 				036679CE2CBD1B3D009196C6 /* Log */,
@@ -221,6 +266,7 @@
 				036679C32CBD1B24009196C6 /* AcneSeverityLevel.swift */,
 				036679C42CBD1B24009196C6 /* ResultModel.swift */,
 				2E4FB57D2CBA95A70075AB95 /* ProductModel.swift */,
+				03FF23682CBDBB01008AB1B1 /* IngridientModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -317,12 +363,17 @@
 				2E21EAE82CBCB4BB00A71FF3 /* EditProfileView.swift in Sources */,
 				2E21EAE62CBCA89300A71FF3 /* ProfileView.swift in Sources */,
 				2E718EFF2CA16313001E53EB /* ContentView.swift in Sources */,
+				03FF236B2CBDBD37008AB1B1 /* RowItemCell.swift in Sources */,
+				03FF23B82CBF5425008AB1B1 /* AcneRowItem.swift in Sources */,
 				2E64655A2CBB78FE00E905D9 /* ProductSearchSheet.swift in Sources */,
 				036679DF2CBD1B51009196C6 /* acneObj28200.mlmodel in Sources */,
 				036679E02CBD1B51009196C6 /* acneObj7480.mlmodel in Sources */,
+				03FF23BA2CBF8A10008AB1B1 /* CameraView.swift in Sources */,
 				036679E12CBD1B51009196C6 /* acneObj28100.mlpackage in Sources */,
+				03FF23B32CBE57B1008AB1B1 /* Router.swift in Sources */,
 				036679E22CBD1B51009196C6 /* acneObj15000.mlmodel in Sources */,
 				2E4FB57A2CBA94E70075AB95 /* ProductUsedView.swift in Sources */,
+				03FF23672CBDB64C008AB1B1 /* Color.swift in Sources */,
 				036679C12CBD1B0A009196C6 /* FaceTrackingViewModel.swift in Sources */,
 				036679D32CBD1B3D009196C6 /* CameraScanView.swift in Sources */,
 				036679D42CBD1B3D009196C6 /* SeverityIndicator.swift in Sources */,
@@ -333,11 +384,16 @@
 				036679D92CBD1B3D009196C6 /* CapturedImagesView.swift in Sources */,
 				036679C22CBD1B0A009196C6 /* ResultViewModel.swift in Sources */,
 				036679BE2CBD1ADA009196C6 /* ImageBase64Converter.swift in Sources */,
+				03FF23652CBDB201008AB1B1 /* AnalyzedResultView.swift in Sources */,
+				03FF23632CBDAD07008AB1B1 /* ContentCell.swift in Sources */,
 				2E4FB5802CBA95D20075AB95 /* ProductViewModel.swift in Sources */,
 				2E8A76622CB61C510052E9FD /* OnboardingChatView.swift in Sources */,
+				03FF23B62CBE6EB2008AB1B1 /* CompareView.swift in Sources */,
 				2E718EFD2CA16313001E53EB /* SkinalyzeApp.swift in Sources */,
 				036679C52CBD1B24009196C6 /* AcneSeverityLevel.swift in Sources */,
 				036679C62CBD1B24009196C6 /* ResultModel.swift in Sources */,
+				03FF23692CBDBB01008AB1B1 /* IngridientModel.swift in Sources */,
+				03FF23922CBDDEB0008AB1B1 /* CameraSheetTutor.swift in Sources */,
 				2E4FB57E2CBA95A70075AB95 /* ProductModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

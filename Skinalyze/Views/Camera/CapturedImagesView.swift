@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct CapturedImagesView: View {
-    @Binding var path: [String]
     let images: [UIImage]
     
     @State private var moveToAnalyze: Bool = false
+    
+    @EnvironmentObject var router: Router
 
     var body: some View {
         VStack {
@@ -19,29 +20,34 @@ struct CapturedImagesView: View {
                 .font(.title)
                 .padding()
             
-            HStack {
-                ForEach(images, id: \.self) { image in
-                    Image(uiImage: image)
+            TabView() {
+                ForEach(images, id: \.self) { index in
+                    Image(uiImage: index)
                         .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 100, height: 100)
-                        .padding()
+//                                .scaledToFit()
+                        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 1.8)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .tag(index)
                 }
             }
+            .frame(height: UIScreen.main.bounds.height / 1.8)
+            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
+            
             
             Button("Lanjutkan") {
-//                path.append("ResultView")
-                moveToAnalyze.toggle()
+//                moveToAnalyze.toggle()
+                router.navigate(to: .anlyzResultView(images: images))
             }
+            .padding()
             
             Button("Selfie Ulang") {
-                
             }
         }
-        .navigationDestination(isPresented: $moveToAnalyze){
-            ResultView(path: $path, images: images)
-//            AnalyzeView(selectedImages: images)
-        }
+        .padding()
+//        .navigationDestination(isPresented: $moveToAnalyze){
+//            AnalyzedResultView(images: images)
+////            AnalyzeView(selectedImages: images)
+//        }
     }
 }
 

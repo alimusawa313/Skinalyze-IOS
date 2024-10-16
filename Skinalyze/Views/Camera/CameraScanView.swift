@@ -15,7 +15,6 @@ let synthesizer = AVSpeechSynthesizer()
 
 struct CameraScanView: View {
     
-    @Binding var path: [String]
     
     @StateObject private var viewModel = FaceTrackingViewModel()
     @State private var capturedImages: [UIImage] = []
@@ -28,19 +27,17 @@ struct CameraScanView: View {
     @State private var isCameraLoaded = false
     @State private var showLoadingSheet = true
     
+    @EnvironmentObject var router: Router
+    
     var body: some View {
         ZStack {
-            // Full-screen camera view
-            //            CameraPreviewView(session: viewModel.session)
-            //                .edgesIgnoringSafeArea(.all)
-            //
-            //            ARViewContainer()
-            //                .edgesIgnoringSafeArea(.all)
-            
             if isCameraLoaded {
                 CameraPreviewView(session: viewModel.session)
                     .edgesIgnoringSafeArea(.all)
-                
+//                    .onTapGesture {
+//                        router.navigateToRoot()
+//                    }
+//                
                 
                 
                 VStack {
@@ -93,86 +90,82 @@ struct CameraScanView: View {
                         Spacer()
                         Text("PENCAHAYAAN")
                             .font(.system(size: 12))
-                            .foregroundColor(viewModel.lightingCondition == "normal" ? Color.green : Color.red)
+                            .foregroundColor(.white)
                             .padding(10)
-                            .background(viewModel.lightingCondition == "normal" ? Color.green.opacity(0.2) : Color.red.opacity(0.2))
+                            .background(viewModel.lightingCondition == "normal" ? Color(hex: "5F7955").opacity(0.57) : Color(hex: "DF0D0D").opacity(0.25))
                             .overlay(
-                                RoundedRectangle(cornerRadius: 0)
-                                    .stroke(viewModel.lightingCondition == "normal" ? Color.green : Color.red, lineWidth: 2)
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.white)
                             )
                         Spacer()
                         Text("POSISI WAJAH")
                             .font(.system(size: 12))
-                            .foregroundColor(viewModel.faceDistanceStatus == "Normal" ? Color.green : Color.red)
+                            .foregroundColor(.white)
                             .padding(10)
-                            .background(viewModel.faceDistanceStatus == "Normal" ? Color.green.opacity(0.2) : Color.red.opacity(0.2))
+                            .background(viewModel.faceDistanceStatus == "Normal" ? Color(hex: "5F7955").opacity(0.57) : Color(hex: "DF0D0D").opacity(0.25))
                             .overlay(
-                                RoundedRectangle(cornerRadius: 0)
-                                    .stroke(viewModel.faceDistanceStatus == "Normal" ? Color.green : Color.red, lineWidth: 2)
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.white)
                             )
                         Spacer()
+                        
+                        
                         VStack {
-                            // Display current capture step
-                            if capturedImages.count < 1 {
-                                Text("LIHAT DEPAN")
-                                    .font(.system(size: 12))
-                                    .foregroundColor(viewModel.faceOrientation == "Facing Forward" ? Color.green : Color.red)
-                                    .padding(10)
-                                    .background(viewModel.faceOrientation == "Facing Forward" ? Color.green.opacity(0.2) : Color.red.opacity(0.2))
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 0)
-                                            .stroke(viewModel.faceOrientation == "Facing Forward" ? Color.green : Color.red, lineWidth: 2)
-                                    )
-                            } else if capturedImages.count == 1 {
-                                Text("LIHAT KIRI")
-                                    .font(.system(size: 12))
-                                    .foregroundColor(viewModel.faceOrientation == "Facing Right" ? Color.green : Color.red)
-                                    .padding(10)
-                                    .background(viewModel.faceOrientation == "Facing Right" ? Color.green.opacity(0.2) : Color.red.opacity(0.2))
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 0)
-                                            .stroke(viewModel.faceOrientation == "Facing Right" ? Color.green : Color.red, lineWidth: 2)
-                                    )
-                            } else {
-                                Text("LIHAT KANAN")
-                                    .font(.system(size: 12))
-                                    .foregroundColor(viewModel.faceOrientation == "Facing Left" ? Color.green : Color.red)
-                                    .padding(10)
-                                    .background(viewModel.faceOrientation == "Facing Left" ? Color.green.opacity(0.2) : Color.red.opacity(0.2))
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 0)
-                                            .stroke(viewModel.faceOrientation == "Facing Left" ? Color.green : Color.red, lineWidth: 2)
-                                    )
-                            }
+                            let text: String = {
+                                if capturedImages.count < 1 {
+                                    return "LIHAT DEPAN"
+                                } else if capturedImages.count == 1 {
+                                    return "LIHAT KIRI"
+                                } else {
+                                    return "LIHAT KANAN"
+                                }
+                            }()
+
+                            let color: Color = {
+                                if capturedImages.count < 1 {
+                                    return viewModel.faceOrientation == "Facing Forward" ? Color(hex: "5F7955").opacity(0.57) : Color(hex: "DF0D0D").opacity(0.25)
+                                } else if capturedImages.count == 1 {
+                                    return viewModel.faceOrientation == "Facing Right" ? Color(hex: "5F7955").opacity(0.57) : Color(hex: "DF0D0D").opacity(0.25)
+                                } else {
+                                    return viewModel.faceOrientation == "Facing Left" ? Color(hex: "5F7955").opacity(0.57) : Color(hex: "DF0D0D").opacity(0.25)
+                                }
+                            }()
+
+                            Text(text)
+                                .font(.system(size: 12))
+                                .foregroundColor(.white)
+                                .padding(10)
+                                .background(color)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color.white)
+                                )
                         }
+                        
                         Spacer()
                     }
                     .padding()
-                    .background(.black.opacity(0.8))
+                    .background(.black.opacity(0.69))
                     
                     Spacer()
                     
                     HStack {
                         Spacer()
-                        // Circle indicators for captured images
-                        Image(systemName: capturedImages.count > 0 ? "circle.fill" : "circle")
+                        Image(capturedImages.count > 0 ? "doneCapture" : "frontFace")
                             .resizable()
-                            .foregroundColor(capturedImages.count > 0 ? .green : .white)
-                            .frame(width: 50, height: 50)
+                            .frame(width: 80, height: 80)
                         Spacer()
-                        Image(systemName: capturedImages.count > 1 ? "circle.fill" : "circle")
+                        Image(capturedImages.count > 1 ? "doneCapture" : "leftFace")
                             .resizable()
-                            .foregroundColor(capturedImages.count > 1 ? .green : .white)
-                            .frame(width: 50, height: 50)
+                            .frame(width: 80, height: 80)
                         Spacer()
-                        Image(systemName: capturedImages.count > 2 ? "circle.fill" : "circle")
+                        Image(capturedImages.count > 2 ? "doneCapture" : "rightFace")
                             .resizable()
-                            .foregroundColor(capturedImages.count > 2 ? .green : .white)
-                            .frame(width: 50, height: 50)
+                            .frame(width: 80, height: 80)
                         Spacer()
                     }
                     .padding()
-                    .background(.black.opacity(0.8))
+                    .background(.black.opacity(0.69))
                 }
                 
                 // Timer Overlay
@@ -186,43 +179,97 @@ struct CameraScanView: View {
                 Color.black.edgesIgnoringSafeArea(.all)
             }
         }
-        .onAppear {
-//            viewModel.startSession() // Start the camera session
-//            startCaptureProcess() // Start the capture process
-        }
+                .onChange(of: showCapturedImagesView) {
+                    if showCapturedImagesView == true{
+                        self.router.navigate(to: .capturedImagesView(images: capturedImages))
+                    }
+                }
         .onDisappear {
-            viewModel.stopSession() // Stop the camera session
-            timer?.invalidate() // Stop the timer when the view disappears
+            viewModel.stopSession()
+            timer?.invalidate()
             
-        }
-        .navigationDestination(isPresented: $showCapturedImagesView) {
-            
-            CapturedImagesView(path: $path, images: capturedImages)
         }
         
         .sheet(isPresented: $showLoadingSheet) {
-            VStack {
-                Spacer()
-                Button(action: {
-                    viewModel.startSession() 
+            
+            VStack(alignment:.center){
+                Text("Analyze Skin Condition").bold()
+                
+                Divider()
+                
+                HStack{
+                    Text("Scan Tips").bold()
+                    Spacer()
+                }
+                
+                HStack{
+                    Image("lightbulb")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 43, height: 36)
+                        .padding()
+                    
+                    Text("Ensure bright light source for the best scan results.")
+                    Spacer()
+                }
+                
+                HStack{
+                    Image("prsn")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 43, height: 36)
+                        .padding()
+                    
+                    Text("Align your face within the provided border.")
+                    Spacer()
+                }
+                
+                HStack{
+                    Image("checkmarktriangle")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 43, height: 36)
+                        .padding()
+                    
+                    Text("Follow the prompts to capture your face from the right, left, and front angles.")
+                    Spacer()
+                }
+                
+                Button{
+                    viewModel.startSession()
                     startCaptureProcess()
                     self.showLoadingSheet = false
-                    self.viewModel.startSession() // Start the camera session
+                    self.viewModel.startSession()
                     self.isCameraLoaded = true
-                }) {
-                    Text("Load Camera")
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
+                }label: {
+                    HStack {
+                        Spacer()
+                        Text("Start Analyze")
+                            .font(.headline)
+                            .padding()
+                        Spacer()
+                    }
+                    .foregroundStyle(.white)
+                    .background(Capsule().foregroundStyle(Color(hex: "74574F")))
                 }
-                .padding()
+                .padding(.vertical)
             }
+            .padding()
+            .presentationDetents([.medium])
+            .interactiveDismissDisabled()
         }
         .onAppear {
             self.showLoadingSheet = true
         }
         
+    }
+    
+    func tutorDone(){
+        viewModel.startSession()
+        startCaptureProcess()
+        self.showLoadingSheet = false
+        self.viewModel.startSession() // Start the camera session
+        self.isCameraLoaded = true
     }
     
     func triggerHapticFeedback() {
@@ -285,7 +332,6 @@ struct CameraScanView: View {
                     if viewModel.faceOrientation != "Facing Right" {
                         timer.invalidate()
                         isCountdownActive = false
-                        path.append("ResultView")
                         return
                     }
                 case .facingLeft:
@@ -338,24 +384,6 @@ struct CameraScanView: View {
         }
     }
     
-    //    func captureImage(from sampleBuffer: CMSampleBuffer) -> UIImage? {
-    //        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
-    //            return nil
-    //        }
-    //
-    //        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-    //        let context = CIContext()
-    //
-    //        // Rotate the image to match the screen orientation
-    //        let image = ciImage.oriented(.right)
-    //
-    //        if let cgImage = context.createCGImage(image, from: image.extent) {
-    //            return UIImage(cgImage: cgImage)
-    //        }
-    //
-    //        return nil
-    //    }
-    
     func captureImage(from sampleBuffer: CMSampleBuffer) -> UIImage? {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return nil
@@ -402,67 +430,9 @@ enum FaceOrientation {
     case facingLeft
 }
 
-
-
-
-struct CameraView: UIViewRepresentable {
-    var session: AVCaptureSession
-    
-    func makeUIView(context: Context) -> UIView {
-        let view = UIView(frame: .zero)
-        let previewLayer = AVCaptureVideoPreviewLayer(session: session)
-        previewLayer.videoGravity = .resizeAspectFill
-        previewLayer.frame = view.bounds
-        view.layer.addSublayer(previewLayer)
-        return view
-    }
-    
-    func updateUIView(_ uiView: UIView, context: Context) {
-        if let layer = uiView.layer.sublayers?.first as? AVCaptureVideoPreviewLayer {
-            layer.frame = uiView.bounds
-        }
-    }
+#Preview {
+    CameraScanView()
 }
 
-struct CameraPreviewView: UIViewControllerRepresentable {
-    var session: AVCaptureSession
-    
-    func makeUIViewController(context: Context) -> UIViewController {
-        let controller = CameraPreviewController()
-        controller.session = session
-        return controller
-    }
-    
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-        // No need to update anything here for this simple preview
-    }
-}
-
-class CameraPreviewController: UIViewController {
-    var session: AVCaptureSession?
-    private var previewLayer: AVCaptureVideoPreviewLayer?
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        guard let session = session else {
-            return
-        }
-        
-        // Setup the preview layer
-        previewLayer = AVCaptureVideoPreviewLayer(session: session)
-        previewLayer?.videoGravity = .resizeAspectFill
-        previewLayer?.frame = view.bounds
-        if let previewLayer = previewLayer {
-            view.layer.addSublayer(previewLayer)
-        }
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        // Adjust the preview layer size when the view's layout changes
-        previewLayer?.frame = view.bounds
-    }
-}
 
 
