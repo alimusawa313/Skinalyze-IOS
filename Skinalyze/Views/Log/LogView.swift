@@ -84,7 +84,7 @@ struct LogView: View {
                                             selectedLogs.append(log)
                                         }
                                     }else{
-                                        
+                                        router.navigate(to: .detailView(selectedLogs: log))
                                     }
                                 }
                             }

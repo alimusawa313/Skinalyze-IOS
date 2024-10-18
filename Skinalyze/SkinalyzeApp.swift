@@ -46,6 +46,8 @@ struct SkinalyzeApp: App {
                             ProductUsedView(isFromStartup: isFromStartup)
                         case .compareImagesView(selectedLogs: let selectedLogs):
                             CompareView(selectedLogs: selectedLogs)
+                        case .detailView(selectedLogs: let selectedLogs):
+                            DetailVIew(selectedLogs: selectedLogs)
                         }
                     }
                     .environmentObject(router)
