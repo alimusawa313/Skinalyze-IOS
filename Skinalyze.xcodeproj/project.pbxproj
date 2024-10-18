@@ -24,6 +24,7 @@
 		036679E12CBD1B51009196C6 /* acneObj28100.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 036679DC2CBD1B51009196C6 /* acneObj28100.mlpackage */; };
 		036679E22CBD1B51009196C6 /* acneObj15000.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 036679DB2CBD1B51009196C6 /* acneObj15000.mlmodel */; };
 		03DC77332CC108B200EFD1BC /* AboutToScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DC77322CC108B200EFD1BC /* AboutToScanView.swift */; };
+		03DF5BEF2CC2486300574552 /* DetailVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DF5BEE2CC2486300574552 /* DetailVIew.swift */; };
 		03FF23632CBDAD07008AB1B1 /* ContentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FF23622CBDAD07008AB1B1 /* ContentCell.swift */; };
 		03FF23652CBDB201008AB1B1 /* AnalyzedResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FF23642CBDB201008AB1B1 /* AnalyzedResultView.swift */; };
 		03FF23672CBDB64C008AB1B1 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FF23662CBDB64C008AB1B1 /* Color.swift */; };
@@ -66,6 +67,7 @@
 		036679DC2CBD1B51009196C6 /* acneObj28100.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = acneObj28100.mlpackage; sourceTree = "<group>"; };
 		036679DD2CBD1B51009196C6 /* acneObj28200.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = acneObj28200.mlmodel; sourceTree = "<group>"; };
 		03DC77322CC108B200EFD1BC /* AboutToScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutToScanView.swift; sourceTree = "<group>"; };
+		03DF5BEE2CC2486300574552 /* DetailVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailVIew.swift; sourceTree = "<group>"; };
 		03FF23622CBDAD07008AB1B1 /* ContentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentCell.swift; sourceTree = "<group>"; };
 		03FF23642CBDB201008AB1B1 /* AnalyzedResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyzedResultView.swift; sourceTree = "<group>"; };
 		03FF23662CBDB64C008AB1B1 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
@@ -171,6 +173,14 @@
 			path = AIModel;
 			sourceTree = "<group>";
 		};
+		03DF5BED2CC2485400574552 /* Detail */ = {
+			isa = PBXGroup;
+			children = (
+				03DF5BEE2CC2486300574552 /* DetailVIew.swift */,
+			);
+			path = Detail;
+			sourceTree = "<group>";
+		};
 		03FF23B12CBE57AB008AB1B1 /* Router */ = {
 			isa = PBXGroup;
 			children = (
@@ -250,6 +260,7 @@
 		2E8A765B2CB61C070052E9FD /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				03DF5BED2CC2485400574552 /* Detail */,
 				03FF23B42CBE6E9D008AB1B1 /* Compare */,
 				036679CA2CBD1B3D009196C6 /* Camera */,
 				036679CC2CBD1B3D009196C6 /* Items */,
@@ -380,6 +391,7 @@
 				036679C12CBD1B0A009196C6 /* FaceTrackingViewModel.swift in Sources */,
 				036679D32CBD1B3D009196C6 /* CameraScanView.swift in Sources */,
 				036679D42CBD1B3D009196C6 /* SeverityIndicator.swift in Sources */,
+				03DF5BEF2CC2486300574552 /* DetailVIew.swift in Sources */,
 				036679D52CBD1B3D009196C6 /* CardStackView.swift in Sources */,
 				036679D62CBD1B3D009196C6 /* ResultView.swift in Sources */,
 				036679D72CBD1B3D009196C6 /* MainView.swift in Sources */,
