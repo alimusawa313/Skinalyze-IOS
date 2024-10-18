@@ -36,6 +36,7 @@ struct ChatView: View {
         ChatMessage(text: "What's your name?", role: .system),
         ChatMessage(text: "Asking for your name helps us personalize profile. Don't worry, your privacy is important to us and we'll keep your details safe 😉", role: .system)
     ]
+    var isFromStartup: Bool
     
     @State private var inputText: String = ""
     @State private var inputAge: Int? = nil // Store integer for age input
@@ -411,3 +412,7 @@ struct TypingIndicator: View {
         }
     }
 }
+
+//#Preview{
+//    ChatView(isFromStartup: )
+//}

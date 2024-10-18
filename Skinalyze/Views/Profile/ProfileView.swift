@@ -12,6 +12,8 @@ struct ProfileView: View {
     @AppStorage("skinSensitivity") private var skinSensitivity: String = ""
     @AppStorage("useSkincare") private var useSkincare: String = ""
     
+    let skinTypeArray = ["Oily", "Dry", "Combination"]
+    let skinSensitivityArray = ["Very Sensitive", "Only Sometimes", "Not Sensitive"]
     
     var body: some View {
             VStack{
@@ -57,16 +59,19 @@ struct ProfileView: View {
                         .fontWeight(.semibold)
                         .font(.system(size: 20))
                     VStack(spacing: 0) {
-                        // Skin Goals Row
+//                         Skin type Row
                         HStack {
-                            Text("Skin Goals")
+                            Text("Skin Type")
                                 .font(.system(size: 16))
                             Spacer()
-                            Text("Detail")
-                                .foregroundColor(.gray)
-                                .font(.system(size: 16))
-                            Image(systemName: "chevron.forward")
-                                .foregroundColor(.gray)
+                            Picker("", selection: $skinType) {
+                                ForEach(skinTypeArray, id: \.self) {
+                                    Text($0)
+                                }
+                            }
+                            .pickerStyle(MenuPickerStyle()) // Menampilkan opsi sebagai menu
+                            .foregroundColor(.gray)
+                            .font(.system(size: 16))
                         }
                         .padding()
                         .background(Color.white)
@@ -74,16 +79,19 @@ struct ProfileView: View {
                         Divider()
                             .padding(.leading)
                         
-                        // Skin Type Row
+                        // Skin sensi Row
                         HStack {
-                            Text("Skin Type")
+                            Text("Skin Sensitivity")
                                 .font(.system(size: 16))
                             Spacer()
-                            Text("Detail")
-                                .foregroundColor(.gray)
-                                .font(.system(size: 16))
-                            Image(systemName: "chevron.forward")
-                                .foregroundColor(.gray)
+                            Picker("", selection: $skinSensitivity) {
+                                ForEach(skinSensitivityArray, id: \.self) {
+                                    Text($0)
+                                }
+                            }
+                            .pickerStyle(MenuPickerStyle()) // Menampilkan opsi sebagai menu
+                            .foregroundColor(.gray)
+                            .font(.system(size: 16))
                         }
                         .padding()
                         .background(Color.white)
@@ -143,3 +151,7 @@ struct ProfileView: View {
 //        ProfileView()
 //    }
 //}
+
+#Preview{
+    ProfileView()
+}
