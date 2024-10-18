@@ -18,40 +18,37 @@ struct MainView: View {
     
     
     var body: some View {
+        
+        TabView(selection: $selection) {
+            LogView(isTabBarHidden: $isTabBarHidden)
+                .navigationBarTitle("Face Log")
+                .navigationBarTitleDisplayMode(.inline)
+                .tabItem {
+                    Image(systemName: "list.bullet.clipboard")
+                    Text("Fac Log")
+                }
+                .tag(0)
+                .toolbar(isTabBarHidden ? .hidden : .visible, for: .tabBar)
             
-            TabView(selection: $selection) {
-                LogView()
-                    .navigationBarTitle("FaceLog")
-                    .navigationBarTitleDisplayMode(.inline)
-                    .tabItem {
-                        Image(systemName: "list.bullet.clipboard")
-                        Text("FaceLog")
-                    }
-                    .tag(0)
-                
-                
-                temp(selection: $selection)
-//                .onAppear{
-//                    router.navigate(to: .camScanView)
-//                }
+            AboutToScanView()
                 .tabItem {
                     Image(systemName: "camera.viewfinder")
                     Text("Scan")
                 }
                 .tag(1)
-                
-                
-                
-                NavigationView {
-                    ProfileView()
-                        .navigationBarTitle("Profile")
-                }
-                .tabItem {
-                    Image(systemName: "person")
-                    Text("Profile")
-                }
-                .tag(2)
+            
+            
+            
+            NavigationView {
+                ProfileView()
+                    .navigationBarTitle("Profile")
             }
+            .tabItem {
+                Image(systemName: "person")
+                Text("Profile")
+            }
+            .tag(2)
+        }
     }
 }
 
@@ -74,61 +71,61 @@ struct temp: View {
     }
 }
 
-    //        TabView(selection: $selection) {
-    //            NavigationStack(path: $path) {
-    //                LogView()
-    //                    .navigationBarTitle("FaceLog")
-    //                    .navigationBarTitleDisplayMode(.inline)
-    ////                    .navigationDestination(for: String.self) { view in
-    ////                        if view == "CameraScanView" {
-    ////                            CameraScanView(path: $path)
-    ////                        } else if view == "ResultView" {
-    ////                            AnalyzedResultView(path: $path)
-    ////                        }
-    ////                    }
-    //            }
-    //            .tabItem {
-    //                Image(systemName: "list.bullet.clipboard")
-    //                Text("FaceLog")
-    //            }
-    //            .tag(0)
-    //
-    //            NavigationStack {
-    //                EmptyView()
-    //                NavigationLink(destination: CameraScanView()) {
-    //                    Text("Open Camera Scan")
-    //                }
-    //            }
-    //            .tabItem {
-    //                Image(systemName: "camera.viewfinder")
-    //                Text("Scan")
-    //            }
-    //            .tag(1)
-    //
-    //            .onAppear {
-    //                self.showCameraScan = true
-    //            }
-    //            .navigationDestination(isPresented: $showCameraScan) {
-    //                NavigationView {
-    //                    CameraScanView()
-    //                        .navigationBarHidden(true)
-    //                        .onDisappear {
-    //                            self.selection = 0
-    //                        }
-    //                }
-    //            }
-    //
-    //            NavigationView {
-    //                ProfileView()
-    //                    .navigationBarTitle("Profile")
-    //            }
-    //            .tabItem {
-    //                Image(systemName: "person")
-    //                Text("Profile")
-    //            }
-    //            .tag(2)
-    //        }
-    
+//        TabView(selection: $selection) {
+//            NavigationStack(path: $path) {
+//                LogView()
+//                    .navigationBarTitle("FaceLog")
+//                    .navigationBarTitleDisplayMode(.inline)
+////                    .navigationDestination(for: String.self) { view in
+////                        if view == "CameraScanView" {
+////                            CameraScanView(path: $path)
+////                        } else if view == "ResultView" {
+////                            AnalyzedResultView(path: $path)
+////                        }
+////                    }
+//            }
+//            .tabItem {
+//                Image(systemName: "list.bullet.clipboard")
+//                Text("FaceLog")
+//            }
+//            .tag(0)
+//
+//            NavigationStack {
+//                EmptyView()
+//                NavigationLink(destination: CameraScanView()) {
+//                    Text("Open Camera Scan")
+//                }
+//            }
+//            .tabItem {
+//                Image(systemName: "camera.viewfinder")
+//                Text("Scan")
+//            }
+//            .tag(1)
+//
+//            .onAppear {
+//                self.showCameraScan = true
+//            }
+//            .navigationDestination(isPresented: $showCameraScan) {
+//                NavigationView {
+//                    CameraScanView()
+//                        .navigationBarHidden(true)
+//                        .onDisappear {
+//                            self.selection = 0
+//                        }
+//                }
+//            }
+//
+//            NavigationView {
+//                ProfileView()
+//                    .navigationBarTitle("Profile")
+//            }
+//            .tabItem {
+//                Image(systemName: "person")
+//                Text("Profile")
+//            }
+//            .tag(2)
+//        }
+
 //=======
 
 

@@ -259,6 +259,7 @@ class ResultViewModel: ObservableObject{
             let confidence = result.labels.first?.confidence ?? 0.0
             
             // Select the color based on the label
+//            let color = labelColorMapping[label, default: UIColor.black]
             let color = labelColorMapping[label, default: UIColor.black]
             
             // Set the stroke color for the bounding box
@@ -293,7 +294,7 @@ class ResultViewModel: ObservableObject{
             )
             
             // Draw the label text in the image
-            //            labelText.draw(in: labelRect, withAttributes: attributes)
+//            labelText.draw(in: labelRect, withAttributes: attributes)
         }
         
         // Get the new image with bounding boxes and labels

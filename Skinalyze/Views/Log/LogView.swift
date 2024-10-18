@@ -12,7 +12,7 @@ struct LogView: View {
     
     @EnvironmentObject var router: Router
     
-    @State private var isTabBarHidden: Bool?
+    @Binding var isTabBarHidden: Bool
     @State private var isComparing = false
     
     @Environment(\.modelContext) private var modelContext
@@ -28,8 +28,8 @@ struct LogView: View {
                     let groupedLogs = groupLogsByDate(logs)
                     
                     ForEach(groupedLogs.keys.sorted(by: >), id: \.self) { date in
-                        Section(header: Text(date, style: .date)) {
-                            ForEach(groupedLogs[date]!, id: \.id) { log in
+                        Section(header: Text(date, style: .date).font(.headline).foregroundStyle(.black)) {
+                            ForEach(groupedLogs[date]!.sorted { $0.currentDate > $1.currentDate }, id: \.id)  { log in
                                 HStack {
                                     if let imageString = log.analyzedImages1, let image = imageString.toImage() {
                                         Image(uiImage: image)
@@ -49,23 +49,31 @@ struct LogView: View {
                                             
                                             Spacer()
                                             
-                                            Text(severityLevel.description)
-                                                .font(.footnote).bold().foregroundStyle(.white)
-                                                .padding(EdgeInsets(top: 2, leading: 7, bottom: 2, trailing: 7))
-                                                .background(Capsule().foregroundStyle(Color(hex: "74574F")))
+                                                Text(severityLevel.description)
+                                                    .font(.footnote).bold().foregroundStyle(.white)
+                                                    .padding(EdgeInsets(top: 2, leading: 7, bottom: 2, trailing: 7))
+                                                    .background(Capsule().foregroundStyle(Color(hex: "74574F")))
+                                              
                                         }
                                         
-                                        Text(getDescription(for: severityLevel))
-                                            .lineLimit(3)
-                                            .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                        HStack {
+                                            Text(getDescription(for: severityLevel))
+                                                .lineLimit(3)
+                                                .font(.subheadline)
+                                                .foregroundStyle(.secondary)
+                                            
+                                                Image(systemName: "chevron.forward")
+                                                    .opacity(isComparing ? 0 : 1)
+                                        }
                                     }
                                 }
-                                .padding()
-                                .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color(hex: "EAE3E1")))
+                                .padding(EdgeInsets(top: 13, leading: 10, bottom: 13, trailing: 10))
+//                                .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color(hex: "EAE3E1")))
                                 .overlay {
                                     if isComparing && selectedLogs.contains(log) {
                                         RoundedRectangle(cornerRadius: 10).stroke().foregroundStyle(Color(hex: "74574F"))
+                                            .padding(.vertical, -8)
+                                            .padding(.horizontal, -5)
                                     }
                                 }
                                 .onTapGesture {
@@ -75,15 +83,23 @@ struct LogView: View {
                                         } else if selectedLogs.count < 2 {
                                             selectedLogs.append(log)
                                         }
+                                    }else{
+                                        
                                     }
                                 }
                             }
                             .onDelete(perform: deleteItems)
                         }
-                        .listStyle(.inset)
+//                        .listStyle(.inset)
                         .listRowSpacing(0)
-                        .listRowBackground(Color.clear)
+                        .listRowBackground(
+                            RoundedRectangle(cornerRadius: 10).foregroundStyle(Color(hex: "EAE3E1"))
+                                .padding(.horizontal)
+                                .padding(.vertical, 5)
+
+                        )
                         .listRowSeparator(.hidden)
+                        
                     }
                 }
                 .listStyle(.inset)
@@ -158,17 +174,21 @@ struct LogView: View {
     
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
-            for index in offsets {
-                modelContext.delete(logs[index])
-            }
+//            for index in offsets {
+//                modelContext.delete(logs[index])
+//            }
+            
+            offsets.map { logs[$0] }.forEach { log in
+                        modelContext.delete(log)
+                    }
         }
     }
 }
 
-#Preview {
-    LogView()
-        .modelContainer(for: Result.self, inMemory: true)
-}
+//#Preview {
+//    LogView(isTabBarHidden: .constant(false))
+//        .modelContainer(for: Result.self, inMemory: true)
+//}
 
 
 public let severityDescriptions: [Int: String] = [

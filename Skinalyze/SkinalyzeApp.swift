@@ -34,8 +34,8 @@ struct SkinalyzeApp: App {
                         case .anlyzResultView(let image):
                             AnalyzedResultView(images: image)
                                 .environmentObject(router)
-                        case .log:
-                            LogView()
+                        case .log(let isTabBarHidden):
+                            LogView(isTabBarHidden: .constant(isTabBarHidden))
                         case .camScanView:
                             CameraScanView()
                                 .environmentObject(router)

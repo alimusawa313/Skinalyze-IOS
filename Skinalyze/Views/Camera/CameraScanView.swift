@@ -34,10 +34,10 @@ struct CameraScanView: View {
             if isCameraLoaded {
                 CameraPreviewView(session: viewModel.session)
                     .edgesIgnoringSafeArea(.all)
-//                    .onTapGesture {
-//                        router.navigateToRoot()
-//                    }
-//                
+                //                    .onTapGesture {
+                //                        router.navigateToRoot()
+                //                    }
+                //
                 
                 
                 VStack {
@@ -120,7 +120,7 @@ struct CameraScanView: View {
                                     return "LIHAT KANAN"
                                 }
                             }()
-
+                            
                             let color: Color = {
                                 if capturedImages.count < 1 {
                                     return viewModel.faceOrientation == "Facing Forward" ? Color(hex: "5F7955").opacity(0.57) : Color(hex: "DF0D0D").opacity(0.25)
@@ -130,7 +130,7 @@ struct CameraScanView: View {
                                     return viewModel.faceOrientation == "Facing Left" ? Color(hex: "5F7955").opacity(0.57) : Color(hex: "DF0D0D").opacity(0.25)
                                 }
                             }()
-
+                            
                             Text(text)
                                 .font(.system(size: 12))
                                 .foregroundColor(.white)
@@ -179,87 +179,25 @@ struct CameraScanView: View {
                 Color.black.edgesIgnoringSafeArea(.all)
             }
         }
-                .onChange(of: showCapturedImagesView) {
-                    if showCapturedImagesView == true{
-                        self.router.navigate(to: .capturedImagesView(images: capturedImages))
-                    }
-                }
+        .onChange(of: showCapturedImagesView) {
+            if showCapturedImagesView == true{
+                self.router.navigate(to: .capturedImagesView(images: capturedImages))
+            }
+        }
         .onDisappear {
             viewModel.stopSession()
             timer?.invalidate()
-            
+            capturedImages = []
+            currentCaptureStep = 0
         }
         
-        .sheet(isPresented: $showLoadingSheet) {
-            
-            VStack(alignment:.center){
-                Text("Analyze Skin Condition").bold()
-                
-                Divider()
-                
-                HStack{
-                    Text("Scan Tips").bold()
-                    Spacer()
-                }
-                
-                HStack{
-                    Image("lightbulb")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 43, height: 36)
-                        .padding()
-                    
-                    Text("Ensure bright light source for the best scan results.")
-                    Spacer()
-                }
-                
-                HStack{
-                    Image("prsn")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 43, height: 36)
-                        .padding()
-                    
-                    Text("Align your face within the provided border.")
-                    Spacer()
-                }
-                
-                HStack{
-                    Image("checkmarktriangle")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 43, height: 36)
-                        .padding()
-                    
-                    Text("Follow the prompts to capture your face from the right, left, and front angles.")
-                    Spacer()
-                }
-                
-                Button{
-                    viewModel.startSession()
-                    startCaptureProcess()
-                    self.showLoadingSheet = false
-                    self.viewModel.startSession()
-                    self.isCameraLoaded = true
-                }label: {
-                    HStack {
-                        Spacer()
-                        Text("Start Analyze")
-                            .font(.headline)
-                            .padding()
-                        Spacer()
-                    }
-                    .foregroundStyle(.white)
-                    .background(Capsule().foregroundStyle(Color(hex: "74574F")))
-                }
-                .padding(.vertical)
-            }
-            .padding()
-            .presentationDetents([.medium])
-            .interactiveDismissDisabled()
-        }
         .onAppear {
-            self.showLoadingSheet = true
+            //            self.showLoadingSheet = true
+            viewModel.startSession()
+            startCaptureProcess()
+            self.showLoadingSheet = false
+            self.viewModel.startSession()
+            self.isCameraLoaded = true
         }
         
     }

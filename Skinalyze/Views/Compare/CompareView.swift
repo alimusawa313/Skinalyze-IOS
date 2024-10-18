@@ -23,8 +23,8 @@ struct CompareView: View {
                 }
                 
                 Picker("", selection: $selectedSide) {
-                    Text("Front").tag(0)
                     Text("Left").tag(1)
+                    Text("Front").tag(0)
                     Text("Right").tag(2)
                 }
                 .pickerStyle(SegmentedPickerStyle())
@@ -36,36 +36,52 @@ struct CompareView: View {
                         
                         VStack(spacing: 5) {
                             ForEach(selectedLogs[1].acneCounts.keys.sorted().filter { selectedLogs[1].acneCounts[$0] ?? 0 > 0 }, id: \.self) { key in
-                                RoundedRectangle(cornerRadius: 10)
-                                    .fill(Color(hex: "74574F").opacity(0.8))
-                                    .overlay(
-                                        Text("\(key.capitalized) (\(selectedLogs[1].acneCounts[key] ?? 0))")
-                                            .bold()
-                                            .font(.footnote)
-                                            .foregroundColor(.white)
-                                    )
-                                    .frame(width: 120, height: 40)
+                                HStack{
+                                    Spacer()
+                                    Text("\(key.capitalized)")
+                                        .font(.footnote)
+                                        .foregroundColor(.white)
+                                    
+                                    Spacer()
+                                    
+                                    Text("\(selectedLogs[0].acneCounts[key] ?? 0)")
+                                        .frame(width: 40, height: 35)
+                                        .background(Color(hex: "D6C7C2"))
+                                }
+                                .background(Color(hex: "795B53"))
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
                             }
                         }
                         .padding(.horizontal, 16)
                         
+                        Spacer()
+                        
                     }.frame(maxWidth: .infinity)
-                    Spacer()
+                    
+                    Divider()
+                    
+                    
                     VStack{
                         Text("\(selectedLogs[0].currentDate, format: Date.FormatStyle(date: .abbreviated, time: .shortened))")
                         
                         VStack(spacing: 5) {
                             ForEach(selectedLogs[0].acneCounts.keys.sorted().filter { selectedLogs[0].acneCounts[$0] ?? 0 > 0 }, id: \.self) { key in
-                                RoundedRectangle(cornerRadius: 10)
-                                    .fill(Color(hex: "74574F").opacity(0.8))
-                                    .overlay(
-                                        Text("\(key.capitalized) (\(selectedLogs[0].acneCounts[key] ?? 0))")
-                                            .bold()
-                                            .font(.footnote)
-                                            .foregroundColor(.white)
-                                    )
-                                    .frame(width: 120, height: 40)
+                                HStack{
+                                    Spacer()
+                                    Text("\(key.capitalized)")
+                                        .font(.footnote)
+                                        .foregroundColor(.white)
+                                    
+                                    Spacer()
+                                    
+                                    Text("\(selectedLogs[0].acneCounts[key] ?? 0)")
+                                        .frame(width: 40, height: 35)
+                                        .background(Color(hex: "D6C7C2"))
+                                }
+                                .background(Color(hex: "795B53"))
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
                             }
+                            Spacer()
                         }
                         .padding(.horizontal, 16)
                     }
@@ -76,7 +92,7 @@ struct CompareView: View {
             }
             .padding()
         }
-        
+        .navigationTitle("Comparison Result")
     }
     
     private func displayImages(for side: Int) -> some View {
@@ -105,19 +121,19 @@ struct CompareView: View {
                 Image(uiImage: firstImage)
                     .resizable()
                     .scaledToFill()
-                    .frame(width: UIScreen.main.bounds.width - 25, height: UIScreen.main.bounds.height / 1.8)
+                    .frame(width: UIScreen.main.bounds.width - 25, height: UIScreen.main.bounds.height / 2.2)
                     .cornerRadius(10)
                 
                 Image(uiImage: secondImage)
                     .resizable()
                     .scaledToFill()
-                    .frame(width: UIScreen.main.bounds.width - 25, height: UIScreen.main.bounds.height / 1.8)
+                    .frame(width: UIScreen.main.bounds.width - 25, height: UIScreen.main.bounds.height / 2.2)
                     .cornerRadius(10)
                     .reverseMask {
                         HStack {
                             Spacer()
                             Rectangle()
-                                .frame(width: max(UIScreen.main.bounds.width / 2 - xOffset - 12.5, 0), height: UIScreen.main.bounds.height / 1.8)
+                                .frame(width: max(UIScreen.main.bounds.width / 2 - xOffset - 12.5, 0), height: UIScreen.main.bounds.height / 2.2)
                             
                         }
                     }
@@ -129,59 +145,46 @@ struct CompareView: View {
 }
 
 
-//#Preview {
-//    CompareView()
-//}
+#Preview {
+    CompareView(selectedLogs: [Result(images: ["imageTest", "imageTest", "imageTest"], selectedCardIndex: 0, analyzedImages: ["imageTest", "imageTest", "imageTest"], isLoading: false, acneCounts: ["Popules": 5, "Pustul": 10], geaScale: 2, currentDate: Date.now), Result(images: ["imageTest", "imageTest", "imageTest"], selectedCardIndex: 0, analyzedImages: ["imageTest", "imageTest", "imageTest"], isLoading: false, acneCounts: [:], geaScale: 2, currentDate: Date.now)])
+}
 
-////
+
+
+
+
 struct LineDivider: View {
     @Binding var xOffset: CGFloat
+    @State private var dragOffset: CGFloat = 0
+
     var body: some View {
         ZStack {
             Rectangle()
                 .foregroundStyle(.white)
-                .frame(width: 5, height: UIScreen.main.bounds.height / 1.8)
-            Circle()
-                .foregroundStyle(.white)
-                .frame(width: 50)
+                .frame(width: 5, height: UIScreen.main.bounds.height / 2.2)
+            
+            Image(systemName: "chevron.left.chevron.right").bold()
+                .padding()
+                .background(
+                    Circle()
+                        .foregroundStyle(.white)
+                )
         }
         .offset(x: xOffset)
-        .gesture(DragGesture().onChanged { value in
-            
-            xOffset = min(max(value.translation.width, -UIScreen.main.bounds.width / 2 + 12.5), UIScreen.main.bounds.width / 2 - 12.5)
-            
-        })
+        .gesture(
+            DragGesture()
+                .onChanged { value in
+                    let newOffset = xOffset + value.translation.width - dragOffset
+                    xOffset = min(max(newOffset, -UIScreen.main.bounds.width / 2 + 12.5), UIScreen.main.bounds.width / 2 - 12.5)
+                    dragOffset = value.translation.width
+                }
+                .onEnded { _ in
+                    dragOffset = 0
+                }
+        )
     }
 }
 
-//struct LineDivider: View {
-//    @Binding var xOffset: CGFloat
-//    @State private var dragOffset: CGFloat = 0
-//    
-//    var body: some View {
-//        ZStack {
-//            Rectangle()
-//                .foregroundStyle(.white)
-//                .frame(width: 5, height: UIScreen.main.bounds.height / 1.8)
-//            Circle()
-//                .foregroundStyle(.white)
-//                .frame(width: 50)
-//        }
-//        .offset(x: xOffset + dragOffset)
-//        .gesture(
-//            DragGesture()
-//                .onChanged { value in
-//                    let newOffset = xOffset + value.translation.width
-//                    dragOffset = min(max(newOffset, -UIScreen.main.bounds.width / 2 + 12.5), UIScreen.main.bounds.width / 2 - 12.5) - xOffset
-//                    
-//                }
-//                .onEnded { _ in
-//                    xOffset += dragOffset
-//                    dragOffset = 0
-//                }
-//        )
-//    }
-//}
 
 extension View {
     @inlinable

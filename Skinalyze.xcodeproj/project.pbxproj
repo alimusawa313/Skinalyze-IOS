@@ -23,6 +23,7 @@
 		036679E02CBD1B51009196C6 /* acneObj7480.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 036679DA2CBD1B51009196C6 /* acneObj7480.mlmodel */; };
 		036679E12CBD1B51009196C6 /* acneObj28100.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 036679DC2CBD1B51009196C6 /* acneObj28100.mlpackage */; };
 		036679E22CBD1B51009196C6 /* acneObj15000.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 036679DB2CBD1B51009196C6 /* acneObj15000.mlmodel */; };
+		03DC77332CC108B200EFD1BC /* AboutToScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DC77322CC108B200EFD1BC /* AboutToScanView.swift */; };
 		03FF23632CBDAD07008AB1B1 /* ContentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FF23622CBDAD07008AB1B1 /* ContentCell.swift */; };
 		03FF23652CBDB201008AB1B1 /* AnalyzedResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FF23642CBDB201008AB1B1 /* AnalyzedResultView.swift */; };
 		03FF23672CBDB64C008AB1B1 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FF23662CBDB64C008AB1B1 /* Color.swift */; };
@@ -64,6 +65,7 @@
 		036679DB2CBD1B51009196C6 /* acneObj15000.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = acneObj15000.mlmodel; sourceTree = "<group>"; };
 		036679DC2CBD1B51009196C6 /* acneObj28100.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = acneObj28100.mlpackage; sourceTree = "<group>"; };
 		036679DD2CBD1B51009196C6 /* acneObj28200.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = acneObj28200.mlmodel; sourceTree = "<group>"; };
+		03DC77322CC108B200EFD1BC /* AboutToScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutToScanView.swift; sourceTree = "<group>"; };
 		03FF23622CBDAD07008AB1B1 /* ContentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentCell.swift; sourceTree = "<group>"; };
 		03FF23642CBDB201008AB1B1 /* AnalyzedResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyzedResultView.swift; sourceTree = "<group>"; };
 		03FF23662CBDB64C008AB1B1 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
@@ -116,6 +118,7 @@
 				036679C82CBD1B3D009196C6 /* CapturedImagesView.swift */,
 				036679C92CBD1B3D009196C6 /* CardStackView.swift */,
 				03FF23B92CBF8A10008AB1B1 /* CameraView.swift */,
+				03DC77322CC108B200EFD1BC /* AboutToScanView.swift */,
 			);
 			path = Camera;
 			sourceTree = "<group>";
@@ -386,6 +389,7 @@
 				036679BE2CBD1ADA009196C6 /* ImageBase64Converter.swift in Sources */,
 				03FF23652CBDB201008AB1B1 /* AnalyzedResultView.swift in Sources */,
 				03FF23632CBDAD07008AB1B1 /* ContentCell.swift in Sources */,
+				03DC77332CC108B200EFD1BC /* AboutToScanView.swift in Sources */,
 				2E4FB5802CBA95D20075AB95 /* ProductViewModel.swift in Sources */,
 				2E8A76622CB61C510052E9FD /* OnboardingChatView.swift in Sources */,
 				03FF23B62CBE6EB2008AB1B1 /* CompareView.swift in Sources */,

@@ -12,7 +12,7 @@ final class Router: ObservableObject {
     public enum Destination: Hashable {
 //        case livingroom
 //        case bedroom(owner: String)
-        case log
+        case log(isTabBarHidden: Bool)
         case camScanView
         case prodUsed(isFromStartup: Bool)
         case capturedImagesView(images: [UIImage])

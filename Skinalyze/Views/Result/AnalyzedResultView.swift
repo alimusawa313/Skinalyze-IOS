@@ -66,22 +66,24 @@ struct AnalyzedResultView: View {
                         ForEach(viewmodel.analyzedImages.indices, id: \.self) { index in
                             Image(uiImage: viewmodel.analyzedImages[index])
                                 .resizable()
-                                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 1.8)
+                                .scaledToFit()
+                                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 2)
                                 .tag(index)
                         }
                     }
-                    .frame(height: UIScreen.main.bounds.height / 1.8)
+                    .frame(height: UIScreen.main.bounds.height / 2)
                     .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                 } else if !images.isEmpty {
                     TabView(selection: $currentIndex) {
                         ForEach(images.indices, id: \.self) { index in
                             Image(uiImage: images[index])
                                 .resizable()
-                                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 1.8)
+                                .scaledToFit()
+                                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 2)
                                 .tag(index)
                         }
                     }
-                    .frame(height: UIScreen.main.bounds.height / 1.8)
+                    .frame(height: UIScreen.main.bounds.height / 2)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                     .onAppear {
@@ -91,7 +93,7 @@ struct AnalyzedResultView: View {
                     ZStack{
                         
                         RoundedRectangle(cornerRadius: 10)
-                            .frame(width: .infinity, height: UIScreen.main.bounds.height / 1.8)
+                            .frame(width: .infinity, height: UIScreen.main.bounds.height / 2)
                         
                         Text("No images available").foregroundStyle(.white)
                     }
@@ -149,8 +151,10 @@ struct AnalyzedResultView: View {
                 }
                 .padding(.horizontal, -15)
                 
-                AcneRowItem(title: "Skin Concern", acne: acneTypesWithCounts)
-
+                if viewmodel.geaScale > 0{
+                    AcneRowItem(title: "Skin Concern", acne: acneTypesWithCounts)
+                }
+                
                 
                 Picker("", selection: $selectedView) {
                     Text("Ingridients").tag(0)
