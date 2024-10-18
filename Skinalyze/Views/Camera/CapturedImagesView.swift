@@ -83,6 +83,6 @@ struct CapturedImagesView: View {
     }
 }
 
-#Preview {
-    CapturedImagesView(images: [.imageTest])
-}
+//#Preview {
+//    CapturedImagesView(images: [.imageTest])
+//}
