@@ -182,6 +182,7 @@ struct CameraScanView: View {
         .onChange(of: showCapturedImagesView) {
             if showCapturedImagesView == true{
                 self.router.navigate(to: .capturedImagesView(images: capturedImages))
+                
             }
         }
         .onDisappear {

@@ -34,25 +34,48 @@ struct CompareView: View {
                     VStack{
                         Text("\(selectedLogs[1].currentDate, format: Date.FormatStyle(date: .abbreviated, time: .shortened))")
                         
-                        VStack(spacing: 5) {
+                        HStack {
+                            Text("Severity Level")
+                                .font(.footnote)
+                                .bold()
+                                .foregroundColor(Color(hex: "3F3F44"))
+                            Spacer()
+                            let severityLevel = AcneSeverityLevel(rawValue: selectedLogs[1].geaScale)!
+                            Text("\(severityLevel)")
+                                .font(.footnote)
+                                .foregroundStyle(.white)
+                                .padding(.vertical,2)
+                                .padding(.horizontal,4)
+                                .background(Capsule().foregroundStyle(Color(hex: "74574F")))
+                        }
+                        .padding()
+                        .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color(hex: "EEEBE7").opacity(0.6)))
+                        
+                        VStack(alignment:.leading, spacing: 5) {
+                                Text("Skin Concern")
+                                    .font(.footnote)
+                                    .bold()
+                                    .foregroundColor(Color(hex: "3F3F44"))
                             ForEach(selectedLogs[1].acneCounts.keys.sorted().filter { selectedLogs[1].acneCounts[$0] ?? 0 > 0 }, id: \.self) { key in
                                 HStack{
-                                    Spacer()
                                     Text("\(key.capitalized)")
                                         .font(.footnote)
-                                        .foregroundColor(.white)
+                                        .foregroundColor(Color(hex: "3F3F44"))
                                     
                                     Spacer()
                                     
-                                    Text("\(selectedLogs[0].acneCounts[key] ?? 0)")
+                                    Text("\(selectedLogs[1].acneCounts[key] ?? 0)")
                                         .frame(width: 40, height: 35)
-                                        .background(Color(hex: "D6C7C2"))
+                                        .foregroundStyle(.white)
+                                        .background(Circle().foregroundStyle(Color(hex: "74574F")))
+                                    
                                 }
-                                .background(Color(hex: "795B53"))
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                
+                                Divider()
                             }
                         }
-                        .padding(.horizontal, 16)
+                        .padding()
+                        .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color(hex: "EEEBE7").opacity(0.6)))
                         
                         Spacer()
                         
@@ -64,26 +87,51 @@ struct CompareView: View {
                     VStack{
                         Text("\(selectedLogs[0].currentDate, format: Date.FormatStyle(date: .abbreviated, time: .shortened))")
                         
-                        VStack(spacing: 5) {
+                        HStack {
+                            Text("Severity Level")
+                                .font(.footnote)
+                                .bold()
+                                .foregroundColor(Color(hex: "3F3F44"))
+                            Spacer()
+                            let severityLevel = AcneSeverityLevel(rawValue: selectedLogs[0].geaScale)!
+                            Text("\(severityLevel)")
+                                .font(.footnote)
+                                .foregroundStyle(.white)
+                                .padding(.vertical,2)
+                                .padding(.horizontal,4)
+                                .background(Capsule().foregroundStyle(Color(hex: "74574F")))
+                        }
+                        .padding()
+                        .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color(hex: "EEEBE7").opacity(0.6)))
+                        
+                        VStack(alignment:.leading, spacing: 5) {
+                                Text("Skin Concern")
+                                    .font(.footnote)
+                                    .bold()
+                                    .foregroundColor(Color(hex: "3F3F44"))
                             ForEach(selectedLogs[0].acneCounts.keys.sorted().filter { selectedLogs[0].acneCounts[$0] ?? 0 > 0 }, id: \.self) { key in
                                 HStack{
-                                    Spacer()
                                     Text("\(key.capitalized)")
                                         .font(.footnote)
-                                        .foregroundColor(.white)
+                                        .foregroundColor(Color(hex: "3F3F44"))
                                     
                                     Spacer()
                                     
                                     Text("\(selectedLogs[0].acneCounts[key] ?? 0)")
                                         .frame(width: 40, height: 35)
-                                        .background(Color(hex: "D6C7C2"))
+                                        .foregroundStyle(.white)
+                                        .background(Circle().foregroundStyle(Color(hex: "74574F")))
+                                    
                                 }
-                                .background(Color(hex: "795B53"))
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                
+                                Divider()
                             }
-                            Spacer()
                         }
-                        .padding(.horizontal, 16)
+                        .padding()
+                        .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color(hex: "EEEBE7").opacity(0.6)))
+                        
+                        Spacer()
+                        
                     }
                     .frame(maxWidth: .infinity)
                 }
@@ -146,7 +194,7 @@ struct CompareView: View {
 
 
 #Preview {
-    CompareView(selectedLogs: [Result(images: ["imageTest", "imageTest", "imageTest"], selectedCardIndex: 0, analyzedImages: ["imageTest", "imageTest", "imageTest"], isLoading: false, acneCounts: ["Popules": 5, "Pustul": 10], geaScale: 2, currentDate: Date.now), Result(images: ["imageTest", "imageTest", "imageTest"], selectedCardIndex: 0, analyzedImages: ["imageTest", "imageTest", "imageTest"], isLoading: false, acneCounts: [:], geaScale: 2, currentDate: Date.now)])
+    CompareView(selectedLogs: [Result(images: ["imageTest", "imageTest", "imageTest"], selectedCardIndex: 0, analyzedImages: ["imageTest", "imageTest", "imageTest"], isLoading: false, acneCounts: ["Popules": 89, "Pustul": 10], geaScale: 2, currentDate: Date.now), Result(images: ["imageTest", "imageTest", "imageTest"], selectedCardIndex: 0, analyzedImages: ["imageTest", "imageTest", "imageTest"], isLoading: false, acneCounts: ["Popules": 5, "Pustul": 10], geaScale: 2, currentDate: Date.now)])
 }
 
 

@@ -19,6 +19,8 @@ final class Router: ObservableObject {
         case anlyzResultView(images: [UIImage])
         case compareImagesView(selectedLogs: [Result])
         case detailView(selectedLogs: Result)
+        case chatView(isFromStartup: Bool)
+        case productUsedView(isFromStartup: Bool)
     }
     
     @Published var navPath = NavigationPath()

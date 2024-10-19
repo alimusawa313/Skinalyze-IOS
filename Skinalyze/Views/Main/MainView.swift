@@ -17,37 +17,48 @@ struct MainView: View {
     @EnvironmentObject var router: Router
     
     
+    @AppStorage("userName") private var userName: String = ""
+    @AppStorage("userAge") private var userAge: Int = 0 // Change to Int
+    @AppStorage("userGender") private var userGender: String = ""
+    @AppStorage("skinType") private var skinType: String = ""
+    @AppStorage("skinSensitivity") private var skinSensitivity: String = ""
+    @AppStorage("useSkincare") private var useSkincare: String = ""
+    
     var body: some View {
         
-        TabView(selection: $selection) {
-            LogView(isTabBarHidden: $isTabBarHidden)
-                .navigationBarTitle("Face Log")
-                .navigationBarTitleDisplayMode(.inline)
-                .tabItem {
-                    Image(systemName: "list.bullet.clipboard")
-                    Text("Fac Log")
+        if (userName.isEmpty && userAge == 0 && userGender.isEmpty && skinType.isEmpty && skinSensitivity.isEmpty && useSkincare.isEmpty) {
+                SplashScreen()
+        } else{
+            TabView(selection: $selection) {
+                LogView(isTabBarHidden: $isTabBarHidden)
+                    .navigationBarTitle("Face Log")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .tabItem {
+                        Image(systemName: "list.bullet.clipboard")
+                        Text("Fac Log")
+                    }
+                    .tag(0)
+                    .toolbar(isTabBarHidden ? .hidden : .visible, for: .tabBar)
+                
+                AboutToScanView()
+                    .tabItem {
+                        Image(systemName: "camera.viewfinder")
+                        Text("Scan")
+                    }
+                    .tag(1)
+                
+                
+                
+                NavigationView {
+                    ProfileView()
+                        .navigationBarTitle("Profile")
                 }
-                .tag(0)
-                .toolbar(isTabBarHidden ? .hidden : .visible, for: .tabBar)
-            
-            AboutToScanView()
                 .tabItem {
-                    Image(systemName: "camera.viewfinder")
-                    Text("Scan")
+                    Image(systemName: "person")
+                    Text("Profile")
                 }
-                .tag(1)
-            
-            
-            
-            NavigationView {
-                ProfileView()
-                    .navigationBarTitle("Profile")
+                .tag(2)
             }
-            .tabItem {
-                Image(systemName: "person")
-                Text("Profile")
-            }
-            .tag(2)
         }
     }
 }

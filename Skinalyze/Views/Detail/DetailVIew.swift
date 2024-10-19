@@ -29,6 +29,8 @@ struct DetailVIew: View {
 //        }
 //    }
     
+    @AppStorage("skinType") private var skinType: String = ""
+    @AppStorage("skinSensitivity") private var skinSensitivity: String = ""
     
     var body: some View {
         

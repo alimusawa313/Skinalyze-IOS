@@ -9,6 +9,9 @@ import SwiftUI
 
 struct ProductUsedView: View {
     var isFromStartup: Bool
+    
+    @EnvironmentObject var router: Router
+    
     @StateObject var viewModel = SkincareProductViewModel()
     @State private var showCleanserSheet = false
     @State private var showTonerSheet = false
@@ -272,6 +275,7 @@ struct ProductUsedView: View {
                         // Aksi yang ingin kamu lakukan saat tombol ditekan
                         // isPresented = false
                         moveToCamScanner.toggle()
+                        router.navigate(to: .camScanView)
                     }
                 }
             }
@@ -283,10 +287,10 @@ struct ProductUsedView: View {
         }
         .navigationTitle("Skinalyze")
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden()
-        .navigationDestination(isPresented: $moveToCamScanner){
-            CameraScanView()
-        }
+        .navigationBarBackButtonHidden(isFromStartup ? true : false)
+//        .navigationDestination(isPresented: $moveToCamScanner){
+//            MainView()
+//        }
     }
 }
 

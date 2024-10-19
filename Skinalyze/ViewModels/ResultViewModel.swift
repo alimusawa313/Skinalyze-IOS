@@ -11,6 +11,7 @@ import UIKit
 import Vision
 import CoreML
 import SwiftData
+import SwiftUI
 
 
 class ResultViewModel: ObservableObject{
@@ -24,13 +25,15 @@ class ResultViewModel: ObservableObject{
     //    private let logUseCase: LogUseCase = DefaultLogUseCase()
     
     var currentDate: String = ""
-    var skinType: String = ""
+    //    var skinType: String = ""
     let formatter = DateFormatter()
     var image: UIImage?
     private var cancellables = Set<AnyCancellable>()
     
     
     init(){
+        
+        updateIngredients()
         //        skinUseCase.fetchLatestSkin { skin in
         //            if let skin = skin{
         //                self.skinType = skin.skinType
@@ -77,45 +80,31 @@ class ResultViewModel: ObservableObject{
     //        return Int(numberString) ?? 0
     //    }
     
-    //    var severityLevel: SkinSeverity{
-    //        switch acneLevelScale {
-    //        case 0:
-    //            return SkinSeverity(name: "Healthy", description: "The skin is clear with no signs of acne or other skin issues. It is healthy and free from inflammation or irritation.")
-    //        case 1:
-    //            return SkinSeverity(name: "Mild", description: "A few are present. Acne is infrequent and generally does not cause significant discomfort or affect daily activities.")
-    //        case 2:
-    //            return SkinSeverity(name: "Moderate", description: "Several papules or pustules are present. Acne is more frequent and often involves some degree of inflammation.")
-    //        case 3:
-    //            return SkinSeverity(name: "Severe", description: "Characterized by numerous papules, pustules, or nodules (large, inflamed bumps). Severe acne can lead to scarring and significantly affect daily life.")
-    //        default:
-    //            return SkinSeverity(name: "", description: "")
-    //        }
-    //    }
     
-    //    var recommendedIngredients:[Ingredient]{
-    //        if(skinType == "Oily" && classifier.acnePrediction == "Acne" && classifier.comedoPrediction == "Clear"){
-    //            return acneOilyRec
-    //        }else if(skinType == "Dry" && classifier.acnePrediction == "Acne" && classifier.comedoPrediction == "Clear"){
-    //            return acneDryRec
-    //        }else if(skinType == "Oily" && classifier.acnePrediction == "Clear" && classifier.comedoPrediction == "Comedo"){
-    //            return blackheadOilyRec
-    //        }else if(skinType == "Dry" && classifier.acnePrediction == "Clear" && classifier.comedoPrediction == "Comedo"){
-    //            return blackheadDryRec
-    //        }else if(skinType == "Oily" && classifier.acnePrediction == "Acne" && classifier.comedoPrediction == "Comedo"){
-    //            return acneBlackheadOilyRec
-    //        }else if(skinType == "Dry" && classifier.acnePrediction == "Acne" && classifier.comedoPrediction == "Comedo"){
-    //            return acneBlackheadDryRec
-    //        }else {
-    //            return []
+    //        var recommendedIngredients:[Ingredient]{
+    //            if(skinType == "Oily"){
+    //                return acneOilyRec
+    //            }else if(skinType == "Dry"){
+    //                return acneDryRec
+    //            }else if(skinType == "Oily"){
+    //                return blackheadOilyRec
+    //            }else if(skinType == "Dry"){
+    //                return blackheadDryRec
+    //            }else if(skinType == "Oily"){
+    //                return acneBlackheadOilyRec
+    //            }else if(skinType == "Dry"){
+    //                return acneBlackheadDryRec
+    //            }else {
+    //                return []
+    //            }
     //        }
-    //    }
-    //    var avoidedIngredients:[Ingredient]{
-    //        if(skinType == "Oily"){
-    //            return avoidOily
-    //        }else{
-    //            return avoidDry
+    //        var avoidedIngredients:[Ingredient]{
+    //            if(skinType == "Oily"){
+    //                return avoidOily
+    //            }else{
+    //                return avoidDry
+    //            }
     //        }
-    //    }
     
     //    var facialCareRecommendation: [Habit]{
     //        if(skinType == "Oily"){
@@ -135,18 +124,18 @@ class ResultViewModel: ObservableObject{
         Acne(name: "Dark Spots", description: "Your scan detected the presence of dark spots. Dark spots, or hyperpigmentation, are caused by excess melanin production. They can appear due to sun exposure or aging, but with the right care, they can be lightened over time.", countKey: "dark spot")
     ]
     
-    @Published var ingredients: [Ingredient] = [
-        Ingredient(title: "Benzoyl Peroxide", description: "A beta hydroxy acid (BHA) that exfoliates the skin, uncloags pores, and reduces inflammation. It's particularly effective at treating and preventing papules and pustules."),
-        Ingredient(title: "Salicylid Acid", description: "A beta hydroxy acid (BHA) that exfoliates the skin, uncloags pores, and reduces inflammation. It's particularly effective at treating and preventing papules and pustules."),
-        Ingredient(title: "Retinoid", description: "A beta hydroxy acid (BHA) that exfoliates the skin, uncloags pores, and reduces inflammation. It's particularly effective at treating and preventing papules and pustules."),
-        Ingredient(title: "Hyaluronic Acid", description: "A beta hydroxy acid (BHA) that exfoliates the skin, uncloags pores, and reduces inflammation. It's particularly effective at treating and preventing papules and pustules.")
-    ]
-    
-    @Published var ingredientsNotRec: [Ingredient] = [
-        Ingredient(title: "Alcohol", description: "A beta hydroxy acid (BHA) that exfoliates the skin, uncloags pores, and reduces inflammation. It's particularly effective at treating and preventing papules and pustules."),
-        Ingredient(title: "Paraben", description: "A beta hydroxy acid (BHA) that exfoliates the skin, uncloags pores, and reduces inflammation. It's particularly effective at treating and preventing papules and pustules."),
-        Ingredient(title: "Retinoid", description: "A beta hydroxy acid (BHA) that exfoliates the skin, uncloags pores, and reduces inflammation. It's particularly effective at treating and preventing papules and pustules."),
-    ]
+    //    @Published var ingredients: [Ingredient] = [
+    //        Ingredient(title: "Benzoyl Peroxide", description: "A beta hydroxy acid (BHA) that exfoliates the skin, uncloags pores, and reduces inflammation. It's particularly effective at treating and preventing papules and pustules."),
+    //        Ingredient(title: "Salicylid Acid", description: "A beta hydroxy acid (BHA) that exfoliates the skin, uncloags pores, and reduces inflammation. It's particularly effective at treating and preventing papules and pustules."),
+    //        Ingredient(title: "Retinoid", description: "A beta hydroxy acid (BHA) that exfoliates the skin, uncloags pores, and reduces inflammation. It's particularly effective at treating and preventing papules and pustules."),
+    //        Ingredient(title: "Hyaluronic Acid", description: "A beta hydroxy acid (BHA) that exfoliates the skin, uncloags pores, and reduces inflammation. It's particularly effective at treating and preventing papules and pustules.")
+    //    ]
+    //
+    //    @Published var ingredientsNotRec: [Ingredient] = [
+    //        Ingredient(title: "Alcohol", description: "A beta hydroxy acid (BHA) that exfoliates the skin, uncloags pores, and reduces inflammation. It's particularly effective at treating and preventing papules and pustules."),
+    //        Ingredient(title: "Paraben", description: "A beta hydroxy acid (BHA) that exfoliates the skin, uncloags pores, and reduces inflammation. It's particularly effective at treating and preventing papules and pustules."),
+    //        Ingredient(title: "Retinoid", description: "A beta hydroxy acid (BHA) that exfoliates the skin, uncloags pores, and reduces inflammation. It's particularly effective at treating and preventing papules and pustules."),
+    //    ]
     
     @Published var expandedAcnes: [String] = []
     
@@ -170,14 +159,76 @@ class ResultViewModel: ObservableObject{
         }
     }
     
-    //    func saveLog(){
-    //        guard let imageBase64 = image?.base64 else{return}
-    //
-    //        let log = Log(imageURL: imageBase64, acnePrediction: classifier.acnePrediction, acneLevelPrediction: classifier.acneLevelPrediction, comedoPrediction: classifier.comedoPrediction, severityLevel: severityLevel.name, severityLevelDescription: severityLevel.description)
-    //        logUseCase.save(log: log)
-    //    }
+    @AppStorage("skinType") private var skinType: String = ""
+    @AppStorage("skinSensitivity") private var skinSensitivity: String = ""
     
+    @Published var ingredients: [Ingredient] = []
+    @Published var ingredientsNotRec: [Ingredient] = []
     
+    func updateIngredients() {
+        ingredients = getRecommendedIngredients()
+        ingredientsNotRec = getIngredientsToAvoid()
+    }
+    
+    private func getRecommendedIngredients() -> [Ingredient] {
+        switch skinType.lowercased() {
+        case "oily":
+            return [
+                Ingredient(title: "Salicylic Acid", description: "A beta-hydroxy acid that helps unclog pores and reduce excess oil."),
+                Ingredient(title: "Niacinamide", description: "Helps regulate oil production and minimize pores."),
+                Ingredient(title: "Tea Tree Oil", description: "Has antibacterial properties and can help control oil production."),
+                Ingredient(title: "Hyaluronic Acid", description: "Provides lightweight hydration without adding oil.")
+            ]
+        case "dry":
+            return [
+                Ingredient(title: "Hyaluronic Acid", description: "Attracts and retains moisture in the skin."),
+                Ingredient(title: "Glycerin", description: "A humectant that helps skin retain moisture."),
+                Ingredient(title: "Ceramides", description: "Help strengthen the skin barrier and lock in moisture."),
+                Ingredient(title: "Squalane", description: "A lightweight oil that moisturizes without clogging pores.")
+            ]
+        case "combination":
+            return [
+                Ingredient(title: "Niacinamide", description: "Balances oil production and improves skin texture."),
+                Ingredient(title: "Hyaluronic Acid", description: "Provides hydration without being too heavy."),
+                Ingredient(title: "Alpha Hydroxy Acids (AHAs)", description: "Gently exfoliate and balance both dry and oily areas."),
+                Ingredient(title: "Green Tea Extract", description: "Antioxidant that soothes and balances the skin.")
+            ]
+        default: // For normal skin or unspecified
+            return [
+                Ingredient(title: "Vitamin C", description: "Antioxidant that brightens skin and protects from environmental damage."),
+                Ingredient(title: "Peptides", description: "Help stimulate collagen production and improve skin firmness."),
+                Ingredient(title: "Hyaluronic Acid", description: "Hydrates and plumps the skin."),
+                Ingredient(title: "Retinol", description: "Promotes cell turnover and helps with overall skin health.")
+            ]
+        }
+    }
+    
+    private func getIngredientsToAvoid() -> [Ingredient] {
+        var baseIngredientsToAvoid = [
+            Ingredient(title: "Artificial Fragrances", description: "Can irritate the skin and cause allergic reactions."),
+            Ingredient(title: "Parabens", description: "Preservatives that may disrupt hormones and irritate skin.")
+        ]
+        
+        switch skinType.lowercased() {
+        case "oily":
+            baseIngredientsToAvoid += [
+                Ingredient(title: "Coconut Oil", description: "Can clog pores and exacerbate oily skin."),
+                Ingredient(title: "Alcohol", description: "Can strip the skin of natural oils, leading to more oil production.")
+            ]
+        case "dry":
+            baseIngredientsToAvoid += [
+                Ingredient(title: "Alcohol", description: "Can further dry out and irritate dry skin."),
+                Ingredient(title: "Sodium Lauryl Sulfate", description: "A harsh cleanser that can strip skin of natural oils.") ]
+        case "combination":
+            baseIngredientsToAvoid += [
+                Ingredient(title: "Mineral Oil", description: "Can clog pores and cause irritation in oily areas."),
+                Ingredient(title: "Sodium Lauryl Sulfate", description: "A harsh cleanser that can strip skin of natural oils.")]
+        default: // For normal skin or unspecified
+            break
+        }
+        
+        return baseIngredientsToAvoid
+    }
     
     @Published var analyzedImages: [UIImage] = []
     @Published var isLoading = false
@@ -259,7 +310,7 @@ class ResultViewModel: ObservableObject{
             let confidence = result.labels.first?.confidence ?? 0.0
             
             // Select the color based on the label
-//            let color = labelColorMapping[label, default: UIColor.black]
+            //            let color = labelColorMapping[label, default: UIColor.black]
             let color = labelColorMapping[label, default: UIColor.black]
             
             // Set the stroke color for the bounding box
@@ -294,7 +345,7 @@ class ResultViewModel: ObservableObject{
             )
             
             // Draw the label text in the image
-//            labelText.draw(in: labelRect, withAttributes: attributes)
+            //            labelText.draw(in: labelRect, withAttributes: attributes)
         }
         
         // Get the new image with bounding boxes and labels
@@ -304,7 +355,7 @@ class ResultViewModel: ObservableObject{
         return newImage ?? image
     }
     
-
+    
     func resetAcneCounts() {
         acneCounts = [
             "blackheads": 0,

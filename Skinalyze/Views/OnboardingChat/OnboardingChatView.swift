@@ -44,6 +44,8 @@ struct ChatView: View {
     @State private var showLoading: Bool = false
     @State private var showOptions: Bool = true
     
+    @EnvironmentObject var router: Router
+    
 
     @AppStorage("userName") private var userName: String = ""
     @AppStorage("userAge") private var userAge: Int = 0 // Change to Int
@@ -62,28 +64,8 @@ struct ChatView: View {
                         Color(.white.opacity(0.0))
                             .frame(height: 10)
                         ForEach(messages) { message in
-                            HStack {
-                                if message.role == .system {
-                                    Image("Maskot")
-                                        .resizable()
-                                        .frame(width: 50, height: 40)
-                                    Text(message.text)
-                                        .padding(.horizontal)
-                                        .padding(.vertical, 12)
-                                        .background(Color.white)
-                                        .cornerRadius(20)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .shadow(color: Color.black.opacity(0.2), radius: 10, x: 0, y: 5)
-                                } else {
-                                    Text(message.text)
-                                        .padding(.horizontal)
-                                        .padding(.vertical, 12)
-                                        .background(.brownPrimary)
-                                        .cornerRadius(20)
-                                        .frame(maxWidth: .infinity, alignment: .trailing)
-                                }
-                            }
-                            .padding(.trailing)
+                            MessageRow(message: message)
+//                            .padding(.trailing)
                             .id(message.id) // Beri ID untuk scroll ke posisi ini
                         }
                         
@@ -142,7 +124,7 @@ struct ChatView: View {
                     .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
                 }
                 .padding()
-                .background(.brownPrimary)
+                .background(Color("brownPrimary"))
             } else if currentQuestionIndex == 1, showOptions {
                 HStack {
                     HStack {
@@ -166,7 +148,7 @@ struct ChatView: View {
                     .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
                 }
                 .padding()
-                .background(.brownPrimary)
+                .background(Color("brownPrimary"))
             } else if currentQuestionIndex == 2, showOptions { // Gender
                 VStack(spacing: 10) {
                     Button(action: {
@@ -194,7 +176,7 @@ struct ChatView: View {
                     }
                 }
                 .padding(20)
-                .background(.brownPrimary)
+                .background(Color("brownPrimary"))
 
             } else if currentQuestionIndex == 3, showOptions {
                 VStack(spacing: 10) {
@@ -234,7 +216,7 @@ struct ChatView: View {
                     }
                 }
                 .padding(20)
-                .background(.brownPrimary)
+                .background(Color("brownPrimary"))
 
             } else if currentQuestionIndex == 4, showOptions { // Skin Sensitivity
                 VStack(spacing: 10) {
@@ -274,10 +256,10 @@ struct ChatView: View {
                     }
                 }
                 .padding(20)
-                .background(.brownPrimary)
+                .background(Color("brownPrimary"))
             } else if currentQuestionIndex == 5, showOptions { // Use Skincare
                 VStack(spacing: 10) {
-                    NavigationLink(destination:ProductUsedView(isFromStartup: true)){
+//                    NavigationLink(destination:ProductUsedView(isFromStartup: true)){
                         Text("Yes")
                             .frame(maxWidth: .infinity)
                             .padding()
@@ -285,8 +267,11 @@ struct ChatView: View {
                             .cornerRadius(20)
                             .foregroundColor(.black)
                             .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
-                    }
-                    NavigationLink(destination:ProductUsedView(isFromStartup: true)){
+                            .onTapGesture {
+                                router.navigate(to: .productUsedView(isFromStartup: true))
+                            }
+//                    }
+//                    NavigationLink(destination:ProductUsedView(isFromStartup: true)){
                         Text("No")
                             .frame(maxWidth: .infinity)
                             .padding()
@@ -294,14 +279,19 @@ struct ChatView: View {
                             .cornerRadius(20)
                             .foregroundColor(.black)
                             .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
-                    }
+                            .onTapGesture {
+                                router.navigate(to: .productUsedView(isFromStartup: true))
+                                
+                            }
+//                    }
                 }
                 .padding(20)
-                .background(.brownPrimary)
+                .background(Color("brownPrimary"))
             }
         }
         .navigationTitle("Skinalyze")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
     }
     
     func handleUserInput(_ input: String) {
@@ -416,3 +406,33 @@ struct TypingIndicator: View {
 //#Preview{
 //    ChatView(isFromStartup: )
 //}
+
+
+struct MessageRow: View {
+    let message: ChatMessage
+    
+    var body: some View {
+        HStack {
+            if message.role == .system {
+                Image("Maskot")
+                    .resizable()
+                    .frame(width: 50, height: 40)
+                Text(message.text)
+                    .padding(.horizontal)
+                    .padding(.vertical, 12)
+                    .background(Color.white)
+                    .cornerRadius(20)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .shadow(color: Color.black.opacity(0.2), radius: 10, x: 0, y: 5)
+            } else {
+                Text(message.text)
+                    .padding(.horizontal)
+                    .padding(.vertical, 12)
+                    .background(Color("brownPrimary"))
+                    .cornerRadius(20)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+            }
+        }
+        .padding(.trailing)
+    }
+}

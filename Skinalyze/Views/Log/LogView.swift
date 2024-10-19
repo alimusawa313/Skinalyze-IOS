@@ -88,7 +88,10 @@ struct LogView: View {
                                     }
                                 }
                             }
-                            .onDelete(perform: deleteItems)
+//                            .onDelete(perform: deleteItems)
+                            .onDelete { offsets in
+                                        deleteItems(at: offsets, in: date)
+                                    }
                         }
 //                        .listStyle(.inset)
                         .listRowSpacing(0)
@@ -172,17 +175,29 @@ struct LogView: View {
         }
     }
     
-    private func deleteItems(offsets: IndexSet) {
+    private func deleteItems(at offsets: IndexSet, in section: Date) {
         withAnimation {
-//            for index in offsets {
-//                modelContext.delete(logs[index])
-//            }
-            
-            offsets.map { logs[$0] }.forEach { log in
-                        modelContext.delete(log)
-                    }
+            let logsInSection = groupLogsByDate(logs)[section]!.sorted { $0.currentDate > $1.currentDate }
+            for index in offsets {
+                let logToDelete = logsInSection[index]
+                if let indexInAllLogs = logs.firstIndex(where: { $0.id == logToDelete.id }) {
+                    modelContext.delete(logs[indexInAllLogs])
+                }
+            }
         }
     }
+    
+//    private func deleteItems(offsets: IndexSet) {
+//        withAnimation {
+////            for index in offsets {
+////                modelContext.delete(logs[index])
+////            }
+//            
+//            offsets.map { logs[$0] }.forEach { log in
+//                        modelContext.delete(log)
+//                    }
+//        }
+//    }
 }
 
 //#Preview {
