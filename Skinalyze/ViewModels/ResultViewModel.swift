@@ -34,85 +34,9 @@ class ResultViewModel: ObservableObject{
     init(){
         
         updateIngredients()
-        //        skinUseCase.fetchLatestSkin { skin in
-        //            if let skin = skin{
-        //                self.skinType = skin.skinType
-        //            }else{
-        //                self.skinType = "Oily"
-        //            }
-        //        }
-        //        formatter.dateFormat = "dd MMMM yyyy"
-        //        currentDate = formatter.string(from: Date.now)
-        //
-        //        // Subscribe to changes in the classifier
-        //        classifier.$acnePrediction
-        //            .sink { [weak self] newValue in
-        //                // Update isAcne dengan value langsung dari newValue (acnePrediction)
-        //                self?.isAcne = newValue
-        //                self?.objectWillChange.send()
-        //            }
-        //            .store(in: &cancellables)
-        //
-        //        classifier.$comedoPrediction
-        //            .sink { [weak self] newValue in
-        //                // Update isBlackHead dengan value langsung dari newValue (comedoPrediction)
-        //                self?.isBlackHead = newValue
-        //                self?.objectWillChange.send()
-        //            }
-        //            .store(in: &cancellables)
-        //
-        //        classifier.$acneLevelPrediction
-        //            .sink { [weak self] newValue in
-        //                self?.objectWillChange.send()
-        //            }
-        //            .store(in: &cancellables)
         
-        //        classifier.$comedoPrediction
-        //            .sink { [weak self] newValue in
-        //                self?.objectWillChange.send()
-        //            }
-        //            .store(in: &cancellables)
     }
     
-    //    var acneLevelScale: Int{
-    //        let components = classifier.acneLevelPrediction.components(separatedBy: CharacterSet.decimalDigits.inverted)
-    //        let numberString = components.joined()
-    //        return Int(numberString) ?? 0
-    //    }
-    
-    
-    //        var recommendedIngredients:[Ingredient]{
-    //            if(skinType == "Oily"){
-    //                return acneOilyRec
-    //            }else if(skinType == "Dry"){
-    //                return acneDryRec
-    //            }else if(skinType == "Oily"){
-    //                return blackheadOilyRec
-    //            }else if(skinType == "Dry"){
-    //                return blackheadDryRec
-    //            }else if(skinType == "Oily"){
-    //                return acneBlackheadOilyRec
-    //            }else if(skinType == "Dry"){
-    //                return acneBlackheadDryRec
-    //            }else {
-    //                return []
-    //            }
-    //        }
-    //        var avoidedIngredients:[Ingredient]{
-    //            if(skinType == "Oily"){
-    //                return avoidOily
-    //            }else{
-    //                return avoidDry
-    //            }
-    //        }
-    
-    //    var facialCareRecommendation: [Habit]{
-    //        if(skinType == "Oily"){
-    //            return oilyHabits
-    //        }else{
-    //            return dryHabits
-    //        }
-    //    }
     
     
     @Published var acneTypes: [Acne] = [
@@ -124,18 +48,6 @@ class ResultViewModel: ObservableObject{
         Acne(name: "Dark Spots", description: "Your scan detected the presence of dark spots. Dark spots, or hyperpigmentation, are caused by excess melanin production. They can appear due to sun exposure or aging, but with the right care, they can be lightened over time.", countKey: "dark spot")
     ]
     
-    //    @Published var ingredients: [Ingredient] = [
-    //        Ingredient(title: "Benzoyl Peroxide", description: "A beta hydroxy acid (BHA) that exfoliates the skin, uncloags pores, and reduces inflammation. It's particularly effective at treating and preventing papules and pustules."),
-    //        Ingredient(title: "Salicylid Acid", description: "A beta hydroxy acid (BHA) that exfoliates the skin, uncloags pores, and reduces inflammation. It's particularly effective at treating and preventing papules and pustules."),
-    //        Ingredient(title: "Retinoid", description: "A beta hydroxy acid (BHA) that exfoliates the skin, uncloags pores, and reduces inflammation. It's particularly effective at treating and preventing papules and pustules."),
-    //        Ingredient(title: "Hyaluronic Acid", description: "A beta hydroxy acid (BHA) that exfoliates the skin, uncloags pores, and reduces inflammation. It's particularly effective at treating and preventing papules and pustules.")
-    //    ]
-    //
-    //    @Published var ingredientsNotRec: [Ingredient] = [
-    //        Ingredient(title: "Alcohol", description: "A beta hydroxy acid (BHA) that exfoliates the skin, uncloags pores, and reduces inflammation. It's particularly effective at treating and preventing papules and pustules."),
-    //        Ingredient(title: "Paraben", description: "A beta hydroxy acid (BHA) that exfoliates the skin, uncloags pores, and reduces inflammation. It's particularly effective at treating and preventing papules and pustules."),
-    //        Ingredient(title: "Retinoid", description: "A beta hydroxy acid (BHA) that exfoliates the skin, uncloags pores, and reduces inflammation. It's particularly effective at treating and preventing papules and pustules."),
-    //    ]
     
     @Published var expandedAcnes: [String] = []
     

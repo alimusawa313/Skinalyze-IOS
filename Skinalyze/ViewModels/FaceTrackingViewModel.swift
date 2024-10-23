@@ -188,36 +188,7 @@ class FaceTrackingViewModel: NSObject, ObservableObject {
 }
 
 
-//extension FaceTrackingViewModel: AVCaptureVideoDataOutputSampleBufferDelegate {
-//    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-//        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
-//            return
-//        }
-//        
-//        // Menangani pengenalan wajah
-//        let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: .leftMirrored, options: [:])
-//        
-//        do {
-//            try imageRequestHandler.perform([faceDetectionRequest])
-//        } catch {
-//            print("Failed to perform face detection: \(error)")
-//        }
-//        
-//        // Menghitung luminance rata-rata untuk menentukan kondisi pencahayaan
-//        let averageLuminance = calculateAverageLuminance(from: pixelBuffer)
-//        
-//        DispatchQueue.main.async {
-//            if averageLuminance > 100 {
-//                self.lightingCondition = "normal"
-//            } else {
-//                self.lightingCondition = "dark"
-//            }
-//        }
-//        
-//        // Menyimpan sample buffer terakhir untuk diambil gambarnya nanti
-//        lastSampleBuffer = sampleBuffer
-//    }
-//}
+
 
 extension FaceTrackingViewModel: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {

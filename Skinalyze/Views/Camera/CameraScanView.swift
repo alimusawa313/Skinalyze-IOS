@@ -33,21 +33,6 @@ struct CameraScanView: View {
     @EnvironmentObject var router: Router
     
     private func cleanupResources() {
-        // Stop all timers
-//        timer?.invalidate()
-//        timer = nil
-//        
-//        // Stop speech
-//        synthesizer.stopSpeaking(at: .immediate)
-//        
-//        // Stop camera session
-//        viewModel.stopSession()
-//        
-//        capturedImages = []
-//        currentCaptureStep = 0
-//        isCountdownActive = false
-//        isCameraLoaded = false
-        
         DispatchQueue.main.async {
                 timer?.invalidate()
                 timer = nil
@@ -66,11 +51,6 @@ struct CameraScanView: View {
             if isCameraLoaded {
                 CameraPreviewView(session: viewModel.session)
                     .edgesIgnoringSafeArea(.all)
-                //                    .onTapGesture {
-                //                        router.navigateToRoot()
-                //                    }
-                //
-                
                 
                 VStack {
                     GeometryReader { geometry in
@@ -237,12 +217,6 @@ struct CameraScanView: View {
             }
         }
         .onAppear {
-//            showCapturedImagesView = false
-//            isViewActive = true
-//            viewModel.startSession()
-//            startCaptureProcess()
-//            self.showLoadingSheet = false
-//            self.isCameraLoaded = true
             
             showCapturedImagesView = false
                 isViewActive = true
@@ -256,12 +230,7 @@ struct CameraScanView: View {
                 }
         }
         .onDisappear {
-            //            viewModel.stopSession()
-            //            timer?.invalidate()
-            //            capturedImages = []
-            //            currentCaptureStep = 0
-//            
-//            isViewActive = false
+            
             cleanupResources()
         }
         .task {

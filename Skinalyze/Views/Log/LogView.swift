@@ -128,6 +128,9 @@ struct LogView: View {
                             Spacer()
                             Button {
                                 router.navigate(to: .compareImagesView(selectedLogs: selectedLogs))
+                                isComparing.toggle()
+                                isTabBarHidden = isComparing
+                                selectedLogs = []
                             } label: {
                                 HStack {
                                     Spacer()
@@ -147,9 +150,6 @@ struct LogView: View {
             }
         }
         
-        //            .onAppear {
-        //                printLogs()
-        //            }
         
         
     }
@@ -187,17 +187,6 @@ struct LogView: View {
         }
     }
     
-//    private func deleteItems(offsets: IndexSet) {
-//        withAnimation {
-////            for index in offsets {
-////                modelContext.delete(logs[index])
-////            }
-//            
-//            offsets.map { logs[$0] }.forEach { log in
-//                        modelContext.delete(log)
-//                    }
-//        }
-//    }
 }
 
 //#Preview {

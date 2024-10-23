@@ -12,6 +12,7 @@ struct CompareView: View {
     @State private var xOffset: CGFloat = 0
     var selectedLogs: [Result]
     @State private var selectedSide = 0
+    @EnvironmentObject var router: Router
     
     var body: some View {
         ScrollView{
@@ -81,7 +82,7 @@ struct CompareView: View {
                         
                     }.frame(maxWidth: .infinity)
                     
-                    Divider()
+//                    Divider()
                     
                     
                     VStack{
@@ -141,6 +142,13 @@ struct CompareView: View {
             .padding()
         }
         .navigationTitle("Comparison Result")
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            Button("Done") {
+                router.navigateBack()
+            }
+        }
     }
     
     private func displayImages(for side: Int) -> some View {

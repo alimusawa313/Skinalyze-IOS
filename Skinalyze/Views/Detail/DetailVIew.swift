@@ -21,13 +21,6 @@ struct DetailVIew: View {
     
     @State private var selectedView = 0
     
-//    private var acneTypesWithCounts: [Acne] {
-//        viewmodel.acneTypes.map { acne in
-//            var updatedAcne = acne
-//            updatedAcne.count = viewmodel.acneCounts[acne.countKey.lowercased(), default: 0]
-//            return updatedAcne
-//        }
-//    }
     
     @AppStorage("skinType") private var skinType: String = ""
     @AppStorage("skinSensitivity") private var skinSensitivity: String = ""
