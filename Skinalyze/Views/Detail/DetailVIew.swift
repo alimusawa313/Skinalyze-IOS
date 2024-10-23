@@ -151,6 +151,7 @@ struct DetailVIew: View {
             .padding()
         }
         .navigationTitle("Scan Result")
+        .navigationBarTitleDisplayMode(.inline)
         
     }
     

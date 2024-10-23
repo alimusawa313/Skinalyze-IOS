@@ -15,6 +15,8 @@ struct CapturedImagesView: View {
     @EnvironmentObject var router: Router
     
     @State private var currentIndex = 0
+    
+    
 
     var body: some View {
         ZStack {
@@ -70,14 +72,6 @@ struct CapturedImagesView: View {
                 
                 Spacer()
             }
-//            
-//            VStack {
-//                Spacer()
-//                .padding(.vertical, 12)
-//                .padding(.bottom)
-//                .background(.white)
-//                .clipShape(RoundedRectangle(cornerRadius: 10))
-//            }
             
         }
     }

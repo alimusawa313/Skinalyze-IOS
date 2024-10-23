@@ -45,6 +45,13 @@ class FaceTrackingViewModel: NSObject, ObservableObject {
                 }
     }
     
+    func resetSession() {
+            stopSession()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                self.startSession()
+            }
+        }
+    
     deinit {
             stopSession()
         }

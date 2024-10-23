@@ -179,6 +179,7 @@ struct AnalyzedResultView: View {
             .padding()
         }
         .navigationTitle("Scan Result")
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("Done") {

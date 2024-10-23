@@ -34,20 +34,31 @@ struct CameraScanView: View {
     
     private func cleanupResources() {
         // Stop all timers
-        timer?.invalidate()
-        timer = nil
+//        timer?.invalidate()
+//        timer = nil
+//        
+//        // Stop speech
+//        synthesizer.stopSpeaking(at: .immediate)
+//        
+//        // Stop camera session
+//        viewModel.stopSession()
+//        
+//        capturedImages = []
+//        currentCaptureStep = 0
+//        isCountdownActive = false
+//        isCameraLoaded = false
         
-        // Stop speech
-        synthesizer.stopSpeaking(at: .immediate)
-        
-        // Stop camera session
-        viewModel.stopSession()
-        
-        // Reset state
-        capturedImages = []
-        currentCaptureStep = 0
-        isCountdownActive = false
-        isCameraLoaded = false
+        DispatchQueue.main.async {
+                timer?.invalidate()
+                timer = nil
+                synthesizer.stopSpeaking(at: .immediate)
+                viewModel.stopSession()
+                capturedImages = []
+                currentCaptureStep = 0
+                isViewActive = false
+                isCountdownActive = false
+                isCameraLoaded = false
+            }
     }
     
     var body: some View {
@@ -117,7 +128,7 @@ struct CameraScanView: View {
                                 .font(.system(size: 12))
                                 .foregroundColor(.white)
                                 .padding(10)
-                                .background(color)
+                                .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(color))
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 10)
                                         .stroke(Color.white)
@@ -218,6 +229,7 @@ struct CameraScanView: View {
                 Color.black.edgesIgnoringSafeArea(.all)
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
         .onChange(of: showCapturedImagesView) {
             if showCapturedImagesView == true{
                 self.router.navigate(to: .capturedImagesView(images: capturedImages))
@@ -225,26 +237,31 @@ struct CameraScanView: View {
             }
         }
         .onAppear {
-            //            viewModel.startSession()
-            //            startCaptureProcess()
-            //            self.showLoadingSheet = false
-            //            self.viewModel.startSession()
-            //            self.isCameraLoaded = true
+//            showCapturedImagesView = false
+//            isViewActive = true
+//            viewModel.startSession()
+//            startCaptureProcess()
+//            self.showLoadingSheet = false
+//            self.isCameraLoaded = true
             
-            
-            isViewActive = true
-            viewModel.startSession()
-            startCaptureProcess()
-            self.showLoadingSheet = false
-            self.isCameraLoaded = true
+            showCapturedImagesView = false
+                isViewActive = true
+                
+                // Add a slight delay before starting the camera session
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    viewModel.startSession()
+                    startCaptureProcess()
+                    self.showLoadingSheet = false
+                    self.isCameraLoaded = true
+                }
         }
         .onDisappear {
             //            viewModel.stopSession()
             //            timer?.invalidate()
             //            capturedImages = []
             //            currentCaptureStep = 0
-            
-            isViewActive = false
+//            
+//            isViewActive = false
             cleanupResources()
         }
         .task {

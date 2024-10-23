@@ -12,6 +12,7 @@ struct MainView: View {
     @State private var selection = 0
     @State private var showCameraScan = false
     @State private var path: [String] = []
+    @State private var oldSelectedItem = 0
     
     
     @EnvironmentObject var router: Router
@@ -27,7 +28,7 @@ struct MainView: View {
     var body: some View {
         
         if (userName.isEmpty && userAge == 0 && userGender.isEmpty && skinType.isEmpty && skinSensitivity.isEmpty && useSkincare.isEmpty) {
-                SplashScreen()
+            SplashScreen()
         } else{
             TabView(selection: $selection) {
                 LogView(isTabBarHidden: $isTabBarHidden)
@@ -40,7 +41,8 @@ struct MainView: View {
                     .tag(0)
                     .toolbar(isTabBarHidden ? .hidden : .visible, for: .tabBar)
                 
-                AboutToScanView()
+                //                AboutToScanView()
+                Text("")
                     .tabItem {
                         Image(systemName: "camera.viewfinder")
                         Text("Scan")
@@ -58,6 +60,18 @@ struct MainView: View {
                     Text("Profile")
                 }
                 .tag(2)
+            }
+            .onChange(of: selection) {
+                if 1 == selection {
+                    self.showCameraScan = true
+                } else {
+                    self.oldSelectedItem = $0
+                }
+            }
+            .sheet(isPresented: $showCameraScan, onDismiss: {
+                self.selection = self.oldSelectedItem
+            }) {
+                AboutToScanView(showSheet: $showCameraScan)
             }
         }
     }
@@ -81,87 +95,3 @@ struct temp: View {
         }
     }
 }
-
-//        TabView(selection: $selection) {
-//            NavigationStack(path: $path) {
-//                LogView()
-//                    .navigationBarTitle("FaceLog")
-//                    .navigationBarTitleDisplayMode(.inline)
-////                    .navigationDestination(for: String.self) { view in
-////                        if view == "CameraScanView" {
-////                            CameraScanView(path: $path)
-////                        } else if view == "ResultView" {
-////                            AnalyzedResultView(path: $path)
-////                        }
-////                    }
-//            }
-//            .tabItem {
-//                Image(systemName: "list.bullet.clipboard")
-//                Text("FaceLog")
-//            }
-//            .tag(0)
-//
-//            NavigationStack {
-//                EmptyView()
-//                NavigationLink(destination: CameraScanView()) {
-//                    Text("Open Camera Scan")
-//                }
-//            }
-//            .tabItem {
-//                Image(systemName: "camera.viewfinder")
-//                Text("Scan")
-//            }
-//            .tag(1)
-//
-//            .onAppear {
-//                self.showCameraScan = true
-//            }
-//            .navigationDestination(isPresented: $showCameraScan) {
-//                NavigationView {
-//                    CameraScanView()
-//                        .navigationBarHidden(true)
-//                        .onDisappear {
-//                            self.selection = 0
-//                        }
-//                }
-//            }
-//
-//            NavigationView {
-//                ProfileView()
-//                    .navigationBarTitle("Profile")
-//            }
-//            .tabItem {
-//                Image(systemName: "person")
-//                Text("Profile")
-//            }
-//            .tag(2)
-//        }
-
-//=======
-
-
-
-//                NavigationStack {
-//                    EmptyView()
-//                    NavigationLink(destination: CameraScanView()) {
-//                        Text("Open Camera Scan")
-//                    }
-//                }
-//                .tabItem {
-//                    Image(systemName: "camera.viewfinder")
-//                    Text("Scan")
-//                }
-//                .tag(1)
-//                .onAppear {
-//                    self.showCameraScan = true
-//                }
-//                .navigationDestination(isPresented: $showCameraScan) {
-//                    NavigationView {
-//                        CameraScanView()
-//                            .navigationBarHidden(true)
-//                            .onDisappear {
-//                                self.selection = 0
-//                            }
-//                    }
-//
-//                }
