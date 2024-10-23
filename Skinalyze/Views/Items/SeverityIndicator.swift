@@ -57,6 +57,12 @@ struct SeverityIndicator: View {
                 .fill(.white)
                 .frame(width: 4, height: 10)
                 .offset(x: (indicatorPosition - screenWidth / 2) - 5)
+                .overlay {
+                    Capsule()
+                        .stroke(style: StrokeStyle(lineWidth: 0.5))
+                        .frame(width: 4, height: 10)
+                        .offset(x: (indicatorPosition - screenWidth / 2) - 5)
+                }
             
             
             Text(severityLevel)

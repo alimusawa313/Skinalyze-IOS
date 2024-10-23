@@ -21,7 +21,7 @@ struct AboutToScanView: View {
                         .frame(width: UIScreen.main.bounds.width, height: 250)
                     Spacer()
                 }
-                .padding(.top)
+                .padding(.top, 25)
                 VStack(alignment: .leading, spacing: 20){
                     HStack {
                         Spacer()

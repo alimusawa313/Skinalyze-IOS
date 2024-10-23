@@ -283,7 +283,7 @@ struct ProductUsedView: View {
             }
             
         }
-        .padding(.top, 50)
+        .padding(.top, isFromStartup ? 50 : 20)
         .onAppear {
             viewModel.loadJSON()
         }
