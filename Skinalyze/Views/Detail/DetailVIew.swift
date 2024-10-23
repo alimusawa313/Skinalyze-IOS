@@ -45,30 +45,15 @@ struct DetailVIew: View {
                     
                     Text("\(selectedLogs.currentDate, format: Date.FormatStyle(date: .abbreviated, time: .shortened))")
                     
-                    //                    Text("at")
-                    //                    Text("currentDate, format: .dateTime.hour().minute()")
                     
                 }.font(.subheadline)
                     .bold()
                 
-//                TabView(selection: $currentIndex) {
-//                    ForEach(images.indices, id: \.self) { index in
-//                        Image(uiImage: images[0]!.toImage()!)
-//                            .resizable()
-//                            .scaledToFit()
-//                            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 2)
-//                            .tag(index)
-//                    }
-//                    
-//                    .frame(height: UIScreen.main.bounds.height / 2)
-//                    .clipShape(RoundedRectangle(cornerRadius: 10))
-//                    .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-//                }
                 
                 TabView(selection: $currentIndex) {
                     ForEach(images.indices, id: \.self) { index in
                         if let image = images[index] {
-                            Image(uiImage: images[0]!.toImage()!)
+                            Image(uiImage: image.toImage()!)
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 2)
@@ -83,8 +68,6 @@ struct DetailVIew: View {
                                     .clipShape(RoundedRectangle(cornerRadius: 10))
                                     .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                                 
-                
-                //                Image(uiImage: images[0]!.toImage()!)
                 
                 
                 
@@ -140,9 +123,9 @@ struct DetailVIew: View {
                 }
                 .padding(.horizontal, -15)
                 
-//                if selectedLogs.geaScale > 0{
-//                    AcneRowItem(title: "Skin Concern", acne: acneTypesWithCounts)
-//                }
+                if selectedLogs.geaScale > 0{
+                    AcneRowItem(title: "Skin Concern", acne: acneTypesWithCounts)
+                }
                 
                 
                 Picker("", selection: $selectedView) {
@@ -170,6 +153,24 @@ struct DetailVIew: View {
         .navigationTitle("Scan Result")
         
     }
+    
+    private var acneTypesWithCounts: [Acne] {
+            // Define your acne types (similar to ResultViewModel)
+            let acneTypes = [
+                Acne(name: "Blackheads", description: "Your scan detected moderate acne, including the presence of blackheads. Blackheads are tiny open bumps filled with oil and dead skin, giving them a dark appearance.", countKey: "blackheads"),
+                Acne(name: "Papules", description: "Your scan detected the presence of papules. Papules are small, solid bumps caused by oil, bacteria, and hormones. Unlike other acne, they don't have a pus-filled tip, but they can still feel irritated.", countKey: "papules"),
+                Acne(name: "Pustules", description: "Your scan detected the presence of pustules. Pustules are small white bumps filled with fluid or pus, often surrounded by redness. These bumps may get bigger, but with the right care, you can manage them effectively.", countKey: "pustules"),
+                Acne(name: "Whiteheads", description: "Your scan detected the presence of whiteheads. Whiteheads are closed bumps formed when oil and dead skin clog pores. While they're a common form of acne, they can be treated to prevent future breakouts.", countKey: "whiteheads"),
+                Acne(name: "Nodules", description: "Your scan detected the presence of nodules. Nodules are firm, deep lumps that can be larger and more painful than other types of acne. They require targeted care for reduction and healing.", countKey: "nodules"),
+                Acne(name: "Dark Spots", description: "Your scan detected the presence of dark spots. Dark spots, or hyperpigmentation, are caused by excess melanin production. They can appear due to sun exposure or aging, but with the right care, they can be lightened over time.", countKey: "dark spot")
+            ]
+            
+            return acneTypes.map { acne in
+                var updatedAcne = acne
+                updatedAcne.count = selectedLogs.acneCounts[acne.countKey.lowercased(), default: 0]
+                return updatedAcne
+            }
+        }
 }
 
 

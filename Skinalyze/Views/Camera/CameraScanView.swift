@@ -17,6 +17,9 @@ struct CameraScanView: View {
     
     
     @StateObject private var viewModel = FaceTrackingViewModel()
+    
+    @State private var isViewActive = true
+    
     @State private var capturedImages: [UIImage] = []
     @State private var currentCaptureStep: Int = 0
     @State private var showCapturedImagesView = false
@@ -28,6 +31,24 @@ struct CameraScanView: View {
     @State private var showLoadingSheet = true
     
     @EnvironmentObject var router: Router
+    
+    private func cleanupResources() {
+        // Stop all timers
+        timer?.invalidate()
+        timer = nil
+        
+        // Stop speech
+        synthesizer.stopSpeaking(at: .immediate)
+        
+        // Stop camera session
+        viewModel.stopSession()
+        
+        // Reset state
+        capturedImages = []
+        currentCaptureStep = 0
+        isCountdownActive = false
+        isCameraLoaded = false
+    }
     
     var body: some View {
         ZStack {
@@ -88,21 +109,11 @@ struct CameraScanView: View {
                 VStack {
                     HStack {
                         Spacer()
-                        Text("PENCAHAYAAN")
+                        Text("LIGHTING")
                             .font(.system(size: 12))
                             .foregroundColor(.white)
                             .padding(10)
                             .background(viewModel.lightingCondition == "normal" ? Color(hex: "5F7955").opacity(0.57) : Color(hex: "DF0D0D").opacity(0.25))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.white)
-                            )
-                        Spacer()
-                        Text("POSISI WAJAH")
-                            .font(.system(size: 12))
-                            .foregroundColor(.white)
-                            .padding(10)
-                            .background(viewModel.faceDistanceStatus == "Normal" ? Color(hex: "5F7955").opacity(0.57) : Color(hex: "DF0D0D").opacity(0.25))
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
                                     .stroke(Color.white)
@@ -113,11 +124,11 @@ struct CameraScanView: View {
                         VStack {
                             let text: String = {
                                 if capturedImages.count < 1 {
-                                    return "LIHAT DEPAN"
+                                    return "LOOK FORWARD"
                                 } else if capturedImages.count == 1 {
-                                    return "LIHAT KIRI"
+                                    return "LOOK LEFT"
                                 } else {
-                                    return "LIHAT KANAN"
+                                    return "LOOK RIGHT"
                                 }
                             }()
                             
@@ -142,6 +153,17 @@ struct CameraScanView: View {
                                 )
                         }
                         
+                        Spacer()
+                        
+                        Text("FACE POSITION")
+                            .font(.system(size: 12))
+                            .foregroundColor(.white)
+                            .padding(10)
+                            .background(viewModel.faceDistanceStatus == "Normal" ? Color(hex: "5F7955").opacity(0.57) : Color(hex: "DF0D0D").opacity(0.25))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.white)
+                            )
                         Spacer()
                     }
                     .padding()
@@ -185,20 +207,39 @@ struct CameraScanView: View {
                 
             }
         }
-        .onDisappear {
-            viewModel.stopSession()
-            timer?.invalidate()
-            capturedImages = []
-            currentCaptureStep = 0
-        }
-        
         .onAppear {
-            //            self.showLoadingSheet = true
+            //            viewModel.startSession()
+            //            startCaptureProcess()
+            //            self.showLoadingSheet = false
+            //            self.viewModel.startSession()
+            //            self.isCameraLoaded = true
+            
+            
+            isViewActive = true
             viewModel.startSession()
             startCaptureProcess()
             self.showLoadingSheet = false
-            self.viewModel.startSession()
             self.isCameraLoaded = true
+        }
+        .onDisappear {
+            //            viewModel.stopSession()
+            //            timer?.invalidate()
+            //            capturedImages = []
+            //            currentCaptureStep = 0
+            
+            isViewActive = false
+            cleanupResources()
+        }
+        .task {
+            // Cleanup when view is dismissed
+            await withCheckedContinuation { continuation in
+                DispatchQueue.main.async {
+                    if !isViewActive {
+                        cleanupResources()
+                    }
+                    continuation.resume()
+                }
+            }
         }
         
     }
@@ -227,6 +268,8 @@ struct CameraScanView: View {
         
         speech("Look forward")
         
+        timer?.invalidate()
+        
         timer = Timer.scheduledTimer(withTimeInterval: 0.0, repeats: true) { _ in
             if viewModel.faceDistanceStatus == "Normal" && viewModel.lightingCondition == "normal" {
                 switch currentCaptureStep {
@@ -253,7 +296,8 @@ struct CameraScanView: View {
     }
     
     func startCountdown(for orientation: FaceOrientation) {
-        guard !isCountdownActive else { return } // Cegah countdown ganda
+//        guard !isCountdownActive else { return } // Cegah countdown ganda
+        guard !isCountdownActive, isViewActive else { return }
         isCountdownActive = true
         countdown = 3 // Reset countdown
         

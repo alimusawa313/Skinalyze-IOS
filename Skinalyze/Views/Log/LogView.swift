@@ -107,7 +107,7 @@ struct LogView: View {
                 }
                 .listStyle(.inset)
                 .listRowSpacing(0)
-                .navigationTitle("FaceLog")
+                .navigationTitle("Face Log")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {

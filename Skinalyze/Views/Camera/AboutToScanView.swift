@@ -18,10 +18,11 @@ struct AboutToScanView: View {
                 VStack {
                     Image("ProfileAtas")
                         .resizable()
-                        .frame(width: .infinity, height: 250)
+                        .frame(width: UIScreen.main.bounds.width, height: 250)
                     Spacer()
                 }
-                ScrollView {
+                .padding(.top)
+//                ScrollView {
                     VStack(alignment: .leading, spacing: 20){
                         HStack {
                             Spacer()
@@ -108,7 +109,7 @@ struct AboutToScanView: View {
 //                        .presentationDetents([.medium])
 //                        //            .interactiveDismissDisabled()
 //                    }
-                }
+//                }
             }
         }
     }

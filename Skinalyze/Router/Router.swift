@@ -10,8 +10,8 @@ import SwiftUI
 final class Router: ObservableObject {
     
     public enum Destination: Hashable {
-//        case livingroom
-//        case bedroom(owner: String)
+        //        case livingroom
+        //        case bedroom(owner: String)
         case log(isTabBarHidden: Bool)
         case camScanView
         case prodUsed(isFromStartup: Bool)
@@ -30,7 +30,13 @@ final class Router: ObservableObject {
     }
     
     func navigateBack() {
-        navPath.removeLast()
+        //        navPath.removeLast()
+        if navPath.count > 0 {
+            navPath.removeLast()
+        } else {
+            // If there's nowhere to go back, navigate to log
+            navigate(to: .log(isTabBarHidden: false))
+        }
     }
     
     func navigateToRoot() {
@@ -38,11 +44,3 @@ final class Router: ObservableObject {
     }
 }
 
-//enum ViewType: Hashable {
-////    case second
-////    case third(message: String)
-//    case log
-//    case camScanView
-//    case capturedImagesView(images: [UIImage])
-//    case anlyzResultView(images: [UIImage])
-//}

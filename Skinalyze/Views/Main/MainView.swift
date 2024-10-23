@@ -35,7 +35,7 @@ struct MainView: View {
                     .navigationBarTitleDisplayMode(.inline)
                     .tabItem {
                         Image(systemName: "list.bullet.clipboard")
-                        Text("Fac Log")
+                        Text("Face Log")
                     }
                     .tag(0)
                     .toolbar(isTabBarHidden ? .hidden : .visible, for: .tabBar)

@@ -37,6 +37,7 @@ struct IngredientRow: View {
             HStack {
                 Text(ingredient.title)
                     .font(.subheadline)
+                    .bold()
                 Spacer()
                 Image(systemName: ingredient.isExpanded ? "chevron.up" : "chevron.down")
             }

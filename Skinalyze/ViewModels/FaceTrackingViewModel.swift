@@ -39,8 +39,15 @@ class FaceTrackingViewModel: NSObject, ObservableObject {
     }
     
     func stopSession() {
-        session.stopRunning()
+//        session.stopRunning()
+        DispatchQueue.main.async { [weak self] in
+                    self?.session.stopRunning()
+                }
     }
+    
+    deinit {
+            stopSession()
+        }
     
     func configureCamera() {
         guard let captureDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
@@ -174,6 +181,37 @@ class FaceTrackingViewModel: NSObject, ObservableObject {
 }
 
 
+//extension FaceTrackingViewModel: AVCaptureVideoDataOutputSampleBufferDelegate {
+//    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+//        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+//            return
+//        }
+//        
+//        // Menangani pengenalan wajah
+//        let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: .leftMirrored, options: [:])
+//        
+//        do {
+//            try imageRequestHandler.perform([faceDetectionRequest])
+//        } catch {
+//            print("Failed to perform face detection: \(error)")
+//        }
+//        
+//        // Menghitung luminance rata-rata untuk menentukan kondisi pencahayaan
+//        let averageLuminance = calculateAverageLuminance(from: pixelBuffer)
+//        
+//        DispatchQueue.main.async {
+//            if averageLuminance > 100 {
+//                self.lightingCondition = "normal"
+//            } else {
+//                self.lightingCondition = "dark"
+//            }
+//        }
+//        
+//        // Menyimpan sample buffer terakhir untuk diambil gambarnya nanti
+//        lastSampleBuffer = sampleBuffer
+//    }
+//}
+
 extension FaceTrackingViewModel: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
@@ -192,15 +230,17 @@ extension FaceTrackingViewModel: AVCaptureVideoDataOutputSampleBufferDelegate {
         // Menghitung luminance rata-rata untuk menentukan kondisi pencahayaan
         let averageLuminance = calculateAverageLuminance(from: pixelBuffer)
         
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
             if averageLuminance > 100 {
                 self.lightingCondition = "normal"
             } else {
                 self.lightingCondition = "dark"
             }
+            
+            // Update lastSampleBuffer on main thread
+            self.lastSampleBuffer = sampleBuffer
         }
-        
-        // Menyimpan sample buffer terakhir untuk diambil gambarnya nanti
-        lastSampleBuffer = sampleBuffer
     }
 }

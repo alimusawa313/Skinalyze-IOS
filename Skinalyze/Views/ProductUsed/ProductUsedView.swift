@@ -26,7 +26,7 @@ struct ProductUsedView: View {
     
     var body: some View {
         VStack {
-//            if isFromStartup{
+            if isFromStartup{
                 Text("Add Your Skincare Products")
                     .foregroundColor(.black)
                     .font(.title2)
@@ -37,7 +37,7 @@ struct ProductUsedView: View {
                     .foregroundColor(.black.opacity(0.7))
                     .font(.subheadline)
                     .padding(.horizontal, 24)
-//            }
+            }
             
             HStack(spacing: 20) {
                 VStack(alignment: .leading) {
@@ -263,6 +263,8 @@ struct ProductUsedView: View {
             .padding()
             Spacer()
         }
+        .navigationTitle("Saved Products")
+        .navigationBarTitleDisplayMode(isFromStartup ? .inline : .large)
         .toolbar {
             //            ToolbarItem(placement: .navigationBarLeading) {
             //                Button("Cancel") {

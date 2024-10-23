@@ -114,9 +114,6 @@ struct ProfileView: View {
                                 Text("Saved Products")
                                     .font(.system(size: 16))
                                 Spacer()
-                                Text("Detail")
-                                    .foregroundColor(.gray)
-                                    .font(.system(size: 16))
                                 Image(systemName: "chevron.forward")
                                     .foregroundColor(.gray)
                             }

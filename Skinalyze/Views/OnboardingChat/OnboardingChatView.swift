@@ -280,7 +280,7 @@ struct ChatView: View {
                             .foregroundColor(.black)
                             .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
                             .onTapGesture {
-                                router.navigate(to: .productUsedView(isFromStartup: true))
+                                router.navigate(to: .camScanView)
                                 
                             }
 //                    }
