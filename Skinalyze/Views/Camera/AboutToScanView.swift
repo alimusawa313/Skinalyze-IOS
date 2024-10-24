@@ -9,116 +9,106 @@ import SwiftUI
 
 struct AboutToScanView: View {
     
-    @State private var showSheet = false
+    @Binding var showSheet: Bool
     @EnvironmentObject var router: Router
     
     var body: some View {
         NavigationView {
-            VStack(alignment: .leading, spacing: 20){
-                Spacer()
-                HStack {
-                    Spacer()
-                    Image(.maskotScan)
+            ZStack {
+                VStack {
+                    Image("ProfileAtas")
                         .resizable()
-                        .frame(width: UIScreen.main.bounds.width - 100, height: UIScreen.main.bounds.width - 100)
+                        .frame(width: UIScreen.main.bounds.width, height: 250)
                     Spacer()
                 }
-                
-                Spacer()
-                
-                Text("Get Your Skin\nCondition Scan")
-                    .font(.largeTitle)
-                    .bold()
-                
-                Text("Get Your Skin Condition Scan")
-                    .font(.headline)
-                
-                Button{
-                    showSheet.toggle()
-                }label: {
-                    HStack{
+                .padding(.top, 25)
+                VStack(alignment: .leading, spacing: 20){
+                    HStack {
                         Spacer()
-                        Text("Scan My Face")
-                            .bold()
-                        Spacer()
-                    }
-                    .foregroundStyle(.white)
-                    .padding()
-                    .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color(hex: "74574F")))
-                }
-            }
-            .padding()
-            .navigationTitle("Face Scan")
-            .navigationBarTitleDisplayMode(.inline)
-            .sheet(isPresented: $showSheet) {
-                
-                VStack(alignment:.center){
-                    Text("Analyze Skin Condition").bold()
-                    
-                    Divider()
-                    
-                    HStack{
-                        Text("Scan Tips").bold()
-                        Spacer()
-                    }
-                    
-                    HStack{
-                        Image("lightbulb")
+                        Image(.maskotScan)
                             .resizable()
-                            .scaledToFit()
-                            .frame(width: 43, height: 36)
-                            .padding()
-                        
-                        Text("Ensure bright light source for the best scan results.")
+                            .frame(width: 250, height: 220)
                         Spacer()
                     }
                     
-                    HStack{
-                        Image("prsn")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 43, height: 36)
-                            .padding()
-                        
-                        Text("Align your face within the provided border.")
-                        Spacer()
-                    }
+                    Spacer()
                     
-                    HStack{
-                        Image("checkmarktriangle")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 43, height: 36)
-                            .padding()
-                        
-                        Text("Follow the prompts to capture your face from the right, left, and front angles.")
-                        Spacer()
-                    }
+                    Text("Scan your skin conditions!")
+                        .font(.title)
+                        .bold()
                     
-                    Button{
-                        showSheet.toggle()
-                        router.navigate(to: .camScanView)
-                    }label: {
-                        HStack {
-                            Spacer()
-                            Text("Start Analyze")
-                                .font(.headline)
-                                .padding()
+                    Text("Get a detailed analysis of your skin, including severity level and recommended ingredients")
+                        .font(.system(size: 13, weight: .light))
+                    
+                    
+                    VStack(alignment:.center){
+                        
+                        HStack{
+                            Text("Scan Tips").bold()
                             Spacer()
                         }
-                        .foregroundStyle(.white)
-                        .background(Capsule().foregroundStyle(Color(hex: "74574F")))
+                        
+                        HStack{
+                            Image("lightbulb")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 43, height: 36)
+                                .padding()
+                            
+                            Text("Ensure bright light source for the best scan results.")
+                            Spacer()
+                        }
+                        
+                        HStack{
+                            Image("prsn")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 43, height: 36)
+                                .padding()
+                            
+                            Text("Align your face within the provided border.")
+                            Spacer()
+                        }
+                        
+                        HStack{
+                            Image("checkmarktriangle")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 43, height: 36)
+                                .padding()
+                            
+                            Text("Follow the prompts to capture your face from the right, left, and front angles.")
+                            Spacer()
+                        }
+                        
+                        Button{
+                            showSheet.toggle()
+                            router.navigate(to: .camScanView)
+                        }label: {
+                            HStack {
+                                Spacer()
+                                Text("Start Analyze")
+                                    .font(.headline)
+                                    .padding()
+                                Spacer()
+                            }
+                            .foregroundStyle(.white)
+                            .background(Capsule().foregroundStyle(Color(hex: "74574F")))
+                        }
+                        .padding(.vertical)
+                        Spacer()
                     }
-                    .padding(.vertical)
+                    
+                    //
                 }
                 .padding()
-                .presentationDetents([.medium])
-                //            .interactiveDismissDisabled()
+                .navigationTitle("Analyze Skin Condition")
+                .navigationBarTitleDisplayMode(.inline)
             }
         }
     }
 }
 
 #Preview {
-    AboutToScanView()
+    AboutToScanView(showSheet: .constant(true))
 }

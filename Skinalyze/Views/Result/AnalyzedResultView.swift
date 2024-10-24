@@ -179,6 +179,7 @@ struct AnalyzedResultView: View {
             .padding()
         }
         .navigationTitle("Scan Result")
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("Done") {
@@ -241,4 +242,14 @@ struct AnalyzedResultView: View {
 
 #Preview {
     AnalyzedResultView()
+}
+
+
+extension UIImage {
+    func resized(to targetSize: CGSize) -> UIImage? {
+        let renderer = UIGraphicsImageRenderer(size: targetSize)
+        return renderer.image { _ in
+            self.draw(in: CGRect(origin: .zero, size: targetSize))
+        }
+    }
 }

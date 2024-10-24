@@ -15,18 +15,17 @@ struct ProductSearchView: View {
     
     var filteredProducts: [SkincareProduct] {
         if searchText.isEmpty {
-            // Jika tidak ada pencarian, tampilkan semua produk dalam kategori
             return products.filter {
-                ($0.category?.lowercased() ?? "") == categoryFilter.lowercased() // Menggunakan default kosong
+                ($0.category?.lowercased() ?? "") == categoryFilter.lowercased()
             }
         } else {
-            // Jika ada pencarian, tampilkan produk yang sesuai
             return products.filter { product in
                 product.name.lowercased().contains(searchText.lowercased()) &&
-                (product.category?.lowercased() ?? "") == categoryFilter.lowercased() // Menggunakan default kosong
+                (product.category?.lowercased() ?? "") == categoryFilter.lowercased()
             }
         }
     }
+    
     @AppStorage("cleanserUsedID") private var cleanserUsedID: Int = 0
     @AppStorage("tonerUsedID") private var tonerUsedID: Int = 0
     @AppStorage("moisturizerUsedID") private var moisturizerUsedID: Int = 0
@@ -35,14 +34,12 @@ struct ProductSearchView: View {
     var body: some View {
         NavigationView {
             VStack(alignment: .leading) {
-                // Pencarian
                 Text("Pick Your Product")
                     .font(.title2)
                     .bold()
                     .padding(.horizontal, 15)
                 SearchBar(text: $searchText)
                 
-                // Daftar Produk
                 List(filteredProducts) { product in
                     HStack {
                         AsyncImage(url: URL(string: product.photo)) { image in
@@ -72,40 +69,38 @@ struct ProductSearchView: View {
                                     .foregroundColor(.white)
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 5)
-                                    .background(.brownSecondary)
+                                    .background(Color("brownSecondary"))
                                     .cornerRadius(20)
                             }
                         }
                     }
                     .padding(.vertical, 10)
                     .onTapGesture {
-                        if categoryFilter == "Cleanser"{
+                        switch categoryFilter {
+                        case "Cleanser":
                             cleanserUsedID = product.product_id
-                        } else if categoryFilter == "Toner"{
+                        case "Toner":
                             tonerUsedID = product.product_id
-                        } else if categoryFilter == "Moisturizer"{
+                        case "Moisturizer":
                             moisturizerUsedID = product.product_id
-                        } else if categoryFilter == "Sunscreen"{
+                        case "Sunscreen":
                             sunscreenUsedID = product.product_id
+                        default:
+                            break
                         }
                         isPresented.toggle()
                     }
-//                    .listRowInsets(EdgeInsets()) // Menghilangkan padding bawaan
-//                    .background(Color.white) // Mengganti background menjadi putih
+                    .listRowInsets(EdgeInsets())
+                    .background(Color.white)
+                    .padding()
                 }
-                .listStyle(PlainListStyle()) // Menggunakan list tanpa tampilan bawaan (opsional)
-
+                .listStyle(PlainListStyle())
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button("Cancel") {
                             isPresented = false
                         }
                     }
-//                    ToolbarItem(placement: .navigationBarTrailing) {
-//                        Button("Done") {
-//                            isPresented = false
-//                        }
-//                    }
                 }
             }
             .padding(.top, 20)
@@ -113,25 +108,21 @@ struct ProductSearchView: View {
     }
 }
 
-// Komponen Pencarian Kustom
 struct SearchBar: View {
     @Binding var text: String
     
     var body: some View {
-        TextField("Search your product", text: $text)
-            .padding(15)
-//            .padding(.horizontal, 25)
-            .background(Color(.white))
+        TextField("Search your product", text: $text) .padding(15)
+            .background(.white)
             .cornerRadius(8)
             .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color.brownSecondary, lineWidth: 1) // Border warna dan ketebalan
-                        )
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(style: StrokeStyle(lineWidth: 1)).foregroundStyle(.gray)
+            )
             .overlay(
                 HStack {
                     Spacer()
                     Image(systemName: "magnifyingglass")
-                        .foregroundColor(.brownSecondary.opacity(0.8))
                         .padding(.trailing, 10)
                         .font(.system(size: 20))
                         .fontWeight(.semibold)
@@ -142,11 +133,14 @@ struct SearchBar: View {
 }
 
 struct ProductSearchView_Previews: PreviewProvider {
-    @State static var isPresented = true // Menggunakan @State untuk membuat binding
+    @State static var isPresented = true
+    @State static var previewProducts = SkincareProductViewModel().products
     
     static var previews: some View {
         NavigationView {
-            ProductSearchView(isPresented: $isPresented, categoryFilter: "Cleanser", products: SkincareProductViewModel().products)
+            ProductSearchView(isPresented: $isPresented,
+                              categoryFilter: "Cleanser",
+                              products: previewProducts)
         }
     }
 }

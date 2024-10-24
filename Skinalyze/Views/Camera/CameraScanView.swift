@@ -17,6 +17,9 @@ struct CameraScanView: View {
     
     
     @StateObject private var viewModel = FaceTrackingViewModel()
+    
+    @State private var isViewActive = true
+    
     @State private var capturedImages: [UIImage] = []
     @State private var currentCaptureStep: Int = 0
     @State private var showCapturedImagesView = false
@@ -29,16 +32,25 @@ struct CameraScanView: View {
     
     @EnvironmentObject var router: Router
     
+    private func cleanupResources() {
+        DispatchQueue.main.async {
+                timer?.invalidate()
+                timer = nil
+                synthesizer.stopSpeaking(at: .immediate)
+                viewModel.stopSession()
+                capturedImages = []
+                currentCaptureStep = 0
+                isViewActive = false
+                isCountdownActive = false
+                isCameraLoaded = false
+            }
+    }
+    
     var body: some View {
         ZStack {
             if isCameraLoaded {
                 CameraPreviewView(session: viewModel.session)
                     .edgesIgnoringSafeArea(.all)
-                //                    .onTapGesture {
-                //                        router.navigateToRoot()
-                //                    }
-                //
-                
                 
                 VStack {
                     GeometryReader { geometry in
@@ -53,56 +65,17 @@ struct CameraScanView: View {
                     }
                 }
                 
-                VStack {
-                    Text(
-                        viewModel.faceDistanceStatus == "Too Far" ? "TERLALU JAUH" :
-                            viewModel.faceOrientation == "No face detected" ? "Posisikan wajah anda di\narea lingkaran" :
-                            viewModel.lightingCondition == "dark" ? "TERLALU GELAP" : ""
-                    )
-                    if viewModel.faceDistanceStatus == "Normal" && viewModel.lightingCondition == "normal" {
-                        if capturedImages.count < 1 && viewModel.faceOrientation == "Facing Forward" {
-                            Text("Bersiap Memotret")
-                        } else if capturedImages.count == 1 && viewModel.faceOrientation == "Facing Right" {
-                            Text("Bersiap Memotret")
-                        } else if capturedImages.count == 2 && viewModel.faceOrientation == "Facing Left" {
-                            Text("Bersiap Memotret")
-                        }
-                    }
-                    if viewModel.faceOrientation != "No face detected"{
-                        
-                        if capturedImages.count < 1 && viewModel.faceOrientation != "Facing Forward" {
-                            Text("LIHAT KEDEPAN")
-                        } else if capturedImages.count == 1 && viewModel.faceOrientation != "Facing Right" {
-                            Text("LIHAT KEKIRI")
-                        } else if capturedImages.count == 2 && viewModel.faceOrientation != "Facing Left" {
-                            Text("LIHAT KEKANAN")
-                        }
-                    }
-                    Spacer()
-                }
-                .foregroundColor(.white)
-                .multilineTextAlignment(.center)
-                .padding(.top, 80)
+                
                 
                 // Display lighting and face orientation status
                 VStack {
                     HStack {
                         Spacer()
-                        Text("PENCAHAYAAN")
+                        Text("LIGHTING")
                             .font(.system(size: 12))
                             .foregroundColor(.white)
                             .padding(10)
                             .background(viewModel.lightingCondition == "normal" ? Color(hex: "5F7955").opacity(0.57) : Color(hex: "DF0D0D").opacity(0.25))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.white)
-                            )
-                        Spacer()
-                        Text("POSISI WAJAH")
-                            .font(.system(size: 12))
-                            .foregroundColor(.white)
-                            .padding(10)
-                            .background(viewModel.faceDistanceStatus == "Normal" ? Color(hex: "5F7955").opacity(0.57) : Color(hex: "DF0D0D").opacity(0.25))
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
                                     .stroke(Color.white)
@@ -113,11 +86,11 @@ struct CameraScanView: View {
                         VStack {
                             let text: String = {
                                 if capturedImages.count < 1 {
-                                    return "LIHAT DEPAN"
+                                    return "LOOK FORWARD"
                                 } else if capturedImages.count == 1 {
-                                    return "LIHAT KIRI"
+                                    return "LOOK LEFT"
                                 } else {
-                                    return "LIHAT KANAN"
+                                    return "LOOK RIGHT"
                                 }
                             }()
                             
@@ -135,13 +108,24 @@ struct CameraScanView: View {
                                 .font(.system(size: 12))
                                 .foregroundColor(.white)
                                 .padding(10)
-                                .background(color)
+                                .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(color))
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 10)
                                         .stroke(Color.white)
                                 )
                         }
                         
+                        Spacer()
+                        
+                        Text("FACE POSITION")
+                            .font(.system(size: 12))
+                            .foregroundColor(.white)
+                            .padding(10)
+                            .background(viewModel.faceDistanceStatus == "Normal" ? Color(hex: "5F7955").opacity(0.57) : Color(hex: "DF0D0D").opacity(0.25))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.white)
+                            )
                         Spacer()
                     }
                     .padding()
@@ -169,35 +153,96 @@ struct CameraScanView: View {
                 }
                 
                 // Timer Overlay
-                if isCountdownActive {
-                    Text("\(countdown)")
-                        .font(.largeTitle)
-                        .foregroundColor(.white)
+                VStack{
+                    VStack {
+                        Text(
+                            viewModel.faceDistanceStatus == "Too Far" ? "TOO FAR" :
+                                viewModel.faceOrientation == "No face detected" ? "POSITION YOUR FACE \nON PLACEHOLDER" :
+                                viewModel.lightingCondition == "dark" ? "TOO DARK" : ""
+                        )
+                        .shadow(radius: 10, x: 0, y: 10)
                         .padding()
+                        if viewModel.faceDistanceStatus == "Normal" && viewModel.lightingCondition == "normal" {
+                            if capturedImages.count < 1 && viewModel.faceOrientation == "Facing Forward" {
+                                Text("Ready to Capture")
+                                    .padding()
+                                    .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color.black.opacity(0.5)))
+                            } else if capturedImages.count == 1 && viewModel.faceOrientation == "Facing Right" {
+                                Text("Ready to Capture")
+                                    .padding()
+                                    .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color.black.opacity(0.5)))
+                            } else if capturedImages.count == 2 && viewModel.faceOrientation == "Facing Left" {
+                                Text("Ready to Capture")
+                                    .padding()
+                                    .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color.black.opacity(0.5)))
+                            }
+                        }
+                        if viewModel.faceOrientation != "No face detected"{
+                            
+                            if capturedImages.count < 1 && viewModel.faceOrientation != "Facing Forward" {
+                                Text("LOOK FORWARD")
+                                    .padding()
+                                    .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color.black.opacity(0.5)))
+                            } else if capturedImages.count == 1 && viewModel.faceOrientation != "Facing Right" {
+                                Text("LOOK LEFT")
+                                    .padding()
+                                    .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color.black.opacity(0.5)))
+                            } else if capturedImages.count == 2 && viewModel.faceOrientation != "Facing Left" {
+                                Text("LOOK RIGHT")
+                                    .padding()
+                                    .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color.black.opacity(0.5)))
+                            }
+                        }
+                    }
+                    .foregroundColor(.white)
+                    .multilineTextAlignment(.center)
+                    
+                    if isCountdownActive {
+                        Text("\(countdown)")
+                            .font(.largeTitle)
+                            .foregroundColor(.white)
+                            .padding()
+                            .shadow(radius: 10, x: 0, y: 10)
+                    }
                 }
             } else {
                 Color.black.edgesIgnoringSafeArea(.all)
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
         .onChange(of: showCapturedImagesView) {
             if showCapturedImagesView == true{
                 self.router.navigate(to: .capturedImagesView(images: capturedImages))
+                
             }
         }
-        .onDisappear {
-            viewModel.stopSession()
-            timer?.invalidate()
-            capturedImages = []
-            currentCaptureStep = 0
-        }
-        
         .onAppear {
-            //            self.showLoadingSheet = true
-            viewModel.startSession()
-            startCaptureProcess()
-            self.showLoadingSheet = false
-            self.viewModel.startSession()
-            self.isCameraLoaded = true
+            
+            showCapturedImagesView = false
+                isViewActive = true
+                
+                // Add a slight delay before starting the camera session
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    viewModel.startSession()
+                    startCaptureProcess()
+                    self.showLoadingSheet = false
+                    self.isCameraLoaded = true
+                }
+        }
+        .onDisappear {
+            
+            cleanupResources()
+        }
+        .task {
+            // Cleanup when view is dismissed
+            await withCheckedContinuation { continuation in
+                DispatchQueue.main.async {
+                    if !isViewActive {
+                        cleanupResources()
+                    }
+                    continuation.resume()
+                }
+            }
         }
         
     }
@@ -226,6 +271,8 @@ struct CameraScanView: View {
         
         speech("Look forward")
         
+        timer?.invalidate()
+        
         timer = Timer.scheduledTimer(withTimeInterval: 0.0, repeats: true) { _ in
             if viewModel.faceDistanceStatus == "Normal" && viewModel.lightingCondition == "normal" {
                 switch currentCaptureStep {
@@ -252,7 +299,8 @@ struct CameraScanView: View {
     }
     
     func startCountdown(for orientation: FaceOrientation) {
-        guard !isCountdownActive else { return } // Cegah countdown ganda
+//        guard !isCountdownActive else { return } // Cegah countdown ganda
+        guard !isCountdownActive, isViewActive else { return }
         isCountdownActive = true
         countdown = 3 // Reset countdown
         

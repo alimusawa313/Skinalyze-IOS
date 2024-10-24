@@ -11,20 +11,8 @@ struct ContentView: View {
     
     var body: some View {
         
-//            MainView()
-        SplashScreen()
+            MainView()
+        
     }
 }
 
-//#Preview {
-//    ContentView()
-//}
-
-//enum ViewType: Hashable {
-////    case second
-////    case third(message: String)
-//    case log
-//    case camScanView
-//    case capturedImagesView(images: [UIImage])
-//    case anlyzResultView(images: [UIImage])
-//}

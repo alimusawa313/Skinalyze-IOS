@@ -43,14 +43,14 @@ struct ProfileView: View {
                             .font(.title3)
                     }
                     .padding()
-                    .background(Color.profileClr)
+                    .background(Color("ProfileClr"))
                     .cornerRadius(10)
                     .foregroundColor(.black)
                 }
 
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
-                        .stroke(Color.brownSecondary, lineWidth: 1)
+                        .stroke(Color("brownSecondary"), lineWidth: 1)
                 )
                 .padding(.bottom, 20)
 
@@ -100,7 +100,7 @@ struct ProfileView: View {
                     .cornerRadius(10)
                     .overlay(
                         RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.brownSecondary, lineWidth: 1) // Border luar abu-abu tipis
+                            .stroke(Color("brownSecondary"), lineWidth: 1) // Border luar abu-abu tipis
                     )
                 }
                 .padding(.bottom, 20)
@@ -114,9 +114,6 @@ struct ProfileView: View {
                                 Text("Saved Products")
                                     .font(.system(size: 16))
                                 Spacer()
-                                Text("Detail")
-                                    .foregroundColor(.gray)
-                                    .font(.system(size: 16))
                                 Image(systemName: "chevron.forward")
                                     .foregroundColor(.gray)
                             }
@@ -127,7 +124,7 @@ struct ProfileView: View {
                         .cornerRadius(10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.brownSecondary, lineWidth: 1) // Border luar abu-abu tipis
+                                .stroke(Color("brownSecondary"), lineWidth: 1) // Border luar abu-abu tipis
                             
                         )
                         .onTapGesture {

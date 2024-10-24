@@ -9,6 +9,9 @@ import SwiftUI
 
 struct ProductUsedView: View {
     var isFromStartup: Bool
+    
+    @EnvironmentObject var router: Router
+    
     @StateObject var viewModel = SkincareProductViewModel()
     @State private var showCleanserSheet = false
     @State private var showTonerSheet = false
@@ -23,7 +26,7 @@ struct ProductUsedView: View {
     
     var body: some View {
         VStack {
-//            if isFromStartup{
+            if isFromStartup{
                 Text("Add Your Skincare Products")
                     .foregroundColor(.black)
                     .font(.title2)
@@ -34,7 +37,7 @@ struct ProductUsedView: View {
                     .foregroundColor(.black.opacity(0.7))
                     .font(.subheadline)
                     .padding(.horizontal, 24)
-//            }
+            }
             
             HStack(spacing: 20) {
                 VStack(alignment: .leading) {
@@ -260,6 +263,8 @@ struct ProductUsedView: View {
             .padding()
             Spacer()
         }
+        .navigationTitle("Saved Products")
+        .navigationBarTitleDisplayMode(isFromStartup ? .inline : .large)
         .toolbar {
             //            ToolbarItem(placement: .navigationBarLeading) {
             //                Button("Cancel") {
@@ -272,21 +277,22 @@ struct ProductUsedView: View {
                         // Aksi yang ingin kamu lakukan saat tombol ditekan
                         // isPresented = false
                         moveToCamScanner.toggle()
+                        router.navigate(to: .camScanView)
                     }
                 }
             }
             
         }
-        .padding(.top, 50)
+        .padding(.top, isFromStartup ? 50 : 20)
         .onAppear {
             viewModel.loadJSON()
         }
         .navigationTitle("Skinalyze")
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden()
-        .navigationDestination(isPresented: $moveToCamScanner){
-            CameraScanView()
-        }
+        .navigationBarBackButtonHidden(isFromStartup ? true : false)
+//        .navigationDestination(isPresented: $moveToCamScanner){
+//            MainView()
+//        }
     }
 }
 

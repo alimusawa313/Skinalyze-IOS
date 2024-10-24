@@ -2,14 +2,23 @@ import SwiftUI
 import AVKit
 
 struct SplashScreen: View {
+    
+    @EnvironmentObject var router: Router
+    
     var body: some View {
-        NavigationView {
             ZStack {
                 VStack {
                     Image("ProfileAtas")
+                        .resizable()
+                        .frame(width: .infinity, height: 250)
                     Spacer()
                 }
                 VStack {
+                    
+                    Spacer()
+                    
+                    ResizableGIFPlayer(gifName: "Hover")
+                    .padding(.bottom, 20)
                     
                     
                     Text("Welcome to Skinalyze")
@@ -19,20 +28,22 @@ struct SplashScreen: View {
                         .foregroundColor(.gray)
                         .multilineTextAlignment(.center)
                     
-                    NavigationLink(destination: ChatView(isFromStartup: true)) {
-                        PrimaryBTN(text: "Let’s Start", isDisabled: false, action: {})
-                    }
-                    .padding(.top, 100)
-                    .padding(.bottom, 50)
                     Spacer()
+                        PrimaryBTN(text: "Let’s Start", isDisabled: false, action: {
+                            router.navigate(to: .chatView(isFromStartup: true))
+                        })
+                    
                 }
-                .padding(.top, 200)
+                .padding(.bottom, 40)
             }
             .ignoresSafeArea()
-        }
+        
     }
 }
 
 #Preview {
     SplashScreen()
 }
+
+
+

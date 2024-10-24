@@ -36,6 +36,7 @@ struct SkinalyzeApp: App {
                                 .environmentObject(router)
                         case .log(let isTabBarHidden):
                             LogView(isTabBarHidden: .constant(isTabBarHidden))
+                                .environmentObject(router)
                         case .camScanView:
                             CameraScanView()
                                 .environmentObject(router)
@@ -44,8 +45,19 @@ struct SkinalyzeApp: App {
                                 .environmentObject(router)
                         case .prodUsed(isFromStartup: let isFromStartup):
                             ProductUsedView(isFromStartup: isFromStartup)
+                                .environmentObject(router)
                         case .compareImagesView(selectedLogs: let selectedLogs):
                             CompareView(selectedLogs: selectedLogs)
+                                .environmentObject(router)
+                        case .detailView(selectedLogs: let selectedLogs):
+                            DetailVIew(selectedLogs: selectedLogs)
+                                .environmentObject(router)
+                        case .chatView(isFromStartup: let isFromStartup):
+                            ChatView(isFromStartup: isFromStartup)
+                                .environmentObject(router)
+                        case .productUsedView(isFromStartup: let isFromStartup):
+                            ProductUsedView(isFromStartup: isFromStartup)
+                                .environmentObject(router)
                         }
                     }
                     .environmentObject(router)

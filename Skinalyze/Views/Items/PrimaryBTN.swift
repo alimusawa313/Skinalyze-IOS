@@ -28,7 +28,7 @@ struct PrimaryBTN: View {
         }
         .disabled(isDisabled)
         .frame(width: UIScreen.main.bounds.width - 40, height: 50)
-        .background(isDisabled ? .gray : Color("BrownSecondary"))
+        .background(isDisabled ? .gray : Color("brownSecondary"))
         .cornerRadius(100)
     }
 }

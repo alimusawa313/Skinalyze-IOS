@@ -10,16 +10,21 @@ import SwiftUI
 struct SeverityIndicator: View {
     var acneLevelScale: Int
     
-    //    var skinLevelScale: Int = 3
-    //    var skinLevel: String = "Mild"
-    
     private var screenWidth: CGFloat {
         UIScreen.main.bounds.width - 40
     }
     
     private var indicatorPosition: CGFloat{
         let segmentWidth = screenWidth / 5
-        return segmentWidth * CGFloat(acneLevelScale)
+        switch acneLevelScale {
+        case 0:
+            return segmentWidth * CGFloat(acneLevelScale) + 10
+        case 5:
+            return segmentWidth * CGFloat(acneLevelScale) - 10
+        default:
+            return segmentWidth * CGFloat(acneLevelScale)
+        }
+        
     }
     
     private var textOffset: CGFloat {
@@ -57,6 +62,12 @@ struct SeverityIndicator: View {
                 .fill(.white)
                 .frame(width: 4, height: 10)
                 .offset(x: (indicatorPosition - screenWidth / 2) - 5)
+                .overlay {
+                    Capsule()
+                        .stroke(style: StrokeStyle(lineWidth: 0.5))
+                        .frame(width: 4, height: 10)
+                        .offset(x: (indicatorPosition - screenWidth / 2) - 5)
+                }
             
             
             Text(severityLevel)

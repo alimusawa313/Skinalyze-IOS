@@ -127,8 +127,3 @@ struct CardView: View {
     }
 }
 
-//struct CardStackView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        CardStackView(images: [.imgTest], selectedCardIndex: .constant(0), imageSize: CGSize(width: 220, height: 320))
-//    }
-//}

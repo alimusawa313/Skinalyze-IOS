@@ -38,6 +38,7 @@ struct AcneRow: View {
             HStack {
                 Text(acne.name)
                     .font(.subheadline)
+                    .bold()
                 Spacer()
                 Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
             }

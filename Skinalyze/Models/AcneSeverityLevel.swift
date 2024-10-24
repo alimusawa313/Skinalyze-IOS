@@ -42,18 +42,3 @@ struct Acne: Identifiable, Hashable{
     var countKey: String
 }
 
-
-//var severityLevel: SkinSeverity{
-//    switch acneLevelScale {
-//    case 0:
-//        return SkinSeverity(name: "Healthy", description: "The skin is clear with no signs of acne or other skin issues. It is healthy and free from inflammation or irritation.")
-//    case 1:
-//        return SkinSeverity(name: "Mild", description: "A few are present. Acne is infrequent and generally does not cause significant discomfort or affect daily activities.")
-//    case 2:
-//        return SkinSeverity(name: "Moderate", description: "Several papules or pustules are present. Acne is more frequent and often involves some degree of inflammation.")
-//    case 3:
-//        return SkinSeverity(name: "Severe", description: "Characterized by numerous papules, pustules, or nodules (large, inflamed bumps). Severe acne can lead to scarring and significantly affect daily life.")
-//    default:
-//        return SkinSeverity(name: "", description: "")
-//    }
-//}
