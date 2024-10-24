@@ -52,7 +52,7 @@ struct LogView: View {
                                                 Text(severityLevel.description)
                                                     .font(.footnote).bold().foregroundStyle(.white)
                                                     .padding(EdgeInsets(top: 2, leading: 7, bottom: 2, trailing: 7))
-                                                    .background(Capsule().foregroundStyle(Color(hex: "74574F")))
+                                                    .background(Capsule().foregroundStyle(Color("brownSecondary")))
                                               
                                         }
                                         
@@ -68,10 +68,9 @@ struct LogView: View {
                                     }
                                 }
                                 .padding(EdgeInsets(top: 13, leading: 10, bottom: 13, trailing: 10))
-//                                .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color(hex: "EAE3E1")))
                                 .overlay {
                                     if isComparing && selectedLogs.contains(log) {
-                                        RoundedRectangle(cornerRadius: 10).stroke().foregroundStyle(Color(hex: "74574F"))
+                                        RoundedRectangle(cornerRadius: 10).stroke().foregroundStyle(Color("brownSecondary"))
                                             .padding(.vertical, -8)
                                             .padding(.horizontal, -5)
                                     }
@@ -96,7 +95,7 @@ struct LogView: View {
 //                        .listStyle(.inset)
                         .listRowSpacing(0)
                         .listRowBackground(
-                            RoundedRectangle(cornerRadius: 10).foregroundStyle(Color(hex: "EAE3E1"))
+                            RoundedRectangle(cornerRadius: 10).foregroundStyle(Color("brownPrimary"))
                                 .padding(.horizontal)
                                 .padding(.vertical, 5)
 
@@ -118,7 +117,7 @@ struct LogView: View {
                                 isTabBarHidden = isComparing
                                 selectedLogs = []
                             }
-                        }.foregroundStyle(isComparing ? Color.red : Color(hex: "5E0000"))
+                        }.foregroundStyle(isComparing ? Color.red : Color("brownSecondary"))
                     }
                 }
                 
@@ -139,7 +138,7 @@ struct LogView: View {
                                 }
                                 .foregroundStyle(.white)
                                 .padding()
-                                .background(Capsule().foregroundStyle(Color(hex: "74574F")))
+                                .background(Capsule().foregroundStyle(Color("brownSecondary")))
                                 .padding()
                             }
                             .disabled(selectedLogs.count < 2)

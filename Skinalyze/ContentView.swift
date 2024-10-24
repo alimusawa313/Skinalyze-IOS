@@ -12,6 +12,7 @@ struct ContentView: View {
     var body: some View {
         
             MainView()
+//        ChatView(isFromStartup: true)
         
     }
 }

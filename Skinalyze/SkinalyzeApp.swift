@@ -12,6 +12,7 @@ import SwiftData
 struct SkinalyzeApp: App {
     
     @StateObject var router = Router()
+    @State private var tintColor: Color = Color("brownSecondary")
     
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -40,6 +41,8 @@ struct SkinalyzeApp: App {
                         case .camScanView:
                             CameraScanView()
                                 .environmentObject(router)
+                                .onAppear { tintColor = .white }
+                                .onDisappear { tintColor = Color(hex: "5E0000") }
                         case .capturedImagesView(images: let images):
                             CapturedImagesView(images: images)
                                 .environmentObject(router)
@@ -62,7 +65,7 @@ struct SkinalyzeApp: App {
                     }
                     .environmentObject(router)
             }
-            .accentColor(Color(hex: "5E0000"))
+            .accentColor(tintColor)
         }
         .modelContainer(sharedModelContainer)
     }

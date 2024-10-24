@@ -64,7 +64,7 @@ struct CameraSheetTutor: View {
                     Spacer()
                 }
                 .foregroundStyle(.white)
-                .background(Capsule().foregroundStyle(Color(hex: "74574F")))
+                .background(Capsule().foregroundStyle(Color("brownSecondary")))
             }
             .padding(.vertical)
         }

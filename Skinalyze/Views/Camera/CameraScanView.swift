@@ -209,6 +209,14 @@ struct CameraScanView: View {
             } else {
                 Color.black.edgesIgnoringSafeArea(.all)
             }
+            
+            if !isCameraLoaded{
+                VStack{
+                    ResizableGIFPlayer(gifName: "Timeline")
+                        .padding(.bottom, 20)
+                    Text("Loading Camera...").foregroundStyle(.white)
+                }
+            }
         }
         .sheet(isPresented: $showSheet, onDismiss: {
             //                        self.selection = self.oldSelectedItem

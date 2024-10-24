@@ -17,7 +17,6 @@ struct CapturedImagesView: View {
     @State private var currentIndex = 0
     
     
-
     var body: some View {
         ZStack {
             
@@ -52,7 +51,7 @@ struct CapturedImagesView: View {
                             Spacer()
                         }
                         .padding()
-                        .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color(hex: "74574F")))
+                        .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color("brownSecondary")))
                     }
                     Button{
                         router.navigateBack()
@@ -65,7 +64,7 @@ struct CapturedImagesView: View {
                             Spacer()
                         }
                         .padding()
-                        .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color(hex: "D6C7C2")))
+                        .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color("brownPrimary")))
                     }
                 }
                 .padding()
