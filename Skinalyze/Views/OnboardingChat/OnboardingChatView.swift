@@ -427,11 +427,14 @@ struct MessageRow: View {
 
             } else {
                 ZStack(alignment:.bottomTrailing){
-                    Text(message.text)
-                        .padding(14)
-                        .background(Color("brownPrimary"))
-                        .cornerRadius(16)
-                        .frame(maxWidth: .infinity, alignment: .trailing)
+                    HStack{
+                        Spacer()
+                        Text(message.text)
+                            .padding(14)
+                            .background(Color("brownPrimary"))
+                            .cornerRadius(16)
+                            .frame(maxWidth: 270, alignment: .trailing)
+                    }
                     Image("chatUser")
                         .resizable()
                         .frame(width: 20, height: 20)
