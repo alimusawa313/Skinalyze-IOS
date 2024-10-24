@@ -64,15 +64,17 @@ struct MainView: View {
             .onChange(of: selection) {
                 if 1 == selection {
                     self.showCameraScan = true
+                    router.navigate(to: .camScanView)
                 } else {
                     self.oldSelectedItem = $0
                 }
-            }
-            .sheet(isPresented: $showCameraScan, onDismiss: {
                 self.selection = self.oldSelectedItem
-            }) {
-                AboutToScanView(showSheet: $showCameraScan)
             }
+//            .sheet(isPresented: $showCameraScan, onDismiss: {
+//                self.selection = self.oldSelectedItem
+//            }) {
+//                AboutToScanView(showSheet: $showCameraScan)
+//            }
         }
     }
 }
