@@ -11,6 +11,7 @@ struct ChatMessage: Identifiable {
     let id = UUID()
     let text: String
     let role: ChatRole
+    var isLast: Bool!
 }
 
 enum ChatRole {
@@ -18,23 +19,10 @@ enum ChatRole {
 }
 
 struct ChatView: View {
-//    init() {
-//        let appearance = UINavigationBarAppearance()
-//        appearance.configureWithOpaqueBackground()
-//        appearance.backgroundColor = UIColor.atas // Warna background navigasi
-//        appearance.titleTextAttributes = [.foregroundColor: UIColor.black] // Warna teks title
-//        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
-//        
-//        UINavigationBar.appearance().standardAppearance = appearance
-//        UINavigationBar.appearance().scrollEdgeAppearance = appearance
-//        UINavigationBar.appearance().compactAppearance = appearance
-//        UINavigationBar.appearance().tintColor = .white // Warna item navigasi
-//    }
-    
     @State private var messages: [ChatMessage] = [
-        ChatMessage(text: "Hello! Welcome to Skinalyze. Please tell us about yourself so we can get to know you better 😊", role: .system),
-        ChatMessage(text: "What's your name?", role: .system),
-        ChatMessage(text: "Asking for your name helps us personalize profile. Don't worry, your privacy is important to us and we'll keep your details safe 😉", role: .system)
+        ChatMessage(text: "Hello! Welcome to Skinalyze. Please tell us about yourself so we can get to know you better 😊", role: .system, isLast: false),
+        ChatMessage(text: "What's your name?", role: .system, isLast: false),
+        ChatMessage(text: "Asking for your name helps us personalize profile. Don't worry, your privacy is important to us and we'll keep your details safe 😉", role: .system, isLast: true)
     ]
     var isFromStartup: Bool
     
@@ -111,7 +99,7 @@ struct ChatView: View {
                             .padding(12)
                             .background(Color.white)
                         Button(action: {
-                            handleUserInput(inputText)
+                            handleUserInput(inputText, inputMsg: inputText)
                         }) {
                             Image(systemName: "paperplane.fill")
                                 .foregroundColor(.gray)
@@ -134,7 +122,7 @@ struct ChatView: View {
                             .background(Color.white)
                         Button(action: {
                             if let age = inputAge {
-                                handleUserInput(String(age)) // Convert integer to string
+                                handleUserInput(String(age), inputMsg: String(age)) // Convert integer to string
                             }
                         }) {
                             Image(systemName: "paperplane.fill")
@@ -152,7 +140,7 @@ struct ChatView: View {
             } else if currentQuestionIndex == 2, showOptions { // Gender
                 VStack(spacing: 10) {
                     Button(action: {
-                        handleUserInput("Female")
+                        handleUserInput("Female", inputMsg: "Female")
                     }) {
                         Text("Female")
                             .frame(maxWidth: .infinity)
@@ -164,7 +152,7 @@ struct ChatView: View {
                     }
 
                     Button(action: {
-                        handleUserInput("Male")
+                        handleUserInput("Male", inputMsg: "Male")
                     }) {
                         Text("Male")
                             .frame(maxWidth: .infinity)
@@ -181,7 +169,7 @@ struct ChatView: View {
             } else if currentQuestionIndex == 3, showOptions {
                 VStack(spacing: 10) {
                     Button(action: {
-                        handleUserInput("Dry")
+                        handleUserInput("Dry", inputMsg: "Dry. Dry skin often feels tight and look flaky")
                     }) {
                         Text("Dry. Dry skin often feels tight and look flaky")
                             .frame(maxWidth: .infinity)
@@ -193,7 +181,7 @@ struct ChatView: View {
                     }
 
                     Button(action: {
-                        handleUserInput("Oily")
+                        handleUserInput("Oily", inputMsg: "Oily. Oily skin is shiny all over face with large pores")
                     }) {
                         Text("Oily. Oily skin is shiny all over face with large pores")
                             .frame(maxWidth: .infinity)
@@ -204,7 +192,7 @@ struct ChatView: View {
                             .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
                     }
                     Button(action: {
-                        handleUserInput("Combination")
+                        handleUserInput("Combination", inputMsg: "Combination. Combination skin looks shiny in some ares (T-zone) and feel tight on other areas")
                     }) {
                         Text("Combination. Combination skin looks shiny in some ares (T-zone) and feel tight on other areas")
                             .frame(maxWidth: .infinity)
@@ -221,7 +209,7 @@ struct ChatView: View {
             } else if currentQuestionIndex == 4, showOptions { // Skin Sensitivity
                 VStack(spacing: 10) {
                     Button(action: {
-                        handleUserInput("Very Sensitive")
+                        handleUserInput("Very Sensitive", inputMsg: "Very Sensitive. Often reacts with redness, itching, or stinging when try new products")
                     }) {
                         Text("Very Sensitive. Often reacts with redness, itching, or stinging when try new products")
                             .frame(maxWidth: .infinity)
@@ -233,7 +221,7 @@ struct ChatView: View {
                     }
 
                     Button(action: {
-                        handleUserInput("Only Sometimes")
+                        handleUserInput("Only Sometimes", inputMsg: "Only Sometimes. Can handle most products, but sometimes experience irritation")
                     }) {
                         Text("Only Sometimes. Can handle most products, but sometimes experience irritation")
                             .frame(maxWidth: .infinity)
@@ -244,7 +232,7 @@ struct ChatView: View {
                             .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
                     }
                     Button(action: {
-                        handleUserInput("Not Sensitive")
+                        handleUserInput("Not Sensitive", inputMsg:"Not Sensitive. Rarely reacts to new products")
                     }) {
                         Text("Not Sensitive. Rarely reacts to new products")
                             .frame(maxWidth: .infinity)
@@ -259,7 +247,6 @@ struct ChatView: View {
                 .background(Color("brownPrimary"))
             } else if currentQuestionIndex == 5, showOptions { // Use Skincare
                 VStack(spacing: 10) {
-//                    NavigationLink(destination:ProductUsedView(isFromStartup: true)){
                         Text("Yes")
                             .frame(maxWidth: .infinity)
                             .padding()
@@ -269,9 +256,8 @@ struct ChatView: View {
                             .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
                             .onTapGesture {
                                 router.navigate(to: .productUsedView(isFromStartup: true))
+                                useSkincare = "Yes"
                             }
-//                    }
-//                    NavigationLink(destination:ProductUsedView(isFromStartup: true)){
                         Text("No")
                             .frame(maxWidth: .infinity)
                             .padding()
@@ -281,9 +267,8 @@ struct ChatView: View {
                             .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
                             .onTapGesture {
                                 router.navigate(to: .camScanView)
-                                
+                                useSkincare = "No"
                             }
-//                    }
                 }
                 .padding(20)
                 .background(Color("brownPrimary"))
@@ -294,8 +279,8 @@ struct ChatView: View {
         .navigationBarBackButtonHidden(true)
     }
     
-    func handleUserInput(_ input: String) {
-        messages.append(ChatMessage(text: input, role: .user))
+    func handleUserInput(_ input: String, inputMsg: String) {
+        messages.append(ChatMessage(text: inputMsg, role: .user))
         inputText = ""
         showOptions = false
         showLoading = true
@@ -310,23 +295,23 @@ struct ChatView: View {
         switch currentQuestionIndex {
         case 0:
             userName = input
-            askNextQuestion("How old are you?")
-            askNextQuestion("We will make sure to compare your skin condition with others in your same age group.")
+            askNextQuestion("How old are you?", isLast: false)
+            askNextQuestion("We will make sure to compare your skin condition with others in your same age group.", isLast: true)
         case 1:
             if let age = Int(input) {
                 userAge = age
-                askNextQuestion("What is your gender?")
-                askNextQuestion("We will recommend you the most suitable ingredients based on your profile.")
+                askNextQuestion("What is your gender?", isLast: false)
+                askNextQuestion("We will recommend you the most suitable ingredients based on your profile.", isLast: true)
             }
         case 2:
             userGender = input
-            askNextQuestion("What's your skin type?")
+            askNextQuestion("What's your skin type?", isLast: true)
         case 3:
             skinType = input
-            askNextQuestion("How sensitive is your skin?")
+            askNextQuestion("How sensitive is your skin?", isLast: true)
         case 4:
             skinSensitivity = input
-            askNextQuestion("Do you use skincare in your daily routine?")
+            askNextQuestion("Do you use skincare in your daily routine?", isLast: true)
 //        case 5:
 //            useSkincare = input
 //            goToNextPage()
@@ -338,9 +323,9 @@ struct ChatView: View {
         showOptions = true
     }
     
-    func askNextQuestion(_ question: String) {
+    func askNextQuestion(_ question: String, isLast: Bool) {
         withAnimation {
-            messages.append(ChatMessage(text: question, role: .system))
+            messages.append(ChatMessage(text: question, role: .system, isLast: isLast))
         }
     }
     
@@ -414,25 +399,51 @@ struct MessageRow: View {
     var body: some View {
         HStack {
             if message.role == .system {
-                Image("Maskot")
-                    .resizable()
-                    .frame(width: 50, height: 40)
-                Text(message.text)
-                    .padding(.horizontal)
-                    .padding(.vertical, 12)
-                    .background(Color.white)
-                    .cornerRadius(20)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .shadow(color: Color.black.opacity(0.2), radius: 10, x: 0, y: 5)
+                VStack{
+                    Spacer()
+                    if message.isLast {
+                        Image("Maskot")
+                            .resizable()
+                            .frame(width: 50, height: 40)
+                    } else {
+                        Image("MaskotNone")
+                            .resizable()
+                            .frame(width: 50, height: 40)
+                    }
+                }
+                ZStack(alignment:.bottomLeading){
+                    Text(message.text)
+                        .font(.body)
+                        .padding(12)
+                        .background(Color.white)
+                        .cornerRadius(16)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .shadow(color: Color.black.opacity(0.2), radius: 10, x: 0, y: 5)
+                    Image("chatSystem")
+                        .resizable()
+                        .frame(width: 20, height: 20)
+                        .padding(EdgeInsets(top: 0, leading: -5, bottom: -2, trailing: 0))
+                }
+
             } else {
-                Text(message.text)
-                    .padding(.horizontal)
-                    .padding(.vertical, 12)
-                    .background(Color("brownPrimary"))
-                    .cornerRadius(20)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
+                ZStack(alignment:.bottomTrailing){
+                    Text(message.text)
+                        .padding(14)
+                        .background(Color("brownPrimary"))
+                        .cornerRadius(16)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                    Image("chatUser")
+                        .resizable()
+                        .frame(width: 20, height: 20)
+                        .padding(EdgeInsets(top: 0, leading: 0, bottom: -2, trailing: -5))
+                }
+
             }
         }
         .padding(.trailing)
     }
+}
+
+#Preview{
+    ChatView(isFromStartup: false)
 }

@@ -27,7 +27,7 @@ struct MainView: View {
     
     var body: some View {
         
-        if (userName.isEmpty && userAge == 0 && userGender.isEmpty && skinType.isEmpty && skinSensitivity.isEmpty && useSkincare.isEmpty) {
+        if (useSkincare.isEmpty) {
             SplashScreen()
         } else{
             TabView(selection: $selection) {
