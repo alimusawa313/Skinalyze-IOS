@@ -29,21 +29,22 @@ struct CameraScanView: View {
     
     @State private var isCameraLoaded = false
     @State private var showLoadingSheet = true
+    @State private var showSheet = true
     
     @EnvironmentObject var router: Router
     
     private func cleanupResources() {
         DispatchQueue.main.async {
-                timer?.invalidate()
-                timer = nil
-                synthesizer.stopSpeaking(at: .immediate)
-                viewModel.stopSession()
-                capturedImages = []
-                currentCaptureStep = 0
-                isViewActive = false
-                isCountdownActive = false
-                isCameraLoaded = false
-            }
+            timer?.invalidate()
+            timer = nil
+            synthesizer.stopSpeaking(at: .immediate)
+            viewModel.stopSession()
+            capturedImages = []
+            currentCaptureStep = 0
+            isViewActive = false
+            isCountdownActive = false
+            isCameraLoaded = false
+        }
     }
     
     var body: some View {
@@ -209,6 +210,18 @@ struct CameraScanView: View {
                 Color.black.edgesIgnoringSafeArea(.all)
             }
         }
+        .sheet(isPresented: $showSheet, onDismiss: {
+            //                        self.selection = self.oldSelectedItem
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                viewModel.startSession()
+                startCaptureProcess()
+                self.showLoadingSheet = false
+                self.isCameraLoaded = true
+            }
+            
+        }) {
+            AboutToScanView(showSheet: $showSheet)
+        }
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: showCapturedImagesView) {
             if showCapturedImagesView == true{
@@ -219,15 +232,12 @@ struct CameraScanView: View {
         .onAppear {
             
             showCapturedImagesView = false
-                isViewActive = true
-                
-                // Add a slight delay before starting the camera session
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    viewModel.startSession()
-                    startCaptureProcess()
-                    self.showLoadingSheet = false
-                    self.isCameraLoaded = true
-                }
+            isViewActive = true
+            
+            // Add a slight delay before starting the camera session
+            
+            
+            
         }
         .onDisappear {
             
@@ -299,7 +309,7 @@ struct CameraScanView: View {
     }
     
     func startCountdown(for orientation: FaceOrientation) {
-//        guard !isCountdownActive else { return } // Cegah countdown ganda
+        //        guard !isCountdownActive else { return } // Cegah countdown ganda
         guard !isCountdownActive, isViewActive else { return }
         isCountdownActive = true
         countdown = 3 // Reset countdown

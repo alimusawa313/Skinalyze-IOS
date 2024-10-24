@@ -83,7 +83,7 @@ struct AboutToScanView: View {
                         
                         Button{
                             showSheet.toggle()
-                            router.navigate(to: .camScanView)
+//                            router.navigate(to: .camScanView)
                         }label: {
                             HStack {
                                 Spacer()
