@@ -95,7 +95,7 @@ struct LogView: View {
 //                        .listStyle(.inset)
                         .listRowSpacing(0)
                         .listRowBackground(
-                            RoundedRectangle(cornerRadius: 10).foregroundStyle(Color("brownPrimary"))
+                            RoundedRectangle(cornerRadius: 10).foregroundStyle(Color("brownPrimary").opacity(0.6))
                                 .padding(.horizontal)
                                 .padding(.vertical, 5)
 
@@ -148,7 +148,6 @@ struct LogView: View {
                 }
             }
         }
-        
         
         
     }

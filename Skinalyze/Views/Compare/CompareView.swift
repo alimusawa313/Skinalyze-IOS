@@ -47,7 +47,7 @@ struct CompareView: View {
                                 .foregroundStyle(.white)
                                 .padding(.vertical,2)
                                 .padding(.horizontal,4)
-                                .background(Capsule().foregroundStyle(Color(hex: "74574F")))
+                                .background(Capsule().foregroundStyle(Color("brownSecondary")))
                         }
                         .padding()
                         .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color(hex: "EEEBE7").opacity(0.6)))
@@ -68,7 +68,7 @@ struct CompareView: View {
                                     Text("\(selectedLogs[1].acneCounts[key] ?? 0)")
                                         .frame(width: 40, height: 35)
                                         .foregroundStyle(.white)
-                                        .background(Circle().foregroundStyle(Color(hex: "74574F")))
+                                        .background(Circle().foregroundStyle(Color("brownSecondary")))
                                     
                                 }
                                 
@@ -100,7 +100,7 @@ struct CompareView: View {
                                 .foregroundStyle(.white)
                                 .padding(.vertical,2)
                                 .padding(.horizontal,4)
-                                .background(Capsule().foregroundStyle(Color(hex: "74574F")))
+                                .background(Capsule().foregroundStyle(Color("brownSecondary")))
                         }
                         .padding()
                         .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color(hex: "EEEBE7").opacity(0.6)))
@@ -121,7 +121,7 @@ struct CompareView: View {
                                     Text("\(selectedLogs[0].acneCounts[key] ?? 0)")
                                         .frame(width: 40, height: 35)
                                         .foregroundStyle(.white)
-                                        .background(Circle().foregroundStyle(Color(hex: "74574F")))
+                                        .background(Circle().foregroundStyle(Color("brownSecondary")))
                                     
                                 }
                                 

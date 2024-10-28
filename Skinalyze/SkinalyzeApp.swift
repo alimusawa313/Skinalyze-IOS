@@ -42,7 +42,7 @@ struct SkinalyzeApp: App {
                             CameraScanView()
                                 .environmentObject(router)
                                 .onAppear { tintColor = .white }
-                                .onDisappear { tintColor = Color(hex: "5E0000") }
+                                .onDisappear { tintColor = Color("brownSecondary") }
                         case .capturedImagesView(images: let images):
                             CapturedImagesView(images: images)
                                 .environmentObject(router)

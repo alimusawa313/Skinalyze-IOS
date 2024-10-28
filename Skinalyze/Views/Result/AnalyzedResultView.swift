@@ -137,7 +137,7 @@ struct AnalyzedResultView: View {
                     HStack(spacing: 5) {
                         ForEach(viewmodel.acneCounts.keys.sorted().filter { viewmodel.acneCounts[$0] ?? 0 > 0 }, id: \.self) { key in
                             RoundedRectangle(cornerRadius: 10)
-                                .fill(Color(hex: "74574F").opacity(0.8))
+                                .fill(Color("brownSecondary").opacity(0.8))
                                 .overlay(
                                     Text("\(key.capitalized) (\(viewmodel.acneCounts[key] ?? 0))")
                                         .bold()
@@ -157,7 +157,7 @@ struct AnalyzedResultView: View {
                 
                 
                 Picker("", selection: $selectedView) {
-                    Text("Ingridients").tag(0)
+                    Text("Ingredients").tag(0)
                     Text("Product Used").tag(1)
                 }
                 .pickerStyle(SegmentedPickerStyle())

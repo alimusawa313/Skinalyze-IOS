@@ -60,7 +60,7 @@ struct CapturedImagesView: View {
                             Spacer()
                             Text("Retake")
                                 .font(.headline)
-                                .foregroundStyle(Color(hex: "3F3F44"))
+                                .foregroundStyle(Color("brownPrimary"))
                             Spacer()
                         }
                         .padding()

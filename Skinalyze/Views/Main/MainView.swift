@@ -77,7 +77,7 @@ struct MainView: View {
 //            }
         }
     }
-}
+} 
 
 
 #Preview {
