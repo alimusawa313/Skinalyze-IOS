@@ -36,13 +36,15 @@ struct ChatView: View {
     
 
     @AppStorage("userName") private var userName: String = ""
-    @AppStorage("userAge") private var userAge: Int = 0 // Change to Int
+    @AppStorage("userAge") private var userAge: Int = 17 // Change to Int
     @AppStorage("userGender") private var userGender: String = ""
     @AppStorage("skinType") private var skinType: String = ""
     @AppStorage("skinSensitivity") private var skinSensitivity: String = ""
     @AppStorage("useSkincare") private var useSkincare: String = ""
     
     @State private var scrollToBottom: Bool = false
+    
+    let ageRange = 0...100
 
     var body: some View {
         VStack {
@@ -78,17 +80,20 @@ struct ChatView: View {
                         withAnimation {
                             scrollViewProxy.scrollTo("options", anchor: .bottom)
                         }
-                    } else if showLoading {
-                        withAnimation {
-                            scrollViewProxy.scrollTo("typingIndicator", anchor: .bottom)
-                        }
-                    } else if let lastMessage = messages.last {
+                    }
+                    withAnimation {
+                        scrollViewProxy.scrollTo("typingIndicator", anchor: .bottom)
+                    }
+                    if let lastMessage = messages.last {
                         withAnimation {
                             scrollViewProxy.scrollTo(lastMessage.id, anchor: .bottom)
                         }
                     }
+                    withAnimation {
+                        scrollViewProxy.scrollTo(messages.last?.id, anchor: .bottom)
+                    }
                 }
-
+            
             }
             
             
