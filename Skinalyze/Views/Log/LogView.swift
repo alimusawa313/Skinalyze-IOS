@@ -28,7 +28,7 @@ struct LogView: View {
                     let groupedLogs = groupLogsByDate(logs)
                     
                     ForEach(groupedLogs.keys.sorted(by: >), id: \.self) { date in
-                        Section(header: Text(date, style: .date).font(.headline).foregroundStyle(.black)) {
+                        Section(header: Text(date, style: .date).font(.headline).foregroundStyle(Color("textPrimary"))) {
                             ForEach(groupedLogs[date]!.sorted { $0.currentDate > $1.currentDate }, id: \.id)  { log in
                                 HStack {
                                     if let imageString = log.analyzedImages1, let image = imageString.toImage() {
@@ -50,7 +50,7 @@ struct LogView: View {
                                             Spacer()
                                             
                                                 Text(severityLevel.description)
-                                                    .font(.footnote).bold().foregroundStyle(.white)
+                                                .font(.footnote).bold().foregroundStyle(Color("textReverse"))
                                                     .padding(EdgeInsets(top: 2, leading: 7, bottom: 2, trailing: 7))
                                                     .background(Capsule().foregroundStyle(Color("brownSecondary")))
                                               
@@ -60,7 +60,7 @@ struct LogView: View {
                                             Text(getDescription(for: severityLevel))
                                                 .lineLimit(3)
                                                 .font(.subheadline)
-                                                .foregroundStyle(.secondary)
+                                                .foregroundStyle(.primary)
                                             
                                                 Image(systemName: "chevron.forward")
                                                     .opacity(isComparing ? 0 : 1)
@@ -106,7 +106,7 @@ struct LogView: View {
                 }
                 .listStyle(.inset)
                 .listRowSpacing(0)
-                .navigationTitle("Face Log")
+                .navigationTitle(isComparing ? "\(selectedLogs.count) Selected" : "Face Log")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
@@ -127,7 +127,7 @@ struct LogView: View {
                             Spacer()
                             Button {
                                 router.navigate(to: .compareImagesView(selectedLogs: selectedLogs))
-                                isComparing.toggle()
+                                isComparing = false
                                 isTabBarHidden = isComparing
                                 selectedLogs = []
                             } label: {
@@ -138,7 +138,7 @@ struct LogView: View {
                                 }
                                 .foregroundStyle(.white)
                                 .padding()
-                                .background(Capsule().foregroundStyle(Color("brownSecondary")))
+                                .background(Capsule().foregroundStyle(Color(hex: "6F5750")))
                                 .padding()
                             }
                             .disabled(selectedLogs.count < 2)
@@ -147,7 +147,16 @@ struct LogView: View {
                     }
                 }
             }
+            
         }
+//        .onChange(of: router.currentPath) { oldValue, newValue in
+//                    // Reset comparing state when returning from compareImagesView
+//                    if newValue == .root {
+//                        isComparing = false
+//                        isTabBarHidden = false
+//                        selectedLogs = []
+//                    }
+//                }
         
         
     }

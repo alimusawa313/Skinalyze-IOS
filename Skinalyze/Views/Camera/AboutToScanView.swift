@@ -55,6 +55,7 @@ struct AboutToScanView: View {
                                 .frame(width: 43, height: 36)
                                 .padding()
                             
+                            
                             Text("Ensure bright light source for the best scan results.")
                             Spacer()
                         }
@@ -93,7 +94,7 @@ struct AboutToScanView: View {
                                 Spacer()
                             }
                             .foregroundStyle(.white)
-                            .background(Capsule().foregroundStyle(Color("brownSecondary")))
+                            .background(Capsule().foregroundStyle(Color(hex: "6F5750")))
                         }
                         .padding(.vertical)
                         Spacer()

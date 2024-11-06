@@ -39,44 +39,45 @@ struct CompareView: View {
                             Text("Severity Level")
                                 .font(.footnote)
                                 .bold()
-                                .foregroundColor(Color(hex: "3F3F44"))
+                                .foregroundColor(Color("textPrimary"))
                             Spacer()
                             let severityLevel = AcneSeverityLevel(rawValue: selectedLogs[1].geaScale)!
                             Text("\(severityLevel)")
                                 .font(.footnote)
-                                .foregroundStyle(.white)
+                                .foregroundStyle(Color("textReverse"))
                                 .padding(.vertical,2)
                                 .padding(.horizontal,4)
                                 .background(Capsule().foregroundStyle(Color("brownSecondary")))
                         }
                         .padding()
-                        .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color(hex: "EEEBE7").opacity(0.6)))
+                        .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color("rowItemBg")))
                         
                         VStack(alignment:.leading, spacing: 5) {
                                 Text("Skin Concern")
                                     .font(.footnote)
                                     .bold()
-                                    .foregroundColor(Color(hex: "3F3F44"))
+                                    .foregroundColor(Color("textPrimary"))
                             ForEach(selectedLogs[1].acneCounts.keys.sorted().filter { selectedLogs[1].acneCounts[$0] ?? 0 > 0 }, id: \.self) { key in
                                 HStack{
                                     Text("\(key.capitalized)")
                                         .font(.footnote)
-                                        .foregroundColor(Color(hex: "3F3F44"))
+                                        .foregroundStyle(Color("textPrimary"))
                                     
                                     Spacer()
                                     
                                     Text("\(selectedLogs[1].acneCounts[key] ?? 0)")
                                         .frame(width: 40, height: 35)
-                                        .foregroundStyle(.white)
+                                        .foregroundStyle(Color("textReverse"))
                                         .background(Circle().foregroundStyle(Color("brownSecondary")))
                                     
                                 }
                                 
                                 Divider()
+                                    .overlay(Color("textPrimary"))
                             }
                         }
                         .padding()
-                        .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color(hex: "EEEBE7").opacity(0.6)))
+                        .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color("rowItemBg")))
                         
                         Spacer()
                         
@@ -92,44 +93,45 @@ struct CompareView: View {
                             Text("Severity Level")
                                 .font(.footnote)
                                 .bold()
-                                .foregroundColor(Color(hex: "3F3F44"))
+                                .foregroundColor(Color("textPrimary"))
                             Spacer()
                             let severityLevel = AcneSeverityLevel(rawValue: selectedLogs[0].geaScale)!
                             Text("\(severityLevel)")
                                 .font(.footnote)
-                                .foregroundStyle(.white)
+                                .foregroundStyle(Color("textReverse"))
                                 .padding(.vertical,2)
                                 .padding(.horizontal,4)
                                 .background(Capsule().foregroundStyle(Color("brownSecondary")))
                         }
                         .padding()
-                        .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color(hex: "EEEBE7").opacity(0.6)))
+                        .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color("rowItemBg")))
                         
                         VStack(alignment:.leading, spacing: 5) {
                                 Text("Skin Concern")
                                     .font(.footnote)
                                     .bold()
-                                    .foregroundColor(Color(hex: "3F3F44"))
+                                    .foregroundColor(Color("textPrimary"))
                             ForEach(selectedLogs[0].acneCounts.keys.sorted().filter { selectedLogs[0].acneCounts[$0] ?? 0 > 0 }, id: \.self) { key in
                                 HStack{
                                     Text("\(key.capitalized)")
                                         .font(.footnote)
-                                        .foregroundColor(Color(hex: "3F3F44"))
+                                        .foregroundColor(Color("textPrimary"))
                                     
                                     Spacer()
                                     
                                     Text("\(selectedLogs[0].acneCounts[key] ?? 0)")
                                         .frame(width: 40, height: 35)
-                                        .foregroundStyle(.white)
+                                        .foregroundStyle(Color("textReverse"))
                                         .background(Circle().foregroundStyle(Color("brownSecondary")))
                                     
                                 }
                                 
                                 Divider()
+                                    .overlay(Color("textPrimary"))
                             }
                         }
                         .padding()
-                        .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color(hex: "EEEBE7").opacity(0.6)))
+                        .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color("rowItemBg")))
                         
                         Spacer()
                         
@@ -220,6 +222,7 @@ struct LineDivider: View {
                 .frame(width: 5, height: UIScreen.main.bounds.height / 2.2)
             
             Image(systemName: "chevron.left.chevron.right").bold()
+                .tint(.red)
                 .padding()
                 .background(
                     Circle()

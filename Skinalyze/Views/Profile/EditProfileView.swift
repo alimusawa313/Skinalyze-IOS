@@ -23,6 +23,7 @@ struct EditProfileView: View {
                 Group{
                     Image("Maskot")
                         .resizable()
+                        .scaledToFit()
                         .frame(width: 60, height: 60)
                         .padding()
                 }

@@ -102,7 +102,7 @@ struct DetailVIew: View {
                     HStack(spacing: 5) {
                         ForEach(selectedLogs.acneCounts.keys.sorted().filter { selectedLogs.acneCounts[$0] ?? 0 > 0 }, id: \.self) { key in
                             RoundedRectangle(cornerRadius: 10)
-                                .fill(Color("brownSecondary").opacity(0.8))
+                                .fill(Color("capsuleBg").opacity(0.8))
                                 .overlay(
                                     Text("\(key.capitalized) (\(selectedLogs.acneCounts[key] ?? 0))")
                                         .bold()

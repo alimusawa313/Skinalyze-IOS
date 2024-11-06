@@ -25,7 +25,7 @@ struct RowItemHolder: View {
             }
         }
         .padding()
-        .background(Color(hex: "EEEBE7").opacity(0.6))
+        .background(Color("rowItemBg").opacity(0.6))
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 }

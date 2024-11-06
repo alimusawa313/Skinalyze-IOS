@@ -32,8 +32,8 @@ struct MainView: View {
         } else{
             TabView(selection: $selection) {
                 LogView(isTabBarHidden: $isTabBarHidden)
-                    .navigationBarTitle("Face Log")
-                    .navigationBarTitleDisplayMode(.inline)
+//                    .navigationBarTitle("Face Log")
+//                    .navigationBarTitleDisplayMode(.inline)
                     .tabItem {
                         Image(systemName: "list.bullet.clipboard")
                         Text("Face Log")
