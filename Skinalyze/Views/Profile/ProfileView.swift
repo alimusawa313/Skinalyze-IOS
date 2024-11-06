@@ -24,6 +24,7 @@ struct ProfileView: View {
                         Group {
                             Image("Maskot")
                                 .resizable()
+                                .scaledToFit()
                                 .frame(width: 45, height: 40)
                                 .padding()
                         }

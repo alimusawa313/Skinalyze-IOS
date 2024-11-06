@@ -21,6 +21,7 @@ struct RowItemHolder: View {
             
             ForEach(ingredients.indices, id: \.self) { index in
                 IngredientRow(ingredient: $ingredients[index])
+                Divider()
             }
         }
         .padding()
@@ -41,12 +42,13 @@ struct IngredientRow: View {
                 Spacer()
                 Image(systemName: ingredient.isExpanded ? "chevron.up" : "chevron.down")
             }
+            .contentShape(Rectangle())
             if ingredient.isExpanded {
                 Text(ingredient.description)
                     .font(.subheadline)
                     .padding(.top, 5)
             }
-            Divider()
+            
         }
         .cornerRadius(10)
         .onTapGesture {

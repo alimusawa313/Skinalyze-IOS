@@ -46,10 +46,10 @@ struct SeverityIndicator: View {
                     LinearGradient(
                         stops: [
                             Gradient.Stop(color: Color(hex: "FFF3EB"), location: 0.00),
-                            Gradient.Stop(color: Color(hex: "EDE3DA"), location: 0.25),
-                            Gradient.Stop(color: Color(hex: "E5DAD1"), location: 0.50),
-                            Gradient.Stop(color: Color(hex: "DCD2C9"), location: 0.75),
-                            Gradient.Stop(color: Color(hex: "74574F"), location: 1.00),
+                            Gradient.Stop(color: Color(hex: "EDE3DA"), location: 0.00),
+                            Gradient.Stop(color: Color(hex: "E5DAD1"), location: 0.00),
+                            Gradient.Stop(color: Color(hex: "DCD2C9"), location: 0.14),
+                            Gradient.Stop(color: Color(hex: "74574F"), location: 0.75),
                         ],
                         startPoint: UnitPoint(x: 0, y: 0.5),
                         endPoint: UnitPoint(x: 1, y: 0.5)
@@ -99,7 +99,7 @@ struct SeverityIndicator: View {
 }
 
 struct SkinLevelIndicator_Previews: PreviewProvider {
-    static var previewSkinLevelScale: Int = 5
+    static var previewSkinLevelScale: Int = 0
     static var previewSkinLevel: String = "Healthy"
     
     static var previews: some View {

@@ -171,7 +171,7 @@ struct AnalyzedResultView: View {
                         
                     }
                 } else {
-                    ProductUsedView(isFromStartup: false)
+                    ProductUsedSaved()
                 }
                 
                 

@@ -11,7 +11,7 @@ import SwiftUI
 struct AcneRowItem: View {
     var title: String
     var acne: [Acne]
-
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text(title)
@@ -21,6 +21,7 @@ struct AcneRowItem: View {
             
             ForEach(acne.filter { $0.count > 0 }, id: \.id) { acneItem in
                 AcneRow(acne: acneItem)
+                Divider()
             }
         }
         .padding()
@@ -42,12 +43,13 @@ struct AcneRow: View {
                 Spacer()
                 Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
             }
+            .contentShape(Rectangle())
             if isExpanded {
                 Text(acne.description)
                     .font(.subheadline)
                     .padding(.top, 5)
             }
-            Divider()
+            
         }
         .cornerRadius(10)
         .onTapGesture {
