@@ -22,6 +22,7 @@ struct AcneRowItem: View {
             ForEach(acne.filter { $0.count > 0 }, id: \.id) { acneItem in
                 AcneRow(acne: acneItem)
                 Divider()
+                    .overlay(Color("textPrimary"))
             }
         }
         .padding()

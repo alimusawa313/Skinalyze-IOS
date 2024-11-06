@@ -22,6 +22,7 @@ struct RowItemHolder: View {
             ForEach(ingredients.indices, id: \.self) { index in
                 IngredientRow(ingredient: $ingredients[index])
                 Divider()
+                    .overlay(Color("textPrimary"))
             }
         }
         .padding()

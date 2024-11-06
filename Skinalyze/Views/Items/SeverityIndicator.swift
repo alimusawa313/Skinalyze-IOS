@@ -65,6 +65,7 @@ struct SeverityIndicator: View {
                 .overlay {
                     Capsule()
                         .stroke(style: StrokeStyle(lineWidth: 0.5))
+                        .foregroundStyle(.black)
                         .frame(width: 4, height: 10)
                         .offset(x: (indicatorPosition - screenWidth / 2) - 5)
                 }
@@ -72,7 +73,7 @@ struct SeverityIndicator: View {
             
             Text(severityLevel)
                 .font(Font.custom("Quattrocento Sans", size: 14))
-                .foregroundColor(Color(red: 0.25, green: 0.25, blue: 0.27))
+                .foregroundColor(Color("textPrimary"))
                 .padding(.top, 35)
                 .offset(x: textOffset)
         }

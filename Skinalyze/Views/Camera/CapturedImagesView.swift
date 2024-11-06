@@ -51,7 +51,7 @@ struct CapturedImagesView: View {
                             Spacer()
                         }
                         .padding()
-                        .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color("brownSecondary")))
+                        .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color(hex: "6F5750")))
                     }
                     Button{
                         router.navigateBack()
@@ -60,11 +60,11 @@ struct CapturedImagesView: View {
                             Spacer()
                             Text("Retake")
                                 .font(.headline)
-                                .foregroundStyle(Color("brownPrimary"))
+                                .foregroundStyle(Color(hex: "6F5750"))
                             Spacer()
                         }
                         .padding()
-                        .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color("brownPrimary")))
+                        .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color(hex: "DCD2C9")))
                     }
                 }
                 .padding()
