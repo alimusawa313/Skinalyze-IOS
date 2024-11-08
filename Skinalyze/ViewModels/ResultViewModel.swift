@@ -21,6 +21,9 @@ class ResultViewModel: ObservableObject{
     @Published var isAcne: String = ""
     @Published var isBlackHead: String = ""
     
+    @Published var boundingBoxImages: [UIImage] = []
+    @Published var detectedResults: [[VNRecognizedObjectObservation]] = []
+    
     //    private let skinUseCase: SkinUseCase = DefaultSkinUseCase()
     //    private let logUseCase: LogUseCase = DefaultLogUseCase()
     
@@ -192,80 +195,137 @@ class ResultViewModel: ObservableObject{
         }
     }
     
-    func drawBoundingBoxes(on image: UIImage, results: [VNRecognizedObjectObservation], originalImageSize: CGSize) -> UIImage {
-        let imageSize = originalImageSize
-        UIGraphicsBeginImageContextWithOptions(imageSize, false, 1.0)
-        
-        // Draw the original image
-        image.draw(in: CGRect(origin: .zero, size: imageSize))
-        
-        // Set up the context for drawing bounding boxes
-        guard let context = UIGraphicsGetCurrentContext() else { return image }
-        
-        context.setLineWidth(9.0)
-        
-        // Define color mapping for each label
-        let labelColorMapping: [String: UIColor] = [
-            "blackheads": UIColor.cyan,
-            "dark spot": UIColor.blue,
-            "nodules": UIColor.red,
-            "papules": UIColor.orange,
-            "pustules": UIColor.green,
-            "whiteheads": UIColor.gray,
-        ]
-        
-        for result in results {
-            let boundingBox = result.boundingBox
-            
-            // Get the label and confidence
-            let label = result.labels.first?.identifier ?? "Unknown"
-            let confidence = result.labels.first?.confidence ?? 0.0
-            
-            // Select the color based on the label
-            //            let color = labelColorMapping[label, default: UIColor.black]
-            let color = labelColorMapping[label, default: UIColor.black]
-            
-            // Set the stroke color for the bounding box
-            context.setStrokeColor(color.cgColor)
-            
-            // Convert the bounding box to the original image's coordinate system (flipping the y-axis)
-            let rect = CGRect(
-                x: boundingBox.minX * imageSize.width,
-                y: (1 - boundingBox.minY - boundingBox.height) * imageSize.height,
-                width: boundingBox.width * imageSize.width,
-                height: boundingBox.height * imageSize.height
-            )
-            
-            // Draw the bounding box
-            context.stroke(rect)
-            
-            // Draw the label text with the same color
-            let labelText = "\(label) (\(Int(confidence * 100))%)"
-            let attributes: [NSAttributedString.Key: Any] = [
-                .font: UIFont.systemFont(ofSize: 30),
-                .foregroundColor: color,
-                .backgroundColor: UIColor.white
-            ]
-            
-            // Determine where to draw the label
-            let textSize = labelText.size(withAttributes: attributes)
-            let labelRect = CGRect(
-                x: rect.origin.x,
-                y: rect.origin.y - textSize.height, // Position above the bounding box
-                width: textSize.width,
-                height: textSize.height
-            )
-            
-            // Draw the label text in the image
-            //            labelText.draw(in: labelRect, withAttributes: attributes)
-        }
-        
-        // Get the new image with bounding boxes and labels
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        return newImage ?? image
-    }
+//    func drawBoundingBoxes(on image: UIImage, results: [VNRecognizedObjectObservation], originalImageSize: CGSize) -> UIImage {
+//        let imageSize = originalImageSize
+//        UIGraphicsBeginImageContextWithOptions(imageSize, false, 1.0)
+//        
+//        // Draw the original image
+//        image.draw(in: CGRect(origin: .zero, size: imageSize))
+//        
+//        // Set up the context for drawing bounding boxes
+//        guard let context = UIGraphicsGetCurrentContext() else { return image }
+//        
+//        context.setLineWidth(9.0)
+//        
+//        // Define color mapping for each label
+//        let labelColorMapping: [String: UIColor] = [
+//            "blackheads": UIColor.cyan,
+//            "dark spot": UIColor.blue,
+//            "nodules": UIColor.red,
+//            "papules": UIColor.orange,
+//            "pustules": UIColor.green,
+//            "whiteheads": UIColor.gray,
+//        ]
+//        
+//        for result in results {
+//            let boundingBox = result.boundingBox
+//            
+//            // Get the label and confidence
+//            let label = result.labels.first?.identifier ?? "Unknown"
+//            let confidence = result.labels.first?.confidence ?? 0.0
+//            
+//            // Select the color based on the label
+//            //            let color = labelColorMapping[label, default: UIColor.black]
+//            let color = labelColorMapping[label, default: UIColor.black]
+//            
+//            // Set the stroke color for the bounding box
+//            context.setStrokeColor(color.cgColor)
+//            
+//            // Convert the bounding box to the original image's coordinate system (flipping the y-axis)
+//            let rect = CGRect(
+//                x: boundingBox.minX * imageSize.width,
+//                y: (1 - boundingBox.minY - boundingBox.height) * imageSize.height,
+//                width: boundingBox.width * imageSize.width,
+//                height: boundingBox.height * imageSize.height
+//            )
+//            
+//            // Draw the bounding box
+//            context.stroke(rect)
+//            
+//            // Draw the label text with the same color
+//            let labelText = "\(label) (\(Int(confidence * 100))%)"
+//            let attributes: [NSAttributedString.Key: Any] = [
+//                .font: UIFont.systemFont(ofSize: 30),
+//                .foregroundColor: color,
+//                .backgroundColor: UIColor.white
+//            ]
+//            
+//            // Determine where to draw the label
+//            let textSize = labelText.size(withAttributes: attributes)
+//            let labelRect = CGRect(
+//                x: rect.origin.x,
+//                y: rect.origin.y - textSize.height, // Position above the bounding box
+//                width: textSize.width,
+//                height: textSize.height
+//            )
+//            
+//            // Draw the label text in the image
+//            //            labelText.draw(in: labelRect, withAttributes: attributes)
+//        }
+//        
+//        // Get the new image with bounding boxes and labels
+//        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+//        UIGraphicsEndImageContext()
+//        
+//        return newImage ?? image
+//    }
+    
+//    func drawBoundingBoxes(on image: UIImage, results: [VNRecognizedObjectObservation], originalImageSize: CGSize) -> UIImage {
+//            UIGraphicsBeginImageContextWithOptions(originalImageSize, false, 1.0)
+//            
+//            guard let context = UIGraphicsGetCurrentContext() else { return image }
+//            context.clear(CGRect(origin: .zero, size: originalImageSize))
+//            context.setLineWidth(4.0)
+//            
+//            let labelColorMapping: [String: UIColor] = [
+//                "blackheads": UIColor.cyan,
+//                "dark spot": UIColor.blue,
+//                "nodules": UIColor.red,
+//                "papules": UIColor.orange,
+//                "pustules": UIColor.green,
+//                "whiteheads": UIColor.gray,
+//            ]
+//            
+//            for result in results {
+//                let boundingBox = result.boundingBox
+//                let label = result.labels.first?.identifier ?? "Unknown"
+//                let confidence = result.labels.first?.confidence ?? 0.0
+//                
+//                let color = labelColorMapping[label, default: UIColor.black]
+//                context.setStrokeColor(color.cgColor)
+//                
+//                let rect = CGRect(
+//                    x: boundingBox.minX * originalImageSize.width,
+//                    y: (1 - boundingBox.minY - boundingBox.height) * originalImageSize.height,
+//                    width: boundingBox.width * originalImageSize.width,
+//                    height: boundingBox.height * originalImageSize.height
+//                )
+//                
+//                context.stroke(rect)
+//                
+//                // Optional: Add label text
+//                let labelText = "\(label) (\(Int(confidence * 100))%)"
+//                let attributes: [NSAttributedString.Key: Any] = [
+//                    .font: UIFont.systemFont(ofSize: 20),
+//                    .foregroundColor: color
+//                ]
+//                
+//                let textSize = labelText.size(withAttributes: attributes)
+//                let labelRect = CGRect(
+//                    x: rect.origin.x,
+//                    y: rect.origin.y - textSize.height,
+//                    width: textSize.width,
+//                    height: textSize.height
+//                )
+//                
+//                labelText.draw(in: labelRect, withAttributes: attributes)
+//            }
+//            
+//            let newImage = UIGraphicsGetImageFromCurrentImageContext()
+//            UIGraphicsEndImageContext()
+//            
+//            return newImage ?? image
+//        }
     
     
     func resetAcneCounts() {
@@ -296,24 +356,63 @@ class ResultViewModel: ObservableObject{
             return
         }
         
+//        let request = VNCoreMLRequest(model: model) { request, error in
+//            if let error = error {
+//                print("Error in CoreML request: \(error.localizedDescription)")
+//                completion()
+//                return
+//            }
+//            
+//            if let results = request.results as? [VNRecognizedObjectObservation] {
+//                DispatchQueue.main.async {
+//                    let analyzedImage = self.drawBoundingBoxes(on: image, results: results, originalImageSize: image.size)
+//                    self.analyzedImages.append(analyzedImage)
+//                    self.updateAcneCounts(with: results) // Update counts based on detected results
+//                    completion()
+//                }
+//            } else {
+//                completion()
+//            }
+//        }
+        
+//        let request = VNCoreMLRequest(model: model) { request, error in
+//                    if let results = request.results as? [VNRecognizedObjectObservation] {
+//                        DispatchQueue.main.async {
+//                            let analyzedImage = image // Original image without bounding boxes
+//                            let boundingBoxImage = self.drawBoundingBoxes(on: image, results: results, originalImageSize: image.size)
+//                            
+//                            self.analyzedImages.append(analyzedImage)
+//                            self.boundingBoxImages.append(boundingBoxImage)
+//                            
+//                            self.updateAcneCounts(with: results)
+//                            completion()
+//                        }
+//                    } else {
+//                        completion()
+//                    }
+//                }
+        
         let request = VNCoreMLRequest(model: model) { request, error in
-            if let error = error {
-                print("Error in CoreML request: \(error.localizedDescription)")
-                completion()
-                return
-            }
-            
-            if let results = request.results as? [VNRecognizedObjectObservation] {
-                DispatchQueue.main.async {
-                    let analyzedImage = self.drawBoundingBoxes(on: image, results: results, originalImageSize: image.size)
-                    self.analyzedImages.append(analyzedImage)
-                    self.updateAcneCounts(with: results) // Update counts based on detected results
-                    completion()
-                }
-            } else {
-                completion()
-            }
-        }
+                   if let results = request.results as? [VNRecognizedObjectObservation] {
+                       DispatchQueue.main.async {
+                           let analyzedImage = image
+                           let boundingBoxImage = self.drawBoundingBoxes(
+                               on: image,
+                               results: results,
+                               originalImageSize: image.size
+                           )
+                           
+                           self.analyzedImages.append(analyzedImage)
+                           self.boundingBoxImages.append(boundingBoxImage)
+                           self.detectedResults.append(results)
+                           
+                           self.updateAcneCounts(with: results)
+                           completion()
+                       }
+                   } else {
+                       completion()
+                   }
+               }
         
         let handler = VNImageRequestHandler(ciImage: ciImage, options: [:])
         do {
@@ -325,3 +424,70 @@ class ResultViewModel: ObservableObject{
     }
     
 }
+
+
+
+extension ResultViewModel {
+    func drawBoundingBoxes(on image: UIImage, results: [VNRecognizedObjectObservation], originalImageSize: CGSize, visibleTypes: [String] = []) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(originalImageSize, false, 1.0)
+        
+        guard let context = UIGraphicsGetCurrentContext() else { return image }
+        context.clear(CGRect(origin: .zero, size: originalImageSize))
+//        context.setAlpha(0.7) // Slightly transparent
+        
+        let labelColorMapping: [String: UIColor] = [
+            "blackheads": UIColor.cyan,
+            "dark spot": UIColor.blue,
+            "nodules": UIColor.red,
+            "papules": UIColor.orange,
+            "pustules": UIColor.green,
+            "whiteheads": UIColor.gray,
+        ]
+        
+        for result in results {
+            let boundingBox = result.boundingBox
+            let label = result.labels.first?.identifier.lowercased() ?? "unknown"
+            let confidence = result.labels.first?.confidence ?? 0.0
+            
+            // Skip drawing if the label is not in visible types (or if visible types is empty)
+            guard visibleTypes.isEmpty || visibleTypes.contains(label) else {
+                continue
+            }
+            
+            let color = labelColorMapping[label, default: UIColor.black]
+            context.setStrokeColor(color.cgColor)
+            
+            let rect = CGRect(
+                x: boundingBox.minX * originalImageSize.width,
+                y: (1 - boundingBox.minY - boundingBox.height) * originalImageSize.height,
+                width: boundingBox.width * originalImageSize.width,
+                height: boundingBox.height * originalImageSize.height
+            )
+            
+            context.stroke(rect)
+            
+            // Add label text
+//            let labelText = "\(label.capitalized) (\(Int(confidence * 100))%)"
+//            let attributes: [NSAttributedString.Key: Any] = [
+//                .font: UIFont.systemFont(ofSize: 20),
+//                .foregroundColor: color
+//            ]
+            
+//            let textSize = labelText.size(withAttributes: attributes)
+//            let labelRect = CGRect(
+//                x: rect.origin.x,
+//                y: rect.origin.y - textSize.height,
+//                width: textSize.width,
+//                height: textSize.height
+//            )
+            
+//            labelText.draw(in: labelRect, withAttributes: attributes)
+        }
+        
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return newImage ?? image
+    }
+}
+

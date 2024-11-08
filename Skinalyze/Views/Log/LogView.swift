@@ -8,104 +8,224 @@
 import SwiftUI
 import SwiftData
 
+//struct LogView: View {
+//
+//    @EnvironmentObject var router: Router
+//
+//    @Binding var isTabBarHidden: Bool
+//    @State private var isComparing = false
+//
+//    @Environment(\.modelContext) private var modelContext
+//    @Query private var logs: [Result]
+//
+//    @State private var selectedLogs: [Result] = []
+//
+//    var body: some View {
+//
+//        NavigationView {
+//            ZStack {
+//                List {
+//                    let groupedLogs = groupLogsByDate(logs)
+//
+//                    ForEach(groupedLogs.keys.sorted(by: >), id: \.self) { date in
+//                        Section(header: Text(date, style: .date).font(.headline).foregroundStyle(Color("textPrimary"))) {
+//                            ForEach(groupedLogs[date]!.sorted { $0.currentDate > $1.currentDate }, id: \.id)  { log in
+//                                HStack {
+//                                    if let imageString = log.analyzedImages1, let image = imageString.toImage() {
+//                                        Image(uiImage: image)
+//                                            .resizable()
+//                                            .frame(width: 85, height: 90)
+//                                            .clipShape(RoundedRectangle(cornerRadius: 10))
+//                                    } else {
+//                                        Text("No image available")
+//                                            .foregroundColor(.gray)
+//                                    }
+//
+//                                    VStack(alignment: .leading) {
+//                                        let severityLevel = AcneSeverityLevel(rawValue: log.geaScale)!
+//                                        HStack(alignment: .center) {
+//                                            Text("\(log.currentDate, format: Date.FormatStyle(date: .none, time: .shortened))")
+//                                                .font(.footnote).bold()
+//
+//                                            Spacer()
+//
+//                                                Text(severityLevel.description)
+//                                                .font(.footnote).bold().foregroundStyle(Color("textReverse"))
+//                                                    .padding(EdgeInsets(top: 2, leading: 7, bottom: 2, trailing: 7))
+//                                                    .background(Capsule().foregroundStyle(Color("brownSecondary")))
+//
+//                                        }
+//
+//                                        HStack {
+//                                            Text(getDescription(for: severityLevel))
+//                                                .lineLimit(3)
+//                                                .font(.subheadline)
+//                                                .foregroundStyle(.primary)
+//
+//                                                Image(systemName: "chevron.forward")
+//                                                    .opacity(isComparing ? 0 : 1)
+//                                        }
+//                                    }
+//                                }
+//                                .padding(EdgeInsets(top: 13, leading: 10, bottom: 13, trailing: 10))
+//                                .overlay {
+//                                    if isComparing && selectedLogs.contains(log) {
+//                                        RoundedRectangle(cornerRadius: 10).stroke().foregroundStyle(Color("brownSecondary"))
+//                                            .padding(.vertical, -8)
+//                                            .padding(.horizontal, -5)
+//                                    }
+//                                }
+//                                .onTapGesture {
+//                                    if isComparing {
+//                                        if selectedLogs.contains(log) {
+//                                            selectedLogs.removeAll(where: { $0.id == log.id })
+//                                        } else if selectedLogs.count < 2 {
+//                                            selectedLogs.append(log)
+//                                        }
+//                                    }else{
+//                                        router.navigate(to: .detailView(selectedLogs: log))
+//                                    }
+//                                }
+//                            }
+////                            .onDelete(perform: deleteItems)
+//                            .onDelete { offsets in
+//                                        deleteItems(at: offsets, in: date)
+//                                    }
+//                        }
+////                        .listStyle(.inset)
+//                        .listRowSpacing(0)
+//                        .listRowBackground(
+//                            RoundedRectangle(cornerRadius: 10).foregroundStyle(Color("brownPrimary").opacity(0.6))
+//                                .padding(.horizontal)
+//                                .padding(.vertical, 5)
+//
+//                        )
+//                        .listRowSeparator(.hidden)
+//
+//                    }
+//                }
+//                .listStyle(.inset)
+//                .listRowSpacing(0)
+//                .navigationTitle(isComparing ? "\(selectedLogs.count) Selected" : "Face Log")
+//                .navigationBarTitleDisplayMode(.inline)
+//                .toolbar {
+//                    ToolbarItem(placement: .navigationBarTrailing) {
+//                        Button(isComparing ? "Cancel" : "Compare") {
+//                            withAnimation(.smooth) {
+//
+//                                isComparing.toggle()
+//                                isTabBarHidden = isComparing
+//                                selectedLogs = []
+//                            }
+//                        }.foregroundStyle(isComparing ? Color.red : Color("brownSecondary"))
+//                    }
+//                }
+//
+//                if isComparing {
+//                    withAnimation(.bouncy) {
+//                        VStack {
+//                            Spacer()
+//                            Button {
+//                                router.navigate(to: .compareImagesView(selectedLogs: selectedLogs))
+//                                isComparing = false
+//                                isTabBarHidden = isComparing
+//                                selectedLogs = []
+//                            } label: {
+//                                HStack {
+//                                    Spacer()
+//                                    Text("Compare")
+//                                    Spacer()
+//                                }
+//                                .foregroundStyle(.white)
+//                                .padding()
+//                                .background(Capsule().foregroundStyle(Color(hex: "6F5750")))
+//                                .padding()
+//                            }
+//                            .disabled(selectedLogs.count < 2)
+//                            .opacity(selectedLogs.count < 2 ? 0.5 : 1.0)
+//                        }
+//                    }
+//                }
+//            }
+//
+//        }
+//
+//
+//    }
+//
+//    private func groupLogsByDate(_ logs: [Result]) -> [Date: [Result]] {
+//        var groupedLogs: [Date: [Result]] = [:]
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.dateFormat = "yyyy-MM-dd"
+//
+//        for log in logs {
+//            let dateString = dateFormatter.string(from: log.currentDate)
+//            let date = dateFormatter.date(from: dateString)!
+//            groupedLogs[date, default: []].append(log)
+//        }
+//
+//        return groupedLogs
+//    }
+//
+//    private func printLogs() {
+//        print("Logs count: \(logs.count)")
+//        for log in logs {
+//            print("Log ID: \(log.id), Date: \(log.currentDate)")
+//        }
+//    }
+//
+//    private func deleteItems(at offsets: IndexSet, in section: Date) {
+//        withAnimation {
+//            let logsInSection = groupLogsByDate(logs)[section]!.sorted { $0.currentDate > $1.currentDate }
+//            for index in offsets {
+//                let logToDelete = logsInSection[index]
+//                if let indexInAllLogs = logs.firstIndex(where: { $0.id == logToDelete.id }) {
+//                    modelContext.delete(logs[indexInAllLogs])
+//                }
+//            }
+//        }
+//    }
+//
+//}
+
+
 struct LogView: View {
     
     @EnvironmentObject var router: Router
-    
     @Binding var isTabBarHidden: Bool
     @State private var isComparing = false
-    
     @Environment(\.modelContext) private var modelContext
     @Query private var logs: [Result]
-    
     @State private var selectedLogs: [Result] = []
     
     var body: some View {
-        
         NavigationView {
             ZStack {
                 List {
                     let groupedLogs = groupLogsByDate(logs)
                     
                     ForEach(groupedLogs.keys.sorted(by: >), id: \.self) { date in
-                        Section(header: Text(date, style: .date).font(.headline).foregroundStyle(Color("textPrimary"))) {
-                            ForEach(groupedLogs[date]!.sorted { $0.currentDate > $1.currentDate }, id: \.id)  { log in
-                                HStack {
-                                    if let imageString = log.analyzedImages1, let image = imageString.toImage() {
-                                        Image(uiImage: image)
-                                            .resizable()
-                                            .frame(width: 85, height: 90)
-                                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                                    } else {
-                                        Text("No image available")
-                                            .foregroundColor(.gray)
-                                    }
-                                    
-                                    VStack(alignment: .leading) {
-                                        let severityLevel = AcneSeverityLevel(rawValue: log.geaScale)!
-                                        HStack(alignment: .center) {
-                                            Text("\(log.currentDate, format: Date.FormatStyle(date: .none, time: .shortened))")
-                                                .font(.footnote).bold()
-                                            
-                                            Spacer()
-                                            
-                                                Text(severityLevel.description)
-                                                .font(.footnote).bold().foregroundStyle(Color("textReverse"))
-                                                    .padding(EdgeInsets(top: 2, leading: 7, bottom: 2, trailing: 7))
-                                                    .background(Capsule().foregroundStyle(Color("brownSecondary")))
-                                              
-                                        }
-                                        
-                                        HStack {
-                                            Text(getDescription(for: severityLevel))
-                                                .lineLimit(3)
-                                                .font(.subheadline)
-                                                .foregroundStyle(.primary)
-                                            
-                                                Image(systemName: "chevron.forward")
-                                                    .opacity(isComparing ? 0 : 1)
-                                        }
-                                    }
+                        LogSectionView(date: date,
+                                       logs: groupedLogs[date]!,
+                                       isComparing: isComparing,
+                                       selectedLogs: selectedLogs,
+                                       onLogTap: { log in
+                            if isComparing {
+                                if selectedLogs.contains(log) {
+                                    selectedLogs.removeAll(where: { $0.id == log.id })
+                                } else if selectedLogs.count < 2 {
+                                    selectedLogs.append(log)
                                 }
-                                .padding(EdgeInsets(top: 13, leading: 10, bottom: 13, trailing: 10))
-                                .overlay {
-                                    if isComparing && selectedLogs.contains(log) {
-                                        RoundedRectangle(cornerRadius: 10).stroke().foregroundStyle(Color("brownSecondary"))
-                                            .padding(.vertical, -8)
-                                            .padding(.horizontal, -5)
-                                    }
-                                }
-                                .onTapGesture {
-                                    if isComparing {
-                                        if selectedLogs.contains(log) {
-                                            selectedLogs.removeAll(where: { $0.id == log.id })
-                                        } else if selectedLogs.count < 2 {
-                                            selectedLogs.append(log)
-                                        }
-                                    }else{
-                                        router.navigate(to: .detailView(selectedLogs: log))
-                                    }
-                                }
+                            } else {
+                                router.navigate(to: .detailView(selectedLogs: log))
                             }
-//                            .onDelete(perform: deleteItems)
-                            .onDelete { offsets in
-                                        deleteItems(at: offsets, in: date)
-                                    }
-                        }
-//                        .listStyle(.inset)
-                        .listRowSpacing(0)
-                        .listRowBackground(
-                            RoundedRectangle(cornerRadius: 10).foregroundStyle(Color("brownPrimary").opacity(0.6))
-                                .padding(.horizontal)
-                                .padding(.vertical, 5)
-
-                        )
-                        .listRowSeparator(.hidden)
-                        
+                        },
+                                       onDelete: { offsets in
+                            deleteItems(at: offsets, in: date)
+                        })
                     }
                 }
                 .listStyle(.inset)
-                .listRowSpacing(0)
                 .navigationTitle(isComparing ? "\(selectedLogs.count) Selected" : "Face Log")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
@@ -122,43 +242,15 @@ struct LogView: View {
                 }
                 
                 if isComparing {
-                    withAnimation(.bouncy) {
-                        VStack {
-                            Spacer()
-                            Button {
-                                router.navigate(to: .compareImagesView(selectedLogs: selectedLogs))
-                                isComparing = false
-                                isTabBarHidden = isComparing
-                                selectedLogs = []
-                            } label: {
-                                HStack {
-                                    Spacer()
-                                    Text("Compare")
-                                    Spacer()
-                                }
-                                .foregroundStyle(.white)
-                                .padding()
-                                .background(Capsule().foregroundStyle(Color(hex: "6F5750")))
-                                .padding()
-                            }
-                            .disabled(selectedLogs.count < 2)
-                            .opacity(selectedLogs.count < 2 ? 0.5 : 1.0)
-                        }
+                    CompareButtonView(selectedLogs: selectedLogs) {
+                        router.navigate(to: .compareImagesView(selectedLogs: selectedLogs))
+                        isComparing = false
+                        isTabBarHidden = isComparing
+                        selectedLogs = []
                     }
                 }
             }
-            
         }
-//        .onChange(of: router.currentPath) { oldValue, newValue in
-//                    // Reset comparing state when returning from compareImagesView
-//                    if newValue == .root {
-//                        isComparing = false
-//                        isTabBarHidden = false
-//                        selectedLogs = []
-//                    }
-//                }
-        
-        
     }
     
     private func groupLogsByDate(_ logs: [Result]) -> [Date: [Result]] {
@@ -175,13 +267,6 @@ struct LogView: View {
         return groupedLogs
     }
     
-    private func printLogs() {
-        print("Logs count: \(logs.count)")
-        for log in logs {
-            print("Log ID: \(log.id), Date: \(log.currentDate)")
-        }
-    }
-    
     private func deleteItems(at offsets: IndexSet, in section: Date) {
         withAnimation {
             let logsInSection = groupLogsByDate(logs)[section]!.sorted { $0.currentDate > $1.currentDate }
@@ -193,7 +278,127 @@ struct LogView: View {
             }
         }
     }
+}
+
+
+struct CompareButtonView: View {
+    let selectedLogs: [Result]
+    let onCompare: () -> Void
     
+    var body: some View {
+        VStack {
+            Spacer()
+            Button {
+                onCompare()
+            } label: {
+                HStack {
+                    Spacer()
+                    Text("Compare")
+                    Spacer()
+                }
+                .foregroundStyle(.white)
+                .padding()
+                .background(Capsule().foregroundStyle(Color(hex: "6F5750")))
+                .padding()
+            }
+            .disabled(selectedLogs.count < 2)
+            .opacity(selectedLogs.count < 2 ? 0.5 : 1.0)
+        }
+    }
+}
+
+
+struct LogSectionView: View {
+    let date: Date
+    let logs: [Result]
+    let isComparing: Bool
+    let selectedLogs: [Result]
+    let onLogTap: (Result) -> Void
+    let onDelete: (IndexSet) -> Void
+    
+    var body: some View {
+        Section(header: Text(date, style: .date).font(.headline).foregroundStyle(Color("textPrimary"))) {
+            ForEach(logs.sorted { $0.currentDate > $1.currentDate}, id: \.id ) { log in
+                let image1: String? = log.image1
+                let image2: String? = log.image2
+                let image3: String? = log.image3
+                
+                // Create an array of optional strings
+                let images: [String?] = [image1, image2, image3]
+                
+                // Navigate to the analysis result view
+                LogRowView(log: log,
+                           isComparing: isComparing,
+                           onTap: {
+                    onLogTap(log)
+                },
+                           isSelected: selectedLogs.contains(log))
+            }
+            .onDelete(perform: onDelete)
+        }
+        .listRowSpacing(0)
+        .listRowBackground(
+            RoundedRectangle(cornerRadius: 10).foregroundStyle(Color("brownPrimary").opacity(0.6))
+                .padding(.horizontal)
+                .padding(.vertical, 5)
+        )
+        .listRowSeparator(.hidden)
+    }
+}
+
+struct LogRowView: View {
+    let log: Result
+    let isComparing: Bool
+    let onTap: () -> Void
+    let isSelected: Bool
+    
+    var body: some View {
+        HStack {
+            if let imageString = log.analyzedImages1, let image = imageString.toImage() {
+                Image(uiImage: image)
+                    .resizable()
+                    .frame(width: 85, height: 90)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+            } else {
+                Text("No image available")
+                    .foregroundColor(.gray)
+            }
+            
+            VStack(alignment: .leading) {
+                let severityLevel = AcneSeverityLevel(rawValue: log.geaScale)!
+                HStack(alignment: .center) {
+                    Text("\(log.currentDate, format: Date.FormatStyle(date: .none, time: .shortened))")
+                        .font(.footnote).bold()
+                    
+                    Spacer()
+                    
+                    Text(severityLevel.description)
+                        .font(.footnote).bold().foregroundStyle(Color("textReverse"))
+                        .padding(EdgeInsets(top: 2, leading: 7, bottom: 2, trailing: 7))
+                        .background(Capsule().foregroundStyle(Color("brownSecondary")))
+                }
+                
+                HStack {
+                    Text(getDescription(for: severityLevel))
+                        .lineLimit(3)
+                        .font(.subheadline)
+                        .foregroundStyle(.primary)
+                    
+                    Image(systemName: "chevron.forward")
+                        .opacity(isComparing ? 0 : 1)
+                }
+            }
+        }
+        .padding(EdgeInsets(top: 13, leading: 10, bottom: 13, trailing: 10))
+        .overlay {
+            if isComparing && isSelected {
+                RoundedRectangle(cornerRadius: 10).stroke().foregroundStyle(Color("brownSecondary"))
+                    .padding(.vertical, -8)
+                    .padding(.horizontal, -5)
+            }
+        }
+        .onTapGesture(perform: onTap)
+    }
 }
 
 //#Preview {

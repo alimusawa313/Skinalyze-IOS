@@ -203,9 +203,9 @@ struct CompareView: View {
 }
 
 
-#Preview {
-    CompareView(selectedLogs: [Result(images: ["imageTest", "imageTest", "imageTest"], selectedCardIndex: 0, analyzedImages: ["imageTest", "imageTest", "imageTest"], isLoading: false, acneCounts: ["Popules": 89, "Pustul": 10], geaScale: 2, currentDate: Date.now), Result(images: ["imageTest", "imageTest", "imageTest"], selectedCardIndex: 0, analyzedImages: ["imageTest", "imageTest", "imageTest"], isLoading: false, acneCounts: ["Popules": 5, "Pustul": 10], geaScale: 2, currentDate: Date.now)])
-}
+//#Preview {
+//    CompareView(selectedLogs: [Result(images: ["imageTest", "imageTest", "imageTest"], selectedCardIndex: 0, analyzedImages: ["imageTest", "imageTest", "imageTest"], isLoading: false, acneCounts: ["Popules": 89, "Pustul": 10], geaScale: 2, currentDate: Date.now), Result(images: ["imageTest", "imageTest", "imageTest"], selectedCardIndex: 0, analyzedImages: ["imageTest", "imageTest", "imageTest"], isLoading: false, acneCounts: ["Popules": 5, "Pustul": 10], geaScale: 2, currentDate: Date.now)])
+//}
 
 
 

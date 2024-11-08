@@ -29,8 +29,10 @@ struct AnalyzedResultView: View {
     
     @State var selectedCardIndex = 0
     
-    // Dictionary to store counts of each acne type
-
+    @State private var isShowingBoundingBoxes = false
+    @State private var visibleAcneTypes: Set<String> = Set(["blackheads", "dark spot", "nodules", "papules", "pustules", "whiteheads"])
+    
+    
     
     @State var images: [UIImage] = []
     
@@ -64,11 +66,42 @@ struct AnalyzedResultView: View {
                 } else if !viewmodel.analyzedImages.isEmpty {
                     TabView(selection: $currentIndex) {
                         ForEach(viewmodel.analyzedImages.indices, id: \.self) { index in
-                            Image(uiImage: viewmodel.analyzedImages[index])
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 2)
-                                .tag(index)
+                            //                            Image(uiImage: viewmodel.analyzedImages[index])
+                            //                                .resizable()
+                            //                                .scaledToFit()
+                            //                                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 2)
+                            //                                .tag(index)
+                            
+                            //                            ZStack {
+                            //                                Image(uiImage: viewmodel.analyzedImages[index])
+                            //                                    .resizable()
+                            //                                    .scaledToFit()
+                            //                                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 2)
+                            //
+                            //                                if isShowingBoundingBoxes {
+                            //                                    Image(uiImage: viewmodel.boundingBoxImages[index])
+                            //                                        .resizable()
+                            //                                        .scaledToFit()
+                            //                                        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 2)
+                            //                                        .allowsHitTesting(false)
+                            //                                }
+                            //                            }
+                            //                            .tag(index)
+                            
+                            
+                            ZStack {
+                                Image(uiImage: viewmodel.analyzedImages[index])
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 2)
+                                
+                                Image(uiImage: filteredBoundingBoxImage(at: index))
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 2)
+                                    .allowsHitTesting(false)
+                            }
+                            .tag(index)
                         }
                     }
                     .frame(height: UIScreen.main.bounds.height / 2)
@@ -109,6 +142,11 @@ struct AnalyzedResultView: View {
                 .padding(5)
                 .background(Capsule().foregroundStyle(.tertiary))
                 
+//                Toggle("Show Bounding Boxes", isOn: $isShowingBoundingBoxes)
+//                    .padding()
+                
+                
+                
                 HStack {
                     Text("Severity Level")
                         .font(.title3)
@@ -133,23 +171,46 @@ struct AnalyzedResultView: View {
                 
                 
                 // Display counts for each acne type
+                //                ScrollView(.horizontal, showsIndicators: false) {
+                //                    HStack(spacing: 5) {
+                //                        ForEach(viewmodel.acneCounts.keys.sorted().filter { viewmodel.acneCounts[$0] ?? 0 > 0 }, id: \.self) { key in
+                //                            RoundedRectangle(cornerRadius: 10)
+                //                                .fill(Color("capsuleBg").opacity(0.8))
+                //                                .overlay(
+                //                                    Text("\(key.capitalized) (\(viewmodel.acneCounts[key] ?? 0))")
+                //                                        .bold()
+                //                                        .font(.footnote)
+                //                                        .foregroundColor(.white)
+                //                                )
+                //                                .frame(width: 120, height: 40)
+                //                        }
+                //                    }
+                //                    .padding(.horizontal, 16)
+                //                }
+                //                .padding(.horizontal, -15)
+                
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 5) {
-                        ForEach(viewmodel.acneCounts.keys.sorted().filter { viewmodel.acneCounts[$0] ?? 0 > 0 }, id: \.self) { key in
-                            RoundedRectangle(cornerRadius: 10)
-                                .fill(Color("capsuleBg").opacity(0.8))
-                                .overlay(
-                                    Text("\(key.capitalized) (\(viewmodel.acneCounts[key] ?? 0))")
-                                        .bold()
-                                        .font(.footnote)
-                                        .foregroundColor(.white)
-                                )
-                                .frame(width: 120, height: 40)
+                    HStack {
+                        ForEach(["blackheads", "dark spot", "nodules", "papules", "pustules", "whiteheads"], id: \.self) { acneType in
+                            Button(action: {
+                                if visibleAcneTypes.contains(acneType) {
+                                    visibleAcneTypes.remove(acneType)
+                                } else {
+                                    visibleAcneTypes.insert(acneType)
+                                }
+                            }) {
+                                HStack {
+                                    Image(systemName: visibleAcneTypes.contains(acneType) ? "checkmark.square.fill" : "square")
+                                    Text(acneType.capitalized)
+                                }
+                                .padding(8)
+                                .background(visibleAcneTypes.contains(acneType) ? Color.blue.opacity(0.1) : Color.gray.opacity(0.1))
+                                .cornerRadius(10)
+                            }
                         }
                     }
-                    .padding(.horizontal, 16)
+                    .padding()
                 }
-                .padding(.horizontal, -15)
                 
                 if viewmodel.geaScale > 0{
                     AcneRowItem(title: "Skin Concern", acne: acneTypesWithCounts)
@@ -188,6 +249,22 @@ struct AnalyzedResultView: View {
                 }
             }
         }
+    }
+    
+    func filteredBoundingBoxImage(at index: Int) -> UIImage {
+        guard index < viewmodel.boundingBoxImages.count else {
+            return UIImage()
+        }
+        
+        // Pass the visible types to the bounding box drawing method
+        let filteredImage = viewmodel.drawBoundingBoxes(
+            on: viewmodel.analyzedImages[index],
+            results: viewmodel.detectedResults[index],
+            originalImageSize: viewmodel.analyzedImages[index].size,
+            visibleTypes: Array(visibleAcneTypes)
+        )
+        
+        return filteredImage
     }
     
     func saveData() {

@@ -21,7 +21,7 @@ struct CapturedImagesView: View {
         ZStack {
             
             VStack {
-                TabView() {
+                TabView() { 
                     ForEach(images, id: \.self) { index in
                         Image(uiImage: index)
                             .resizable()
