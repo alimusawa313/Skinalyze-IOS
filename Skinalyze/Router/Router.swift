@@ -18,7 +18,9 @@ final class Router: ObservableObject {
         case capturedImagesView(images: [UIImage])
         case anlyzResultView(images: [UIImage])
         case compareImagesView(selectedLogs: [Result])
+        case newCompareImagesView(selectedLogs: [Result])
         case detailView(selectedLogs: Result)
+        case newDetailView(selectedLogs: Result)
         case chatView(isFromStartup: Bool)
         case productUsedView(isFromStartup: Bool)
     }

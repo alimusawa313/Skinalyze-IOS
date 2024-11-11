@@ -1,41 +1,40 @@
 //
-//  AnalyzedResultView.swift
+//  NewDetailViewTest.swift
 //  Skinalyze
 //
-//  Created by Ali Haidar on 10/15/24.
+//  Created by Ali Haidar on 11/8/24.
 //
-
 import SwiftUI
 import Vision
 import CoreML
 import SwiftData
 
-struct AnalyzedResultView: View {
-    
+struct NewDetailViewTest: View {
     
     @EnvironmentObject var router: Router
-    
     @ObservedObject var viewmodel: ResultViewModel = ResultViewModel()
     @State private var currentDate = Date()
     
-    
     @State private var selectedView = 0
-    
     @State private var currentIndex = 0
-    
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
-    @Query private var result: [Result]
-    
     @State var selectedCardIndex = 0
-    
     @State private var isShowingBoundingBoxes = false
-//    @State private var visibleAcneTypes: Set<String> = Set(["blackheads", "dark spot", "nodules", "papules", "pustules", "whiteheads"])
+    //    @State private var visibleAcneTypes: Set<String> = Set(["blackheads", "dark spot", "nodules", "papules", "pustules", "whiteheads"])
+    
     @State private var visibleAcneTypes: Set<String> = []
     
     
     
-    @State var images: [UIImage] = []
+    var selectedLogs: Result // The selected log containing the images
+    var images: [UIImage] { // Extract images from selectedLogs
+        return [
+            selectedLogs.image1?.toImage(),
+            selectedLogs.image2?.toImage(),
+            selectedLogs.image3?.toImage()
+        ].compactMap { $0 } // Ensure we only get non-nil images
+    }
     
     private var acneTypesWithCounts: [Acne] {
         viewmodel.acneTypes.map { acne in
@@ -45,23 +44,19 @@ struct AnalyzedResultView: View {
         }
     }
     
-    
     var body: some View {
-        ScrollView{
-            
-            VStack{
-                
-                HStack(alignment: .center){
-                    
-                    
+        ScrollView {
+            VStack {
+                // Display the current date
+                HStack(alignment: .center) {
                     Text(currentDate, format: .dateTime.day().month().year())
-                    
                     Text("at")
                     Text(currentDate, format: .dateTime.hour().minute())
-                    
-                }.font(.subheadline)
-                    .bold()
+                }
+                .font(.subheadline)
+                .bold()
                 
+                // Show loading indicator or analyze results
                 if viewmodel.isLoading {
                     ProgressView("Analyzing Images...")
                 } else if !viewmodel.analyzedImages.isEmpty {
@@ -98,20 +93,19 @@ struct AnalyzedResultView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                     .onAppear {
-                        analyzeImages()
+                        analyzeImages() // Analyze images when the view appears
                     }
                 } else {
-                    ZStack{
-                        
+                    ZStack {
                         RoundedRectangle(cornerRadius: 10)
                             .frame(width: .infinity, height: UIScreen.main.bounds.height / 2)
-                        
                         Text("No images available").foregroundStyle(.white)
                     }
                 }
                 
+                // Indicator for the current image in the TabView
                 HStack {
-                    ForEach(0..<3) { index in
+                    ForEach(0..<images.count, id: \.self) { index in
                         Circle()
                             .frame(width: 8)
                             .foregroundColor(index == currentIndex ? .primary : .secondary)
@@ -120,11 +114,7 @@ struct AnalyzedResultView: View {
                 .padding(5)
                 .background(Capsule().foregroundStyle(.tertiary))
                 
-//                Toggle("Show Bounding Boxes", isOn: $isShowingBoundingBoxes)
-//                    .padding()
-                
-                
-                
+                // Severity // Level section
                 HStack {
                     Text("Severity Level")
                         .font(.title3)
@@ -148,27 +138,6 @@ struct AnalyzedResultView: View {
                     .foregroundStyle(.secondary)
                     .font(.custom("", size: 15))
                     .padding(.vertical, 5)
-                
-                
-                // Display counts for each acne type
-                //                ScrollView(.horizontal, showsIndicators: false) {
-                //                    HStack(spacing: 5) {
-                //                        ForEach(viewmodel.acneCounts.keys.sorted().filter { viewmodel.acneCounts[$0] ?? 0 > 0 }, id: \.self) { key in
-                //                            RoundedRectangle(cornerRadius: 10)
-                //                                .fill(Color("capsuleBg").opacity(0.8))
-                //                                .overlay(
-                //                                    Text("\(key.capitalized) (\(viewmodel.acneCounts[key] ?? 0))")
-                //                                        .bold()
-                //                                        .font(.footnote)
-                //                                        .foregroundColor(.white)
-                //                                )
-                //                                .frame(width: 120, height: 40)
-                //                        }
-                //                    }
-                //                    .padding(.horizontal, 16)
-                //                }
-                //                .padding(.horizontal, -15)
-                
                 
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
@@ -197,10 +166,9 @@ struct AnalyzedResultView: View {
                     .padding(.bottom)
                 }
                 
-                if viewmodel.geaScale > 0{
+                if viewmodel.geaScale > 0 {
                     AcneRowItem(title: "Skin Concern", acne: acneTypesWithCounts)
                 }
-                
                 
                 Picker("", selection: $selectedView) {
                     Text("Ingredients").tag(0)
@@ -214,46 +182,20 @@ struct AnalyzedResultView: View {
                         RowItemHolder(title: "Ingredients Recommendations", ingredients: $viewmodel.ingredients)
                             .padding(.bottom)
                         RowItemHolder(title: "Ingredients You Should Avoid", ingredients: $viewmodel.ingredientsNotRec)
-                        
                     }
                 } else {
                     ProductUsedSaved()
                 }
-                
-                
             }
             .padding()
         }
         .navigationTitle("Scan Result")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button("Done") {
-                    // Call the save function here
-                    saveData()
-                }
-            }
-        }
         .onAppear{
             setInitialVisibleAcneType()
         }
+        
     }
-    
-//    func filteredBoundingBoxImage(at index: Int) -> UIImage {
-//        guard index < viewmodel.boundingBoxImages.count else {
-//            return UIImage()
-//        }
-//        
-//        // Pass the visible types to the bounding box drawing method
-//        let filteredImage = viewmodel.drawBoundingBoxes(
-//            on: viewmodel.analyzedImages[index],
-//            results: viewmodel.detectedResults[index],
-//            originalImageSize: viewmodel.analyzedImages[index].size,
-//            visibleTypes: Array(visibleAcneTypes)
-//        )
-//        
-//        return filteredImage
-//    }
     
     private func setInitialVisibleAcneType() {
         let availableTypes = viewmodel.acneCounts.keys.sorted().filter { viewmodel.acneCounts[$0] ?? 0 > 0 }
@@ -289,36 +231,6 @@ struct AnalyzedResultView: View {
         return filteredImage
     }
     
-    func saveData() {
-        let imagesBase64 = images.compactMap { $0.base64 }
-        let analyzedImagesBase64 = viewmodel.analyzedImages.compactMap { $0.base64 }
-        let boundingBoxImagesBase64 = viewmodel.boundingBoxImages.compactMap { $0.base64 }
-        
-        let result = Result(
-            images: imagesBase64,
-            selectedCardIndex: selectedCardIndex,
-            analyzedImages: analyzedImagesBase64,
-            isLoading: viewmodel.isLoading,
-            acneCounts: viewmodel.acneCounts,
-            geaScale: viewmodel.geaScale,
-            currentDate: currentDate,
-            boundingBoxImages: boundingBoxImagesBase64
-        )
-        
-        // Insert the result into the model context
-        modelContext.insert(result)
-        
-        // Save the model context
-        do {
-            router.navigateToRoot()
-            try modelContext.save()
-            print("Data saved successfully!")
-        } catch {
-            print("Error saving data: \(error.localizedDescription)")
-        }
-    }
-    
-    
     func analyzeImages() {
         viewmodel.analyzedImages.removeAll()
         viewmodel.isLoading = true
@@ -338,19 +250,8 @@ struct AnalyzedResultView: View {
             viewmodel.calculateGEAScale() // Calculate the GEA Scale after detection
         }
     }
-    
 }
 
-#Preview {
-    AnalyzedResultView()
-}
-
-
-extension UIImage {
-    func resized(to targetSize: CGSize) -> UIImage? {
-        let renderer = UIGraphicsImageRenderer(size: targetSize)
-        return renderer.image { _ in
-            self.draw(in: CGRect(origin: .zero, size: targetSize))
-        }
-    }
-}
+//#Preview {
+//    NewDetailViewTest(selectedLogs: Result()) // Provide a mock or real Result object
+//}

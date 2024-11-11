@@ -433,7 +433,8 @@ extension ResultViewModel {
         
         guard let context = UIGraphicsGetCurrentContext() else { return image }
         context.clear(CGRect(origin: .zero, size: originalImageSize))
-//        context.setAlpha(0.7) // Slightly transparent
+        context.setAlpha(0.7) 
+        context.setLineWidth(4.0)
         
         let labelColorMapping: [String: UIColor] = [
             "blackheads": UIColor.cyan,

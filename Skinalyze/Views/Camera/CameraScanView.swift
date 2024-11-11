@@ -77,6 +77,7 @@ struct CameraScanView: View {
                             .foregroundColor(.white)
                             .padding(10)
                             .background(viewModel.lightingCondition == "normal" ? Color(hex: "5F7955").opacity(0.57) : Color(hex: "DF0D0D").opacity(0.25))
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
                                     .stroke(Color.white)
@@ -123,6 +124,7 @@ struct CameraScanView: View {
                             .foregroundColor(.white)
                             .padding(10)
                             .background(viewModel.faceDistanceStatus == "Normal" ? Color(hex: "5F7955").opacity(0.57) : Color(hex: "DF0D0D").opacity(0.25))
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
                                     .stroke(Color.white)
