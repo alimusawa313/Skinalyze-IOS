@@ -25,7 +25,7 @@ struct NewDetailViewTest: View {
     
     @State private var visibleAcneTypes: Set<String> = []
     
-    
+    @Namespace private var namespace
     
     var selectedLogs: Result // The selected log containing the images
     var images: [UIImage] { // Extract images from selectedLogs
@@ -75,6 +75,7 @@ struct NewDetailViewTest: View {
                                     .clipShape(RoundedRectangle(cornerRadius: 10))
                             }
                             .tag(index)
+                            
                         }
                     }
                     .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))

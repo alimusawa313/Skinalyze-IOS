@@ -21,18 +21,20 @@ struct CapturedImagesView: View {
         ZStack {
             
             VStack {
-                TabView() { 
+                TabView() {
                     ForEach(images, id: \.self) { index in
+                        
                         Image(uiImage: index)
                             .resizable()
                             .scaledToFit()
-                            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 2)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
+                        
                             .tag(index)
                     }
                 }
-                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 2)
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
+                .frame(height: UIScreen.main.bounds.height / 1.5)
+                .padding(.horizontal)
                 
                 
                 Spacer()
@@ -76,6 +78,6 @@ struct CapturedImagesView: View {
     }
 }
 
-//#Preview {
-//    CapturedImagesView(images: [.imageTest])
-//}
+#Preview {
+    CapturedImagesView(images: [])
+}

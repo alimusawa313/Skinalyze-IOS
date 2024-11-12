@@ -17,6 +17,8 @@ struct LogView: View {
     @Query private var logs: [Result]
     @State private var selectedLogs: [Result] = []
     
+    @Namespace private var namespace
+    
     var body: some View {
         NavigationView {
             ZStack {
@@ -152,13 +154,13 @@ struct LogSectionView: View {
                            isSelected: selectedLogs.contains(log))
             }
             .onDelete(perform: onDelete)
-//            .swipeActions(edge: .trailing) {
-//                            Button(role: .destructive) {
-//                                // This is handled by the onDelete closure
-//                            } label: {
-//                                Image(systemName: "trash")
-//                            }
-//                        }
+            //            .swipeActions(edge: .trailing) {
+            //                            Button(role: .destructive) {
+            //                                // This is handled by the onDelete closure
+            //                            } label: {
+            //                                Image(systemName: "trash")
+            //                            }
+            //                        }
         }
         .listRowSpacing(0)
         .listRowBackground(
@@ -176,13 +178,22 @@ struct LogRowView: View {
     let onTap: () -> Void
     let isSelected: Bool
     
+    @Namespace private var namespace
     var body: some View {
         HStack {
             if let imageString = log.analyzedImages1, let image = imageString.toImage() {
-                Image(uiImage: image)
-                    .resizable()
-                    .frame(width: 85, height: 90)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                if #available(iOS 18.0, *) {
+                    Image(uiImage: image)
+                        .resizable()
+                        .matchedTransitionSource(id: "thumbnailImage", in: namespace)
+                        .frame(width: 85, height: 90)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                } else {
+                    Image(uiImage: image)
+                        .resizable()
+                        .frame(width: 85, height: 90)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                }
             } else {
                 Text("No image available")
                     .foregroundColor(.gray)

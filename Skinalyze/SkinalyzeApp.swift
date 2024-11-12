@@ -13,6 +13,7 @@ struct SkinalyzeApp: App {
     
     @StateObject var router = Router()
     @State private var tintColor: Color = Color("brownSecondary")
+    @Namespace private var namespace
     
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -62,8 +63,14 @@ struct SkinalyzeApp: App {
                             ProductUsedView(isFromStartup: isFromStartup)
                                 .environmentObject(router)
                         case .newDetailView(selectedLogs: let selectedLogs):
-                            NewDetailViewTest(selectedLogs: selectedLogs)
-                                .environmentObject(router)
+                            if #available(iOS 18.0, *) {
+                                NewDetailViewTest(selectedLogs: selectedLogs)
+                                    .environmentObject(router)
+//                                    .navigationTransition(.zoom(sourceID: "thumbnailImage", in: namespace))
+                            } else {
+                                NewDetailViewTest(selectedLogs: selectedLogs)
+                                    .environmentObject(router)
+                            }
                         case .newCompareImagesView(selectedLogs: let selectedLogs):
                             NewCompareView(selectedLogs: selectedLogs)
                                 .environmentObject(router)
