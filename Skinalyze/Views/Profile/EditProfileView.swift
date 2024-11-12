@@ -47,7 +47,7 @@ struct EditProfileView: View {
                         .multilineTextAlignment(.trailing)
                 }
                 .padding()
-                .background(Color.white)
+                .background(Color("TextReverse"))
                 
                 Divider()
                     .padding(.leading)
@@ -62,7 +62,7 @@ struct EditProfileView: View {
                         .font(.system(size: 16))
                 }
                 .padding()
-                .background(Color.white)
+                .background(Color("TextReverse"))
                 Divider()
                     .padding(.leading)
                 
@@ -81,18 +81,19 @@ struct EditProfileView: View {
                     .font(.system(size: 16))
                 }
                 .padding()
-                .background(Color.white)
+                .background(Color("TextReverse"))
             }
-            .background(Color(UIColor.systemGroupedBackground)) // Sesuaikan dengan latar belakang
+            .background(Color("TextReverse")) // Sesuaikan dengan latar belakang
             .cornerRadius(10)
             .overlay(
                 RoundedRectangle(cornerRadius: 10)
-                    .stroke(Color.brown, lineWidth: 1) // Border warna coklat
+                    .stroke(Color("textPrimary"), lineWidth: 1) // Border warna coklat
             )
             .padding()
             
             Spacer()
         }
+        .background(Color("splashScreen"))
         .navigationTitle("Edit Profile")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden()
@@ -104,4 +105,8 @@ struct EditProfileView: View {
             }
         }
     }
+}
+
+#Preview{
+    EditProfileView()
 }

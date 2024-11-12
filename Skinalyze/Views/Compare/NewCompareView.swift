@@ -18,146 +18,150 @@ struct NewCompareView: View {
     
     
     var body: some View {
-        ScrollView{
-            VStack {
-                ZStack {
-                    if selectedLogs.count == 2 {
-                        displayImages(for: selectedSide)
-                    }
-                }
-                
-                Picker("", selection: $selectedSide) {
-                    Text("Left").tag(1)
-                    Text("Front").tag(0)
-                    Text("Right").tag(2)
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .padding(.vertical)
-                
-                HStack{
-                    VStack{
-                        Text("\(selectedLogs[1].currentDate, format: Date.FormatStyle(date: .abbreviated, time: .shortened))")
-                        
-                        HStack {
-                            Text("Severity Level")
-                                .font(.footnote)
-                                .bold()
-                                .foregroundColor(Color("textPrimary"))
-                            Spacer()
-                            let severityLevel = AcneSeverityLevel(rawValue: selectedLogs[1].geaScale)!
-                            Text("\(severityLevel)")
-                                .font(.footnote)
-                                .foregroundStyle(Color("textReverse"))
-                                .padding(EdgeInsets(top: 2, leading: 7, bottom: 2, trailing: 7))
-                                .background(Capsule().foregroundStyle(Color("brownSecondary")))
+        ZStack{
+            
+            Color("splashScreen").ignoresSafeArea()
+            ScrollView{
+                VStack {
+                    ZStack {
+                        if selectedLogs.count == 2 {
+                            displayImages(for: selectedSide)
                         }
-                        .padding()
-                        .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color("rowItemBg")))
-                        
-                        if !selectedLogs[1].acneCounts.filter ({ $0.value > 0 }).isEmpty {
-                            VStack(alignment:.leading, spacing: 5) {
-                                Text("Skin Concern")
+                    }
+                    
+                    Picker("", selection: $selectedSide) {
+                        Text("Left").tag(1)
+                        Text("Front").tag(0)
+                        Text("Right").tag(2)
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                    .padding(.vertical)
+                    
+                    HStack{
+                        VStack{
+                            Text("\(selectedLogs[1].currentDate, format: Date.FormatStyle(date: .abbreviated, time: .shortened))")
+                            
+                            HStack {
+                                Text("Severity Level")
                                     .font(.footnote)
                                     .bold()
                                     .foregroundColor(Color("textPrimary"))
-                                ForEach(selectedLogs[1].acneCounts.keys.sorted().filter { selectedLogs[1].acneCounts[$0] ?? 0 > 0 }, id: \.self) { key in
-                                    HStack{
-                                        Text("\(key.capitalized)")
-                                            .font(.footnote)
-                                            .foregroundColor(Color("textPrimary"))
-                                        
-                                        Spacer()
-                                        
-                                        Text("\(selectedLogs[1].acneCounts[key] ?? 0)")
-                                            .frame(width: 40, height: 35)
-                                            .foregroundStyle(Color("textReverse"))
-                                            .background(Circle().foregroundStyle(Color("brownSecondary")))
-                                        
-                                    }
-                                    
-                                    Divider()
-                                        .overlay(Color("textPrimary"))
-                                }
+                                Spacer()
+                                let severityLevel = AcneSeverityLevel(rawValue: selectedLogs[1].geaScale)!
+                                Text("\(severityLevel)")
+                                    .font(.footnote)
+                                    .foregroundStyle(Color("textReverse"))
+                                    .padding(EdgeInsets(top: 2, leading: 7, bottom: 2, trailing: 7))
+                                    .background(Capsule().foregroundStyle(Color("brownSecondary")))
                             }
                             .padding()
                             .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color("rowItemBg")))
-                        }
-                        
-                        Spacer()
-                        
-                    }.frame(maxWidth: .infinity)
-                    
-                    //                    Divider()
-                    
-                    
-                    VStack{
-                        Text("\(selectedLogs[0].currentDate, format: Date.FormatStyle(date: .abbreviated, time: .shortened))")
-                        
-                        HStack {
-                            Text("Severity Level")
-                                .font(.footnote)
-                                .bold()
-                                .foregroundColor(Color("textPrimary"))
+                            
+                            if !selectedLogs[1].acneCounts.filter ({ $0.value > 0 }).isEmpty {
+                                VStack(alignment:.leading, spacing: 5) {
+                                    Text("Skin Concern")
+                                        .font(.footnote)
+                                        .bold()
+                                        .foregroundColor(Color("textPrimary"))
+                                    ForEach(selectedLogs[1].acneCounts.keys.sorted().filter { selectedLogs[1].acneCounts[$0] ?? 0 > 0 }, id: \.self) { key in
+                                        HStack{
+                                            Text("\(key.capitalized)")
+                                                .font(.footnote)
+                                                .foregroundColor(Color("textPrimary"))
+                                            
+                                            Spacer()
+                                            
+                                            Text("\(selectedLogs[1].acneCounts[key] ?? 0)")
+                                                .frame(width: 40, height: 35)
+                                                .foregroundStyle(Color("textReverse"))
+                                                .background(Circle().foregroundStyle(Color("brownSecondary")))
+                                            
+                                        }
+                                        
+                                        Divider()
+                                            .overlay(Color("textPrimary"))
+                                    }
+                                }
+                                .padding()
+                                .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color("rowItemBg")))
+                            }
+                            
                             Spacer()
-                            let severityLevel = AcneSeverityLevel(rawValue: selectedLogs[0].geaScale)!
-                            Text("\(severityLevel)")
-                                .font(.footnote)
-                                .foregroundStyle(Color("textReverse"))
-                                .padding(EdgeInsets(top: 2, leading: 7, bottom: 2, trailing: 7))
-                                .background(Capsule().foregroundStyle(Color("brownSecondary")))
-                        }
-                        .padding()
-                        .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color("rowItemBg")))
+                            
+                        }.frame(maxWidth: .infinity)
                         
-                        if !selectedLogs[0].acneCounts.filter ({ $0.value > 0 }).isEmpty {
-                            VStack(alignment:.leading, spacing: 5) {
-                                Text("Skin Concern")
+                        //                    Divider()
+                        
+                        
+                        VStack{
+                            Text("\(selectedLogs[0].currentDate, format: Date.FormatStyle(date: .abbreviated, time: .shortened))")
+                            
+                            HStack {
+                                Text("Severity Level")
                                     .font(.footnote)
                                     .bold()
                                     .foregroundColor(Color("textPrimary"))
-                                ForEach(selectedLogs[0].acneCounts.keys.sorted().filter { selectedLogs[0].acneCounts[$0] ?? 0 > 0 }, id: \.self) { key in
-                                    HStack{
-                                        Text("\(key.capitalized)")
-                                            .font(.footnote)
-                                            .foregroundColor(Color("textPrimary"))
-                                        
-                                        Spacer()
-                                        
-                                        Text("\(selectedLogs[0].acneCounts[key] ?? 0)")
-                                            .frame(width: 40, height: 35)
-                                            .foregroundStyle(Color("textReverse"))
-                                            .background(Circle().foregroundStyle(Color("brownSecondary")))
-                                        
-                                    }
-                                    
-                                    Divider()
-                                        .overlay(Color("textPrimary"))
-                                }
+                                Spacer()
+                                let severityLevel = AcneSeverityLevel(rawValue: selectedLogs[0].geaScale)!
+                                Text("\(severityLevel)")
+                                    .font(.footnote)
+                                    .foregroundStyle(Color("textReverse"))
+                                    .padding(EdgeInsets(top: 2, leading: 7, bottom: 2, trailing: 7))
+                                    .background(Capsule().foregroundStyle(Color("brownSecondary")))
                             }
                             .padding()
                             .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color("rowItemBg")))
+                            
+                            if !selectedLogs[0].acneCounts.filter ({ $0.value > 0 }).isEmpty {
+                                VStack(alignment:.leading, spacing: 5) {
+                                    Text("Skin Concern")
+                                        .font(.footnote)
+                                        .bold()
+                                        .foregroundColor(Color("textPrimary"))
+                                    ForEach(selectedLogs[0].acneCounts.keys.sorted().filter { selectedLogs[0].acneCounts[$0] ?? 0 > 0 }, id: \.self) { key in
+                                        HStack{
+                                            Text("\(key.capitalized)")
+                                                .font(.footnote)
+                                                .foregroundColor(Color("textPrimary"))
+                                            
+                                            Spacer()
+                                            
+                                            Text("\(selectedLogs[0].acneCounts[key] ?? 0)")
+                                                .frame(width: 40, height: 35)
+                                                .foregroundStyle(Color("textReverse"))
+                                                .background(Circle().foregroundStyle(Color("brownSecondary")))
+                                            
+                                        }
+                                        
+                                        Divider()
+                                            .overlay(Color("textPrimary"))
+                                    }
+                                }
+                                .padding()
+                                .background(RoundedRectangle(cornerRadius: 10).foregroundStyle(Color("rowItemBg")))
+                            }
+                            
+                            Spacer()
+                            
                         }
-                        
-                        Spacer()
-                        
+                        .frame(maxWidth: .infinity)
                     }
-                    .frame(maxWidth: .infinity)
+                    
+                    Spacer()
                 }
-                
-                Spacer()
+                .padding()
             }
-            .padding()
-        }
-        .navigationTitle("Comparison Result")
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            Button("Done") {
-                router.navigateBack()
+            .navigationTitle("Comparison Result")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                Button("Done") {
+                    router.navigateBack()
+                }
             }
-        }
-        .onAppear{
-            analyzeImages()
+            .onAppear{
+                analyzeImages()
+            }
         }
     }
     

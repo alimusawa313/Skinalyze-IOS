@@ -22,6 +22,7 @@ struct LogView: View {
     var body: some View {
         NavigationView {
             ZStack {
+                Color("splashScreen").ignoresSafeArea()
                 List {
                     let groupedLogs = groupLogsByDate(logs)
                     
@@ -48,6 +49,8 @@ struct LogView: View {
                         })
                     }
                 }
+                .scrollContentBackground(.hidden)
+                .background(Color("splashScreen"))
                 .listStyle(.inset)
                 .navigationTitle(isComparing ? "\(selectedLogs.count) Selected" : "Face Log")
                 .navigationBarTitleDisplayMode(.inline)
@@ -75,6 +78,7 @@ struct LogView: View {
                 }
             }
         }
+        .background(Color("splashScreen").ignoresSafeArea())
     }
     
     private func groupLogsByDate(_ logs: [Result]) -> [Date: [Result]] {

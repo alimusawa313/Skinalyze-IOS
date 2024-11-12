@@ -1,4 +1,4 @@
-//
+
 //  ProductModel.swift
 //  Skinalyze
 //
@@ -25,11 +25,7 @@ struct SkincareProduct: Identifiable, Codable {
     let id = UUID() // Anda bisa menggunakan ID unik
     let product_id: Int
     let name: String
-    let link: String
-    let brand_id: Int
     let brand_name: String
-    let category_id: Double?
     let category: String?
-    let ingredients: String?
     let photo: String
 }

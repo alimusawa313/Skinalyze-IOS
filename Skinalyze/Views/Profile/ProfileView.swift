@@ -36,6 +36,7 @@ struct ProfileView: View {
                         Text(userName)
                             .fontWeight(.semibold)
                             .font(.system(size: 18))
+                            .foregroundColor(Color("textPrimary"))
                         
                         Spacer()
                         
@@ -75,7 +76,7 @@ struct ProfileView: View {
                             .font(.system(size: 16))
                         }
                         .padding()
-                        .background(Color.white)
+                        .background(Color("TextReverse"))
                         
                         Divider()
                             .padding(.leading)
@@ -95,13 +96,12 @@ struct ProfileView: View {
                             .font(.system(size: 16))
                         }
                         .padding()
-                        .background(Color.white)
                     }
-                    .background(Color(UIColor.systemGroupedBackground)) // Sesuaikan dengan latar belakang
+                    .background(Color("TextReverse")) // Sesuaikan dengan latar belakang
                     .cornerRadius(10)
                     .overlay(
                         RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color("brownSecondary"), lineWidth: 1) // Border luar abu-abu tipis
+                            .stroke(Color("textPrimary"), lineWidth: 1) // Border luar abu-abu tipis
                     )
                 }
                 .padding(.bottom, 20)
@@ -119,13 +119,13 @@ struct ProfileView: View {
                                     .foregroundColor(.gray)
                             }
                             .padding()
-                            .background(Color.white)
+                            .background(Color("TextReverse"))
                         }
-                        .background(Color(UIColor.systemGroupedBackground)) // Sesuaikan dengan latar belakang
+                        .background(Color("TextReverse")) // Sesuaikan dengan latar belakang
                         .cornerRadius(10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color("brownSecondary"), lineWidth: 1) // Border luar abu-abu tipis
+                                .stroke(Color("textPrimary"), lineWidth: 1) // Border luar abu-abu tipis
                             
                         )
                         .onTapGesture {
@@ -135,7 +135,9 @@ struct ProfileView: View {
                 }
                 Spacer()
             }
+            
             .padding(.horizontal)
+            .background(Color("splashScreen"))
             .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden()

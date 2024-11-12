@@ -47,195 +47,198 @@ struct AnalyzedResultView: View {
     
     
     var body: some View {
-        ScrollView{
-            
-            VStack{
+        ZStack {
+            Color("splashScreen").ignoresSafeArea()
+            ScrollView{
                 
-                HStack(alignment: .center){
+                VStack{
                     
-                    
-                    Text(currentDate, format: .dateTime.day().month().year())
-                    
-                    Text("at")
-                    Text(currentDate, format: .dateTime.hour().minute())
-                    
-                }.font(.subheadline)
-                    .bold()
-                
-                if viewmodel.isLoading {
-                    ProgressView("Analyzing Images...")
-                } else if !viewmodel.analyzedImages.isEmpty {
-                    TabView(selection: $currentIndex) {
-                        ForEach(viewmodel.analyzedImages.indices, id: \.self) { index in
-                            ZStack {
-                                Image(uiImage: viewmodel.analyzedImages[index])
-                                    .resizable()
-                                    .scaledToFit()
-                                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                                
-                                Image(uiImage: filteredBoundingBoxImage(at: index))
-                                    .resizable()
-                                    .scaledToFit()
-                                    .allowsHitTesting(false)
-                                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                            }
-                            .tag(index)
-                        }
-                    }
-                    .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                    .frame(height: UIScreen.main.bounds.height / 2)
-                } else if !images.isEmpty {
-                    TabView(selection: $currentIndex) {
-                        ForEach(images.indices, id: \.self) { index in
-                            Image(uiImage: images[index])
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 2)
-                                .tag(index)
-                        }
-                    }
-                    .frame(height: UIScreen.main.bounds.height / 2)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                    .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                    .onAppear {
-                        analyzeImages()
-                    }
-                } else {
-                    ZStack{
+                    HStack(alignment: .center){
                         
-                        RoundedRectangle(cornerRadius: 10)
-                            .frame(width: .infinity, height: UIScreen.main.bounds.height / 2)
                         
-                        Text("No images available").foregroundStyle(.white)
-                    }
-                }
-                
-                HStack {
-                    ForEach(0..<3) { index in
-                        Circle()
-                            .frame(width: 8)
-                            .foregroundColor(index == currentIndex ? .primary : .secondary)
-                    }
-                }
-                .padding(5)
-                .background(Capsule().foregroundStyle(.tertiary))
-                
-//                Toggle("Show Bounding Boxes", isOn: $isShowingBoundingBoxes)
-//                    .padding()
-                
-                
-                
-                HStack {
-                    Text("Severity Level")
-                        .font(.title3)
+                        Text(currentDate, format: .dateTime.day().month().year())
+                        
+                        Text("at")
+                        Text(currentDate, format: .dateTime.hour().minute())
+                        
+                    }.font(.subheadline)
                         .bold()
-                    Spacer()
-                }
-                .padding(.vertical, 5)
-                
-                HStack {
-                    Text("Healthy")
-                    Spacer()
-                    Text("Severe")
-                }
-                .font(.footnote)
-                .padding(.bottom, -20)
-                
-                SeverityIndicator(acneLevelScale: viewmodel.geaScale)
-                
-                let severityLevel = AcneSeverityLevel(rawValue: viewmodel.geaScale)!
-                Text(severityDescriptions[severityLevel.rawValue]!)
-                    .foregroundStyle(.secondary)
-                    .font(.custom("", size: 15))
-                    .padding(.vertical, 5)
-                
-                
-                // Display counts for each acne type
-                //                ScrollView(.horizontal, showsIndicators: false) {
-                //                    HStack(spacing: 5) {
-                //                        ForEach(viewmodel.acneCounts.keys.sorted().filter { viewmodel.acneCounts[$0] ?? 0 > 0 }, id: \.self) { key in
-                //                            RoundedRectangle(cornerRadius: 10)
-                //                                .fill(Color("capsuleBg").opacity(0.8))
-                //                                .overlay(
-                //                                    Text("\(key.capitalized) (\(viewmodel.acneCounts[key] ?? 0))")
-                //                                        .bold()
-                //                                        .font(.footnote)
-                //                                        .foregroundColor(.white)
-                //                                )
-                //                                .frame(width: 120, height: 40)
-                //                        }
-                //                    }
-                //                    .padding(.horizontal, 16)
-                //                }
-                //                .padding(.horizontal, -15)
-                
-                
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack {
-                        ForEach(viewmodel.acneCounts.keys.sorted().filter { viewmodel.acneCounts[$0] ?? 0 > 0 }, id: \.self) { acneType in
-                            Button(action: {
-                                // Set the selected acne type as the only visible type
-                                visibleAcneTypes = [acneType]
-                            }) {
-                                HStack {
-                                    Text(acneType.capitalized)
-                                        .foregroundStyle(Color("textPrimary"))
+                    
+                    if viewmodel.isLoading {
+                        ProgressView("Analyzing Images...")
+                    } else if !viewmodel.analyzedImages.isEmpty {
+                        TabView(selection: $currentIndex) {
+                            ForEach(viewmodel.analyzedImages.indices, id: \.self) { index in
+                                ZStack {
+                                    Image(uiImage: viewmodel.analyzedImages[index])
+                                        .resizable()
+                                        .scaledToFit()
+                                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                                    
+                                    Image(uiImage: filteredBoundingBoxImage(at: index))
+                                        .resizable()
+                                        .scaledToFit()
+                                        .allowsHitTesting(false)
+                                        .clipShape(RoundedRectangle(cornerRadius: 10))
                                 }
-                                .padding(8)
-                                .background(Color("capsuleBg"))
-                                .cornerRadius(10)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .stroke(visibleAcneTypes.contains(acneType) ? Color("capsuleBorderColor") : Color.clear, lineWidth: 2)
-                                )
-                            }
-                            .padding(5).onAppear{
-                                visibleAcneTypes = [acneType]
+                                .tag(index)
                             }
                         }
+                        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                        .frame(height: UIScreen.main.bounds.height / 2)
+                    } else if !images.isEmpty {
+                        TabView(selection: $currentIndex) {
+                            ForEach(images.indices, id: \.self) { index in
+                                Image(uiImage: images[index])
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 2)
+                                    .tag(index)
+                            }
+                        }
+                        .frame(height: UIScreen.main.bounds.height / 2)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                        .onAppear {
+                            analyzeImages()
+                        }
+                    } else {
+                        ZStack{
+                            
+                            RoundedRectangle(cornerRadius: 10)
+                                .frame(width: .infinity, height: UIScreen.main.bounds.height / 2)
+                            
+                            Text("No images available").foregroundStyle(.white)
+                        }
                     }
-                    .padding(.bottom)
-                }
-                
-                if viewmodel.geaScale > 0{
-                    AcneRowItem(title: "Skin Concern", acne: acneTypesWithCounts)
-                }
-                
-                
-                Picker("", selection: $selectedView) {
-                    Text("Ingredients").tag(0)
-                    Text("Product Used").tag(1)
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .padding(.vertical)
-                
-                if selectedView == 0 {
-                    VStack {
-                        RowItemHolder(title: "Ingredients Recommendations", ingredients: $viewmodel.ingredients)
-                            .padding(.bottom)
-                        RowItemHolder(title: "Ingredients You Should Avoid", ingredients: $viewmodel.ingredientsNotRec)
-                        
+                    
+                    HStack {
+                        ForEach(0..<3) { index in
+                            Circle()
+                                .frame(width: 8)
+                                .foregroundColor(index == currentIndex ? .primary : .secondary)
+                        }
                     }
-                } else {
-                    ProductUsedSaved()
+                    .padding(5)
+                    .background(Capsule().foregroundStyle(.tertiary))
+                    
+                    //                Toggle("Show Bounding Boxes", isOn: $isShowingBoundingBoxes)
+                    //                    .padding()
+                    
+                    
+                    
+                    HStack {
+                        Text("Severity Level")
+                            .font(.title3)
+                            .bold()
+                        Spacer()
+                    }
+                    .padding(.vertical, 5)
+                    
+                    HStack {
+                        Text("Healthy")
+                        Spacer()
+                        Text("Severe")
+                    }
+                    .font(.footnote)
+                    .padding(.bottom, -20)
+                    
+                    SeverityIndicator(acneLevelScale: viewmodel.geaScale)
+                    
+                    let severityLevel = AcneSeverityLevel(rawValue: viewmodel.geaScale)!
+                    Text(severityDescriptions[severityLevel.rawValue]!)
+                        .foregroundStyle(.secondary)
+                        .font(.custom("", size: 15))
+                        .padding(.vertical, 5)
+                    
+                    
+                    // Display counts for each acne type
+                    //                ScrollView(.horizontal, showsIndicators: false) {
+                    //                    HStack(spacing: 5) {
+                    //                        ForEach(viewmodel.acneCounts.keys.sorted().filter { viewmodel.acneCounts[$0] ?? 0 > 0 }, id: \.self) { key in
+                    //                            RoundedRectangle(cornerRadius: 10)
+                    //                                .fill(Color("capsuleBg").opacity(0.8))
+                    //                                .overlay(
+                    //                                    Text("\(key.capitalized) (\(viewmodel.acneCounts[key] ?? 0))")
+                    //                                        .bold()
+                    //                                        .font(.footnote)
+                    //                                        .foregroundColor(.white)
+                    //                                )
+                    //                                .frame(width: 120, height: 40)
+                    //                        }
+                    //                    }
+                    //                    .padding(.horizontal, 16)
+                    //                }
+                    //                .padding(.horizontal, -15)
+                    
+                    
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            ForEach(viewmodel.acneCounts.keys.sorted().filter { viewmodel.acneCounts[$0] ?? 0 > 0 }, id: \.self) { acneType in
+                                Button(action: {
+                                    // Set the selected acne type as the only visible type
+                                    visibleAcneTypes = [acneType]
+                                }) {
+                                    HStack {
+                                        Text(acneType.capitalized)
+                                            .foregroundStyle(Color("textPrimary"))
+                                    }
+                                    .padding(8)
+                                    .background(Color("capsuleBg"))
+                                    .cornerRadius(10)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke(visibleAcneTypes.contains(acneType) ? Color("capsuleBorderColor") : Color.clear, lineWidth: 2)
+                                    )
+                                }
+                                .padding(5).onAppear{
+                                    visibleAcneTypes = [acneType]
+                                }
+                            }
+                        }
+                        .padding(.bottom)
+                    }
+                    
+                    if viewmodel.geaScale > 0{
+                        AcneRowItem(title: "Skin Concern", acne: acneTypesWithCounts)
+                    }
+                    
+                    
+                    Picker("", selection: $selectedView) {
+                        Text("Ingredients").tag(0)
+                        Text("Product Used").tag(1)
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                    .padding(.vertical)
+                    
+                    if selectedView == 0 {
+                        VStack {
+                            RowItemHolder(title: "Ingredients Recommendations", ingredients: $viewmodel.ingredients)
+                                .padding(.bottom)
+                            RowItemHolder(title: "Ingredients You Should Avoid", ingredients: $viewmodel.ingredientsNotRec)
+                            
+                        }
+                    } else {
+                        ProductUsedSaved()
+                    }
+                    
+                    
                 }
-                
-                
+                .padding()
             }
-            .padding()
-        }
-        .navigationTitle("Scan Result")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button("Done") {
-                    // Call the save function here
-                    saveData()
+            .navigationTitle("Scan Result")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        // Call the save function here
+                        saveData()
+                    }
                 }
             }
-        }
-        .onAppear{
-            setInitialVisibleAcneType()
+            .onAppear{
+                setInitialVisibleAcneType()
+            }
         }
     }
     

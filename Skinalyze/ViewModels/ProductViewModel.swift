@@ -11,7 +11,7 @@ class SkincareProductViewModel: ObservableObject {
     @Published var products: [SkincareProduct] = []
     
     func loadJSON() {
-        if let url = Bundle.main.url(forResource: "SkincareProducts", withExtension: "json") {
+        if let url = Bundle.main.url(forResource: "FinalSkincareProductElFinale", withExtension: "json") {
             do {
                 let data = try Data(contentsOf: url)
                 let decoder = JSONDecoder()

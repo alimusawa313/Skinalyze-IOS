@@ -25,10 +25,13 @@ struct PrimaryBTN: View {
             Text(text)
                 .foregroundColor(.white)
                 .fontWeight(.semibold)
+
+                .frame(width: UIScreen.main.bounds.width - 40, height: 50)
+                .background(isDisabled ? .gray : Color("capsuleBg"))
         }
         .disabled(isDisabled)
-        .frame(width: UIScreen.main.bounds.width - 40, height: 50)
-        .background(isDisabled ? .gray : Color("brownSecondary"))
+        
+        
         .cornerRadius(100)
     }
 }

@@ -20,7 +20,7 @@ struct ProductSearchView: View {
             }
         } else {
             return products.filter { product in
-                product.name.lowercased().contains(searchText.lowercased()) &&
+                product.brand_name.lowercased().contains(searchText.lowercased()) &&
                 (product.category?.lowercased() ?? "") == categoryFilter.lowercased()
             }
         }
@@ -69,12 +69,13 @@ struct ProductSearchView: View {
                                     .foregroundColor(.white)
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 5)
-                                    .background(Color("brownSecondary"))
+                                    .background(Color("capsuleBg"))
                                     .cornerRadius(20)
                             }
                         }
                     }
                     .padding(.vertical, 10)
+                    .listRowBackground(Color("splashScreen"))
                     .onTapGesture {
                         switch categoryFilter {
                         case "Cleanser":
@@ -91,9 +92,10 @@ struct ProductSearchView: View {
                         isPresented.toggle()
                     }
                     .listRowInsets(EdgeInsets())
-                    .background(Color.white)
+//                    .background(Color("splashScreen"))
                     .padding()
                 }
+//                .background(Color("splashScreen"))
                 .listStyle(PlainListStyle())
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
@@ -104,6 +106,7 @@ struct ProductSearchView: View {
                 }
             }
             .padding(.top, 20)
+            .background(Color("splashScreen"))
         }
     }
 }
@@ -113,7 +116,7 @@ struct SearchBar: View {
     
     var body: some View {
         TextField("Search your product", text: $text) .padding(15)
-            .background(.white)
+            .background(Color("chatBg"))
             .cornerRadius(8)
             .overlay(
                 RoundedRectangle(cornerRadius: 8)

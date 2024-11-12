@@ -45,13 +45,14 @@ struct NewDetailViewTest: View {
     }
     
     var body: some View {
+        ZStack{
+            
+            Color("splashScreen").ignoresSafeArea()
         ScrollView {
             VStack {
                 // Display the current date
                 HStack(alignment: .center) {
-                    Text(currentDate, format: .dateTime.day().month().year())
-                    Text("at")
-                    Text(currentDate, format: .dateTime.hour().minute())
+                    Text("\(selectedLogs.currentDate, format: Date.FormatStyle(date: .abbreviated, time: .shortened))")
                 }
                 .font(.subheadline)
                 .bold()
@@ -134,11 +135,10 @@ struct NewDetailViewTest: View {
                 
                 SeverityIndicator(acneLevelScale: viewmodel.geaScale)
                 
-                let severityLevel = AcneSeverityLevel(rawValue: viewmodel.geaScale)!
+                let severityLevel = AcneSeverityLevel(rawValue: selectedLogs.geaScale)!
                 Text(severityDescriptions[severityLevel.rawValue]!)
                     .foregroundStyle(.secondary)
-                    .font(.custom("", size: 15))
-                    .padding(.vertical, 5)
+                    .padding(.vertical)
                 
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
@@ -195,6 +195,7 @@ struct NewDetailViewTest: View {
         .onAppear{
             setInitialVisibleAcneType()
         }
+    }
         
     }
     

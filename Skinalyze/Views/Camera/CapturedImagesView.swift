@@ -19,7 +19,7 @@ struct CapturedImagesView: View {
     
     var body: some View {
         ZStack {
-            
+            Color("splashScreen").ignoresSafeArea()
             VStack {
                 TabView() {
                     ForEach(images, id: \.self) { index in

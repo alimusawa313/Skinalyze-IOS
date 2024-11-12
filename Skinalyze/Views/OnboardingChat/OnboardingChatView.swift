@@ -102,7 +102,7 @@ struct ChatView: View {
                     HStack {
                         TextField("Please type your answer here...", text: $inputText)
                             .padding(12)
-                            .background(Color.white)
+                            .background(Color("chatBg"))
                         Button(action: {
                             handleUserInput(inputText, inputMsg: inputText)
                         }) {
@@ -112,7 +112,7 @@ struct ChatView: View {
                                 .padding(.horizontal)
                         }
                     }
-                    .background(.white)
+                    .background(Color("chatBg"))
                     .cornerRadius(30)
                     .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
                 }
@@ -124,7 +124,7 @@ struct ChatView: View {
                         TextField("Enter your age", value: $inputAge, format: .number) // Accept integer input
                             .keyboardType(.numberPad) // Only numeric input
                             .padding(12)
-                            .background(Color.white)
+                            .background(Color("chatBg"))
                         Button(action: {
                             if let age = inputAge {
                                 handleUserInput(String(age), inputMsg: String(age)) // Convert integer to string
@@ -136,7 +136,7 @@ struct ChatView: View {
                                 .padding(.horizontal)
                         }
                     }
-                    .background(.white)
+                    .background(Color("chatBg"))
                     .cornerRadius(30)
                     .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
                 }
@@ -150,9 +150,9 @@ struct ChatView: View {
                         Text("Female")
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.white)
+                            .background(Color("ItemChat"))
                             .cornerRadius(20)
-                            .foregroundColor(.black)
+                            .foregroundColor(Color("textPrimary"))
                             .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
                     }
 
@@ -162,14 +162,20 @@ struct ChatView: View {
                         Text("Male")
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.white)
+                            .background(Color("ItemChat"))
                             .cornerRadius(20)
-                            .foregroundColor(.black)
+                            .foregroundColor(Color("textPrimary"))
                             .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
                     }
                 }
                 .padding(20)
-                .background(Color("brownPrimary"))
+                .background(Color("backChat"))
+                .overlay(
+                    Rectangle()
+                        .frame(height: 2) // Adjust thickness of the outline
+                        .foregroundColor(Color("ItemChat")),
+                    alignment: .top
+                )
 
             } else if currentQuestionIndex == 3, showOptions {
                 VStack(spacing: 10) {
@@ -179,9 +185,9 @@ struct ChatView: View {
                         Text("Dry. Dry skin often feels tight and look flaky")
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.white)
+                            .background(Color("ItemChat"))
                             .cornerRadius(20)
-                            .foregroundColor(.black)
+                            .foregroundColor(Color("textPrimary"))
                             .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
                     }
 
@@ -191,9 +197,9 @@ struct ChatView: View {
                         Text("Oily. Oily skin is shiny all over face with large pores")
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.white)
+                            .background(Color("ItemChat"))
                             .cornerRadius(20)
-                            .foregroundColor(.black)
+                            .foregroundColor(Color("textPrimary"))
                             .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
                     }
                     Button(action: {
@@ -202,14 +208,20 @@ struct ChatView: View {
                         Text("Combination. Combination skin looks shiny in some ares (T-zone) and feel tight on other areas")
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.white)
+                            .background(Color("ItemChat"))
                             .cornerRadius(20)
-                            .foregroundColor(.black)
+                            .foregroundColor(Color("textPrimary"))
                             .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
                     }
                 }
                 .padding(20)
-                .background(Color("brownPrimary"))
+                .background(Color("backChat"))
+                .overlay(
+                    Rectangle()
+                        .frame(height: 2) // Adjust thickness of the outline
+                        .foregroundColor(Color("ItemChat")),
+                    alignment: .top
+                )
 
             } else if currentQuestionIndex == 4, showOptions { // Skin Sensitivity
                 VStack(spacing: 10) {
@@ -219,9 +231,9 @@ struct ChatView: View {
                         Text("Very Sensitive. Often reacts with redness, itching, or stinging when try new products")
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.white)
+                            .background(Color("ItemChat"))
                             .cornerRadius(20)
-                            .foregroundColor(.black)
+                            .foregroundColor(Color("textPrimary"))
                             .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
                     }
 
@@ -231,9 +243,9 @@ struct ChatView: View {
                         Text("Only Sometimes. Can handle most products, but sometimes experience irritation")
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.white)
+                            .background(Color("ItemChat"))
                             .cornerRadius(20)
-                            .foregroundColor(.black)
+                            .foregroundColor(Color("textPrimary"))
                             .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
                     }
                     Button(action: {
@@ -242,22 +254,28 @@ struct ChatView: View {
                         Text("Not Sensitive. Rarely reacts to new products")
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.white)
+                            .background(Color("ItemChat"))
                             .cornerRadius(20)
-                            .foregroundColor(.black)
+                            .foregroundColor(Color("textPrimary"))
                             .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
                     }
                 }
                 .padding(20)
-                .background(Color("brownPrimary"))
+                .background(Color("backChat"))
+                .overlay(
+                    Rectangle()
+                        .frame(height: 2) // Adjust thickness of the outline
+                        .foregroundColor(Color("ItemChat")),
+                    alignment: .top
+                )
             } else if currentQuestionIndex == 5, showOptions { // Use Skincare
                 VStack(spacing: 10) {
                         Text("Yes")
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.white)
+                            .background(Color("ItemChat"))
                             .cornerRadius(20)
-                            .foregroundColor(.black)
+                            .foregroundColor(Color("textPrimary"))
                             .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
                             .onTapGesture {
                                 router.navigate(to: .productUsedView(isFromStartup: true))
@@ -266,9 +284,9 @@ struct ChatView: View {
                         Text("No")
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.white)
+                            .background(Color("ItemChat"))
                             .cornerRadius(20)
-                            .foregroundColor(.black)
+                            .foregroundColor(Color("textPrimary"))
                             .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
                             .onTapGesture {
                                 router.navigate(to: .camScanView)
@@ -276,9 +294,16 @@ struct ChatView: View {
                             }
                 }
                 .padding(20)
-                .background(Color("brownPrimary"))
+                .background(Color("backChat"))
+                .overlay(
+                    Rectangle()
+                        .frame(height: 2) // Adjust thickness of the outline
+                        .foregroundColor(Color("ItemChat")),
+                    alignment: .top
+                )
             }
         }
+        .background(Color("splashScreen"))
         .navigationTitle("Skinalyze")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
@@ -409,18 +434,19 @@ struct MessageRow: View {
                     if message.isLast {
                         Image("Maskot")
                             .resizable()
-                            .frame(width: 50, height: 40)
+                            .frame(width: 55, height: 40)
                     } else {
                         Image("MaskotNone")
                             .resizable()
-                            .frame(width: 50, height: 40)
+                            .frame(width: 55, height: 40)
                     }
                 }
                 ZStack(alignment:.bottomLeading){
                     Text(message.text)
                         .font(.body)
                         .padding(12)
-                        .background(Color.white)
+                        .foregroundColor(Color("textPrimary"))
+                        .background(Color("chatBg"))
                         .cornerRadius(16)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .shadow(color: Color.black.opacity(0.2), radius: 10, x: 0, y: 5)

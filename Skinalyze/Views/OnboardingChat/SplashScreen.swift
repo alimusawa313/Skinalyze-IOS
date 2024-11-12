@@ -19,6 +19,7 @@ struct SplashScreen: View {
                     
                     ResizableGIFPlayer(gifName: "Hover")
                     .padding(.bottom, 20)
+                    .padding(.top, 100)
                     
                     
                     Text("Welcome to Skinalyze")
@@ -36,6 +37,7 @@ struct SplashScreen: View {
                 }
                 .padding(.bottom, 40)
             }
+            .background(Color("splashScreen"))
             .ignoresSafeArea()
         
     }
@@ -44,6 +46,3 @@ struct SplashScreen: View {
 #Preview {
     SplashScreen()
 }
-
-
-
