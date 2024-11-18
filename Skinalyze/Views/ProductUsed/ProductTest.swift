@@ -69,7 +69,7 @@ struct ProductSearchView: View {
                                     .foregroundColor(.white)
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 5)
-                                    .background(Color("capsuleBg"))
+                                    .background(Color("btnClr"))
                                     .cornerRadius(20)
                             }
                         }

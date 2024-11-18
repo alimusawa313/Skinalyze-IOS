@@ -27,7 +27,7 @@ struct PrimaryBTN: View {
                 .fontWeight(.semibold)
 
                 .frame(width: UIScreen.main.bounds.width - 40, height: 50)
-                .background(isDisabled ? .gray : Color("capsuleBg"))
+                .background(isDisabled ? .gray : Color("btnClr"))
         }
         .disabled(isDisabled)
         

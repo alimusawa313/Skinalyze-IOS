@@ -5,8 +5,8 @@
 //  Created by Ali Haidar on 10/14/24.
 //
 
-import Foundation
-import SwiftData
+//import Foundation
+//import SwiftData
 
 //@Model
 //class Result {
@@ -43,26 +43,29 @@ import SwiftData
 //        }
 //}
 
+import Foundation
+import SwiftData
+
 @Model
 class Result {
     var id: UUID = UUID()
     var timestamp: Date = Date.now
-    var image1: String?
-    var image2: String?
-    var image3: String?
-    var selectedCardIndex: Int
-    var analyzedImages1: String?
-    var analyzedImages2: String?
-    var analyzedImages3: String?
-    var isLoading: Bool
-    var acneCounts: [String: Int]
-    var geaScale: Int
-    var currentDate: Date
+    var image1: String? = nil
+    var image2: String? = nil
+    var image3: String? = nil
+    var selectedCardIndex: Int = 0
+    var analyzedImages1: String? = nil
+    var analyzedImages2: String? = nil
+    var analyzedImages3: String? = nil
+    var isLoading: Bool = false
+    var acneCounts: [String: Int] = [:]
+    var geaScale: Int = 0
+    var currentDate: Date = Date()
     
     // New property to store bounding box images
-    var boundingBoxImages: [String] // Store as array of Base64 strings
+    var boundingBoxImages: [String] = [] // Default to empty array
     
-    init(images: [String], selectedCardIndex: Int, analyzedImages: [String], isLoading: Bool, acneCounts: [String: Int], geaScale: Int, currentDate: Date, boundingBoxImages: [String]) {
+    init(images: [String] = [], selectedCardIndex: Int = 0, analyzedImages: [String] = [], isLoading: Bool = false, acneCounts: [String: Int] = [:], geaScale: Int = 0, currentDate: Date = Date(), boundingBoxImages: [String] = []) {
         self.selectedCardIndex = selectedCardIndex
         self.isLoading = isLoading
         self.acneCounts = acneCounts
