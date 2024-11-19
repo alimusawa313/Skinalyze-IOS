@@ -33,9 +33,14 @@ struct AnalyzedResultView: View {
 //    @State private var visibleAcneTypes: Set<String> = Set(["blackheads", "dark spot", "nodules", "papules", "pustules", "whiteheads"])
     @State private var visibleAcneTypes: Set<String> = []
     
-    
+    @State private var showSheet: Bool = false
     
     @State var images: [UIImage] = []
+    
+    @AppStorage("cleanserUsedID") private var cleanserUsedID: Int = 0
+    @AppStorage("tonerUsedID") private var tonerUsedID: Int = 0
+    @AppStorage("moisturizerUsedID") private var moisturizerUsedID: Int = 0
+    @AppStorage("sunscreenUsedID") private var sunscreenUsedID: Int = 0
     
     private var acneTypesWithCounts: [Acne] {
         viewmodel.acneTypes.map { acne in
@@ -131,6 +136,12 @@ struct AnalyzedResultView: View {
                         Text("Severity Level")
                             .font(.title3)
                             .bold()
+                        Button{
+                            showSheet.toggle()
+                        }label: {
+                            Image(systemName: "info.circle")
+                                .foregroundStyle(Color("textPrimary"))
+                        }
                         Spacer()
                     }
                     .padding(.vertical, 5)
@@ -219,7 +230,7 @@ struct AnalyzedResultView: View {
                             
                         }
                     } else {
-                        ProductUsedSaved()
+                        ProductUsedSaved(cleanserUsedID: cleanserUsedID, tonerUsedID: tonerUsedID, moisturizerUsedID: moisturizerUsedID, sunscreenUsedID: sunscreenUsedID)
                     }
                     
                     
@@ -239,24 +250,13 @@ struct AnalyzedResultView: View {
             .onAppear{
                 setInitialVisibleAcneType()
             }
+            .sheet(isPresented: $showSheet) {
+                sheetView()
+                    .presentationDetents([.height(350)])
+            }
         }
     }
     
-//    func filteredBoundingBoxImage(at index: Int) -> UIImage {
-//        guard index < viewmodel.boundingBoxImages.count else {
-//            return UIImage()
-//        }
-//        
-//        // Pass the visible types to the bounding box drawing method
-//        let filteredImage = viewmodel.drawBoundingBoxes(
-//            on: viewmodel.analyzedImages[index],
-//            results: viewmodel.detectedResults[index],
-//            originalImageSize: viewmodel.analyzedImages[index].size,
-//            visibleTypes: Array(visibleAcneTypes)
-//        )
-//        
-//        return filteredImage
-//    }
     
     private func setInitialVisibleAcneType() {
         let availableTypes = viewmodel.acneCounts.keys.sorted().filter { viewmodel.acneCounts[$0] ?? 0 > 0 }
@@ -305,7 +305,11 @@ struct AnalyzedResultView: View {
             acneCounts: viewmodel.acneCounts,
             geaScale: viewmodel.geaScale,
             currentDate: currentDate,
-            boundingBoxImages: boundingBoxImagesBase64
+            boundingBoxImages: boundingBoxImagesBase64,
+            cleanserUsedID: self.cleanserUsedID,
+            tonerUsedID: self.tonerUsedID,
+            moisturizerUsedID: self.moisturizerUsedID,
+            sunscreenUsedID: self.sunscreenUsedID
         )
         
         // Insert the result into the model context

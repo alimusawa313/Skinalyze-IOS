@@ -194,7 +194,7 @@ struct NewDetailViewTest: View {
                             RowItemHolder(title: "Ingredients You Should Avoid", ingredients: $viewmodel.ingredientsNotRec)
                         }
                     } else {
-                        ProductUsedSaved()
+                        ProductUsedSaved(cleanserUsedID: selectedLogs.cleanserUsedID, tonerUsedID: selectedLogs.tonerUsedID, moisturizerUsedID: selectedLogs.moisturizerUsedID, sunscreenUsedID: selectedLogs.sunscreenUsedID)
                     }
                 }
                 .padding()

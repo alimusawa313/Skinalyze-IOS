@@ -62,10 +62,17 @@ class Result {
     var geaScale: Int = 0
     var currentDate: Date = Date()
     
-    // New property to store bounding box images
-    var boundingBoxImages: [String] = [] // Default to empty array
     
-    init(images: [String] = [], selectedCardIndex: Int = 0, analyzedImages: [String] = [], isLoading: Bool = false, acneCounts: [String: Int] = [:], geaScale: Int = 0, currentDate: Date = Date(), boundingBoxImages: [String] = []) {
+    // New property to store bounding box images
+    var boundingBoxImages: [String] = []
+    
+    // For saved products
+    var cleanserUsedID: Int = 0
+    var tonerUsedID: Int = 0
+    var moisturizerUsedID: Int = 0
+    var sunscreenUsedID: Int = 0
+    
+    init(images: [String] = [], selectedCardIndex: Int = 0, analyzedImages: [String] = [], isLoading: Bool = false, acneCounts: [String: Int] = [:], geaScale: Int = 0, currentDate: Date = Date(), boundingBoxImages: [String] = [], cleanserUsedID: Int = 0, tonerUsedID: Int = 0, moisturizerUsedID: Int = 0, sunscreenUsedID: Int = 0) {
         self.selectedCardIndex = selectedCardIndex
         self.isLoading = isLoading
         self.acneCounts = acneCounts
@@ -84,5 +91,10 @@ class Result {
         
         // Assign bounding box images
         self.boundingBoxImages = boundingBoxImages
+        
+        self.cleanserUsedID = cleanserUsedID
+        self.tonerUsedID = tonerUsedID
+        self.moisturizerUsedID = moisturizerUsedID
+        self.sunscreenUsedID = sunscreenUsedID
     }
 }

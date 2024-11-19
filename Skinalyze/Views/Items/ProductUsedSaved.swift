@@ -18,10 +18,10 @@ struct ProductUsedSaved: View {
     @State private var showSunscreenSheet = false
     @State private var moveToCamScanner = false
     
-    @AppStorage("cleanserUsedID") private var cleanserUsedID: Int = 0
-    @AppStorage("tonerUsedID") private var tonerUsedID: Int = 0
-    @AppStorage("moisturizerUsedID") private var moisturizerUsedID: Int = 0
-    @AppStorage("sunscreenUsedID") private var sunscreenUsedID: Int = 0
+    var cleanserUsedID: Int = 0
+    var tonerUsedID: Int = 0
+    var moisturizerUsedID: Int = 0
+    var sunscreenUsedID: Int = 0
     
     var body: some View {
         
@@ -30,7 +30,7 @@ struct ProductUsedSaved: View {
                 VStack(alignment: .leading) {
                     Text("Cleanser")
                         .bold()
-                    Button(action: { showCleanserSheet.toggle() }) {
+                    HStack{
                         if cleanserUsedID == 0 {
                             VStack {
                                 Image("AddProductBtn")
@@ -64,7 +64,7 @@ struct ProductUsedSaved: View {
                                         VStack(alignment: .leading) {
                                             Text(cleanserProduct.name)
                                                 .font(.headline)
-                                                .foregroundColor(.black)
+                                                .foregroundColor(Color("textPrimary"))
                                                 .lineLimit(2, reservesSpace: true)
                                             Text(cleanserProduct.brand_name)
                                                 .font(.subheadline)
@@ -73,13 +73,13 @@ struct ProductUsedSaved: View {
                                     }
 
                                     // Button "X" to delete the product
-                                    Button(action: {
-                                        cleanserUsedID = 0
-                                    }) {
-                                        Image(systemName: "xmark.circle.fill")
-                                            .foregroundColor(Color("brownTest"))
-                                            
-                                    }
+//                                    Button(action: {
+//                                        cleanserUsedID = 0
+//                                    }) {
+//                                        Image(systemName: "xmark.circle.fill")
+//                                            .foregroundColor(Color("brownTest"))
+//                                            
+//                                    }
                                 }
                             }
                             else {
@@ -97,7 +97,7 @@ struct ProductUsedSaved: View {
                 VStack(alignment:.leading){
                     Text("Toner")
                         .bold()
-                    Button(action: { showTonerSheet.toggle() }) {
+                    HStack{
                         if tonerUsedID == 0 {
                             VStack {
                                 Image("AddProductBtn")
@@ -130,7 +130,7 @@ struct ProductUsedSaved: View {
                                         VStack(alignment: .leading) {
                                             Text(tonerProduct.name)
                                                 .font(.headline)
-                                                .foregroundColor(.black)
+                                                .foregroundColor(Color("textPrimary"))
                                                 .lineLimit(2, reservesSpace: true)
                                             //                                            .truncationMode(.tail)
                                             Text(tonerProduct.brand_name)
@@ -138,13 +138,13 @@ struct ProductUsedSaved: View {
                                                 .foregroundColor(.gray)
                                         }
                                     }
-                                    Button(action: {
-                                        tonerUsedID = 0
-                                    }) {
-                                        Image(systemName: "xmark.circle.fill")
-                                            .foregroundColor(Color("brownTest"))
-                                            
-                                    }
+//                                    Button(action: {
+//                                        tonerUsedID = 0
+//                                    }) {
+//                                        Image(systemName: "xmark.circle.fill")
+//                                            .foregroundColor(Color("brownTest"))
+//                                            
+//                                    }
                                 }
                             } else {
                                 Text("Product not found")
@@ -162,7 +162,7 @@ struct ProductUsedSaved: View {
                 VStack(alignment:.leading){
                     Text("Moisturizer")
                         .bold()
-                    Button(action: { showMoisturizerSheet.toggle() }) {
+                    HStack{
                         if moisturizerUsedID == 0 {
                             VStack {
                                 Image("AddProductBtn")
@@ -197,20 +197,20 @@ struct ProductUsedSaved: View {
                                         VStack(alignment: .leading) {
                                             Text(moisturizerProduct.name)
                                                 .font(.headline)
-                                                .foregroundColor(.black)
+                                                .foregroundColor(Color("textPrimary"))
                                                 .lineLimit(2, reservesSpace: true)
                                             Text(moisturizerProduct.brand_name)
                                                 .font(.subheadline)
                                                 .foregroundColor(.gray)
                                         }
                                     }
-                                    Button(action: {
-                                        moisturizerUsedID = 0
-                                    }) {
-                                        Image(systemName: "xmark.circle.fill")
-                                            .foregroundColor(Color("brownTest"))
-                                            
-                                    }
+//                                    Button(action: {
+//                                        moisturizerUsedID = 0
+//                                    }) {
+//                                        Image(systemName: "xmark.circle.fill")
+//                                            .foregroundColor(Color("brownTest"))
+//                                            
+//                                    }
                                 }
                             } else {
                                 Text("Product not found") // Fallback jika ID tidak sesuai
@@ -225,7 +225,7 @@ struct ProductUsedSaved: View {
                 VStack(alignment:.leading){
                     Text("Sunscreen")
                         .bold()
-                    Button(action: { showSunscreenSheet.toggle() }) {
+                    HStack{
                         if sunscreenUsedID == 0 {
                             VStack {
                                 Image("AddProductBtn")
@@ -261,20 +261,20 @@ struct ProductUsedSaved: View {
                                         VStack(alignment: .leading) {
                                             Text(sunscreenProduct.name)
                                                 .font(.headline)
-                                                .foregroundColor(.black)
+                                                .foregroundColor(Color("textPrimary"))
                                                 .lineLimit(2, reservesSpace: true)
                                             Text(sunscreenProduct.brand_name)
                                                 .font(.subheadline)
                                                 .foregroundColor(.gray)
                                         }
                                     }
-                                    Button(action: {
-                                        sunscreenUsedID = 0
-                                    }) {
-                                        Image(systemName: "xmark.circle.fill")
-                                            .foregroundColor(Color("brownTest"))
-                                            
-                                    }
+//                                    Button(action: {
+//                                        sunscreenUsedID = 0
+//                                    }) {
+//                                        Image(systemName: "xmark.circle.fill")
+//                                            .foregroundColor(Color("brownTest"))
+//                                            
+//                                    }
                                 }
                             } else {
                                 Text("Product not found") // Fallback jika ID tidak sesuai
