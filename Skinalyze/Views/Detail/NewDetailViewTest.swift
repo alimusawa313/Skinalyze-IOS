@@ -26,6 +26,7 @@ struct NewDetailViewTest: View {
     @State private var visibleAcneTypes: Set<String> = []
     
     @State private var showSheet: Bool = false
+    @State private var showSheetInfo: Bool = false
     
     @Namespace private var namespace
     
@@ -151,6 +152,20 @@ struct NewDetailViewTest: View {
                     
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
+                            // Button to select/deselect all acne types
+                            Button(action: {
+                                
+                                visibleAcneTypes = Set(viewmodel.acneCounts.keys.sorted())
+                            }) {
+                                Text("Select All")
+                                    .foregroundStyle(Color("textPrimary"))
+                                    .padding(8)
+                                    .background(Color("capsuleBg"))
+                                    .cornerRadius(10)
+                            }
+                            .padding(5)
+                            
+                            // Existing buttons for individual acne types
                             ForEach(viewmodel.acneCounts.keys.sorted().filter { viewmodel.acneCounts[$0] ?? 0 > 0 }, id: \.self) { acneType in
                                 Button(action: {
                                     // Set the selected acne type as the only visible type
@@ -168,9 +183,7 @@ struct NewDetailViewTest: View {
                                             .stroke(visibleAcneTypes.contains(acneType) ? Color("capsuleBorderColor") : Color.clear, lineWidth: 2)
                                     )
                                 }
-                                .padding(5).onAppear{
-                                    visibleAcneTypes = [acneType]
-                                }
+                                .padding(5)
                             }
                         }
                         .padding(.bottom)
@@ -192,6 +205,14 @@ struct NewDetailViewTest: View {
                             RowItemHolder(title: "Ingredients Recommendations", ingredients: $viewmodel.ingredients)
                                 .padding(.bottom)
                             RowItemHolder(title: "Ingredients You Should Avoid", ingredients: $viewmodel.ingredientsNotRec)
+                            
+                            
+                                Button{
+                                    showSheetInfo.toggle()
+                                }label: {
+                                    Text("Where do we get these recommendations from?")
+                                }
+                                .padding(.vertical)
                         }
                     } else {
                         ProductUsedSaved(cleanserUsedID: selectedLogs.cleanserUsedID, tonerUsedID: selectedLogs.tonerUsedID, moisturizerUsedID: selectedLogs.moisturizerUsedID, sunscreenUsedID: selectedLogs.sunscreenUsedID)
@@ -202,22 +223,36 @@ struct NewDetailViewTest: View {
             .navigationTitle("Scan Result")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear{
+                
                 setInitialVisibleAcneType()
             }
             .sheet(isPresented: $showSheet) {
                 sheetView()
                     .presentationDetents([.height(350)])
             }
+            .sheet(isPresented: $showSheetInfo) {
+                SkinCareRecommendationsSourceView()
+//                    .presentationDetents([.height(350)])
+            }
         }
         
     }
     
+    //    private func setInitialVisibleAcneType() {
+    //        let availableTypes = viewmodel.acneCounts.keys.sorted().filter { viewmodel.acneCounts[$0] ?? 0 > 0 }
+    //
+    //        // If there are available types, select the first one
+    //        if !availableTypes.isEmpty {
+    //            visibleAcneTypes = [availableTypes.first!]
+    //        }
+    //    }
+    
     private func setInitialVisibleAcneType() {
         let availableTypes = viewmodel.acneCounts.keys.sorted().filter { viewmodel.acneCounts[$0] ?? 0 > 0 }
         
-        // If there are available types, select the first one
+        // If there are available types, select all of them
         if !availableTypes.isEmpty {
-            visibleAcneTypes = [availableTypes.first!]
+            visibleAcneTypes = Set(availableTypes) // Ensure all types are selected
         }
     }
     
@@ -226,14 +261,8 @@ struct NewDetailViewTest: View {
             return UIImage()
         }
         
-        // If visibleAcneTypes is empty, find the first available acne type
-        let visibleTypes: [String]
-        if visibleAcneTypes.isEmpty {
-            let availableTypes = viewmodel.acneCounts.keys.sorted().filter { viewmodel.acneCounts[$0] ?? 0 > 0 }
-            visibleTypes = availableTypes.isEmpty ? [] : [availableTypes.first!]
-        } else {
-            visibleTypes = Array(visibleAcneTypes)
-        }
+        // Use all visible types directly from the state
+        let visibleTypes = Array(visibleAcneTypes)
         
         // Pass the visible types to the bounding box drawing method
         let filteredImage = viewmodel.drawBoundingBoxes(
@@ -246,6 +275,31 @@ struct NewDetailViewTest: View {
         return filteredImage
     }
     
+    //    func filteredBoundingBoxImage(at index: Int) -> UIImage {
+    //        guard index < viewmodel.boundingBoxImages.count else {
+    //            return UIImage()
+    //        }
+    //
+    //        // If visibleAcneTypes is empty, find the first available acne type
+    //        let visibleTypes: [String]
+    //        if visibleAcneTypes.isEmpty {
+    //            let availableTypes = viewmodel.acneCounts.keys.sorted().filter { viewmodel.acneCounts[$0] ?? 0 > 0 }
+    //            visibleTypes = availableTypes.isEmpty ? [] : [availableTypes.first!]
+    //        } else {
+    //            visibleTypes = Array(visibleAcneTypes)
+    //        }
+    //
+    //        // Pass the visible types to the bounding box drawing method
+    //        let filteredImage = viewmodel.drawBoundingBoxes(
+    //            on: viewmodel.analyzedImages[index],
+    //            results: viewmodel.detectedResults[index],
+    //            originalImageSize: viewmodel.analyzedImages[index].size,
+    //            visibleTypes: visibleTypes
+    //        )
+    //
+    //        return filteredImage
+    //    }
+    //
     func analyzeImages() {
         viewmodel.analyzedImages.removeAll()
         viewmodel.isLoading = true
@@ -276,6 +330,8 @@ struct sheetView: View {
                 .bold()
                 .padding(.bottom)
             Text("The severity levels in this app are determined using the Global Acne Evaluation (GEA) Scale, a standardized tool developed to assess acne severity. This scale, widely used in dermatology, classifies severity into five stages, providing a reliable framework for consistent evaluation. It is based on recommendations from the Société Française de Dermatologie and validated through clinical studies.")
+            Text("Visit our [Source](https://www.sfdermato.org/upload/scores/severite-acne-5692d1295551d8b28ea75685189416a3.pdf) for more information")
+                .padding(.top)
         }
         .padding()
         .presentationDragIndicator(.visible)
@@ -283,10 +339,10 @@ struct sheetView: View {
     }
 }
 
-#Preview {
-    sheetView()
-}
-
 //#Preview {
-//    NewDetailViewTest(selectedLogs: Result()) // Provide a mock or real Result object
+//    sheetView()
 //}
+
+#Preview {
+    NewDetailViewTest(selectedLogs: Result()) // Provide a mock or real Result object
+}

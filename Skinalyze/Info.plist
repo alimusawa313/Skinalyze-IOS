@@ -21,7 +21,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Your camera will be used to scan and take picture of your face to get ingredients recommendations.</string>
+	<string>Your camera is used to scan and analyze your facial skin locally on your device to provide personalized ingredient recommendations and track skincare progress. Skinalyze does not collect or store facial data; all processing happens on your device, and photos never leave it unless you choose to save them. Saved data is securely stored in your iCloud account, managed by Apple, where you can manage or delete it anytime. No data is shared with third parties, and our privacy policy (Sections 1-4) provides detailed information on data handling, storage, and retention.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
