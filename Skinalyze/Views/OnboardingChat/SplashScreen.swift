@@ -47,7 +47,7 @@ struct SplashScreen: View {
                             .foregroundColor(.blue)
                             .onTapGesture {
                                 showPrivacyPolicy = true
-                            }
+                            } 
                     }
                     .padding()
                         PrimaryBTN(text: "Let’s Start", isDisabled: !isChecked, action: {

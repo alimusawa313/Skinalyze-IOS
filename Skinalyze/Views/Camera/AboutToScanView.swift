@@ -43,6 +43,11 @@ struct AboutToScanView: View {
                         Text("Get a detailed analysis of your skin, including severity level and recommended ingredients")
                             .font(.system(size: 13, weight: .light))
                         
+                        Text("Disclaimer: ")
+                            .bold().font(.footnote).foregroundStyle(.red) +
+                        Text("This app is not a substitute for professional medical advice, diagnosis, or treatment. Always consult a doctor for health-related decisions.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
                         
                         VStack(alignment:.center){
                             

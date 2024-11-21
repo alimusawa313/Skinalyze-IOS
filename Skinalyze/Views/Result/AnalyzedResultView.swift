@@ -237,16 +237,26 @@ struct AnalyzedResultView: View {
                     
                     if selectedView == 0 {
                         VStack {
+                            Button{
+                                showSheetInfo.toggle()
+                            }label: {
+                                HStack {
+                                    Spacer()
+                                    Text("Click to see from where we get these recommendations from")
+                                        .foregroundStyle(.red)
+                                    
+                                    Spacer()
+                                }
+                
+                            }
+                            .padding(.vertical)
+                            .buttonStyle(BorderedButtonStyle())
+                            
                             RowItemHolder(title: "Ingredients Recommendations", ingredients: $viewmodel.ingredients)
                                 .padding(.bottom)
                             RowItemHolder(title: "Ingredients You Should Avoid", ingredients: $viewmodel.ingredientsNotRec)
                             
-                            Button{
-                                showSheetInfo.toggle()
-                            }label: {
-                                Text("Where do we get these recommendations from?")
-                            }
-                            .padding(.vertical)
+                            
                             
                         }
                     } else {

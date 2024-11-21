@@ -118,6 +118,7 @@ struct NewDetailViewTest: View {
                     }
                     .padding(5)
                     .background(Capsule().foregroundStyle(.tertiary))
+
                     
                     // Severity // Level section
                     HStack {
@@ -193,6 +194,13 @@ struct NewDetailViewTest: View {
                         AcneRowItem(title: "Skin Concern", acne: acneTypesWithCounts)
                     }
                     
+                    Text("Disclaimer: ")
+                        .bold().font(.footnote).foregroundStyle(.red) +
+                    Text("This app is not a substitute for professional medical advice, diagnosis, or treatment. Always consult a doctor for health-related decisions.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        
+                    
                     Picker("", selection: $selectedView) {
                         Text("Ingredients").tag(0)
                         Text("Product Used").tag(1)
@@ -202,17 +210,27 @@ struct NewDetailViewTest: View {
                     
                     if selectedView == 0 {
                         VStack {
+                            
+                            Button{
+                                showSheetInfo.toggle()
+                            }label: {
+                                HStack {
+                                    Spacer()
+                                    Text("Click to see from where we get these recommendations from")
+                                        .foregroundStyle(.red)
+                                    
+                                    Spacer()
+                                }
+                
+                            }
+                            .padding(.vertical)
+                            .buttonStyle(BorderedButtonStyle())
+                            
                             RowItemHolder(title: "Ingredients Recommendations", ingredients: $viewmodel.ingredients)
                                 .padding(.bottom)
                             RowItemHolder(title: "Ingredients You Should Avoid", ingredients: $viewmodel.ingredientsNotRec)
                             
                             
-                                Button{
-                                    showSheetInfo.toggle()
-                                }label: {
-                                    Text("Where do we get these recommendations from?")
-                                }
-                                .padding(.vertical)
                         }
                     } else {
                         ProductUsedSaved(cleanserUsedID: selectedLogs.cleanserUsedID, tonerUsedID: selectedLogs.tonerUsedID, moisturizerUsedID: selectedLogs.moisturizerUsedID, sunscreenUsedID: selectedLogs.sunscreenUsedID)
