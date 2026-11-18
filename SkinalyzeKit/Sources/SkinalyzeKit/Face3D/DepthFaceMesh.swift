@@ -75,6 +75,28 @@ public struct DepthMap: Sendable, Hashable {
     }
 }
 
+/// Where the face is in the photo (forehead to chin, cheek to cheek), as 8-bit alpha, top-left origin. The mesh keeps
+/// only masked samples, so hair, headphones, ears, neck and shoulders — which a front-only scan can't texture — drop out.
+public struct FaceMask: Sendable, Hashable {
+    public let width: Int
+    public let height: Int
+    public let alpha: [UInt8]
+
+    public init(width: Int, height: Int, alpha: [UInt8]) {
+        self.width = width
+        self.height = height
+        self.alpha = alpha
+    }
+
+    /// 0…1 at a normalized (top-left) position, nearest sample.
+    public func value(u: Float, v: Float) -> Float {
+        guard width > 0, height > 0, alpha.count == width * height else { return 1 }
+        let x = min(max(Int(u * Float(width)), 0), width - 1)
+        let y = min(max(Int(v * Float(height)), 0), height - 1)
+        return Float(alpha[y * width + x]) / 255
+    }
+}
+
 /// Temporal fusion of a burst of depth frames taken while the user holds still: the per-pixel median removes sensor
 /// noise and flying pixels and fills holes that only some frames have.
 public enum DepthFusion {
@@ -139,28 +161,38 @@ public enum DepthMeshBuilder {
     /// Grid resolution cap; the vertex count must stay under `UInt16` indices (the step grows if needed).
     public static let maxGridSide = 220
     /// How far behind the face's reference depth a point may be and still count as the face (cheek → ear).
-    public static let maxDepthBehindFace: Float = 0.08
+    public static let maxDepthBehindFace: Float = 0.12
     /// How far in front of the reference depth a point may be (nose tip).
     public static let maxDepthInFront: Float = 0.08
     /// Neighbouring samples further apart in depth than this are not connected (silhouette edges).
     public static let maxEdgeJump: Float = 0.02
-    /// Triangles whose normal is further than ~75° from the viewer are dropped (edge-on streaks).
+    /// Triangles whose normal is further than ~75° from the viewer are dropped (edge-on streaks). The face mask, not
+    /// this, is what removes hair/headphones/neck — a stricter angle would punch holes in the cheeks.
     public static let minFacingCosine: Float = 0.25
+    /// Samples where the face mask is below this are dropped (the texture's soft alpha edge fades the rest).
+    public static let maskCutoff: Float = 0.2
     /// Range kernel of the bilateral smoothing (metres): smooths sensor noise, keeps nose and brow edges.
     static let smoothingSigma: Float = 0.004
+    /// Inside a face mask only genuine tears are cut: the mask already excludes hair/headphones/neck, and dropping a
+    /// triangle on the face itself would only make a hole.
+    static let maxEdgeJumpInsideFace: Float = 0.04
+
+    /// Hole-filling passes inside the face mask (each grows filled depth one cell inward).
+    static let holeFillPasses = 12
+
     /// Margins around Vision's face box (which stops at the brows): forehead above, a little of the sides and jaw.
     static let sideMargin = 0.12
     static let topMargin = 0.32
     static let bottomMargin = 0.05
 
-    public static func build(depth: DepthMap, faceBox: ImageRect, texture: Data) -> FaceMeshDraft? {
+    public static func build(depth: DepthMap, faceBox: ImageRect, texture: Data, mask: FaceMask? = nil) -> FaceMeshDraft? {
         let width = depth.width, height = depth.height
         guard width > 2, height > 2, depth.meters.count == width * height,
               let region = pixelRegion(faceBox, width: width, height: height),
               let reference = referenceDepth(depth, faceBox: faceBox) else { return nil }
         var step = max(1, max(region.x1 - region.x0, region.y1 - region.y0) / maxGridSide)
         while step <= 8 {
-            if let mesh = build(depth: depth, faceBox: faceBox, texture: texture, region: region,
+            if let mesh = build(depth: depth, faceBox: faceBox, texture: texture, mask: mask, region: region,
                                 reference: reference, step: step) {
                 return mesh
             }
@@ -176,7 +208,7 @@ public enum DepthMeshBuilder {
     }
 
     /// One attempt at a grid step; nil when nothing usable or too many vertices for `UInt16` indices.
-    private static func build(depth: DepthMap, faceBox: ImageRect, texture: Data, region: Region,
+    private static func build(depth: DepthMap, faceBox: ImageRect, texture: Data, mask: FaceMask?, region: Region,
                               reference: Float, step: Int) -> FaceMeshDraft? {
         let width = depth.width, height = depth.height
         let intrinsics = depth.intrinsics ?? defaultIntrinsics(width: width, height: height)
@@ -189,10 +221,20 @@ public enum DepthMeshBuilder {
         for row in 0..<rows {
             for column in 0..<columns {
                 let px = region.x0 + column * step, py = region.y0 + row * step
+                if let mask, mask.value(u: (Float(px) + 0.5) / Float(width), v: (Float(py) + 0.5) / Float(height)) < maskCutoff {
+                    continue
+                }
                 grid[row * columns + column] = smoothedDepth(depth, px, py, radius: max(2, step), accepts: accepts) ?? .nan
             }
         }
-        // 2. Erode the rim (depth at silhouettes is the noisiest) and 3. keep only the largest connected piece.
+        // 2. Fill gaps inside the face (missing/rejected depth) so the face has no holes or notches.
+        if let mask {
+            grid = filledInside(grid, columns: columns, rows: rows) { column, row in
+                mask.value(u: (Float(region.x0 + column * step) + 0.5) / Float(width),
+                           v: (Float(region.y0 + row * step) + 0.5) / Float(height)) >= maskCutoff
+            }
+        }
+        // 3. Erode the rim (depth at silhouettes is the noisiest) and 4. keep only the largest connected piece.
         grid = eroded(grid, columns: columns, rows: rows)
         grid = largestPiece(grid, columns: columns, rows: rows)
 
@@ -221,7 +263,8 @@ public enum DepthMeshBuilder {
         let vertices = points.map { SIMD3($0.x - centre.x, $0.y - centre.y, reference - $0.z) }
 
         // 5. Triangles: skip holes, depth jumps and edge-on faces.
-        let indices = triangulate(index: index, columns: columns, rows: rows, depths: depths, vertices: vertices)
+        let indices = triangulate(index: index, columns: columns, rows: rows, depths: depths, vertices: vertices,
+                                  insideFaceMask: mask != nil)
         guard !indices.isEmpty else { return nil }
         return FaceMeshDraft(vertices: vertices, indices: indices, textureCoordinates: uvs, projected: projected,
                              texture: texture, mirroredProjection: false, projectedIsPhotoSpace: true)
@@ -276,6 +319,41 @@ public enum DepthMeshBuilder {
         return weights > 0 ? sum / weights : centre
     }
 
+    /// Inpaints missing cells that lie inside the face: each pass sets a missing cell to the mean of its filled
+    /// 8-neighbours, so holes close from their edges inward.
+    private static func filledInside(_ grid: [Float], columns: Int, rows: Int,
+                                     inside: (Int, Int) -> Bool) -> [Float] {
+        var current = grid
+        let insideMask = (0..<rows).flatMap { row in (0..<columns).map { inside($0, row) } }
+        for _ in 0..<holeFillPasses {
+            var next = current
+            var changed = false
+            for row in 0..<rows {
+                for column in 0..<columns {
+                    let cell = row * columns + column
+                    guard insideMask[cell], !current[cell].isFinite else { continue }
+                    var sum: Float = 0
+                    var count: Float = 0
+                    for dr in -1...1 {
+                        for dc in -1...1 where dr != 0 || dc != 0 {
+                            let r = row + dr, c = column + dc
+                            guard r >= 0, c >= 0, r < rows, c < columns else { continue }
+                            let value = current[r * columns + c]
+                            if value.isFinite { sum += value; count += 1 }
+                        }
+                    }
+                    if count >= 3 {
+                        next[cell] = sum / count
+                        changed = true
+                    }
+                }
+            }
+            current = next
+            if !changed { break }
+        }
+        return current
+    }
+
     /// Drops samples on the rim (any 4-neighbour missing).
     private static func eroded(_ grid: [Float], columns: Int, rows: Int) -> [Float] {
         var out = grid
@@ -323,15 +401,16 @@ public enum DepthMeshBuilder {
 
     /// Two triangles per grid cell, counter-clockwise seen from the viewer, skipping holes, jumps and edge-on faces.
     private static func triangulate(index: [Int], columns: Int, rows: Int, depths: [Float],
-                                    vertices: [SIMD3<Float>]) -> [UInt16] {
+                                    vertices: [SIMD3<Float>], insideFaceMask: Bool) -> [UInt16] {
         var indices: [UInt16] = []
+        let jumpLimit = insideFaceMask ? maxEdgeJumpInsideFace : maxEdgeJump
         func add(_ a: Int, _ b: Int, _ c: Int) {
             guard a >= 0, b >= 0, c >= 0 else { return }
             let lo = min(depths[a], depths[b], depths[c]), hi = max(depths[a], depths[b], depths[c])
-            guard hi - lo <= maxEdgeJump else { return }
+            guard hi - lo <= jumpLimit else { return }
             let normal = simd_cross(vertices[b] - vertices[a], vertices[c] - vertices[a])
             let length = simd_length(normal)
-            guard length > 0, abs(normal.z) / length >= minFacingCosine else { return }
+            guard length > 0, insideFaceMask || abs(normal.z) / length >= minFacingCosine else { return }
             indices.append(contentsOf: [UInt16(a), UInt16(b), UInt16(c)])
         }
         for row in 0..<(rows - 1) {

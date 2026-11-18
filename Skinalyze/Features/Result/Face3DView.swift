@@ -16,8 +16,9 @@ struct Face3DView: View {
     @State private var dragStart: (yaw: Float, pitch: Float)?
     @State private var selectedPin: Int?
 
-    private static let maxYaw: Float = 35 * .pi / 180
-    private static let maxPitch: Float = 20 * .pi / 180
+    /// A front-only scan is textured well up to about this turn; further would show stretched sides.
+    private static let maxYaw: Float = 28 * .pi / 180
+    private static let maxPitch: Float = 15 * .pi / 180
     /// Radians per point of drag — slow enough to inspect.
     private static let dragSensitivity: Float = 0.0045
     /// The model's largest extent is scaled to this (RealityView's default camera frames ~1.4 units nicely).
@@ -120,6 +121,10 @@ struct Face3DView: View {
         if let data = mesh.textureData, let image = UIImage(data: data)?.cgImage,
            let texture = try? TextureResource(image: image, options: .init(semantic: .color)) {
             material.color = .init(texture: .init(texture))
+            // Face-cut textures carry a soft alpha edge: blend it so the scan fades out instead of ending in teeth.
+            if ![.none, .noneSkipLast, .noneSkipFirst].contains(image.alphaInfo) {
+                material.blending = .transparent(opacity: .init(floatLiteral: 1))
+            }
         }
         let face = ModelEntity(mesh: resource, materials: [material])
 

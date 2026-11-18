@@ -295,8 +295,10 @@ final class ScanCaptureModel {
     private static func buildFaceMesh(depth: DepthMap, front: UIImage, faceBox: ImageRect) async -> FaceMeshDraft? {
         // Detached on purpose: meshing ~20k points and encoding the texture must not run on the main actor.
         await Task.detached(priority: .userInitiated) {
-            guard let texture = uprightTexture(front) else { return nil }
-            return DepthMeshBuilder.build(depth: depth, faceBox: faceBox, texture: texture)
+            // Face-only cut with a soft edge (no smeared hair/headphones/neck); plain photo if no landmarks.
+            let masked = FaceMaskMaker.make(from: front)
+            guard let texture = masked?.texture ?? uprightTexture(front) else { return nil }
+            return DepthMeshBuilder.build(depth: depth, faceBox: faceBox, texture: texture, mask: masked?.mask)
         }.value
     }
 
