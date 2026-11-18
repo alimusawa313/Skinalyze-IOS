@@ -15,9 +15,15 @@ struct Face3DView: View {
     @State private var scale: Float = 1
     @State private var dragStart: (yaw: Float, pitch: Float)?
     @State private var selectedPin: Int?
+    /// How far the model may turn each way (radians) — set from how much of each side was actually captured.
+    @State private var yawBounds: ClosedRange<Float> = -Face3DView.minimumTurn...Face3DView.minimumTurn
 
-    /// A front-only scan holds together up to about this turn (checked on real scans); further tears the cheeks.
-    private static let maxYaw: Float = 32 * .pi / 180
+    /// A front-only scan holds together up to about this turn (checked on real scans); a fused multi-view head turns
+    /// further, as far as its sides were captured.
+    private static let minimumTurn: Float = 32 * .pi / 180
+    private static let maximumTurn: Float = 90 * .pi / 180
+    /// The turn stops this far short of the last captured surface direction, so the open edge never faces the viewer.
+    private static let turnMargin: Float = 38 * .pi / 180
     private static let maxPitch: Float = 15 * .pi / 180
     /// Radians per point of drag — slow enough to inspect.
     private static let dragSensitivity: Float = 0.0045
@@ -38,6 +44,10 @@ struct Face3DView: View {
             guard let face = makeFaceEntity() else { return }
             face.name = "face"
             content.add(face)
+            yawBounds = Self.turnRange(vertices: mesh.vertices, indices: mesh.indices)
+            #if DEBUG
+            print("[3d] turn range:", Int(yawBounds.lowerBound * 180 / .pi), "…", Int(yawBounds.upperBound * 180 / .pi), "degrees")
+            #endif
         } update: { content in
             guard let face = content.entities.first(where: { $0.name == "face" }) else { return }
             face.transform.rotation = simd_quatf(angle: yaw, axis: [0, 1, 0]) * simd_quatf(angle: pitch, axis: [1, 0, 0])
@@ -54,8 +64,8 @@ struct Face3DView: View {
                     dragStart = start
                     let targetYaw = start.yaw + Float(value.translation.width) * Self.dragSensitivity
                     let targetPitch = start.pitch + Float(value.translation.height) * Self.dragSensitivity
-                    yaw = Self.softClamp(targetYaw, limit: Self.maxYaw)
-                    pitch = Self.softClamp(targetPitch, limit: Self.maxPitch)
+                    yaw = Self.softClamp(targetYaw, to: yawBounds)
+                    pitch = Self.softClamp(targetPitch, to: -Self.maxPitch...Self.maxPitch)
                 }
                 .onEnded { _ in dragStart = nil }
         )
@@ -100,11 +110,30 @@ struct Face3DView: View {
         }
     }
 
-    /// Past the limit the turn resists (rubber band) instead of stopping dead.
-    private static func softClamp(_ value: Float, limit: Float) -> Float {
-        guard abs(value) > limit else { return value }
-        let over = abs(value) - limit
-        return (limit + over * 0.15) * (value < 0 ? -1 : 1)
+    /// Past a limit the turn resists (rubber band) instead of stopping dead.
+    private static func softClamp(_ value: Float, to range: ClosedRange<Float>) -> Float {
+        if value > range.upperBound { return range.upperBound + (value - range.upperBound) * 0.15 }
+        if value < range.lowerBound { return range.lowerBound + (value - range.lowerBound) * 0.15 }
+        return value
+    }
+
+    /// Turn limits from the mesh itself: how far round its surfaces face on each side (97th percentile of the
+    /// triangles' outward direction), minus a margin. Surfaces facing +x are seen by turning the model negatively.
+    static func turnRange(vertices: [SIMD3<Float>], indices: [UInt16]) -> ClosedRange<Float> {
+        var positive: [Float] = [], negative: [Float] = []
+        for t in stride(from: 0, to: indices.count - 2, by: 3 * 4) { // every 4th triangle is plenty
+            let a = vertices[Int(indices[t])], b = vertices[Int(indices[t + 1])], c = vertices[Int(indices[t + 2])]
+            let normal = simd_cross(b - a, c - a)
+            guard simd_length_squared(normal) > 0 else { continue }
+            let azimuth = atan2(normal.x, normal.z)
+            if azimuth >= 0 { positive.append(azimuth) } else { negative.append(-azimuth) }
+        }
+        func limit(_ azimuths: [Float]) -> Float {
+            guard !azimuths.isEmpty else { return minimumTurn }
+            let sorted = azimuths.sorted()
+            return min(max(sorted[sorted.count * 97 / 100] - turnMargin, minimumTurn), maximumTurn)
+        }
+        return -limit(positive)...limit(negative)
     }
 
     private static func pinName(from entity: Entity) -> String? {

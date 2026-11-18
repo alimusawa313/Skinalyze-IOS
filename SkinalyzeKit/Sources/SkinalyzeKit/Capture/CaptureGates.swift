@@ -67,9 +67,15 @@ public struct GateThresholds: Sendable, Hashable {
     public var frontMaxYaw: Double = 15
     public var frontMaxPitch: Double = 18
     public var frontMaxRoll: Double = 15
-    public var sideYaw: ClosedRange<Double> = 18...65
-    public var sideMaxPitch: Double = 22
-    public var sideMaxRoll: Double = 20
+    /// Side photos need a real turn (the 3D sides come from them; a slight turn adds almost nothing) and accept
+    /// anything up to a full profile. Vision under-reads the turn: 30° reported ≈ 40–45° of real head turn.
+    public var sideYaw: ClosedRange<Double> = 30...95
+    public var sideMaxPitch: Double = 28
+    /// Vision's roll estimate gets noisy as the head turns (−20° measured at a level 26° turn), so sides allow more.
+    public var sideMaxRoll: Double = 32
+    /// In profile the detected face box is narrow and sits off-centre (the head's centre isn't the face's centre).
+    public var sideMinFaceWidth: Double = 0.12
+    public var sideCenterTolerance: Double = 0.30
     public var luma: ClosedRange<Double> = 55...225
     public var maxClippedFraction: Double = 0.3
     public var minSharpness: Double = 4
@@ -113,8 +119,8 @@ public enum GateEvaluator {
 
         // Ordered by priority: the first failing gate provides the single hint shown to the user.
         let checks: [(CaptureGate, GuidanceHint?)] = [
-            (.distance, distanceHint(face, thresholds)),
-            (.centering, centeringHint(face, thresholds)),
+            (.distance, distanceHint(face, angle, thresholds)),
+            (.centering, centeringHint(face, angle, thresholds)),
             (.angle, poseHint(face, angle, thresholds)),
             (.light, lightHint(quality, thresholds)),
             (.sharpness, quality.sharpness >= thresholds.minSharpness ? nil : .holdStill),
@@ -130,16 +136,18 @@ public enum GateEvaluator {
         angle == .left ? .turnHeadLeft : .turnHeadRight
     }
 
-    private static func distanceHint(_ face: FaceMeasurement, _ t: GateThresholds) -> GuidanceHint? {
-        if face.bounds.width < t.faceWidth.lowerBound { return .moveCloser }
+    private static func distanceHint(_ face: FaceMeasurement, _ angle: CaptureAngle, _ t: GateThresholds) -> GuidanceHint? {
+        let minimumWidth = angle == .front ? t.faceWidth.lowerBound : t.sideMinFaceWidth
+        if face.bounds.width < minimumWidth { return .moveCloser }
         if face.bounds.width > t.faceWidth.upperBound { return .moveBack }
         return nil
     }
 
-    private static func centeringHint(_ face: FaceMeasurement, _ t: GateThresholds) -> GuidanceHint? {
+    private static func centeringHint(_ face: FaceMeasurement, _ angle: CaptureAngle, _ t: GateThresholds) -> GuidanceHint? {
         let centerX = face.bounds.x + face.bounds.width / 2
         let centerY = face.bounds.y + face.bounds.height / 2
-        let offCenter = abs(centerX - 0.5) > t.centerTolerance || abs(centerY - 0.5) > t.centerTolerance
+        let tolerance = angle == .front ? t.centerTolerance : t.sideCenterTolerance
+        let offCenter = abs(centerX - 0.5) > tolerance || abs(centerY - 0.5) > tolerance
         return offCenter ? .centerFace : nil
     }
 

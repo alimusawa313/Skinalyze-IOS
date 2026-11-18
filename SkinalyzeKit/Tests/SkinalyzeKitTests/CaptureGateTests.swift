@@ -57,7 +57,9 @@ struct CaptureGateTests {
         #expect(GateEvaluator.evaluate(face: face(yaw: rightYaw), quality: good, angle: .right).allPassed)
         let notEnough = GateEvaluator.evaluate(face: face(yaw: 0), quality: good, angle: .right)
         #expect(notEnough.hint == GateEvaluator.turnHint(towards: .right))
-        let tooFar = GateEvaluator.evaluate(face: face(yaw: rightYaw * 3), quality: good, angle: .right)
+        // A full profile is welcome; only past the range (a physically implausible reading) asks to turn back.
+        let beyond = GateThresholds.default.yawSign(for: .right) * (target.upperBound + 10)
+        let tooFar = GateEvaluator.evaluate(face: face(yaw: beyond), quality: good, angle: .right)
         #expect(tooFar.hint == GateEvaluator.turnHint(towards: .left))
         #expect(GateEvaluator.turnHint(towards: .right) != GateEvaluator.turnHint(towards: .left))
     }
@@ -166,6 +168,36 @@ struct RealWorldGateTests {
                                    yawDegrees: 6, pitchDegrees: -8, rollDegrees: 4)
         let quality = FrameQuality(meanLuma: 115, clippedFraction: 0.06, sharpness: 25, motion: 0.12)
         #expect(GateEvaluator.evaluate(face: face, quality: quality, angle: .front).allPassed)
+    }
+
+    private let quality = FrameQuality(meanLuma: 115, clippedFraction: 0.06, sharpness: 25, motion: 0.12)
+
+    @Test("A full side profile captures: the face box is narrow and off-centre there, and roll estimates are noisy")
+    func extremeProfileCaptures() {
+        // Measured on device at near-full profile: Vision box 0.22 wide and shrinking, centre x ≈ 0.66–0.72, roll −11…−24.
+        let profile = FaceMeasurement(bounds: ImageRect(x: 0.62, y: 0.38, width: 0.16, height: 0.17),
+                                      yawDegrees: 74, pitchDegrees: 7, rollDegrees: -24)
+        #expect(GateEvaluator.evaluate(face: profile, quality: quality, angle: .right).allPassed)
+        let mirrored = FaceMeasurement(bounds: ImageRect(x: 0.22, y: 0.38, width: 0.16, height: 0.17),
+                                       yawDegrees: -74, pitchDegrees: 7, rollDegrees: 24)
+        #expect(GateEvaluator.evaluate(face: mirrored, quality: quality, angle: .left).allPassed)
+    }
+
+    @Test("A real turn captures; a slight one asks for more (the 3D sides come from these photos)")
+    func sideNeedsARealTurn() {
+        let turned = FaceMeasurement(bounds: ImageRect(x: 0.24, y: 0.34, width: 0.32, height: 0.24),
+                                     yawDegrees: -36, pitchDegrees: 9, rollDegrees: -20)
+        #expect(GateEvaluator.evaluate(face: turned, quality: quality, angle: .left).allPassed)
+        let slight = FaceMeasurement(bounds: ImageRect(x: 0.24, y: 0.34, width: 0.32, height: 0.24),
+                                     yawDegrees: -22, pitchDegrees: 9, rollDegrees: -10)
+        #expect(GateEvaluator.evaluate(face: slight, quality: quality, angle: .left).hint == GateEvaluator.turnHint(towards: .left))
+    }
+
+    @Test("Side leniency doesn't loosen the front photo: a narrow, off-centre face is still rejected there")
+    func frontStaysStrict() {
+        let small = FaceMeasurement(bounds: ImageRect(x: 0.62, y: 0.38, width: 0.16, height: 0.17),
+                                    yawDegrees: 2, pitchDegrees: 3, rollDegrees: 1)
+        #expect(!GateEvaluator.evaluate(face: small, quality: quality, angle: .front).allPassed)
     }
 }
 

@@ -301,6 +301,24 @@ final class ScanCaptureModel {
     var supports3D: Bool { camera.supportsDepth }
     var has3DScan: Bool { frontDepth != nil }
 
+    /// Fuses front + side captures into one head mesh (nil when there are no usable sides or they can't be registered).
+    private static func buildFusedMesh(front: UIImage, frontDepth: DepthMap, captures: [CaptureAngle: UIImage],
+                                       sideDepths: [CaptureAngle: DepthMap]) async -> FaceMeshDraft? {
+        let sides = [CaptureAngle.right, .left].compactMap { angle -> MultiViewScanBuilder.Capture? in
+            guard let image = captures[angle], let depth = sideDepths[angle] else { return nil }
+            return MultiViewScanBuilder.Capture(image: image, depth: depth)
+        }
+        guard !sides.isEmpty else { return nil }
+        // Detached on purpose: Vision landmarks, registration and texture baking must not run on the main actor.
+        return await Task.detached(priority: .userInitiated) {
+            let fused = MultiViewScanBuilder.build(front: .init(image: front, depth: frontDepth), sides: sides)
+            #if DEBUG
+            print("[scan] multi-view fusion:", fused.map { "registered sides at \($0.sideYawDegrees.map { Int($0.rounded()) })°, \($0.mesh.vertices.count) vertices" } ?? "not possible — front-only scan")
+            #endif
+            return fused?.mesh
+        }.value
+    }
+
     /// Builds the real face mesh from the front photo's depth, textured with that photo. Off the main actor.
     private static func buildFaceMesh(depth: DepthMap, front: UIImage, faceBox: ImageRect) async -> FaceMeshDraft? {
         // Detached on purpose: meshing ~20k points and encoding the texture must not run on the main actor.
@@ -355,8 +373,12 @@ final class ScanCaptureModel {
             Debug3DDump.write(captures: captures, depths: sideDepths.merging(frontDepth.map { [.front: $0] } ?? [:]) { a, _ in a },
                               frontFace: analysis.frontFace)
             #endif
-            if let frontDepth, let front = captures[.front], let frontFace = analysis.frontFace {
-                faceMesh = await Self.buildFaceMesh(depth: frontDepth, front: front, faceBox: frontFace)
+            if let frontDepth, let front = captures[.front] {
+                // Best: fuse the three views into one head with real sides. Otherwise: the front-only scan.
+                faceMesh = await Self.buildFusedMesh(front: front, frontDepth: frontDepth, captures: captures, sideDepths: sideDepths)
+                if faceMesh == nil, let frontFace = analysis.frontFace {
+                    faceMesh = await Self.buildFaceMesh(depth: frontDepth, front: front, faceBox: frontFace)
+                }
                 if faceMesh == nil { Self.logger.error("3D mesh could not be built from this depth map") }
                 #if DEBUG
                 print("[scan] 3D mesh:", faceMesh.map { "\($0.vertices.count) vertices, \($0.indices.count / 3) triangles" } ?? "none")
