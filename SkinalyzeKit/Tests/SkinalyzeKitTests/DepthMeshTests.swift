@@ -104,6 +104,30 @@ struct DepthMeshTests {
         #expect(errors.reduce(0, +) / Float(errors.count) < 0.0015)
     }
 
+    @Test("Only frames that match the photo's own depth are fused (mirrored/moved frames are rejected)")
+    func fusionRejectsMismatchedFrames() {
+        // An asymmetric face: dome shifted left of centre, so a mirrored frame doesn't line up.
+        var meters = [Float](repeating: 1.0, count: Self.width * Self.height)
+        for y in 0..<Self.height {
+            for x in 0..<Self.width {
+                let dx = Float(x - 45), dy = Float(y - 80)
+                let r2 = (dx * dx + dy * dy) / (30 * 30)
+                if r2 < 1 { meters[y * Self.width + x] = 0.49 - 0.09 * (1 - r2).squareRoot() }
+            }
+        }
+        let photo = DepthMap(width: Self.width, height: Self.height, meters: meters, intrinsics: nil)
+        var mirroredMeters = meters
+        for y in 0..<Self.height {
+            for x in 0..<Self.width { mirroredMeters[y * Self.width + x] = meters[y * Self.width + (Self.width - 1 - x)] }
+        }
+        let mirrored = DepthMap(width: Self.width, height: Self.height, meters: mirroredMeters, intrinsics: nil)
+        let slightlyNoisy = DepthMap(width: Self.width, height: Self.height,
+                                     meters: meters.map { $0 + 0.002 }, intrinsics: nil)
+        let kept = DepthFusion.consistent([mirrored, slightlyNoisy, mirrored], with: photo)
+        #expect(kept.count == 1)
+        #expect(kept.first == slightlyNoisy)
+    }
+
     @Test("Fusion fills a hole that only some frames have")
     func fusionFillsHoles() throws {
         let truth = Self.domeDepth()

@@ -182,6 +182,11 @@ final class CameraSession: NSObject, @unchecked Sendable {
                 depthOutput.isFilteringEnabled = true
                 depthOutput.alwaysDiscardsLateDepthData = true
                 depthOutput.setDelegate(self, callbackQueue: depthQueue)
+                // The front camera mirrors by default; the photo (and its depth) are unmirrored, so the stream must be too.
+                if let connection = depthOutput.connection(with: .depthData), connection.isVideoMirroringSupported {
+                    connection.automaticallyAdjustsVideoMirroring = false
+                    connection.isVideoMirrored = false
+                }
             }
             Self.selectBestDepthFormat(device)
         }
@@ -344,10 +349,12 @@ extension CameraSession: AVCaptureDepthDataOutputDelegate {
     /// mis-oriented map if the result doesn't match the photo's aspect.
     static func depthMap(from photo: AVCapturePhoto, matching photoSize: CGSize, burst: [DepthMap]) -> DepthMap? {
         guard let depthData = photo.depthData, let native = nativeMap(depthData) else { return nil }
-        let matching = burst.map { $0.width == native.width && $0.height == native.height ? $0 : $0.resampled(width: native.width, height: native.height) }
+        let resized = burst.map { $0.width == native.width && $0.height == native.height ? $0 : $0.resampled(width: native.width, height: native.height) }
+        // Only fuse frames that agree with the photo's own depth; otherwise the photo depth alone (never worse).
+        let matching = DepthFusion.consistent(resized, with: native)
         let fused = DepthFusion.median(matching + [native]) ?? native
         #if DEBUG
-        print("[scan] depth fusion: \(matching.count) streamed frames + photo depth \(native.width)x\(native.height)")
+        print("[scan] depth fusion: \(matching.count)/\(burst.count) streamed frames matched the photo depth \(native.width)x\(native.height)")
         #endif
         let withIntrinsics = DepthMap(width: fused.width, height: fused.height, meters: fused.meters,
                                       intrinsics: intrinsics(depthData.cameraCalibrationData, width: native.width, height: native.height))

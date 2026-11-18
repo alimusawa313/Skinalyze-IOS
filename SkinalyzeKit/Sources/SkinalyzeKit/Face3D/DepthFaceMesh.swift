@@ -78,6 +78,35 @@ public struct DepthMap: Sendable, Hashable {
 /// Temporal fusion of a burst of depth frames taken while the user holds still: the per-pixel median removes sensor
 /// noise and flying pixels and fills holes that only some frames have.
 public enum DepthFusion {
+    /// Max median depth difference (on the subject) for a streamed frame to count as the same view as the photo.
+    public static let consistencyTolerance: Float = 0.012
+    /// Pixels within this distance of the nearest part of the subject are the ones compared.
+    static let subjectDepthRange: Float = 0.15
+
+    /// Keeps only frames that agree with the photo's own depth on the subject — rejects frames that are mirrored,
+    /// mis-registered or taken while the head moved. Fusing a mismatched frame would scramble the face.
+    public static func consistent(_ frames: [DepthMap], with reference: DepthMap) -> [DepthMap] {
+        let valid = reference.meters.filter { $0.isFinite && $0 > 0 }.sorted()
+        guard !valid.isEmpty else { return [] }
+        let nearest = valid[valid.count / 20] // 5th percentile: robust "front of the face"
+        let subject = reference.meters.indices.filter {
+            let z = reference.meters[$0]
+            return z.isFinite && z > 0 && z <= nearest + subjectDepthRange
+        }
+        guard !subject.isEmpty else { return [] }
+        return frames.filter { frame in
+            guard frame.width == reference.width, frame.height == reference.height else { return false }
+            var differences: [Float] = []
+            differences.reserveCapacity(subject.count)
+            for index in subject {
+                let z = frame.meters[index]
+                differences.append(z.isFinite && z > 0 ? abs(z - reference.meters[index]) : .infinity)
+            }
+            differences.sort()
+            return differences[differences.count / 2] <= consistencyTolerance
+        }
+    }
+
     public static func median(_ maps: [DepthMap]) -> DepthMap? {
         guard let first = maps.first,
               maps.allSatisfy({ $0.width == first.width && $0.height == first.height && $0.meters.count == first.meters.count })
