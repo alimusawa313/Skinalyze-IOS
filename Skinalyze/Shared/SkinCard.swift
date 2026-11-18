@@ -48,6 +48,7 @@ struct SkinCard: View {
     @State private var portrait: UIImage?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var glowing = false
+    @ScaledMetric(relativeTo: .largeTitle) private var heroNumberSize: CGFloat = 72
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
@@ -66,7 +67,7 @@ struct SkinCard: View {
                 VStack(alignment: .leading, spacing: Spacing.xxs) {
                     Text("Latest scan").font(.ds.label).textCase(.uppercase)
                     Text(session.breakoutIndex, format: .number)
-                        .font(.ds.numeral)
+                        .font(.system(size: heroNumberSize, weight: .heavy, design: .rounded).monospacedDigit())
                         .contentTransition(.numericText(value: Double(session.breakoutIndex)))
                     Text("Breakout index · \(BandCopy.title(session.band))").font(.ds.footnote.weight(.semibold))
                 }

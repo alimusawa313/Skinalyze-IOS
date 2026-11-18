@@ -20,7 +20,7 @@ struct ScanTimelineView: View {
     }
 
     var body: some View {
-        NavigationSplitView {
+        NavigationStack {
             Group {
                 if scans.isEmpty {
                     EmptyStateView(title: String(localized: "Your timeline starts with one scan"),
@@ -40,12 +40,7 @@ struct ScanTimelineView: View {
                     }
                 }
             }
-        } detail: {
-            if let selection {
-                ScanResultView(session: selection)
-            } else {
-                Text("Select a scan").font(.ds.body).foregroundStyle(Color.ds.inkSecondary)
-            }
+            .navigationDestination(for: ScanSession.self) { ScanResultView(session: $0) }
         }
         .sheet(item: $comparePair) { pair in
             NavigationStack { CompareView(earlier: pair.earlier, later: pair.later) }
@@ -53,25 +48,26 @@ struct ScanTimelineView: View {
     }
 
     private var list: some View {
-        List(selection: $selection) {
-            Section {
+        ScrollView {
+            VStack(alignment: .leading, spacing: Spacing.lg) {
                 TrendChart(scans: scans)
                     .frame(height: 200)
-                    .listRowBackground(Color.ds.surface)
-            }
-            ForEach(groupedByMonth, id: \.month) { group in
-                Section(group.month.formatted(.dateTime.month(.wide).year())) {
-                    ForEach(group.scans) { scan in
-                        row(scan).tag(scan)
-                    }
-                    .onDelete { offsets in
-                        offsets.map { group.scans[$0] }.forEach { AppPersistence.delete($0, in: modelContext) }
+                    .padding(Spacing.md)
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: Radius.medium, style: .continuous))
+                ForEach(groupedByMonth, id: \.month) { group in
+                    Text(group.month.formatted(.dateTime.month(.wide).year()))
+                        .font(.ds.titleSmall)
+                        .foregroundStyle(Color.ds.ink)
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 150), spacing: Spacing.md)], spacing: Spacing.md) {
+                        ForEach(group.scans) { scan in
+                            card(scan)
+                        }
                     }
                 }
             }
+            .padding(Spacing.md)
         }
-        .scrollContentBackground(.hidden)
-        .dsCanvas()
+        .background(LivingBackground(band: scans.first?.band ?? .calm))
         .safeAreaInset(edge: .bottom) {
             if isComparing {
                 Button {
@@ -89,9 +85,8 @@ struct ScanTimelineView: View {
         }
     }
 
-    @ViewBuilder private func row(_ scan: ScanSession) -> some View {
+    @ViewBuilder private func card(_ scan: ScanSession) -> some View {
         let isPicked = compareSelection.contains(scan)
-        let content = ScanRow(scan: scan, previous: previous(of: scan), isPicked: isComparing ? isPicked : nil)
         if isComparing {
             Button {
                 if isPicked {
@@ -101,11 +96,28 @@ struct ScanTimelineView: View {
                     if compareSelection.count == 2 { compareSelection.removeFirst() }
                     compareSelection.append(scan)
                 }
-            } label: { content }
-                .buttonStyle(.plain)
-                .sensoryFeedback(Haptic.toggle, trigger: isPicked)
+            } label: {
+                SkinCard(session: scan, size: .compact)
+                    .overlay(alignment: .topTrailing) {
+                        Image(systemName: isPicked ? "checkmark.circle.fill" : "circle")
+                            .font(.title2)
+                            .foregroundStyle(.white, isPicked ? Color.ds.positive : Color.black.opacity(0.25))
+                            .padding(Spacing.sm)
+                            .contentTransition(.symbolEffect(.replace))
+                    }
+                    .scaleEffect(isPicked ? 0.95 : 1)
+                    .dsAnimation(.snappy, value: isPicked)
+            }
+            .buttonStyle(CardPressStyle())
+            .sensoryFeedback(Haptic.toggle, trigger: isPicked)
         } else {
-            NavigationLink(value: scan) { content }
+            NavigationLink(value: scan) { SkinCard(session: scan, size: .compact) }
+                .buttonStyle(CardPressStyle())
+                .contextMenu {
+                    Button("Delete scan", systemImage: "trash", role: .destructive) {
+                        AppPersistence.delete(scan, in: modelContext)
+                    }
+                }
         }
     }
 
