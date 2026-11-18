@@ -15,12 +15,20 @@ struct MirrorView: View {
     /// Owned by the shell so the camera survives dock paging, folding and rotation.
     let model: ScanCaptureModel
 
+    /// Set when a scan's analysis has saved: the sticker sticks onto this colour, then the result opens.
+    @State private var finishedBand: BreakoutBand?
+    #if DEBUG
+    /// `-stickerDemo`: replays the sticker moment on the latest scan (the Simulator has no camera).
+    @State private var demoPhoto: UIImage?
+    @State private var demoBand: BreakoutBand?
+    #endif
+
     private var latest: ScanSession? { scans.first }
     private var band: BreakoutBand { latest?.band ?? .calm }
 
     private var isScanning: Bool {
         switch model.state {
-        case .capturing, .reviewing, .analyzing: true
+        case .capturing, .reviewing, .analyzing, .finished: true
         default: false
         }
     }
@@ -33,8 +41,17 @@ struct MirrorView: View {
             }
             overlay
             CaptureFlash(trigger: model.captures.count)
+            #if DEBUG
+            if let demoPhoto {
+                StickerMakingView(photo: demoPhoto, band: demoBand) { self.demoPhoto = nil; demoBand = nil }
+                    .environment(\.colorScheme, .dark)
+            }
+            #endif
         }
         .task { await model.startPreview() }
+        #if DEBUG
+        .task { await playStickerDemoIfRequested() }
+        #endif
         .onChange(of: scenePhase) { _, phase in
             switch phase {
             case .active: model.resume()
@@ -50,13 +67,13 @@ struct MirrorView: View {
         }
         .onChange(of: model.state) { _, state in
             guard state == .finished else { return }
-            appModel.scanFinished(model.savedSessionID)
+            let saved = model.savedSessionID.flatMap { modelContext.model(for: $0) as? ScanSession }
+            finishedBand = saved?.band ?? .calm // the sticker now sticks; `finishScan` opens the result
             let container = modelContext.container
             Task {
                 await WidgetSummary.refresh(from: container)
                 await ScanReminders.rescheduleIfEnabled()
             }
-            model.returnToMirror()
         }
         .sensoryFeedback(Haptic.capture, trigger: model.captures.count)
         .sensoryFeedback(Haptic.success, trigger: model.state == .finished)
@@ -72,9 +89,7 @@ struct MirrorView: View {
             .environment(\.colorScheme, .dark) // capture review stays dark, like the system camera
             .transition(.opacity)
         case .analyzing, .finished:
-            AnalyzingScreen(image: model.captures[.front])
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.black.opacity(0.88).ignoresSafeArea())
+            StickerMakingView(photo: model.captures[.front], band: finishedBand, onDone: finishScan)
                 .environment(\.colorScheme, .dark)
         case .permissionDenied:
             MessageScreen(systemImage: "camera", title: "Camera access is off",
@@ -93,6 +108,23 @@ struct MirrorView: View {
                          openLatest: { latest.map { appModel.presentedScan = .init(id: $0.persistentModelID) } })
         }
     }
+
+    private func finishScan() {
+        appModel.scanFinished(model.savedSessionID)
+        model.returnToMirror()
+        finishedBand = nil
+    }
+
+    #if DEBUG
+    private func playStickerDemoIfRequested() async {
+        guard UserDefaults.standard.bool(forKey: "stickerDemo") else { return }
+        try? await Task.sleep(for: .seconds(1.5))
+        guard let latest, let photo = latest.uiImage(at: 0) else { return }
+        demoPhoto = photo
+        try? await Task.sleep(for: .seconds(3.2))
+        demoBand = latest.band
+    }
+    #endif
 
     private func openSettings() {
         if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }

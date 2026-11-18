@@ -1,51 +1,15 @@
 import SwiftUI
 import UIKit
-import Vision
 import SkinalyzeKit
 
-/// Lifts the subject out of the front photo (on-device Vision), like a sticker. Cached per scan.
-actor PortraitCutout {
-    static let shared = PortraitCutout()
-    private let cache = NSCache<NSString, UIImage>()
-
-    func image(for id: UUID, photo: Data?) -> UIImage? {
-        if let cached = cache.object(forKey: id.uuidString as NSString) { return cached }
-        guard let photo, let source = UIImage(data: photo) else { return nil }
-        let result = lift(source) ?? source
-        cache.setObject(result, forKey: id.uuidString as NSString)
-        return result
-    }
-
-    private func lift(_ image: UIImage) -> UIImage? {
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = 1
-        guard let upright = UIGraphicsImageRenderer(size: image.size, format: format).image(actions: { _ in
-            image.draw(at: .zero)
-        }).cgImage else { return nil }
-        let request = VNGenerateForegroundInstanceMaskRequest()
-        let handler = VNImageRequestHandler(cgImage: upright)
-        do {
-            try handler.perform([request])
-            guard let observation = request.results?.first else { return nil }
-            let buffer = try observation.generateMaskedImage(ofInstances: observation.allInstances, from: handler,
-                                                             croppedToInstancesExtent: true)
-            let ciImage = CIImage(cvPixelBuffer: buffer)
-            guard let cg = CIContext().createCGImage(ciImage, from: ciImage.extent) else { return nil }
-            return UIImage(cgImage: cg)
-        } catch {
-            return nil // Simulator / unsupported: fall back to the photo.
-        }
-    }
-}
-
-/// The signature object: your face as a collectible card on your mood colour, with soft glows where spots were found.
+/// The signature object: your face as a die-cut holo sticker stuck on your mood colour, glowing where spots were found.
 struct SkinCard: View {
     let session: ScanSession
     var size: Size = .hero
 
     enum Size { case hero, deck, compact }
 
-    @State private var portrait: UIImage?
+    @State private var sticker: StickerArt?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var glowing = false
     @ScaledMetric(relativeTo: .largeTitle) private var heroNumberSize: CGFloat = 72
@@ -54,11 +18,10 @@ struct SkinCard: View {
         ZStack(alignment: .bottomLeading) {
             LinearGradient(colors: [Color.ds.band(session.band), Color.ds.band(session.band).opacity(0.55)],
                            startPoint: .topLeading, endPoint: .bottomTrailing)
-            if let portrait {
-                Image(uiImage: portrait)
-                    .resizable()
-                    .scaledToFit()
-                    .padding(.top, size == .compact ? Spacing.xs : Spacing.lg)
+            if let sticker {
+                StickerImage(art: sticker, tilts: size != .compact, shadowRadius: size == .compact ? 3 : 6)
+                    .padding(size == .compact ? Spacing.xs : Spacing.md)
+                    .padding(.top, size == .compact ? 0 : Spacing.sm)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                     .overlay { zoneGlows }
                     .transition(.scale(scale: 0.9).combined(with: .opacity))
@@ -93,8 +56,8 @@ struct SkinCard: View {
         .clipShape(RoundedRectangle(cornerRadius: size == .compact ? Radius.medium : Radius.large, style: .continuous))
         .shadow(color: Color.ds.band(session.band).opacity(0.45), radius: size == .compact ? 10 : 24, y: size == .compact ? 6 : 14)
         .task(id: session.id) {
-            let image = await PortraitCutout.shared.image(for: session.id, photo: session.sortedCaptures.first?.imageData)
-            withDSAnimation(.expressive, reduceMotion: reduceMotion) { portrait = image }
+            let art = await PortraitCutout.shared.art(for: session.id, photo: session.sortedCaptures.first?.imageData)
+            withDSAnimation(.bouncy, reduceMotion: reduceMotion) { sticker = art }
             glowing = true
         }
         .accessibilityElement(children: .ignore)
