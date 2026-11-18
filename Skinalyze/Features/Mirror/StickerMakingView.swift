@@ -19,6 +19,9 @@ struct StickerMakingView: View {
     @State private var phase: Phase = .photo
     @State private var art: StickerArt?
     @State private var didFinish = false
+    /// Live copy of `band`. The sequence runs in a long-lived task whose captured `self` never sees later `band`
+    /// values — reading this @State instead is what lets a fast analysis (done before the float) still stick.
+    @State private var resultBand: BreakoutBand?
 
     private var motion: Animation { MotionToken.bouncy.resolved(reduceMotion: reduceMotion).animation }
 
@@ -42,7 +45,16 @@ struct StickerMakingView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.black.opacity(0.9).ignoresSafeArea())
         .task { await run() }
-        .onChange(of: band) { _, _ in stickIfReady() }
+        .onChange(of: band, initial: true) { _, newBand in
+            resultBand = newBand
+            stickIfReady()
+        }
+        .task(id: resultBand) {
+            // Safety net: once there is a result, never keep the user waiting on the animation.
+            guard resultBand != nil else { return }
+            try? await Task.sleep(for: .seconds(Self.maxWaitAfterResult))
+            stick(force: true)
+        }
         .sensoryFeedback(.impact(flexibility: .soft, intensity: 0.6), trigger: phase == .lifted)
         .sensoryFeedback(.impact(weight: .light), trigger: phase == .outlined)
         .sensoryFeedback(.impact(weight: .heavy), trigger: phase == .stuck)
@@ -55,9 +67,9 @@ struct StickerMakingView: View {
     private var card: some View {
         GeometryReader { proxy in
             RoundedRectangle(cornerRadius: Radius.large, style: .continuous)
-                .fill(LinearGradient(colors: [Color.ds.band(band ?? .calm), Color.ds.band(band ?? .calm).opacity(0.55)],
+                .fill(LinearGradient(colors: [Color.ds.band(resultBand ?? .calm), Color.ds.band(resultBand ?? .calm).opacity(0.55)],
                                      startPoint: .topLeading, endPoint: .bottomTrailing))
-                .shadow(color: Color.ds.band(band ?? .calm).opacity(0.5), radius: 24, y: 14)
+                .shadow(color: Color.ds.band(resultBand ?? .calm).opacity(0.5), radius: 24, y: 14)
                 .offset(y: phase == .stuck ? 0 : proxy.size.height * 1.4)
                 .opacity(phase == .stuck ? 1 : 0)
         }
@@ -105,7 +117,7 @@ struct StickerMakingView: View {
         switch phase {
         case .photo, .lifted: String(localized: "Lifting you out…")
         case .outlined, .floating: String(localized: "Reading your skin…")
-        case .stuck: band.map { BandCopy.title($0) } ?? ""
+        case .stuck: resultBand.map { BandCopy.title($0) } ?? ""
         }
     }
 
@@ -124,8 +136,16 @@ struct StickerMakingView: View {
         stickIfReady()
     }
 
+    private static let maxWaitAfterResult: Double = 4
+
     private func stickIfReady() {
-        guard band != nil, phase == .floating || photo == nil, !didFinish else { return }
+        guard phase == .floating || photo == nil else { return }
+        stick(force: false)
+    }
+
+    private func stick(force: Bool) {
+        guard resultBand != nil, !didFinish else { return }
+        if force, art == nil { phase = .floating } // cut-out never arrived: stick the photo itself
         didFinish = true
         withAnimation(reduceMotion ? .easeInOut(duration: 0.3) : .spring(duration: 0.55, bounce: 0.3)) { phase = .stuck }
         Task {

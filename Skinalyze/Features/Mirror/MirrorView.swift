@@ -121,7 +121,8 @@ struct MirrorView: View {
         try? await Task.sleep(for: .seconds(1.5))
         guard let latest, let photo = latest.uiImage(at: 0) else { return }
         demoPhoto = photo
-        try? await Task.sleep(for: .seconds(3.2))
+        // Real analysis is often done in under a second — before the sticker has even lifted.
+        try? await Task.sleep(for: .seconds(0.6))
         demoBand = latest.band
     }
     #endif
