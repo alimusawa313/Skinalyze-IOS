@@ -53,6 +53,54 @@ final class ScanCaptureModel {
         return (front, side(.right, sign: 1), side(.left, sign: -1))
     }
 
+    // MARK: - Mirror (camera as the home screen)
+
+    /// Live face box (Vision coords) for overlays on the Mirror, updated every analysed frame.
+    private(set) var liveFace: ImageRect?
+    private(set) var isPreviewing = false
+
+    /// Runs the camera as a live mirror without starting a scan (no auto-capture while idle).
+    func startPreview() async {
+        guard !isPreviewing else { camera.start(); return }
+        let granted: Bool = switch CameraSession.authorizationStatus() {
+        case .authorized: true
+        case .notDetermined: await CameraSession.requestAccess()
+        default: false
+        }
+        guard granted else { send(.start); send(.permissionDenied); return }
+        do {
+            try await camera.configure()
+        } catch {
+            cameraUnavailable = true
+            return
+        }
+        isPreviewing = true
+        camera.start()
+        listenToFrames()
+    }
+
+    /// Starts a scan in place on the already-running mirror camera.
+    func beginScan() {
+        guard isPreviewing, state == .idle || state == .finished else { return }
+        captures = [:]
+        frontDepth = nil
+        savedSessionID = nil
+        resetHold()
+        state = .idle
+        send(.start)
+        send(.permissionGranted)
+        camera.start()
+    }
+
+    /// Back to the plain mirror (after a scan finishes or is cancelled).
+    func returnToMirror() {
+        captures = [:]
+        frontDepth = nil
+        resetHold()
+        state = .idle
+        if isPreviewing { camera.start() }
+    }
+
     // MARK: - Lifecycle
 
     func start() async {
@@ -87,8 +135,23 @@ final class ScanCaptureModel {
     }
 
     func resume() {
-        guard case .capturing = state else { return }
-        camera.start()
+        switch state {
+        case .capturing: camera.start()
+        case .idle where isPreviewing: camera.start()
+        default: break
+        }
+    }
+
+    /// The Mirror is off screen (another dock page): stop the camera unless a scan is mid-capture.
+    func setMirrorVisible(_ visible: Bool) {
+        guard isPreviewing else { return }
+        if visible {
+            resume()
+        } else if case .capturing = state {
+            return
+        } else {
+            camera.stop()
+        }
     }
 
     func cancel() {
@@ -109,6 +172,7 @@ final class ScanCaptureModel {
 
     func retake(_ angle: CaptureAngle) {
         captures[angle] = nil
+        if angle == .front { frontDepth = nil }
         send(.retake(angle))
         resetHold()
         camera.start()
@@ -127,6 +191,7 @@ final class ScanCaptureModel {
 
     private func handle(_ sample: FrameSample) {
         latestTimestamp = sample.timestamp
+        liveFace = sample.face?.bounds
         guard let expected = currentAngle, !isCapturing else { return }
         // After the front photo, accept whichever side the user turns to first (like Face ID enrollment).
         let candidates: [CaptureAngle] = expected == .front
@@ -172,8 +237,16 @@ final class ScanCaptureModel {
         isCapturing = true
         defer { isCapturing = false }
         do {
-            let photo = try await camera.capturePhoto()
-            captures[angle] = photo
+            // The front shot carries the TrueDepth depth map: every scan on a Face ID iPhone is also a 3D scan.
+            let photo = try await camera.capturePhoto(withDepth: angle == .front)
+            captures[angle] = photo.image
+            if angle == .front {
+                frontDepth = photo.depth
+                #if DEBUG
+                print("[scan] front depth:", photo.depth.map { "\($0.width)x\($0.height) intrinsics=\($0.intrinsics != nil)" } ?? "none",
+                      "supportsDepth=\(camera.supportsDepth)")
+                #endif
+            }
             captureFailed = false
             send(.captured(angle))
             resetHold()
@@ -195,25 +268,33 @@ final class ScanCaptureModel {
         targetAngle = nil
     }
 
-    // MARK: - 3D (Face ID iPhones only; never on iPhone Duo)
+    // MARK: - 3D (TrueDepth iPhones; never on iPhone Duo)
 
-    private(set) var faceMesh: FaceMeshDraft?
-    private(set) var isCapturingMesh = false
-    private(set) var meshFailed = false
-    var canCapture3D: Bool { FaceMeshCapturer.isSupported }
+    /// Depth map captured with the front photo (nil on iPhone Duo / devices without TrueDepth).
+    private(set) var frontDepth: DepthMap?
+    /// The device scans in 3D (TrueDepth front camera).
+    var supports3D: Bool { camera.supportsDepth }
+    var has3DScan: Bool { frontDepth != nil }
 
-    func captureFaceMesh() async {
-        guard canCapture3D, !isCapturingMesh else { return }
-        camera.stop()
-        isCapturingMesh = true
-        defer { isCapturingMesh = false }
-        do {
-            faceMesh = try await FaceMeshCapturer().capture()
-            meshFailed = false
-        } catch {
-            Self.logger.error("3D capture failed: \(error.localizedDescription)")
-            meshFailed = true
-        }
+    /// Builds the real face mesh from the front photo's depth, textured with that photo. Off the main actor.
+    private static func buildFaceMesh(depth: DepthMap, front: UIImage, faceBox: ImageRect) async -> FaceMeshDraft? {
+        // Detached on purpose: meshing ~20k points and encoding the texture must not run on the main actor.
+        await Task.detached(priority: .userInitiated) {
+            guard let texture = uprightTexture(front) else { return nil }
+            return DepthMeshBuilder.build(depth: depth, faceBox: faceBox, texture: texture)
+        }.value
+    }
+
+    /// Upright, ≤ 2048 px JPEG for the 3D texture (RealityKit ignores EXIF orientation).
+    nonisolated private static func uprightTexture(_ image: UIImage) -> Data? {
+        let maxSide: CGFloat = 2048
+        let scale = min(1, maxSide / max(image.size.width, image.size.height))
+        let size = CGSize(width: image.size.width * scale, height: image.size.height * scale)
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        return UIGraphicsImageRenderer(size: size, format: format).image { _ in
+            image.draw(in: CGRect(origin: .zero, size: size))
+        }.jpegData(compressionQuality: 0.85)
     }
 
     // MARK: - Analysis
@@ -241,7 +322,15 @@ final class ScanCaptureModel {
         }
         do {
             let analysis = try await ScanAnalyzer.analyze(prepared, productIDs: productIDs)
+            var faceMesh: FaceMeshDraft?
             var pins: [FacePin] = []
+            if let frontDepth, let front = captures[.front], let frontFace = analysis.frontFace {
+                faceMesh = await Self.buildFaceMesh(depth: frontDepth, front: front, faceBox: frontFace)
+                if faceMesh == nil { Self.logger.error("3D mesh could not be built from this depth map") }
+                #if DEBUG
+                print("[scan] 3D mesh:", faceMesh.map { "\($0.vertices.count) vertices, \($0.indices.count / 3) triangles" } ?? "none")
+                #endif
+            }
             if let faceMesh, let frontFace = analysis.frontFace {
                 pins = FacePinMapper.pins(for: analysis.draft.detections, photoFace: frontFace, mesh: faceMesh)
             }

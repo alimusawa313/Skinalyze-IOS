@@ -5,6 +5,8 @@ public enum MotionToken: CaseIterable, Sendable, Hashable {
     case snappy
     case smooth
     case expressive
+    /// Playful overshoot for presses, docks and arrivals (V2 "Mirror").
+    case bouncy
     case gentle
     case reduced
 
@@ -13,6 +15,7 @@ public enum MotionToken: CaseIterable, Sendable, Hashable {
         case .snappy: .spring(duration: 0.28, bounce: 0.12)
         case .smooth: .spring(duration: 0.45, bounce: 0)
         case .expressive: .spring(duration: 0.6, bounce: 0.3)
+        case .bouncy: .spring(duration: 0.42, bounce: 0.45)
         case .gentle: .spring(duration: 0.9, bounce: 0)
         case .reduced: .easeInOut(duration: 0.2)
         }

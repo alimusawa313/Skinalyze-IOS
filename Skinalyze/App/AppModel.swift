@@ -2,8 +2,8 @@ import Foundation
 import Observation
 import SwiftData
 
-/// App-wide navigation state. Scans are a modal flow (never pushed on a tab stack) so folding, unfolding or rotating
-/// the device can't pop them (PLAN.md §8.2).
+/// App-wide navigation state. Scans run in place on the Mirror (never pushed on a stack) so folding, unfolding or
+/// rotating the device can't pop them (PLAN.md §8.2).
 @Observable
 @MainActor
 final class AppModel {
@@ -20,16 +20,21 @@ final class AppModel {
     }
 
     var selectedTab: Tab = .today
+    /// Set by deep links / intents; the Mirror starts an in-place scan and clears it.
+    var pendingScan = false
+    /// Mirrors the in-place scan so the shell can hide the dock while capturing.
     var isScanning = false
     var presentedScan: PresentedScan?
     var isShowingProfile = false
 
     func startScan() {
-        isScanning = true
+        selectedTab = .today
+        pendingScan = true
     }
 
     func scanFinished(_ id: PersistentIdentifier?) {
         isScanning = false
+        pendingScan = false
         presentedScan = id.map(PresentedScan.init(id:))
     }
 

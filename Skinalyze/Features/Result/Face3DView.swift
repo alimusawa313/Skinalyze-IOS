@@ -3,7 +3,7 @@ import SwiftUI
 import UIKit
 import SkinalyzeKit
 
-/// Rotatable, textured 3D face with lesion pins (Face ID iPhones only). Drag to turn (limited range), pinch to zoom,
+/// Your real TrueDepth face scan, textured with your front photo, with lesion pins (Face ID iPhones only). Drag to turn (limited range), pinch to zoom,
 /// double-tap to reset. Reduce Motion: no spring settle. VoiceOver users get the zone list instead (hidden here).
 struct Face3DView: View {
     let mesh: FaceMeshRecord
@@ -14,9 +14,10 @@ struct Face3DView: View {
     @State private var scale: Float = 1
     @State private var dragStart: (yaw: Float, pitch: Float)?
 
-    private static let maxYaw: Float = 70 * .pi / 180
+    /// A single-view depth scan is a relief of the face: turning further would show its open back.
+    private static let maxYaw: Float = 55 * .pi / 180
     private static let maxPitch: Float = 25 * .pi / 180
-    /// ARKit faces are ~15 cm; scale up to fill the default RealityView camera.
+    /// TrueDepth face scans are ~20 cm across (metres); scale up to fill the default RealityView camera.
     private static let baseScale: Float = 9
 
     var body: some View {

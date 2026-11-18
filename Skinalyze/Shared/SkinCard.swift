@@ -43,7 +43,7 @@ struct SkinCard: View {
     let session: ScanSession
     var size: Size = .hero
 
-    enum Size { case hero, compact }
+    enum Size { case hero, deck, compact }
 
     @State private var portrait: UIImage?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -58,14 +58,21 @@ struct SkinCard: View {
                 Image(uiImage: portrait)
                     .resizable()
                     .scaledToFit()
-                    .padding(.top, size == .hero ? Spacing.lg : Spacing.xs)
+                    .padding(.top, size == .compact ? Spacing.xs : Spacing.lg)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                     .overlay { zoneGlows }
                     .transition(.scale(scale: 0.9).combined(with: .opacity))
             }
-            if size == .hero {
+            if size != .compact {
                 VStack(alignment: .leading, spacing: Spacing.xxs) {
-                    Text("Latest scan").font(.ds.label).textCase(.uppercase)
+                    Group {
+                        if size == .deck {
+                            Text(session.createdAt, format: .dateTime.weekday(.wide).day().month(.wide))
+                        } else {
+                            Text("Latest scan")
+                        }
+                    }
+                    .font(.ds.label).textCase(.uppercase)
                     Text(session.breakoutIndex, format: .number)
                         .font(.system(size: heroNumberSize, weight: .heavy, design: .rounded).monospacedDigit())
                         .contentTransition(.numericText(value: Double(session.breakoutIndex)))
@@ -82,9 +89,9 @@ struct SkinCard: View {
                     .padding(Spacing.sm)
             }
         }
-        .aspectRatio(size == .hero ? 0.78 : 0.72, contentMode: .fit)
-        .clipShape(RoundedRectangle(cornerRadius: size == .hero ? Radius.large : Radius.medium, style: .continuous))
-        .shadow(color: Color.ds.band(session.band).opacity(0.45), radius: size == .hero ? 24 : 10, y: size == .hero ? 14 : 6)
+        .aspectRatio(size == .compact ? 0.72 : 0.78, contentMode: .fit)
+        .clipShape(RoundedRectangle(cornerRadius: size == .compact ? Radius.medium : Radius.large, style: .continuous))
+        .shadow(color: Color.ds.band(session.band).opacity(0.45), radius: size == .compact ? 10 : 24, y: size == .compact ? 6 : 14)
         .task(id: session.id) {
             let image = await PortraitCutout.shared.image(for: session.id, photo: session.sortedCaptures.first?.imageData)
             withDSAnimation(.expressive, reduceMotion: reduceMotion) { portrait = image }

@@ -97,7 +97,7 @@ struct ProductThumbnail: View {
     }
 }
 
-private struct ProductPicker: View {
+struct ProductPicker: View {
     let slot: ProductCatalog.Slot
     @Environment(\.dismiss) private var dismiss
     @AppStorage private var productID: Int

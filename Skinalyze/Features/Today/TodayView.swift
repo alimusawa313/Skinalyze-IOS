@@ -159,9 +159,9 @@ struct Avatar: View {
 
     var body: some View {
         Text(name.first.map { String($0).uppercased() } ?? "·")
-            .font(.headline)
-            .foregroundStyle(Color.ds.ink)
-            .frame(width: 32, height: 32)
-            .background(Circle().fill(Color.ds.surfaceRaised))
+            .font(.system(.title3, design: .rounded).weight(.heavy))
+            .foregroundStyle(.white)
+            .frame(width: 48, height: 48)
+            .glassEffect(.regular.interactive(), in: Circle())
     }
 }

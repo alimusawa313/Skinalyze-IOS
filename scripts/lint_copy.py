@@ -78,6 +78,9 @@ def main(argv: list[str]) -> int:
     results = []
     for root in roots:
         for path in root.rglob("*.swift"):
+            # Tests list the banned words on purpose (to assert they never ship); they are not user-facing copy.
+            if any(part.endswith("Tests") or part == ".build" for part in path.parts):
+                continue
             results += scan_swift(path)
         for path in root.rglob("*.xcstrings"):
             results += scan_catalog(path)

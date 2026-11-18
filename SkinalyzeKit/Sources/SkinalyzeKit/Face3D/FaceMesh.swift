@@ -1,7 +1,8 @@
 import Foundation
 import SwiftData
 
-/// A captured ARKit face mesh, ready to persist. Only on Face ID iPhones — iPhone Duo has no Face ID sensor (2D only).
+/// A captured face mesh, ready to persist: a real TrueDepth depth scan (`DepthMeshBuilder`) on Face ID iPhones.
+/// iPhone Duo has no TrueDepth sensor, so it never has one (2D only).
 public struct FaceMeshDraft: Sendable, Hashable {
     public let vertices: [SIMD3<Float>]
     public let indices: [UInt16]
@@ -13,15 +14,19 @@ public struct FaceMeshDraft: Sendable, Hashable {
     public let texture: Data
     /// `true` when `projected` is mirrored relative to the stored (unmirrored) photos.
     public let mirroredProjection: Bool
+    /// `true` when `projected` is exactly the front photo's coordinate space (depth meshes are built from the photo's
+    /// own depth map), so pins map directly instead of through face boxes.
+    public let projectedIsPhotoSpace: Bool
 
     public init(vertices: [SIMD3<Float>], indices: [UInt16], textureCoordinates: [SIMD2<Float>],
-                projected: [SIMD2<Float>], texture: Data, mirroredProjection: Bool) {
+                projected: [SIMD2<Float>], texture: Data, mirroredProjection: Bool, projectedIsPhotoSpace: Bool = false) {
         self.vertices = vertices
         self.indices = indices
         self.textureCoordinates = textureCoordinates
         self.projected = projected
         self.texture = texture
         self.mirroredProjection = mirroredProjection
+        self.projectedIsPhotoSpace = projectedIsPhotoSpace
     }
 }
 
@@ -43,6 +48,13 @@ public enum FacePinMapper {
         let xs = mesh.projected.map(\.x), ys = mesh.projected.map(\.y)
         guard let minX = xs.min(), let maxX = xs.max(), let minY = ys.min(), let maxY = ys.max() else { return [] }
 
+        if mesh.projectedIsPhotoSpace {
+            return detections.filter { $0.captureAngle == .front }.compactMap { detection in
+                // Photo space is top-left origin; Vision boxes are bottom-left.
+                let target = SIMD2(Float(detection.box.center.x), Float(1 - detection.box.center.y))
+                return nearestVertex(to: target, in: mesh.projected).map { FacePin(vertexIndex: $0, type: detection.type) }
+            }
+        }
         return detections.filter { $0.captureAngle == .front }.compactMap { detection in
             // Relative position inside the photo's face box (top-left origin; Vision is bottom-left).
             var u = (detection.box.center.x - photoFace.x) / photoFace.width
@@ -50,11 +62,12 @@ public enum FacePinMapper {
             guard (-0.1...1.1).contains(u), (-0.1...1.1).contains(v) else { return nil }
             if mesh.mirroredProjection { u = 1 - u }
             let target = SIMD2(minX + Float(u) * (maxX - minX), minY + Float(v) * (maxY - minY))
-            let nearest = mesh.projected.indices.min {
-                distanceSquared(mesh.projected[$0], target) < distanceSquared(mesh.projected[$1], target)
-            }
-            return nearest.map { FacePin(vertexIndex: $0, type: detection.type) }
+            return nearestVertex(to: target, in: mesh.projected).map { FacePin(vertexIndex: $0, type: detection.type) }
         }
+    }
+
+    private static func nearestVertex(to target: SIMD2<Float>, in projected: [SIMD2<Float>]) -> Int? {
+        projected.indices.min { distanceSquared(projected[$0], target) < distanceSquared(projected[$1], target) }
     }
 
     private static func distanceSquared(_ a: SIMD2<Float>, _ b: SIMD2<Float>) -> Float {

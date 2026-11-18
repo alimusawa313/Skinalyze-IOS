@@ -4,6 +4,12 @@ import UIKit
 import Vision
 import SkinalyzeKit
 
+/// A captured photo plus, on TrueDepth iPhones, its depth map (aligned with the upright photo).
+struct CapturedPhoto: @unchecked Sendable {
+    let image: UIImage
+    let depth: DepthMap?
+}
+
 /// One analysed preview frame: face geometry + quality, ready for `GateEvaluator`.
 struct FrameSample: Sendable {
     let face: FaceMeasurement?
@@ -21,8 +27,8 @@ struct FrameSample: Sendable {
 /// Fixes vs. the old `FaceTrackingViewModel`: exposure is continuous + face-driven (never locked), frames are rotated
 /// upright before analysis, luma is read from the real Y plane (not misread as BGRA), analysis is throttled, photos come
 /// from `AVCapturePhotoOutput` at quality priority, and capture is never mirrored (stored photos stay unmirrored).
-/// iPhone Duo: the default front camera is Apple's virtual front camera, which switches inner/outer automatically —
-/// right for the 2D-only Duo scan, which needs no depth.
+/// Face ID iPhones use the TrueDepth camera so the front photo carries a real depth map (the 3D scan). iPhone Duo has
+/// no TrueDepth camera, so it falls back to the regular front camera — 2D only (CLAUDE.md §1.8).
 final class CameraSession: NSObject, @unchecked Sendable {
     enum CameraError: Error {
         case unavailable
@@ -48,7 +54,9 @@ final class CameraSession: NSObject, @unchecked Sendable {
     private var frameContinuation: AsyncStream<FrameSample>.Continuation?
 
     // sessionQueue state
-    private var photoContinuation: CheckedContinuation<UIImage, Error>?
+    private var photoContinuation: CheckedContinuation<CapturedPhoto, Error>?
+    /// Set once configured: the front camera is TrueDepth and depth delivery is on.
+    private(set) var supportsDepth = false
 
     /// Latest-frame-wins stream of analysed frames (~15 Hz).
     private(set) lazy var frames: AsyncStream<FrameSample> = AsyncStream(bufferingPolicy: .bufferingNewest(1)) { continuation in
@@ -102,7 +110,8 @@ final class CameraSession: NSObject, @unchecked Sendable {
         }
     }
 
-    func capturePhoto() async throws -> UIImage {
+    /// Captures a photo; with `withDepth`, also its TrueDepth depth map (when the device has one).
+    func capturePhoto(withDepth: Bool = false) async throws -> CapturedPhoto {
         try await withCheckedThrowingContinuation { continuation in
             sessionQueue.async {
                 guard self.session.isRunning, self.photoContinuation == nil else {
@@ -112,6 +121,11 @@ final class CameraSession: NSObject, @unchecked Sendable {
                 self.photoContinuation = continuation
                 let settings = AVCapturePhotoSettings()
                 settings.photoQualityPrioritization = .quality
+                if withDepth, self.photoOutput.isDepthDataDeliveryEnabled {
+                    settings.isDepthDataDeliveryEnabled = true
+                    settings.isDepthDataFiltered = true // fills sensor holes
+                    settings.embedsDepthDataInPhoto = false
+                }
                 self.photoOutput.capturePhoto(with: settings, delegate: self)
             }
         }
@@ -121,7 +135,8 @@ final class CameraSession: NSObject, @unchecked Sendable {
 
     private func configureOnQueue() throws {
         guard !isConfigured else { return }
-        guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
+        let trueDepth = AVCaptureDevice.default(.builtInTrueDepthCamera, for: .video, position: .front)
+        guard let device = trueDepth ?? AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
             throw CameraError.unavailable
         }
         session.beginConfiguration()
@@ -135,6 +150,10 @@ final class CameraSession: NSObject, @unchecked Sendable {
         session.addInput(input)
         session.addOutput(photoOutput)
         photoOutput.maxPhotoQualityPrioritization = .quality
+        if trueDepth != nil, photoOutput.isDepthDataDeliverySupported {
+            photoOutput.isDepthDataDeliveryEnabled = true
+            supportsDepth = true
+        }
 
         videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_420YpCbCr8BiPlanarFullRange]
         videoOutput.alwaysDiscardsLateVideoFrames = true
@@ -243,11 +262,11 @@ extension CameraSession: AVCaptureVideoDataOutputSampleBufferDelegate {
 
 extension CameraSession: AVCapturePhotoCaptureDelegate {
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        let result: Swift.Result<UIImage, Error>
+        let result: Swift.Result<CapturedPhoto, Error>
         if let error {
             result = .failure(error)
         } else if let data = photo.fileDataRepresentation(), let image = UIImage(data: data) {
-            result = .success(image)
+            result = .success(CapturedPhoto(image: image, depth: Self.depthMap(from: photo, matching: image.size)))
         } else {
             result = .failure(CameraError.captureFailed)
         }
@@ -256,5 +275,52 @@ extension CameraSession: AVCapturePhotoCaptureDelegate {
             self.photoContinuation = nil
             continuation?.resume(with: result)
         }
+    }
+}
+
+// MARK: - Depth (TrueDepth → DepthMap)
+
+extension CameraSession {
+    /// Float32 metres, rotated to match the upright photo (same EXIF orientation), with intrinsics scaled to the map.
+    /// Returns nil (2D-only scan) rather than a mis-oriented map if the result doesn't match the photo's aspect.
+    static func depthMap(from photo: AVCapturePhoto, matching photoSize: CGSize) -> DepthMap? {
+        guard var depthData = photo.depthData else { return nil }
+        let nativeWidth = CVPixelBufferGetWidth(depthData.depthDataMap)
+        if depthData.depthDataType != kCVPixelFormatType_DepthFloat32 {
+            depthData = depthData.converting(toDepthDataType: kCVPixelFormatType_DepthFloat32)
+        }
+        if let raw = photo.metadata[kCGImagePropertyOrientation as String] as? UInt32,
+           let orientation = CGImagePropertyOrientation(rawValue: raw), orientation != .up {
+            depthData = depthData.applyingExifOrientation(orientation)
+        }
+        let buffer = depthData.depthDataMap
+        CVPixelBufferLockBaseAddress(buffer, .readOnly)
+        defer { CVPixelBufferUnlockBaseAddress(buffer, .readOnly) }
+        let width = CVPixelBufferGetWidth(buffer), height = CVPixelBufferGetHeight(buffer)
+        let rowBytes = CVPixelBufferGetBytesPerRow(buffer)
+        guard let base = CVPixelBufferGetBaseAddress(buffer), width > 2, height > 2 else { return nil }
+        guard (width < height) == (photoSize.width < photoSize.height) else {
+            logger.error("Depth orientation does not match the photo (\(width)x\(height)); saving 2D only")
+            return nil
+        }
+        var meters: [Float] = []
+        meters.reserveCapacity(width * height)
+        for y in 0..<height {
+            let row = base.advanced(by: y * rowBytes).assumingMemoryBound(to: Float32.self)
+            for x in 0..<width { meters.append(row[x]) }
+        }
+        return DepthMap(width: width, height: height, meters: meters,
+                        intrinsics: intrinsics(depthData.cameraCalibrationData, nativeWidth: nativeWidth,
+                                               width: width, height: height))
+    }
+
+    private static func intrinsics(_ calibration: AVCameraCalibrationData?, nativeWidth: Int,
+                                   width: Int, height: Int) -> CameraIntrinsics? {
+        guard let calibration, calibration.intrinsicMatrixReferenceDimensions.width > 0 else { return nil }
+        let matrix = calibration.intrinsicMatrix
+        let scale = Float(nativeWidth) / Float(calibration.intrinsicMatrixReferenceDimensions.width)
+        var fx = matrix.columns.0.x * scale, fy = matrix.columns.1.y * scale
+        if width != nativeWidth { swap(&fx, &fy) } // rotated 90°
+        return CameraIntrinsics(fx: fx, fy: fy, cx: Float(width) / 2, cy: Float(height) / 2)
     }
 }

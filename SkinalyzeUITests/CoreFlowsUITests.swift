@@ -9,13 +9,22 @@ final class CoreFlowsUITests: XCTestCase {
         continueAfterFailure = false
         app = XCUIApplication()
         app.launchArguments = ["-seedDemoData"]
+        // The Mirror asks for camera access on launch (system alert).
+        addUIInterruptionMonitor(withDescription: "Camera permission") { alert in
+            for title in ["Allow", "OK", "Don’t Allow"] where alert.buttons[title].firstMatch.exists {
+                alert.buttons[title].firstMatch.tap()
+                return true
+            }
+            return false
+        }
         app.launch()
     }
 
-    func testTodayShowsLatestScan() {
-        XCTAssertTrue(app.buttons["heroCard"].waitForExistence(timeout: 10))
-        XCTAssertTrue(app.buttons["heroCard"].exists)
-        attachScreenshot("Today")
+    func testMirrorShowsLatestScanAndShutter() {
+        XCTAssertTrue(app.buttons["mirrorIndex"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["mirrorShutter"].exists)
+        XCTAssertTrue(app.buttons["dock.mirror"].isSelected)
+        attachScreenshot("Mirror")
     }
 
     /// Timeline rows read like "Tue, Nov 17, Mild, 1 fewer".
@@ -24,27 +33,33 @@ final class CoreFlowsUITests: XCTestCase {
     }
 
     func testTimelineOpensScanDetail() {
-        openTab("Timeline")
+        openDock("dock.deck")
         let firstRow = scanRows.element(boundBy: 0)
         XCTAssertTrue(firstRow.waitForExistence(timeout: 10))
         attachScreenshot("Timeline")
         firstRow.tap()
-        XCTAssertTrue(app.staticTexts["What we noticed"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["What changed"].waitForExistence(timeout: 10))
+        app.buttons["What we noticed"].tap()
         attachScreenshot("Scan detail")
     }
 
     func testLatestScanShows3DView() {
-        XCTAssertTrue(app.buttons["heroCard"].waitForExistence(timeout: 10))
-        app.buttons["heroCard"].tap()
+        let index = app.buttons["mirrorIndex"]
+        XCTAssertTrue(index.waitForExistence(timeout: 10))
         let toggle = app.switches["3D view"]
-        XCTAssertTrue(toggle.waitForExistence(timeout: 10))
-        toggle.tap()
+        // The first tap may be consumed by the camera-permission alert's interruption monitor.
+        for _ in 0..<3 where !toggle.exists {
+            index.tap()
+            _ = toggle.waitForExistence(timeout: 4)
+        }
+        XCTAssertTrue(toggle.exists)
+        // Scans with a 3D scan open on it.
         XCTAssertTrue(app.staticTexts["Drag to turn · pinch to zoom · double-tap to reset"].waitForExistence(timeout: 10))
         attachScreenshot("3D view")
     }
 
     func testCompareTwoScans() {
-        openTab("Timeline")
+        openDock("dock.deck")
         XCTAssertTrue(app.buttons["Compare"].waitForExistence(timeout: 10))
         app.buttons["Compare"].tap()
         XCTAssertTrue(scanRows.element(boundBy: 0).waitForExistence(timeout: 10))
@@ -57,30 +72,23 @@ final class CoreFlowsUITests: XCTestCase {
         attachScreenshot("Compare")
     }
 
-    func testSearchFindsByIngredient() {
-        openTab("Search")
-        let field = app.searchFields.firstMatch
+    func testShelfSearchFindsByIngredient() {
+        openDock("dock.shelf")
+        let field = app.textFields["shelfSearch"]
         XCTAssertTrue(field.waitForExistence(timeout: 10))
         field.tap()
         field.typeText("niacinamide")
-        XCTAssertTrue(app.cells.firstMatch.waitForExistence(timeout: 10))
-        app.cells.firstMatch.tap()
+        let result = app.buttons.matching(identifier: "shelfResult").firstMatch
+        XCTAssertTrue(result.waitForExistence(timeout: 10))
+        attachScreenshot("Shelf search")
+        result.tap()
         XCTAssertTrue(app.staticTexts["Ingredients"].waitForExistence(timeout: 10))
         attachScreenshot("Product check")
     }
 
-    func testScanWithoutCameraFailsGracefully() {
-        // Fresh installs ask for camera access first (system alert).
-        addUIInterruptionMonitor(withDescription: "Camera permission") { alert in
-            for title in ["Allow", "OK", "Don’t Allow"] where alert.buttons[title].firstMatch.exists {
-                alert.buttons[title].firstMatch.tap()
-                return true
-            }
-            return false
-        }
-        XCTAssertTrue(app.buttons["todayScanButton"].waitForExistence(timeout: 10))
-        app.buttons["todayScanButton"].tap()
-        let unavailable = app.staticTexts["Camera unavailable"]
+    func testMirrorWithoutCameraFailsGracefully() {
+        XCTAssertTrue(app.buttons["mirrorShutter"].waitForExistence(timeout: 10))
+        let unavailable = app.staticTexts["Camera unavailable — scan on a real iPhone."]
         let denied = app.staticTexts["Camera access is off"]
         let deadline = Date.now.addingTimeInterval(15)
         while Date.now < deadline, !unavailable.exists, !denied.exists {
@@ -88,34 +96,35 @@ final class CoreFlowsUITests: XCTestCase {
             _ = unavailable.waitForExistence(timeout: 1)
         }
         XCTAssertTrue(unavailable.exists || denied.exists)
-        attachScreenshot("Scan (no camera)")
+        if unavailable.exists { XCTAssertFalse(app.buttons["mirrorShutter"].isEnabled) }
+        attachScreenshot("Mirror (no camera)")
     }
 
-    func testAccessibilityAuditOnToday() throws {
-        XCTAssertTrue(app.buttons["heroCard"].waitForExistence(timeout: 10))
+    func testDockMovesBetweenPages() {
+        openDock("dock.shelf")
+        XCTAssertTrue(app.buttons["dock.shelf"].isSelected)
+        attachScreenshot("Shelf")
+        openDock("dock.mirror")
+        XCTAssertTrue(app.buttons["mirrorShutter"].waitForExistence(timeout: 10))
+    }
+
+    func testAccessibilityAuditOnMirror() throws {
+        XCTAssertTrue(app.buttons["mirrorIndex"].waitForExistence(timeout: 10))
         do {
             try app.performAccessibilityAudit(for: [.dynamicType, .elementDetection, .hitRegion, .sufficientElementDescription]) { issue in
-                // System tab bar / bottom accessory internals are owned by UIKit.
-                issue.element?.elementType == .tabBar
+                // The live camera layer has no accessible content by design.
+                issue.element?.elementType == .other && issue.element?.label.isEmpty == true
             }
         } catch let error as NSError where error.domain == "com.apple.accessibilityAudit" && error.code == -902 {
             throw XCTSkip("Accessibility audit unavailable on this simulator runtime: \(error.localizedDescription)")
         }
     }
 
-    /// Tab bar on compact widths; sidebar on regular widths (e.g. iPhone Duo open, `.sidebarAdaptable`).
-    private func openTab(_ name: String) {
-        let tab = app.tabBars.buttons[name]
-        if tab.waitForExistence(timeout: 3) {
-            tab.tap()
-            return
-        }
-        let sidebarItem = app.buttons.matching(identifier: name).firstMatch
-        if sidebarItem.waitForExistence(timeout: 3) {
-            sidebarItem.tap()
-        } else {
-            app.staticTexts[name].firstMatch.tap()
-        }
+    /// The floating Mirror · Deck · Shelf dock (same on every width and pose).
+    private func openDock(_ identifier: String) {
+        let item = app.buttons[identifier]
+        XCTAssertTrue(item.waitForExistence(timeout: 10))
+        item.tap()
     }
 
     private func attachScreenshot(_ name: String) {

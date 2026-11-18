@@ -58,7 +58,7 @@ enum DemoData {
         }
     }
 
-    /// A synthetic half-ellipsoid "face" so the 3D viewer can be exercised in the Simulator (no ARKit there).
+    /// A synthetic half-ellipsoid "face" so the 3D viewer can be exercised in the Simulator (no TrueDepth camera there).
     private static func demoMesh(texture: Data) -> FaceMeshDraft {
         let rings = 24, segments = 24
         var vertices: [SIMD3<Float>] = [], uvs: [SIMD2<Float>] = [], projected: [SIMD2<Float>] = [], indices: [UInt16] = []
