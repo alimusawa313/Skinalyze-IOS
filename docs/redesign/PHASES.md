@@ -8,6 +8,52 @@
 
 ---
 
+## Build status (2026-11-18) — all phases built; ready for device testing
+
+All work is on local branches (never pushed): `phase-0/foundation` → `phase-1/scan-engine` → `phase-2/design-system`
+→ `phase-3/app-shell` → `phase-4/face-3d` (this last branch contains everything, incl. Phases 5–7).
+
+| Phase | Status | Verified by |
+|---|---|---|
+| 0 Foundation | ✅ Done | Migration tests on the real legacy `Result` model; store pinned; catalogs merged |
+| 1 Scan engine | ✅ Built — **needs device calibration** | 66 gate/flow/zone/NMS tests; camera only testable on hardware |
+| 2 Design system | ✅ Done | WCAG contrast tests on every text/UI token |
+| 3 App shell & screens | ✅ Done | XCUITest E2E (Today, Timeline, detail, Compare, Search, scan-without-camera, a11y audit) on iPhone 17 **and iPhone Duo** |
+| 4 3D face | ✅ Built — **needs device calibration** (UV / mirroring flags) | Mesh codec + pin mapping tests; synthetic-mesh UI test |
+| 5 Product Check | ✅ Done (Visual Intelligence not yet) | Verdict golden tests; share extension builds + embeds; shared-context test |
+| 6 Insights & habit | ✅ Mostly (journal/HealthKit not built) | Insight/effect tests; widgets + control + App Intents build |
+| 7 Polish | ✅ Icon, accent, ID strings, asset cleanup, copy lint gate | `scripts/test.sh`: 96 Kit + 8 app + 7 UI tests, 0 copy violations |
+
+### How to test
+
+1. `scripts/test.sh` (or `scripts/test.sh "iPhone Duo"`) — everything above, including the UI suite.
+2. Simulator with sample data: run the `Skinalyze` scheme with launch argument `-seedDemoData` (Debug only).
+   Add `-startTab timeline|products|search|scan` to jump straight to a screen; `-AppleLanguages (id)` for Indonesian.
+3. **On a real iPhone (required for):** scanning (gates, auto-capture, hold-still ring, retake), Face ID 3D view,
+   biometric lock, reminders, widgets/Control, Share sheet from Safari / Photos, label scanner.
+4. **On a real iPhone Duo:** closed ↔ open ↔ tabletop mid-scan (scan must keep its captured angles), vertical bars,
+   Touch ID lock copy, no 3D offered.
+
+### Device calibration checklist (hardware needed)
+
+- [ ] `GateThresholds.rightTurnYawSign` — turn right on the "Turn right" step; flip if hints say the opposite
+- [ ] `GateThresholds.minSharpness` / `luma` — tune with the consistency benchmark (PLAN §18.3)
+- [ ] `FaceMeshCapturer.projectionIsMirrored` + UV V-flip — texture should line up with the face; pins on real spots
+- [ ] Capture orientation on iPhone Duo inner/outer displays and in landscape
+
+### Owner actions before a device/TestFlight build
+
+- [ ] Register App Group `group.com.Patani.Skinalyze` and enable it for `com.Patani.Skinalyze`,
+      `com.Patani.Skinalyze.ProductCheck`, `com.Patani.Skinalyze.Widgets`
+- [ ] Confirm whether the shipped build had CloudKit on (schema treated as live/additive either way)
+
+### Still open (not built)
+
+- Visual Intelligence integration (Phase 5) · trigger journal + HealthKit (Phase 6) · consistency-benchmark fixture
+  collection and detector retraining (Q3) · full Indonesian coverage (core flows done) · app target Swift 6 mode ·
+  ARKit-based gating on Face ID iPhones · on-device Foundation Models phrasing (templates ship today) ·
+  moving the SwiftData store into the App Group (no longer required: extensions use `SharedContext` snapshots)
+
 ## Overview
 
 | Phase | Name | Goal (one line) | Depends on | Size |

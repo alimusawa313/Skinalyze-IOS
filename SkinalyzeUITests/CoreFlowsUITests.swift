@@ -72,8 +72,8 @@ final class CoreFlowsUITests: XCTestCase {
     func testScanWithoutCameraFailsGracefully() {
         // Fresh installs ask for camera access first (system alert).
         addUIInterruptionMonitor(withDescription: "Camera permission") { alert in
-            for title in ["Allow", "OK", "Don’t Allow"] where alert.buttons[title].exists {
-                alert.buttons[title].tap()
+            for title in ["Allow", "OK", "Don’t Allow"] where alert.buttons[title].firstMatch.exists {
+                alert.buttons[title].firstMatch.tap()
                 return true
             }
             return false

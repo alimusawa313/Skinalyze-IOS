@@ -992,14 +992,16 @@ Previews for every screen in all §9.1 device states, light/dark, AX5, Reduce Mo
 
 Tick when the phase's exit criteria in [PHASES.md](PHASES.md) are met.
 
-- [ ] **Phase 0** — Foundation & cleanup
-- [ ] **Phase 1** — Scan reliability engine
-- [ ] **Phase 2** — Brand & design system
-- [ ] **Phase 3** — App shell, core screens & adaptive (Duo) layouts
-- [ ] **Phase 4** — 3D face scan & zones
-- [ ] **Phase 5** — Product Check
-- [ ] **Phase 6** — Insights, routine & habit
-- [ ] **Phase 7** — Trust, accessibility, performance & polish
+- [x] **Phase 0** — Foundation & cleanup
+- [x] **Phase 1** — Scan reliability engine (device calibration pending)
+- [x] **Phase 2** — Brand & design system
+- [x] **Phase 3** — App shell, core screens & adaptive (Duo) layouts
+- [x] **Phase 4** — 3D face scan & zones (device calibration pending)
+- [x] **Phase 5** — Product Check (Visual Intelligence pending)
+- [x] **Phase 6** — Insights, routine & habit (journal/HealthKit pending)
+- [x] **Phase 7** — Trust, accessibility, performance & polish (device perf pass pending)
+
+See PHASES.md → "Build status" for verification, how to test, and open items.
 
 ---
 
