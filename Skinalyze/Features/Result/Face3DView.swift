@@ -10,20 +10,28 @@ struct Face3DView: View {
     let mesh: FaceMeshRecord
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var yaw: Float = 0
+    @State private var yaw: Float = Face3DView.debugStartYaw
     @State private var pitch: Float = 0
     @State private var scale: Float = 1
     @State private var dragStart: (yaw: Float, pitch: Float)?
     @State private var selectedPin: Int?
 
-    /// A front-only scan is textured well up to about this turn; further would show stretched sides.
-    private static let maxYaw: Float = 28 * .pi / 180
+    /// A front-only scan holds together up to about this turn (checked on real scans); further tears the cheeks.
+    private static let maxYaw: Float = 32 * .pi / 180
     private static let maxPitch: Float = 15 * .pi / 180
     /// Radians per point of drag — slow enough to inspect.
     private static let dragSensitivity: Float = 0.0045
-    /// The model's largest extent is scaled to this (RealityView's default camera frames ~1.4 units nicely).
-    private static let fittedSize: Float = 1.35
+    /// The drawn mesh.s largest extent is scaled to this (about half the screen width in the default RealityView camera).
+    private static let fittedSize: Float = 1.9
     private static let pinPrefix = "pin-"
+    /// DEBUG `-debugYaw <degrees>`: open already turned, for renderer checks in the Simulator.
+    private static var debugStartYaw: Float {
+        #if DEBUG
+        UserDefaults.standard.float(forKey: "debugYaw") * .pi / 180
+        #else
+        0
+        #endif
+    }
 
     var body: some View {
         RealityView { content in
@@ -121,10 +129,6 @@ struct Face3DView: View {
         if let data = mesh.textureData, let image = UIImage(data: data)?.cgImage,
            let texture = try? TextureResource(image: image, options: .init(semantic: .color)) {
             material.color = .init(texture: .init(texture))
-            // Face-cut textures carry a soft alpha edge: blend it so the scan fades out instead of ending in teeth.
-            if ![.none, .noneSkipLast, .noneSkipFirst].contains(image.alphaInfo) {
-                material.blending = .transparent(opacity: .init(floatLiteral: 1))
-            }
         }
         let face = ModelEntity(mesh: resource, materials: [material])
 
@@ -141,9 +145,13 @@ struct Face3DView: View {
             face.addChild(marker)
         }
 
-        // Auto-fit: centre the scan on its bounds and scale its largest extent to `fittedSize`.
-        let lower = vertices.reduce(SIMD3<Float>(repeating: .greatestFiniteMagnitude)) { simd_min($0, $1) }
-        let upper = vertices.reduce(SIMD3<Float>(repeating: -.greatestFiniteMagnitude)) { simd_max($0, $1) }
+        // Auto-fit: centre the scan on the bounds of what is actually drawn (vertices used by triangles) and scale
+        // its largest extent to `fittedSize`.
+        var lower = SIMD3<Float>(repeating: .greatestFiniteMagnitude), upper = SIMD3<Float>(repeating: -.greatestFiniteMagnitude)
+        for index in indices where vertices.indices.contains(Int(index)) {
+            lower = simd_min(lower, vertices[Int(index)])
+            upper = simd_max(upper, vertices[Int(index)])
+        }
         let extent = max(upper.x - lower.x, upper.y - lower.y, 0.01)
         let fit = Entity()
         fit.scale = SIMD3(repeating: Self.fittedSize / extent)

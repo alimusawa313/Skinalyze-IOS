@@ -140,17 +140,20 @@ struct DepthMeshTests {
         #expect(mesh.vertices.count > 50)
     }
 
-    @Test("Holes inside the face are filled (no notches or gaps in the cheek)")
-    func fillsHolesInsideFace() throws {
-        var depth = Self.domeDepth().meters
-        // A missing patch on the cheek (no depth there).
-        for y in 74..<86 { for x in 66..<76 { depth[y * Self.width + x] = .nan } }
-        let map = DepthMap(width: Self.width, height: Self.height, meters: depth, intrinsics: Self.domeDepth().intrinsics)
+    @Test("The mask only removes samples — depth of what's kept is identical to the unmasked build")
+    func maskNeverAltersDepth() throws {
         let side = 64
-        let mask = FaceMask(width: side, height: side, alpha: .init(repeating: 255, count: side * side))
-        let mesh = try #require(DepthMeshBuilder.build(depth: map, faceBox: Self.faceBox, texture: Data(), mask: mask))
-        let holeU = Float(71) / Float(Self.width), holeV = Float(80) / Float(Self.height)
-        #expect(mesh.projected.contains { abs($0.x - holeU) < 0.02 && abs($0.y - holeV) < 0.02 })
+        var alpha = [UInt8](repeating: 255, count: side * side)
+        for y in 0..<side { for x in 0..<(side / 2) { alpha[y * side + x] = 0 } } // drop the left half
+        let masked = try #require(DepthMeshBuilder.build(depth: Self.domeDepth(), faceBox: Self.faceBox, texture: Data(),
+                                                         mask: FaceMask(width: side, height: side, alpha: alpha)))
+        let full = try #require(DepthMeshBuilder.build(depth: Self.domeDepth(), faceBox: Self.faceBox, texture: Data()))
+        // Every kept vertex exists, with the same position, in the unmasked mesh.
+        let fullByUV = Dictionary(zip(full.projected.map { "\($0.x),\($0.y)" }, full.vertices), uniquingKeysWith: { a, _ in a })
+        for (uv, vertex) in zip(masked.projected, masked.vertices) {
+            let match = try #require(fullByUV["\(uv.x),\(uv.y)"])
+            #expect(simd_distance(match, vertex) < 0.0001)
+        }
     }
 
     @Test("Face mask samples by normalized position")

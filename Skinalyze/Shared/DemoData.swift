@@ -50,12 +50,25 @@ enum DemoData {
                 legacyResultID: nil
             )
             let isNewest = index == plan.count - 1
-            let mesh = isNewest ? draft.captures.first.map { demoMesh(texture: $0.imageData) } : nil
+            let mesh = isNewest ? (realMesh() ?? draft.captures.first.map { demoMesh(texture: $0.imageData) }) : nil
             let pins = mesh.map { mesh in
                 FacePinMapper.pins(for: detections, photoFace: ImageRect(x: 0.2, y: 0.24, width: 0.6, height: 0.63), mesh: mesh)
             } ?? []
             _ = try? await store.save(draft, faceMesh: mesh, pins: pins)
         }
+    }
+
+    /// `-debugMeshDir <folder>`: load a real captured mesh (vertices.bin / indices.bin / uvs.bin / texture.bin, as
+    /// stored by `FaceMeshRecord`) so the phone's renderer can be checked in the Simulator on real scan data.
+    private static func realMesh() -> FaceMeshDraft? {
+        guard let folder = UserDefaults.standard.string(forKey: "debugMeshDir") else { return nil }
+        func load(_ name: String) -> Data? { try? Data(contentsOf: URL(fileURLWithPath: folder).appendingPathComponent(name)) }
+        guard let vertexData = load("vertices.bin"), let indexData = load("indices.bin"),
+              let uvData = load("uvs.bin"), let texture = load("texture.bin") else { return nil }
+        let uvs = FaceMeshCodec.decodeUVs(uvData)
+        return FaceMeshDraft(vertices: FaceMeshCodec.decodeVertices(vertexData), indices: FaceMeshCodec.decodeIndices(indexData),
+                             textureCoordinates: uvs, projected: uvs.map { SIMD2($0.x, 1 - $0.y) },
+                             texture: texture, mirroredProjection: false, projectedIsPhotoSpace: true)
     }
 
     /// A synthetic half-ellipsoid "face" so the 3D viewer can be exercised in the Simulator (no TrueDepth camera there).

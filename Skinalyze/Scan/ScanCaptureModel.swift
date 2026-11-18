@@ -86,6 +86,7 @@ final class ScanCaptureModel {
         guard isPreviewing, state == .idle || state == .finished else { return }
         captures = [:]
         frontDepth = nil
+        sideDepths = [:]
         savedSessionID = nil
         resetHold()
         state = .idle
@@ -244,9 +245,16 @@ final class ScanCaptureModel {
         isCapturing = true
         defer { isCapturing = false }
         do {
-            // The front shot carries the TrueDepth depth map: every scan on a Face ID iPhone is also a 3D scan.
-            let photo = try await camera.capturePhoto(withDepth: angle == .front)
+            // Every shot carries its TrueDepth depth map: the front one is the 3D scan today; the side ones are kept so
+            // the cheeks/jaw can be added from their own view (multi-view merge).
+            let photo = try await camera.capturePhoto(withDepth: true)
             captures[angle] = photo.image
+            sideDepths[angle] = angle == .front ? nil : photo.depth
+            #if DEBUG
+            if angle != .front {
+                print("[scan] \(angle.rawValue) depth:", photo.depth.map { "\($0.width)x\($0.height)" } ?? "none")
+            }
+            #endif
             if angle == .front {
                 camera.setCollectingDepth(false)
                 frontDepth = photo.depth
@@ -287,6 +295,8 @@ final class ScanCaptureModel {
 
     /// Depth map captured with the front photo (nil on iPhone Duo / devices without TrueDepth).
     private(set) var frontDepth: DepthMap?
+    /// Depth captured with the left/right photos (not yet merged into the model; recorded for the multi-view work).
+    private var sideDepths: [CaptureAngle: DepthMap] = [:]
     /// The device scans in 3D (TrueDepth front camera).
     var supports3D: Bool { camera.supportsDepth }
     var has3DScan: Bool { frontDepth != nil }
@@ -295,10 +305,10 @@ final class ScanCaptureModel {
     private static func buildFaceMesh(depth: DepthMap, front: UIImage, faceBox: ImageRect) async -> FaceMeshDraft? {
         // Detached on purpose: meshing ~20k points and encoding the texture must not run on the main actor.
         await Task.detached(priority: .userInitiated) {
-            // Face-only cut with a soft edge (no smeared hair/headphones/neck); plain photo if no landmarks.
-            let masked = FaceMaskMaker.make(from: front)
-            guard let texture = masked?.texture ?? uprightTexture(front) else { return nil }
-            return DepthMeshBuilder.build(depth: depth, faceBox: faceBox, texture: texture, mask: masked?.mask)
+            // Trim only the wall behind and the shoulders; the face, cheeks and ears keep their real depth.
+            guard let texture = uprightTexture(front) else { return nil }
+            return DepthMeshBuilder.build(depth: depth, faceBox: faceBox, texture: texture,
+                                          mask: FaceMaskMaker.trimMask(from: front))
         }.value
     }
 
@@ -341,6 +351,10 @@ final class ScanCaptureModel {
             let analysis = try await ScanAnalyzer.analyze(prepared, productIDs: productIDs)
             var faceMesh: FaceMeshDraft?
             var pins: [FacePin] = []
+            #if DEBUG
+            Debug3DDump.write(captures: captures, depths: sideDepths.merging(frontDepth.map { [.front: $0] } ?? [:]) { a, _ in a },
+                              frontFace: analysis.frontFace)
+            #endif
             if let frontDepth, let front = captures[.front], let frontFace = analysis.frontFace {
                 faceMesh = await Self.buildFaceMesh(depth: frontDepth, front: front, faceBox: frontFace)
                 if faceMesh == nil { Self.logger.error("3D mesh could not be built from this depth map") }
@@ -364,3 +378,38 @@ final class ScanCaptureModel {
         state = ScanFlow.reduce(state, event)
     }
 }
+
+#if DEBUG
+/// Debug builds save each scan's raw inputs (photos + depth maps) to Documents/debug3d so the 3D pipeline can be
+/// developed and verified offline on real captures before anything ships. Never compiled into release builds.
+enum Debug3DDump {
+    static func write(captures: [CaptureAngle: UIImage], depths: [CaptureAngle: DepthMap], frontFace: ImageRect?) {
+        let stamp = ISO8601DateFormatter().string(from: .now).replacingOccurrences(of: ":", with: "-")
+        Task.detached(priority: .utility) {
+            guard let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
+            let folder = documents.appendingPathComponent("debug3d/\(stamp)", isDirectory: true)
+            do {
+                try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+                for (angle, image) in captures {
+                    try image.jpegData(compressionQuality: 0.92)?.write(to: folder.appendingPathComponent("\(angle.rawValue).jpg"))
+                }
+                for (angle, depth) in depths {
+                    try depth.meters.withUnsafeBufferPointer { Data(buffer: $0) }
+                        .write(to: folder.appendingPathComponent("\(angle.rawValue).depth"))
+                    let k = depth.intrinsics
+                    let meta = "{\"width\": \(depth.width), \"height\": \(depth.height), \"fx\": \(k?.fx ?? 0), \"fy\": \(k?.fy ?? 0), "
+                        + "\"cx\": \(k?.cx ?? 0), \"cy\": \(k?.cy ?? 0), \"imageOrientation\": \(captures[angle]?.imageOrientation.rawValue ?? -1)}"
+                    try Data(meta.utf8).write(to: folder.appendingPathComponent("\(angle.rawValue).json"))
+                }
+                if let frontFace {
+                    try Data("\(frontFace.x) \(frontFace.y) \(frontFace.width) \(frontFace.height)".utf8)
+                        .write(to: folder.appendingPathComponent("frontFace.txt"))
+                }
+                print("[scan] debug3d dump:", folder.lastPathComponent, "depths:", depths.keys.map(\.rawValue).sorted())
+            } catch {
+                print("[scan] debug3d dump failed:", error.localizedDescription)
+            }
+        }
+    }
+}
+#endif

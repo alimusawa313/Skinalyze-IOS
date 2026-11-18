@@ -47,6 +47,17 @@ struct AppShell: View {
             if let tab = UserDefaults.standard.string(forKey: "startTab"), let url = URL(string: "skinalyze://\(tab)") {
                 appModel.open(url)
             }
+            // `-openLatestScan YES`: present the newest scan's result (renderer checks in the Simulator).
+            if UserDefaults.standard.bool(forKey: "openLatestScan") {
+                Task {
+                    try? await Task.sleep(for: .seconds(2.5))
+                    var descriptor = FetchDescriptor<ScanSession>(sortBy: [SortDescriptor(\.createdAt, order: .reverse)])
+                    descriptor.fetchLimit = 1
+                    if let latest = try? modelContext.fetch(descriptor).first {
+                        appModel.presentedScan = .init(id: latest.persistentModelID)
+                    }
+                }
+            }
         }
         #endif
     }
