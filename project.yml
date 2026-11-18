@@ -19,9 +19,11 @@ targets:
   Skinalyze:
     type: application
     platform: iOS
-    sources: [Skinalyze]
+    sources: [Skinalyze, SharedSources/Catalog, SharedSources/System]
     dependencies:
       - package: SkinalyzeKit
+      - target: ProductCheckShare
+      - target: SkinalyzeWidgets
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.Patani.Skinalyze
@@ -31,6 +33,62 @@ targets:
         TARGETED_DEVICE_FAMILY: "1" # iPhone only (incl. iPhone Duo)
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+  ProductCheckShare:
+    type: app-extension
+    platform: iOS
+    sources:
+      - ProductCheckShare
+      - SharedSources/Catalog
+    dependencies:
+      - package: SkinalyzeKit
+    info:
+      path: ProductCheckShare/Info.plist
+      properties:
+        CFBundleDisplayName: Skinalyze
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.share-services
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ShareViewController
+          NSExtensionAttributes:
+            NSExtensionJavaScriptPreprocessingFile: ProductPage
+            NSExtensionActivationRule:
+              NSExtensionActivationSupportsText: true
+              NSExtensionActivationSupportsWebURLWithMaxCount: 1
+              NSExtensionActivationSupportsWebPageWithMaxCount: 1
+              NSExtensionActivationSupportsImageWithMaxCount: 1
+    entitlements:
+      path: ProductCheckShare/ProductCheckShare.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.Patani.Skinalyze]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.Patani.Skinalyze.ProductCheck
+        TARGETED_DEVICE_FAMILY: "1"
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: $(inherited) SHARE_EXTENSION
+  SkinalyzeWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - SkinalyzeWidgets
+      - SharedSources/System
+    dependencies:
+      - package: SkinalyzeKit
+      - sdk: WidgetKit.framework
+      - sdk: SwiftUI.framework
+    info:
+      path: SkinalyzeWidgets/Info.plist
+      properties:
+        CFBundleDisplayName: Skinalyze
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: SkinalyzeWidgets/SkinalyzeWidgets.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.Patani.Skinalyze]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.Patani.Skinalyze.Widgets
+        TARGETED_DEVICE_FAMILY: "1"
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: $(inherited) WIDGET_EXTENSION
   SkinalyzeTests:
     type: bundle.unit-test
     platform: iOS

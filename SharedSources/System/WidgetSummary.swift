@@ -32,6 +32,9 @@ enum WidgetSummary {
         descriptor.fetchLimit = 8
         guard let scans = try? container.mainContext.fetch(descriptor) else { return }
         let latest = scans.first
+        #if !WIDGET_EXTENSION
+        SharedContext.publish(latestCounts: latest?.counts)
+        #endif
         let snapshot = WidgetSnapshot(
             lastScanDate: latest?.createdAt,
             breakoutIndex: latest?.breakoutIndex,

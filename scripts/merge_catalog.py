@@ -6,7 +6,7 @@
 - Ingredients and source links come from SkincareProducts1.json, matched by normalized (name, brand); duplicate
   matches are disambiguated by category.
 
-Usage: python3 -I scripts/merge_catalog.py <final.json> <with_ingredients.json> <out.json>
+Usage: python3 -I scripts/merge_catalog.py <final.json> <with_ingredients.json> SharedSources/Catalog/ProductCatalog.json
 Prints a short report; exits non-zero if any ID would be lost.
 """
 import json

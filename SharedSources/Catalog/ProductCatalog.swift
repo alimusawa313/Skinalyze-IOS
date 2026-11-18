@@ -97,6 +97,19 @@ final class ProductCatalog: Sendable {
         products.filter { $0.slot == slot }
     }
 
+    /// Best catalog product for a shared page/product title (all title words found in name + brand).
+    func bestMatch(forTitle title: String) -> CatalogProduct? {
+        let words = title.lowercased().split { !$0.isLetter && !$0.isNumber }.map(String.init).filter { $0.count > 2 }
+        guard !words.isEmpty else { return nil }
+        return products
+            .map { product -> (CatalogProduct, Int) in
+                let haystack = "\(product.name) \(product.brand)".lowercased()
+                return (product, words.filter(haystack.contains).count)
+            }
+            .filter { $0.1 >= max(2, words.count * 2 / 3) }
+            .max { $0.1 < $1.1 }?.0
+    }
+
     /// Matches name, brand **and** ingredients (the old search matched brand only).
     func search(_ query: String, in slot: Slot? = nil) -> [CatalogProduct] {
         let pool = slot.map(products(in:)) ?? products
