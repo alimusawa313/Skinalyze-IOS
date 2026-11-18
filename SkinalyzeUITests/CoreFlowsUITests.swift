@@ -33,6 +33,16 @@ final class CoreFlowsUITests: XCTestCase {
         attachScreenshot("Scan detail")
     }
 
+    func testLatestScanShows3DView() {
+        XCTAssertTrue(app.staticTexts["Latest scan"].waitForExistence(timeout: 10))
+        app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Latest scan'")).firstMatch.tap()
+        let toggle = app.switches["3D view"]
+        XCTAssertTrue(toggle.waitForExistence(timeout: 10))
+        toggle.tap()
+        XCTAssertTrue(app.staticTexts["Drag to turn · pinch to zoom · double-tap to reset"].waitForExistence(timeout: 10))
+        attachScreenshot("3D view")
+    }
+
     func testCompareTwoScans() {
         openTab("Timeline")
         XCTAssertTrue(app.buttons["Compare"].waitForExistence(timeout: 10))

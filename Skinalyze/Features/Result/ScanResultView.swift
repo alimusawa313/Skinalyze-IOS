@@ -49,13 +49,27 @@ struct ScanResultView: View {
 
     // MARK: Photo
 
+    @State private var shows3D = false
+
     private var photoSection: some View {
         VStack(spacing: Spacing.sm) {
             Picker("Angle", selection: $angle) {
                 ForEach(availableAngles, id: \.self) { Text(GuidanceCopy.title(for: $0)).tag($0) }
             }
             .pickerStyle(.segmented)
-            if let image = session.uiImage(at: availableAngles.firstIndex(of: angle) ?? 0) {
+            .disabled(shows3D)
+            if let mesh = session.faceMesh {
+                Toggle(isOn: $shows3D) { Label("3D view", systemImage: "cube") }
+                    .toggleStyle(.button)
+                    .tint(Color.ds.signal)
+                if shows3D {
+                    Face3DView(mesh: mesh)
+                        .transition(.opacity.combined(with: .scale(scale: 0.96)))
+                    Text("Drag to turn · pinch to zoom · double-tap to reset")
+                        .font(.ds.caption).foregroundStyle(Color.ds.inkSecondary)
+                }
+            }
+            if !shows3D, let image = session.uiImage(at: availableAngles.firstIndex(of: angle) ?? 0) {
                 ScanPhotoView(image: image, detections: session.detections(for: angle, types: visibleTypes))
                     .id(angle)
                     .transition(.opacity)

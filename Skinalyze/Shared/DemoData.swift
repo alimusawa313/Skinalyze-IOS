@@ -49,8 +49,39 @@ enum DemoData {
                 productIDs: index >= 2 ? [18] : [],
                 legacyResultID: nil
             )
-            _ = try? await store.save(draft)
+            let isNewest = index == plan.count - 1
+            let mesh = isNewest ? draft.captures.first.map { demoMesh(texture: $0.imageData) } : nil
+            let pins = mesh.map { mesh in
+                FacePinMapper.pins(for: detections, photoFace: ImageRect(x: 0.2, y: 0.24, width: 0.6, height: 0.63), mesh: mesh)
+            } ?? []
+            _ = try? await store.save(draft, faceMesh: mesh, pins: pins)
         }
+    }
+
+    /// A synthetic half-ellipsoid "face" so the 3D viewer can be exercised in the Simulator (no ARKit there).
+    private static func demoMesh(texture: Data) -> FaceMeshDraft {
+        let rings = 24, segments = 24
+        var vertices: [SIMD3<Float>] = [], uvs: [SIMD2<Float>] = [], projected: [SIMD2<Float>] = [], indices: [UInt16] = []
+        for r in 0...rings {
+            let v = Float(r) / Float(rings)
+            let theta = (v - 0.5) * .pi * 0.95
+            for s in 0...segments {
+                let u = Float(s) / Float(segments)
+                let phi = (u - 0.5) * .pi * 0.9
+                vertices.append(SIMD3(0.075 * sin(phi) * cos(theta), -0.1 * sin(theta), 0.05 * cos(phi) * cos(theta)))
+                uvs.append(SIMD2(0.2 + 0.6 * u, 1 - (0.12 + 0.64 * v)))
+                projected.append(SIMD2(0.2 + 0.6 * u, 0.12 + 0.64 * v))
+            }
+        }
+        let row = segments + 1
+        for r in 0..<rings {
+            for s in 0..<segments {
+                let a = UInt16(r * row + s), b = a + 1, c = a + UInt16(row), d = c + 1
+                indices += [a, c, b, b, c, d]
+            }
+        }
+        return FaceMeshDraft(vertices: vertices, indices: indices, textureCoordinates: uvs, projected: projected,
+                             texture: texture, mirroredProjection: false)
     }
 
     private static func angle(for zone: FaceZone) -> CaptureAngle {

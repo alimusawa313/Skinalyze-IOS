@@ -26,10 +26,15 @@ public actor ScanStore {
         return pending.count
     }
 
-    /// Persists a newly captured scan.
+    /// Persists a newly captured scan, with its optional 3D face (Face ID iPhones only).
     @discardableResult
-    public func save(_ draft: ScanDraft) throws -> PersistentIdentifier {
+    public func save(_ draft: ScanDraft, faceMesh: FaceMeshDraft? = nil, pins: [FacePin] = []) throws -> PersistentIdentifier {
         let session = ScanSession.insert(draft, into: modelContext)
+        if let faceMesh {
+            let record = FaceMeshRecord(draft: faceMesh, pins: pins)
+            modelContext.insert(record)
+            session.faceMesh = record
+        }
         try modelContext.save()
         return session.persistentModelID
     }

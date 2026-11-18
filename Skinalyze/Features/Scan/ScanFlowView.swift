@@ -246,6 +246,26 @@ private struct ReviewScreen: View {
                 .padding(.horizontal, Spacing.md)
             }
             Spacer()
+            if model.canCapture3D {
+                Button {
+                    Task { await model.captureFaceMesh() }
+                } label: {
+                    if model.isCapturingMesh {
+                        Label("Hold still — capturing 3D…", systemImage: "faceid")
+                    } else if model.faceMesh != nil {
+                        Label("3D view added", systemImage: "checkmark.circle.fill")
+                    } else {
+                        Label("Add a 3D view (2 seconds)", systemImage: "cube")
+                    }
+                }
+                .buttonStyle(.dsSecondary)
+                .foregroundStyle(.white)
+                .disabled(model.isCapturingMesh || model.faceMesh != nil)
+                if model.meshFailed {
+                    Text("Couldn't capture 3D — you can still analyse without it.")
+                        .font(.ds.footnote).foregroundStyle(.white.opacity(0.75))
+                }
+            }
             Button("Analyse my skin", action: analyze)
                 .buttonStyle(.dsPrimary)
                 .disabled(captured.count < ScanFlow.sequence.count)

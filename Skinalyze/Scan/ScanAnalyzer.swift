@@ -90,10 +90,18 @@ enum ScanAnalyzer {
         return Capture(angle: angle, image: cgImage, encoded: encoded)
     }
 
-    static func analyze(_ captures: [Capture], productIDs: [Int], date: Date = .now) async throws -> ScanDraft {
+    struct Analysis: Sendable {
+        let draft: ScanDraft
+        /// Face box in the front photo — used to place pins on the 3D mesh.
+        let frontFace: ImageRect?
+    }
+
+    static func analyze(_ captures: [Capture], productIDs: [Int], date: Date = .now) async throws -> Analysis {
         var zoned: [ZonedDetection] = []
+        var frontFace: ImageRect?
         for capture in captures {
             let face = faceBounds(in: capture.image)
+            if capture.angle == .front { frontFace = face }
             let detections = try await AcneDetector.shared.detect(in: capture.image, face: face)
             zoned += detections.compactMap { detection in
                 guard let face,
@@ -104,7 +112,7 @@ enum ScanAnalyzer {
         }
         let counted = ScanAggregator.counted(zoned, available: Set(captures.map(\.angle)))
         let counts = ScanAggregator.counts(of: counted)
-        return ScanDraft(
+        let draft = ScanDraft(
             createdAt: date,
             captureMode: .camera2D,
             modelVersion: AcneDetector.modelVersion,
@@ -118,6 +126,7 @@ enum ScanAnalyzer {
             productIDs: productIDs.filter { $0 > 0 },
             legacyResultID: nil
         )
+        return Analysis(draft: draft, frontFace: frontFace)
     }
 
     static func faceBounds(in image: CGImage) -> ImageRect? {

@@ -28,6 +28,10 @@ public final class ScanSession {
     @Relationship(deleteRule: .cascade, inverse: \StoredDetection.session)
     public var detections: [StoredDetection]? = []
 
+    /// Optional 3D face (Face ID iPhones only). Added after first release — optional for CloudKit.
+    @Relationship(deleteRule: .cascade)
+    public var faceMesh: FaceMeshRecord?
+
     public init() {}
 
     public var captureMode: CaptureMode { CaptureMode(rawValue: captureModeRaw) ?? .camera2D }
@@ -148,7 +152,7 @@ public final class StoredDetection {
 
 public enum SkinalyzeSchema {
     /// New models owned by SkinalyzeKit. The app adds the legacy `Result` model to its schema.
-    public static let models: [any PersistentModel.Type] = [ScanSession.self, ScanCapture.self, StoredDetection.self]
+    public static let models: [any PersistentModel.Type] = [ScanSession.self, ScanCapture.self, StoredDetection.self, FaceMeshRecord.self]
 
     /// SwiftData's pre-App-Group default store location. Pinned explicitly: once an App Group entitlement exists,
     /// SwiftData's *default* moves into the group container, which would make existing history disappear.

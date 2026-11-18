@@ -147,6 +147,27 @@ final class ScanCaptureModel {
         report = nil
     }
 
+    // MARK: - 3D (Face ID iPhones only; never on iPhone Duo)
+
+    private(set) var faceMesh: FaceMeshDraft?
+    private(set) var isCapturingMesh = false
+    private(set) var meshFailed = false
+    var canCapture3D: Bool { FaceMeshCapturer.isSupported }
+
+    func captureFaceMesh() async {
+        guard canCapture3D, !isCapturingMesh else { return }
+        camera.stop()
+        isCapturingMesh = true
+        defer { isCapturingMesh = false }
+        do {
+            faceMesh = try await FaceMeshCapturer().capture()
+            meshFailed = false
+        } catch {
+            Self.logger.error("3D capture failed: \(error.localizedDescription)")
+            meshFailed = true
+        }
+    }
+
     // MARK: - Analysis
 
     func confirm(productIDs: [Int], container: ModelContainer) async {
@@ -171,8 +192,13 @@ final class ScanCaptureModel {
             return
         }
         do {
-            let draft = try await ScanAnalyzer.analyze(prepared, productIDs: productIDs)
-            savedSessionID = try await ScanStore(modelContainer: container).save(draft)
+            let analysis = try await ScanAnalyzer.analyze(prepared, productIDs: productIDs)
+            var pins: [FacePin] = []
+            if let faceMesh, let frontFace = analysis.frontFace {
+                pins = FacePinMapper.pins(for: analysis.draft.detections, photoFace: frontFace, mesh: faceMesh)
+            }
+            savedSessionID = try await ScanStore(modelContainer: container)
+                .save(analysis.draft, faceMesh: faceMesh, pins: pins)
             send(.analysisSucceeded)
         } catch {
             Self.logger.error("Analysis failed: \(error.localizedDescription)")
