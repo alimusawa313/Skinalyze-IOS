@@ -1,0 +1,1016 @@
+{
+  "sourceLanguage": "en",
+  "version": "1.0",
+  "strings": {
+    "%lld products in your routine": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld produk dalam rutinitasmu"
+          }
+        }
+      }
+    },
+    "Active": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktif"
+          }
+        }
+      }
+    },
+    "Analyse my skin": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Analisis kulitku"
+          }
+        }
+      }
+    },
+    "Blackheads": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Komedo hitam"
+          }
+        }
+      }
+    },
+    "Breakout index": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indeks jerawat"
+          }
+        }
+      }
+    },
+    "Bring your face into the frame": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Posisikan wajah di dalam bingkai"
+          }
+        }
+      }
+    },
+    "By type": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per jenis"
+          }
+        }
+      }
+    },
+    "By zone": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per area"
+          }
+        }
+      }
+    },
+    "Calm": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tenang"
+          }
+        }
+      }
+    },
+    "Calmer than your last scan. Keep going.": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lebih tenang dari pindaian sebelumnya. Lanjutkan."
+          }
+        }
+      }
+    },
+    "Camera access is off": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Akses kamera nonaktif"
+          }
+        }
+      }
+    },
+    "Camera unavailable": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kamera tidak tersedia"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Batal"
+          }
+        }
+      }
+    },
+    "Center your face in the outline": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Posisikan wajah di tengah garis"
+          }
+        }
+      }
+    },
+    "Check a label": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cek label"
+          }
+        }
+      }
+    },
+    "Check my products": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cek produkku"
+          }
+        }
+      }
+    },
+    "Chin": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dagu"
+          }
+        }
+      }
+    },
+    "Close": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutup"
+          }
+        }
+      }
+    },
+    "Combination": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kombinasi"
+          }
+        }
+      }
+    },
+    "Compare": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bandingkan"
+          }
+        }
+      }
+    },
+    "Compare these two": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bandingkan keduanya"
+          }
+        }
+      }
+    },
+    "Continue": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lanjut"
+          }
+        }
+      }
+    },
+    "Dark spots": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noda gelap"
+          }
+        }
+      }
+    },
+    "Delete all scans": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hapus semua pindaian"
+          }
+        }
+      }
+    },
+    "Done": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selesai"
+          }
+        }
+      }
+    },
+    "Dry": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kering"
+          }
+        }
+      }
+    },
+    "Fade dark marks": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Samarkan noda gelap"
+          }
+        }
+      }
+    },
+    "Fewer breakouts": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lebih sedikit jerawat"
+          }
+        }
+      }
+    },
+    "Find softer, brighter light — try facing a window": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cari cahaya yang lebih terang dan lembut — coba hadap ke jendela"
+          }
+        }
+      }
+    },
+    "Flared": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meradang"
+          }
+        }
+      }
+    },
+    "Forehead": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dahi"
+          }
+        }
+      }
+    },
+    "Front": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Depan"
+          }
+        }
+      }
+    },
+    "Get started": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mulai"
+          }
+        }
+      }
+    },
+    "Go easy on": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Batasi"
+          }
+        }
+      }
+    },
+    "Good match": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cocok"
+          }
+        }
+      }
+    },
+    "Hello": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Halo"
+          }
+        }
+      }
+    },
+    "Hello, %@": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Halo, %@"
+          }
+        }
+      }
+    },
+    "Hold still": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tahan posisi"
+          }
+        }
+      }
+    },
+    "Hold still…": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tahan posisi…"
+          }
+        }
+      }
+    },
+    "How does your skin usually feel?": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bagaimana kulitmu biasanya terasa?"
+          }
+        }
+      }
+    },
+    "How sensitive is your skin?": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seberapa sensitif kulitmu?"
+          }
+        }
+      }
+    },
+    "Insight": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wawasan"
+          }
+        }
+      }
+    },
+    "Is it good for you?": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cocok untukmu?"
+          }
+        }
+      }
+    },
+    "Keep your head level": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jaga kepala tetap lurus"
+          }
+        }
+      }
+    },
+    "Latest scan": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pindaian terbaru"
+          }
+        }
+      }
+    },
+    "Left cheek": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pipi kiri"
+          }
+        }
+      }
+    },
+    "Left jaw": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rahang kiri"
+          }
+        }
+      }
+    },
+    "Look for": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cari kandungan"
+          }
+        }
+      }
+    },
+    "Look straight at the camera": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lihat lurus ke kamera"
+          }
+        }
+      }
+    },
+    "Looking good": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sudah bagus"
+          }
+        }
+      }
+    },
+    "Mild": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ringan"
+          }
+        }
+      }
+    },
+    "Move a little closer": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mendekat sedikit"
+          }
+        }
+      }
+    },
+    "Move back a little": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mundur sedikit"
+          }
+        }
+      }
+    },
+    "Nodules": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nodul"
+          }
+        }
+      }
+    },
+    "Normal": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Normal"
+          }
+        }
+      }
+    },
+    "Nose": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hidung"
+          }
+        }
+      }
+    },
+    "Not enough info": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Info belum cukup"
+          }
+        }
+      }
+    },
+    "Not now": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nanti saja"
+          }
+        }
+      }
+    },
+    "Oily": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Berminyak"
+          }
+        }
+      }
+    },
+    "Open Settings": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buka Pengaturan"
+          }
+        }
+      }
+    },
+    "Papules": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Papula"
+          }
+        }
+      }
+    },
+    "Privacy policy": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kebijakan privasi"
+          }
+        }
+      }
+    },
+    "Private by design": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privat sejak awal"
+          }
+        }
+      }
+    },
+    "Probably not for you": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mungkin kurang cocok"
+          }
+        }
+      }
+    },
+    "Products": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Produk"
+          }
+        }
+      }
+    },
+    "Profile": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profil"
+          }
+        }
+      }
+    },
+    "Pustules": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pustula"
+          }
+        }
+      }
+    },
+    "Reading your skin…": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Membaca kulitmu…"
+          }
+        }
+      }
+    },
+    "Retake any angle, or analyse now.": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ulangi sudut mana pun, atau analisis sekarang."
+          }
+        }
+      }
+    },
+    "Right cheek": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pipi kanan"
+          }
+        }
+      }
+    },
+    "Right jaw": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rahang kanan"
+          }
+        }
+      }
+    },
+    "Routine": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rutinitas"
+          }
+        }
+      }
+    },
+    "Scan %lld more times to unlock trends.": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pindai %lld kali lagi untuk membuka tren."
+          }
+        }
+      }
+    },
+    "Scan 1 more time to unlock trends.": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pindai 1 kali lagi untuk membuka tren."
+          }
+        }
+      }
+    },
+    "Scan a label": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pindai label"
+          }
+        }
+      }
+    },
+    "Scan my skin": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pindai kulitku"
+          }
+        }
+      }
+    },
+    "Search": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cari"
+          }
+        }
+      }
+    },
+    "See how your skin is changing": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lihat bagaimana kulitmu berubah"
+          }
+        }
+      }
+    },
+    "Skin looks calmer than your recent scans.": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kulit tampak lebih tenang dari pindaian terakhir."
+          }
+        }
+      }
+    },
+    "Skinalyze tracks visible changes. It isn't a medical device and doesn't diagnose.": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skinalyze memantau perubahan yang terlihat. Ini bukan alat medis dan tidak mendiagnosis."
+          }
+        }
+      }
+    },
+    "Skip": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lewati"
+          }
+        }
+      }
+    },
+    "Start a scan": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mulai pindai"
+          }
+        }
+      }
+    },
+    "Start using Skinalyze": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mulai pakai Skinalyze"
+          }
+        }
+      }
+    },
+    "Timeline": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Linimasa"
+          }
+        }
+      }
+    },
+    "Today": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hari ini"
+          }
+        }
+      }
+    },
+    "Too bright — step out of direct light": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terlalu terang — hindari cahaya langsung"
+          }
+        }
+      }
+    },
+    "Try again": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coba lagi"
+          }
+        }
+      }
+    },
+    "Turn left": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toleh kiri"
+          }
+        }
+      }
+    },
+    "Turn right": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toleh kanan"
+          }
+        }
+      }
+    },
+    "Turn your head to your left": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tolehkan kepala ke kiri"
+          }
+        }
+      }
+    },
+    "Turn your head to your right": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tolehkan kepala ke kanan"
+          }
+        }
+      }
+    },
+    "Understand my skin": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memahami kulitku"
+          }
+        }
+      }
+    },
+    "Use with care": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pakai dengan hati-hati"
+          }
+        }
+      }
+    },
+    "What should we call you?": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kami panggil kamu siapa?"
+          }
+        }
+      }
+    },
+    "What we noticed": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yang kami temukan"
+          }
+        }
+      }
+    },
+    "What would you like to focus on?": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apa yang ingin kamu fokuskan?"
+          }
+        }
+      }
+    },
+    "Where this comes from": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dari mana info ini"
+          }
+        }
+      }
+    },
+    "Whiteheads": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Komedo putih"
+          }
+        }
+      }
+    },
+    "Your calmest scan yet — whatever you're doing, it's showing.": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pindaian paling tenang sejauh ini — usahamu terlihat hasilnya."
+          }
+        }
+      }
+    },
+    "Your first scan sets your baseline.": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pindaian pertamamu menjadi titik awal."
+          }
+        }
+      }
+    },
+    "Your routine": {
+      "localizations": {
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rutinitasmu"
+          }
+        }
+      }
+    }
+  }
+}

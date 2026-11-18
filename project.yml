@@ -1,6 +1,7 @@
 name: Skinalyze
 options:
   bundleIdPrefix: com.Patani
+  developmentLanguage: en
   deploymentTarget:
     iOS: "26.0"
 settings:
