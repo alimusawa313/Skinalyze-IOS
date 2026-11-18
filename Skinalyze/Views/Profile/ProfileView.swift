@@ -79,7 +79,7 @@ struct ProfileView: View {
                         .font(.system(size: 16))
                     }
                     .padding()
-                    .background(Color("TextReverse"))
+                    .background(Color("textReverse"))
                     
                     Divider()
                         .padding(.leading)
@@ -100,7 +100,7 @@ struct ProfileView: View {
                     }
                     .padding()
                 }
-                .background(Color("TextReverse")) // Sesuaikan dengan latar belakang
+                .background(Color("textReverse")) // Sesuaikan dengan latar belakang
                 .cornerRadius(10)
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
@@ -122,9 +122,9 @@ struct ProfileView: View {
                             .foregroundColor(.gray)
                     }
                     .padding()
-                    .background(Color("TextReverse"))
+                    .background(Color("textReverse"))
                 }
-                .background(Color("TextReverse")) // Sesuaikan dengan latar belakang
+                .background(Color("textReverse")) // Sesuaikan dengan latar belakang
                 .cornerRadius(10)
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
@@ -132,7 +132,7 @@ struct ProfileView: View {
                     
                 )
                 .onTapGesture {
-                    router.navigate(to: .prodUsed(isFromStartup: false))
+                    router.navigate(to: .productUsedView(isFromStartup: false))
                 }
                 //                    }
             }

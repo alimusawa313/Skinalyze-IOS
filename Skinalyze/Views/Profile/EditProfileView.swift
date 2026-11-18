@@ -47,7 +47,7 @@ struct EditProfileView: View {
                         .multilineTextAlignment(.trailing)
                 }
                 .padding()
-                .background(Color("TextReverse"))
+                .background(Color("textReverse"))
                 
                 Divider()
                     .padding(.leading)
@@ -62,7 +62,7 @@ struct EditProfileView: View {
                         .font(.system(size: 16))
                 }
                 .padding()
-                .background(Color("TextReverse"))
+                .background(Color("textReverse"))
                 Divider()
                     .padding(.leading)
                 
@@ -81,9 +81,9 @@ struct EditProfileView: View {
                     .font(.system(size: 16))
                 }
                 .padding()
-                .background(Color("TextReverse"))
+                .background(Color("textReverse"))
             }
-            .background(Color("TextReverse")) // Sesuaikan dengan latar belakang
+            .background(Color("textReverse")) // Sesuaikan dengan latar belakang
             .cornerRadius(10)
             .overlay(
                 RoundedRectangle(cornerRadius: 10)

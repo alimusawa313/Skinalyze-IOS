@@ -436,9 +436,10 @@ struct MessageRow: View {
                             .resizable()
                             .frame(width: 55, height: 40)
                     } else {
-                        Image("MaskotNone")
-                            .resizable()
+                        // Invisible spacer keeps bubbles aligned with the one that shows the mascot.
+                        Color.clear
                             .frame(width: 55, height: 40)
+                            .accessibilityHidden(true)
                     }
                 }
                 ZStack(alignment:.bottomLeading){

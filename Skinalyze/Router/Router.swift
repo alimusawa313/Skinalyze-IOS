@@ -10,16 +10,11 @@ import SwiftUI
 final class Router: ObservableObject {
     
     public enum Destination: Hashable {
-        //        case livingroom
-        //        case bedroom(owner: String)
         case log(isTabBarHidden: Bool)
         case camScanView
-        case prodUsed(isFromStartup: Bool)
         case capturedImagesView(images: [UIImage])
         case anlyzResultView(images: [UIImage])
-        case compareImagesView(selectedLogs: [Result])
         case newCompareImagesView(selectedLogs: [Result])
-        case detailView(selectedLogs: Result)
         case newDetailView(selectedLogs: Result)
         case chatView(isFromStartup: Bool)
         case productUsedView(isFromStartup: Bool)

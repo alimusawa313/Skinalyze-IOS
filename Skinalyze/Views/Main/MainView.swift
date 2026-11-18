@@ -83,17 +83,3 @@ struct MainView: View {
 #Preview {
     MainView()
 }
-
-struct temp: View {
-    @EnvironmentObject var router: Router
-    
-    @Binding var selection: Int
-    var body: some View{
-        VStack{
-            
-        }.onAppear{
-            selection = 0
-            router.navigate(to: .camScanView)
-        }
-    }
-}
