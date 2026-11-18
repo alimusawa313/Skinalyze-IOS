@@ -10,4 +10,11 @@ struct AppSmokeTests {
     func linksKit() {
         #expect(!SkinalyzeKit.version.isEmpty)
     }
+
+    @Test("Merged product catalog is bundled and keeps the legacy product IDs")
+    func catalogLoads() {
+        // product_id 18 is "Bodyguard Moisturiser Sunscreen Serum SPF50" in the legacy catalog that saved scans reference.
+        #expect(ProductCatalog.shared.slot(of: 18) == .sunscreen)
+        #expect(ProductCatalog.shared.slot(of: -1) == nil)
+    }
 }

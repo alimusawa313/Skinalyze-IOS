@@ -45,7 +45,7 @@ final class ProductCatalog: Sendable {
     private let slotsByID: [Int: Slot]
 
     private init(bundle: Bundle = .main) {
-        guard let url = bundle.url(forResource: "FinalSkincareProductElFinale", withExtension: "json"),
+        guard let url = bundle.url(forResource: "ProductCatalog", withExtension: "json"),
               let data = try? Data(contentsOf: url),
               let products = try? JSONDecoder().decode([SkincareProduct].self, from: data)
         else {
