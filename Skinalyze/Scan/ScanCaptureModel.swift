@@ -10,6 +10,8 @@ import SkinalyzeKit
 @MainActor
 final class ScanCaptureModel {
     static let manualCaptureDelay: TimeInterval = 8
+    /// The front photo is also the 3D scan: hold a little longer so a burst of depth frames can be fused.
+    static let frontHold3D: TimeInterval = 0.8
     private static let logger = Logger(subsystem: "com.Patani.Skinalyze", category: "Scan")
 
     private(set) var state: ScanFlowState = .idle
@@ -89,11 +91,13 @@ final class ScanCaptureModel {
         state = .idle
         send(.start)
         send(.permissionGranted)
+        camera.setCollectingDepth(supports3D)
         camera.start()
     }
 
     /// Back to the plain mirror (after a scan finishes or is cancelled).
     func returnToMirror() {
+        camera.setCollectingDepth(false)
         captures = [:]
         frontDepth = nil
         resetHold()
@@ -172,7 +176,10 @@ final class ScanCaptureModel {
 
     func retake(_ angle: CaptureAngle) {
         captures[angle] = nil
-        if angle == .front { frontDepth = nil }
+        if angle == .front {
+            frontDepth = nil
+            camera.setCollectingDepth(supports3D)
+        }
         send(.retake(angle))
         resetHold()
         camera.start()
@@ -201,7 +208,7 @@ final class ScanCaptureModel {
         let (angle, report) = evaluated.first { $0.1.allPassed } ?? evaluated.first ?? (expected, GateReport(passed: [], hint: .noFace))
         self.report = report
         liveYaw = sample.face?.yawDegrees ?? liveYaw
-        if targetAngle != angle { tracker = StabilityTracker() }
+        if targetAngle != angle { tracker = makeTracker(for: angle) }
         targetAngle = angle
         hintStabilizer = hintStabilizer.updated(candidate: report.hint, at: sample.timestamp)
         tracker = tracker.updated(allPassed: report.allPassed, at: sample.timestamp)
@@ -241,6 +248,7 @@ final class ScanCaptureModel {
             let photo = try await camera.capturePhoto(withDepth: angle == .front)
             captures[angle] = photo.image
             if angle == .front {
+                camera.setCollectingDepth(false)
                 frontDepth = photo.depth
                 #if DEBUG
                 print("[scan] front depth:", photo.depth.map { "\($0.width)x\($0.height) intrinsics=\($0.intrinsics != nil)" } ?? "none",
@@ -257,6 +265,13 @@ final class ScanCaptureModel {
             resetHold()
         }
     }
+
+    private func makeTracker(for angle: CaptureAngle) -> StabilityTracker {
+        StabilityTracker(holdDuration: angle == .front && supports3D ? Self.frontHold3D : StabilityTracker().holdDuration)
+    }
+
+    /// True while lining up the front photo on a TrueDepth iPhone (the 3D scan is happening).
+    var isScanning3D: Bool { supports3D && captures[.front] == nil && targetAngle == .front && holdProgress > 0 }
 
     private func resetHold() {
         tracker = StabilityTracker()

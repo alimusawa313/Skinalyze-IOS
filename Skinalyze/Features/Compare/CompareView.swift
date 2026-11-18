@@ -11,6 +11,9 @@ struct CompareView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var angle: CaptureAngle = .front
     @State private var split: CGFloat = 0.5
+    /// Both photos re-rendered with the eyes on the same points, so the faces line up exactly.
+    @State private var alignedEarlier: AlignedPhoto?
+    @State private var alignedLater: AlignedPhoto?
 
     var body: some View {
         ScrollView {
@@ -30,9 +33,25 @@ struct CompareView: View {
             .frame(maxWidth: .infinity)
         }
         .dsCanvas()
+        .task(id: angle) { await alignPhotos() }
         .navigationTitle("Compare")
         .toolbarTitleDisplayMode(.inline)
         .toolbar { Button("Done") { dismiss() } }
+    }
+
+    private func alignPhotos() async {
+        async let earlierPhoto = align(earlier)
+        async let laterPhoto = align(later)
+        let (first, second) = await (earlierPhoto, laterPhoto)
+        withAnimation(.smooth) {
+            alignedEarlier = first
+            alignedLater = second
+        }
+    }
+
+    private func align(_ scan: ScanSession) async -> AlignedPhoto? {
+        guard let image = image(scan) else { return nil }
+        return await FaceAligner.shared.aligned(image, key: "\(scan.id)-\(angle.rawValue)")
     }
 
     private func image(_ scan: ScanSession) -> UIImage? {
@@ -47,10 +66,19 @@ struct CompareView: View {
                 labelled(earlier, title: "Earlier")
                 labelled(later, title: "Later")
             }
-        } else if let before = image(earlier), let after = image(later) {
-            WipeComparison(before: before, after: after, split: $split)
-                .overlay(alignment: .topLeading) { tag("Earlier", earlier) }
-                .overlay(alignment: .topTrailing) { tag("Later", later) }
+        } else if let before = alignedEarlier?.image, let after = alignedLater?.image {
+            VStack(alignment: .leading, spacing: Spacing.xs) {
+                WipeComparison(before: before, after: after, split: $split)
+                    .overlay(alignment: .topLeading) { tag("Earlier", earlier) }
+                    .overlay(alignment: .topTrailing) { tag("Later", later) }
+                Label("Lined up by your eyes", systemImage: "eye")
+                    .font(.ds.caption).foregroundStyle(Color.ds.inkSecondary)
+            }
+        } else {
+            RoundedRectangle(cornerRadius: Radius.medium, style: .continuous)
+                .fill(Color.ds.surfaceRaised)
+                .aspectRatio(3 / 4, contentMode: .fit)
+                .overlay { ProgressView() }
         }
     }
 
@@ -58,8 +86,9 @@ struct CompareView: View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
             Text(title).font(.ds.label).foregroundStyle(Color.ds.inkSecondary)
             Text(scan.createdAt, format: .dateTime.day().month().year()).font(.ds.headline)
-            if let image = image(scan) {
-                ScanPhotoView(image: image, detections: scan.detections(for: angle, types: Set(LesionType.allCases)))
+            if let aligned = scan == earlier ? alignedEarlier : alignedLater {
+                ScanPhotoView(image: aligned.image, detections: scan.detections(for: angle, types: Set(LesionType.allCases)),
+                              mapPoint: { aligned.map($0) })
             }
         }
     }

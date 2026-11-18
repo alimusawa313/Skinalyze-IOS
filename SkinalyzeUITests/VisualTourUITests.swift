@@ -45,6 +45,13 @@ final class VisualTourUITests: XCTestCase {
             toggle.tap()
             sleep(1)
             snap("06 Result · photo")
+            let pin = app.buttons.matching(identifier: "spotPin").firstMatch
+            if pin.waitForExistence(timeout: 3) {
+                pin.tap()
+                sleep(1)
+                snap("06b Spot pop-up")
+                app.tap() // dismiss the pop-up
+            }
         }
         app.buttons["Done"].firstMatch.tap()
         sleep(1)
@@ -60,6 +67,20 @@ final class VisualTourUITests: XCTestCase {
             app.buttons["Compare"].tap()
             sleep(1)
             snap("09 Deck · picking")
+            let cards = app.buttons.matching(NSPredicate(format: "label CONTAINS ', Calm' OR label CONTAINS ', Mild' OR label CONTAINS ', Active' OR label CONTAINS ', Flared'"))
+            if cards.count >= 2 {
+                cards.element(boundBy: 0).tap()
+                app.swipeUp()
+                sleep(1)
+                cards.element(boundBy: 1).tap()
+                if app.buttons["Compare these two"].waitForExistence(timeout: 3) {
+                    app.buttons["Compare these two"].tap()
+                    sleep(3)
+                    snap("09b Compare aligned")
+                    app.buttons["Done"].firstMatch.tap()
+                    sleep(1)
+                }
+            }
         }
 
         // Shelf: tiles, search.

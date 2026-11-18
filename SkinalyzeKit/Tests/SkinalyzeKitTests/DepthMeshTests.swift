@@ -1,4 +1,5 @@
 import Foundation
+import simd
 import Testing
 @testable import SkinalyzeKit
 
@@ -81,5 +82,91 @@ struct DepthMeshTests {
         let pin = try #require(FacePinMapper.pins(for: [center], photoFace: Self.faceBox, mesh: mesh).first)
         let projected = mesh.projected[pin.vertexIndex]
         #expect(abs(projected.x - 0.5) < 0.05 && abs(projected.y - 0.5) < 0.05)
+    }
+
+    // MARK: High quality (fusion, cleanup)
+
+    @Test("Fusing several noisy depth frames (median) recovers the true surface and rejects outliers")
+    func fusionDenoises() throws {
+        let truth = Self.domeDepth()
+        var frames: [DepthMap] = []
+        var generator = SeededGenerator(seed: 7)
+        for frame in 0..<9 {
+            let noisy = truth.meters.map { $0 + Float.random(in: -0.004...0.004, using: &generator) }
+            var meters = noisy
+            if frame == 3 { meters[80 * Self.width + 60] = 0.05 } // a flying-pixel outlier
+            frames.append(DepthMap(width: Self.width, height: Self.height, meters: meters, intrinsics: truth.intrinsics))
+        }
+        let fused = try #require(DepthFusion.median(frames))
+        let centre = 80 * Self.width + 60
+        #expect(abs(fused.meters[centre] - truth.meters[centre]) < 0.002)
+        let errors = zip(fused.meters, truth.meters).map { abs($0 - $1) }
+        #expect(errors.reduce(0, +) / Float(errors.count) < 0.0015)
+    }
+
+    @Test("Fusion fills a hole that only some frames have")
+    func fusionFillsHoles() throws {
+        let truth = Self.domeDepth()
+        var holed = truth.meters
+        holed[80 * Self.width + 60] = .nan
+        let frames = [DepthMap(width: Self.width, height: Self.height, meters: holed, intrinsics: nil), truth, truth]
+        let fused = try #require(DepthFusion.median(frames))
+        #expect(fused.meters[80 * Self.width + 60].isFinite)
+    }
+
+    @Test("Quarter-turn rotation matches the photo's orientation (and swaps intrinsics)")
+    func rotation() {
+        // 3 wide × 2 tall: [a b c / d e f]
+        let map = DepthMap(width: 3, height: 2, meters: [1, 2, 3, 4, 5, 6],
+                           intrinsics: CameraIntrinsics(fx: 10, fy: 20, cx: 1.5, cy: 1))
+        let clockwise = map.rotated(quarterTurnsClockwise: 1)
+        #expect(clockwise.width == 2 && clockwise.height == 3)
+        #expect(clockwise.meters == [4, 1, 5, 2, 6, 3]) // [d a / e b / f c]
+        #expect(clockwise.intrinsics?.fx == 20 && clockwise.intrinsics?.fy == 10)
+        #expect(map.rotated(quarterTurnsClockwise: 4).meters == map.meters)
+        #expect(map.rotated(quarterTurnsClockwise: 2).meters == [6, 5, 4, 3, 2, 1])
+    }
+
+    @Test("Surfaces seen edge-on (the stretched streaks at jaw and neck) are cut away")
+    func dropsGrazingTriangles() throws {
+        // Left half: the face (dome). Right of the dome: a ramp that recedes 3 cm per pixel — nearly edge-on.
+        var depth = Self.domeDepth().meters
+        for y in 60..<100 {
+            for x in 84..<92 { depth[y * Self.width + x] = 0.42 + Float(x - 84) * 0.03 }
+        }
+        let map = DepthMap(width: Self.width, height: Self.height, meters: depth, intrinsics: Self.domeDepth().intrinsics)
+        let mesh = try #require(DepthMeshBuilder.build(depth: map, faceBox: Self.faceBox, texture: Data()))
+        let v = mesh.vertices
+        for t in stride(from: 0, to: mesh.indices.count, by: 3) {
+            let a = v[Int(mesh.indices[t])], b = v[Int(mesh.indices[t + 1])], c = v[Int(mesh.indices[t + 2])]
+            let n = simd_cross(b - a, c - a)
+            let length = simd_length(n)
+            guard length > 0 else { continue }
+            // Viewer looks along -Z: no kept triangle may be steeper than the cut-off.
+            #expect(abs(n.z) / length >= DepthMeshBuilder.minFacingCosine - 0.001)
+        }
+    }
+
+    @Test("Detached fragments (headphones, hair strands) are dropped — only the face piece is kept")
+    func keepsLargestPiece() throws {
+        var depth = Self.domeDepth().meters
+        // A gap of no depth, then a small island at face depth near the top-left of the region.
+        for y in 30..<40 {
+            for x in 30..<40 { depth[y * Self.width + x] = 0.42 }
+        }
+        let map = DepthMap(width: Self.width, height: Self.height, meters: depth, intrinsics: Self.domeDepth().intrinsics)
+        let mesh = try #require(DepthMeshBuilder.build(depth: map, faceBox: Self.faceBox, texture: Data()))
+        let islandU = Float(35) / Float(Self.width), islandV = Float(35) / Float(Self.height)
+        #expect(!mesh.projected.contains { abs($0.x - islandU) < 0.04 && abs($0.y - islandV) < 0.04 })
+    }
+}
+
+/// Deterministic RNG so noise tests are repeatable.
+struct SeededGenerator: RandomNumberGenerator {
+    private var state: UInt64
+    init(seed: UInt64) { state = seed }
+    mutating func next() -> UInt64 {
+        state = state &* 6364136223846793005 &+ 1442695040888963407
+        return state
     }
 }

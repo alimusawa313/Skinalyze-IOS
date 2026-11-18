@@ -266,6 +266,7 @@ private struct MirrorChrome: View {
     }
 
     private var instruction: String {
+        if model.isScanning3D { return String(localized: "Hold still — 3D scan…") }
         if let hint = model.hint, hint != .turnHeadLeft, hint != .turnHeadRight { return GuidanceCopy.text(for: hint) }
         if model.captures[.front] == nil { return String(localized: "Look at me.") }
         return model.captures.count == 1 ? String(localized: "Slowly turn your head.") : String(localized: "Now the other way.")

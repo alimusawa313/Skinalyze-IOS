@@ -45,6 +45,13 @@ final class CameraSession: NSObject, @unchecked Sendable {
     private let videoQueue = DispatchQueue(label: "com.Patani.Skinalyze.camera.video", qos: .userInitiated)
     private let photoOutput = AVCapturePhotoOutput()
     private let videoOutput = AVCaptureVideoDataOutput()
+    private let depthOutput = AVCaptureDepthDataOutput()
+    private let depthQueue = DispatchQueue(label: "com.Patani.Skinalyze.camera.depth", qos: .userInitiated)
+    /// depthQueue state: recent depth frames (native sensor orientation) for temporal fusion with the photo's depth.
+    private var depthBurst: [(time: TimeInterval, map: DepthMap)] = []
+    private var isCollectingDepth = false
+    static let depthBurstWindow: TimeInterval = 0.9
+    static let depthBurstMax = 24
     private var isConfigured = false
     private(set) var device: AVCaptureDevice?
 
@@ -111,6 +118,22 @@ final class CameraSession: NSObject, @unchecked Sendable {
     }
 
     /// Captures a photo; with `withDepth`, also its TrueDepth depth map (when the device has one).
+    /// Start/stop buffering streamed depth frames (only while the front photo is being lined up).
+    func setCollectingDepth(_ collecting: Bool) {
+        depthQueue.async {
+            self.isCollectingDepth = collecting
+            if !collecting { self.depthBurst.removeAll() }
+        }
+    }
+
+    /// The buffered frames from the last `depthBurstWindow` seconds.
+    private func recentDepthFrames() -> [DepthMap] {
+        depthQueue.sync {
+            guard let latest = depthBurst.last?.time else { return [] }
+            return depthBurst.filter { latest - $0.time <= Self.depthBurstWindow }.map(\.map)
+        }
+    }
+
     func capturePhoto(withDepth: Bool = false) async throws -> CapturedPhoto {
         try await withCheckedThrowingContinuation { continuation in
             sessionQueue.async {
@@ -153,6 +176,14 @@ final class CameraSession: NSObject, @unchecked Sendable {
         if trueDepth != nil, photoOutput.isDepthDataDeliverySupported {
             photoOutput.isDepthDataDeliveryEnabled = true
             supportsDepth = true
+            // Stream depth too, so the front photo's depth can be fused with a burst of frames (far less noise).
+            if session.canAddOutput(depthOutput) {
+                session.addOutput(depthOutput)
+                depthOutput.isFilteringEnabled = true
+                depthOutput.alwaysDiscardsLateDepthData = true
+                depthOutput.setDelegate(self, callbackQueue: depthQueue)
+            }
+            Self.selectBestDepthFormat(device)
         }
 
         videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_420YpCbCr8BiPlanarFullRange]
@@ -266,7 +297,8 @@ extension CameraSession: AVCapturePhotoCaptureDelegate {
         if let error {
             result = .failure(error)
         } else if let data = photo.fileDataRepresentation(), let image = UIImage(data: data) {
-            result = .success(CapturedPhoto(image: image, depth: Self.depthMap(from: photo, matching: image.size)))
+            let burst = photo.depthData == nil ? [] : recentDepthFrames()
+            result = .success(CapturedPhoto(image: image, depth: Self.depthMap(from: photo, matching: image.size, burst: burst)))
         } else {
             result = .failure(CameraError.captureFailed)
         }
@@ -280,47 +312,91 @@ extension CameraSession: AVCapturePhotoCaptureDelegate {
 
 // MARK: - Depth (TrueDepth → DepthMap)
 
-extension CameraSession {
-    /// Float32 metres, rotated to match the upright photo (same EXIF orientation), with intrinsics scaled to the map.
-    /// Returns nil (2D-only scan) rather than a mis-oriented map if the result doesn't match the photo's aspect.
-    static func depthMap(from photo: AVCapturePhoto, matching photoSize: CGSize) -> DepthMap? {
-        guard var depthData = photo.depthData else { return nil }
-        let nativeWidth = CVPixelBufferGetWidth(depthData.depthDataMap)
-        if depthData.depthDataType != kCVPixelFormatType_DepthFloat32 {
-            depthData = depthData.converting(toDepthDataType: kCVPixelFormatType_DepthFloat32)
+extension CameraSession: AVCaptureDepthDataOutputDelegate {
+    func depthDataOutput(_ output: AVCaptureDepthDataOutput, didOutput depthData: AVDepthData,
+                         timestamp: CMTime, connection: AVCaptureConnection) {
+        guard isCollectingDepth, let map = Self.nativeMap(depthData) else { return }
+        depthBurst.append((timestamp.seconds, map))
+        if depthBurst.count > Self.depthBurstMax { depthBurst.removeFirst(depthBurst.count - Self.depthBurstMax) }
+    }
+
+    /// Highest-resolution float depth format the active video format offers.
+    static func selectBestDepthFormat(_ device: AVCaptureDevice) {
+        let formats = device.activeFormat.supportedDepthDataFormats.filter {
+            let type = CMFormatDescriptionGetMediaSubType($0.formatDescription)
+            return type == kCVPixelFormatType_DepthFloat32 || type == kCVPixelFormatType_DepthFloat16
         }
-        if let raw = photo.metadata[kCGImagePropertyOrientation as String] as? UInt32,
-           let orientation = CGImagePropertyOrientation(rawValue: raw), orientation != .up {
-            depthData = depthData.applyingExifOrientation(orientation)
+        guard let best = formats.max(by: {
+            CMVideoFormatDescriptionGetDimensions($0.formatDescription).width
+                < CMVideoFormatDescriptionGetDimensions($1.formatDescription).width
+        }) else { return }
+        do {
+            try device.lockForConfiguration()
+            device.activeDepthDataFormat = best
+            device.unlockForConfiguration()
+        } catch {
+            logger.error("Could not select depth format: \(error.localizedDescription)")
         }
-        let buffer = depthData.depthDataMap
+    }
+
+    /// Depth for the stored photo: the photo's own depth fused (per-pixel median) with the streamed burst, rotated to
+    /// the photo's upright orientation, intrinsics scaled to the map. Returns nil (2D-only scan) rather than a
+    /// mis-oriented map if the result doesn't match the photo's aspect.
+    static func depthMap(from photo: AVCapturePhoto, matching photoSize: CGSize, burst: [DepthMap]) -> DepthMap? {
+        guard let depthData = photo.depthData, let native = nativeMap(depthData) else { return nil }
+        let matching = burst.map { $0.width == native.width && $0.height == native.height ? $0 : $0.resampled(width: native.width, height: native.height) }
+        let fused = DepthFusion.median(matching + [native]) ?? native
+        #if DEBUG
+        print("[scan] depth fusion: \(matching.count) streamed frames + photo depth \(native.width)x\(native.height)")
+        #endif
+        let withIntrinsics = DepthMap(width: fused.width, height: fused.height, meters: fused.meters,
+                                      intrinsics: intrinsics(depthData.cameraCalibrationData, width: native.width, height: native.height))
+        let raw = photo.metadata[kCGImagePropertyOrientation as String] as? UInt32
+        let orientation = raw.flatMap(CGImagePropertyOrientation.init(rawValue:)) ?? .up
+        guard let turns = quarterTurns(orientation) else { return nil }
+        let upright = withIntrinsics.rotated(quarterTurnsClockwise: turns)
+        guard (upright.width < upright.height) == (photoSize.width < photoSize.height) else {
+            logger.error("Depth orientation does not match the photo (\(upright.width)x\(upright.height)); saving 2D only")
+            return nil
+        }
+        return upright
+    }
+
+    /// Float32 metres in the sensor's native orientation.
+    static func nativeMap(_ depthData: AVDepthData) -> DepthMap? {
+        let converted = depthData.depthDataType == kCVPixelFormatType_DepthFloat32
+            ? depthData : depthData.converting(toDepthDataType: kCVPixelFormatType_DepthFloat32)
+        let buffer = converted.depthDataMap
         CVPixelBufferLockBaseAddress(buffer, .readOnly)
         defer { CVPixelBufferUnlockBaseAddress(buffer, .readOnly) }
         let width = CVPixelBufferGetWidth(buffer), height = CVPixelBufferGetHeight(buffer)
         let rowBytes = CVPixelBufferGetBytesPerRow(buffer)
         guard let base = CVPixelBufferGetBaseAddress(buffer), width > 2, height > 2 else { return nil }
-        guard (width < height) == (photoSize.width < photoSize.height) else {
-            logger.error("Depth orientation does not match the photo (\(width)x\(height)); saving 2D only")
-            return nil
-        }
         var meters: [Float] = []
         meters.reserveCapacity(width * height)
         for y in 0..<height {
             let row = base.advanced(by: y * rowBytes).assumingMemoryBound(to: Float32.self)
             for x in 0..<width { meters.append(row[x]) }
         }
-        return DepthMap(width: width, height: height, meters: meters,
-                        intrinsics: intrinsics(depthData.cameraCalibrationData, nativeWidth: nativeWidth,
-                                               width: width, height: height))
+        return DepthMap(width: width, height: height, meters: meters, intrinsics: nil)
     }
 
-    private static func intrinsics(_ calibration: AVCameraCalibrationData?, nativeWidth: Int,
-                                   width: Int, height: Int) -> CameraIntrinsics? {
+    /// EXIF orientation → clockwise quarter turns to make the map upright (mirrored orientations aren't used).
+    private static func quarterTurns(_ orientation: CGImagePropertyOrientation) -> Int? {
+        switch orientation {
+        case .up: 0
+        case .right: 1
+        case .down: 2
+        case .left: 3
+        default: nil
+        }
+    }
+
+    private static func intrinsics(_ calibration: AVCameraCalibrationData?, width: Int, height: Int) -> CameraIntrinsics? {
         guard let calibration, calibration.intrinsicMatrixReferenceDimensions.width > 0 else { return nil }
         let matrix = calibration.intrinsicMatrix
-        let scale = Float(nativeWidth) / Float(calibration.intrinsicMatrixReferenceDimensions.width)
-        var fx = matrix.columns.0.x * scale, fy = matrix.columns.1.y * scale
-        if width != nativeWidth { swap(&fx, &fy) } // rotated 90°
-        return CameraIntrinsics(fx: fx, fy: fy, cx: Float(width) / 2, cy: Float(height) / 2)
+        let scale = Float(width) / Float(calibration.intrinsicMatrixReferenceDimensions.width)
+        return CameraIntrinsics(fx: matrix.columns.0.x * scale, fy: matrix.columns.1.y * scale,
+                                cx: Float(width) / 2, cy: Float(height) / 2)
     }
 }
