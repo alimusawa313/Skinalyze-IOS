@@ -113,7 +113,7 @@ enum ScanAnalyzer {
             captures: captures.map { CaptureDraft(angle: $0.angle, imageData: $0.encoded) },
             detections: counted.map {
                 DetectionDraft(type: $0.detection.type, confidence: $0.detection.confidence,
-                               box: $0.detection.box, captureAngle: $0.angle)
+                               box: $0.detection.box, captureAngle: $0.angle, zone: $0.zone)
             },
             productIDs: productIDs.filter { $0 > 0 },
             legacyResultID: nil

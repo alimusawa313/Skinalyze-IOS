@@ -30,6 +30,7 @@ ALLOWED_CONTEXT = [
     r"is not a medical",
     r"medical device",
     r"not a substitute for professional medical",
+    r"not medical advice",
     r"^https?://",  # cited sources, not copy
 ]
 STRING_LITERAL = re.compile(r'"((?:[^"\\\n]|\\.)*)"')

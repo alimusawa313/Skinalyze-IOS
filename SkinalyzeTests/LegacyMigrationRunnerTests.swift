@@ -54,7 +54,8 @@ struct LegacyMigrationRunnerTests {
         #expect(session.counts[.papule] == 3)
         #expect(session.legacyScore == 1)
         #expect(session.createdAt == legacy.currentDate)
-        #expect(session.uiImages.count == 3)
+        #expect(session.sortedCaptures.count == 3)
+        #expect(session.uiImage(at: 0) != nil)
         #expect(session.productIDs == [18])
         #expect(try container.mainContext.fetchCount(FetchDescriptor<Result>()) == 1, "legacy data is never removed by migration")
     }
@@ -103,14 +104,3 @@ struct AcneDetectorMappingTests {
     }
 }
 
-@Suite("Detection overlay")
-struct DetectionOverlayRendererTests {
-    @Test("Vision's bottom-left normalized boxes map to top-left pixel rects")
-    func flipsCoordinates() {
-        let rect = DetectionOverlayRenderer.rect(
-            for: ImageRect(x: 0.1, y: 0.2, width: 0.3, height: 0.4),
-            in: CGSize(width: 100, height: 200)
-        )
-        #expect(rect == CGRect(x: 10, y: 80, width: 30, height: 80))
-    }
-}

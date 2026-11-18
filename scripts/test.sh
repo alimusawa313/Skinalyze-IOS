@@ -18,5 +18,5 @@ xcodebuild -project "$ROOT/Skinalyze.xcodeproj" -scheme Skinalyze \
   -destination "platform=iOS Simulator,name=$SIMULATOR" \
   -derivedDataPath "$DERIVED" test CODE_SIGNING_ALLOWED=NO
 
-echo "▶ Copy lint (report)"
-python3 -I "$ROOT/scripts/lint_copy.py" --report "$ROOT/Skinalyze"
+echo "▶ Copy lint (gate)"
+python3 -I "$ROOT/scripts/lint_copy.py" "$ROOT/Skinalyze" "$ROOT/SkinalyzeKit/Sources"

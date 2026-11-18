@@ -43,6 +43,18 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.Patani.SkinalyzeTests
         GENERATE_INFOPLIST_FILE: YES
         TARGETED_DEVICE_FAMILY: "1"
+  SkinalyzeUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [SkinalyzeUITests]
+    dependencies:
+      - target: Skinalyze
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.Patani.SkinalyzeUITests
+        GENERATE_INFOPLIST_FILE: YES
+        TARGETED_DEVICE_FAMILY: "1"
+        TEST_TARGET_NAME: Skinalyze
 schemes:
   Skinalyze:
     build:
@@ -53,3 +65,4 @@ schemes:
       targets:
         - SkinalyzeTests
         - package: SkinalyzeKit/SkinalyzeKitTests
+        - SkinalyzeUITests
