@@ -61,60 +61,67 @@ tests running. No visible redesign yet — the app should look and behave the sa
 **Skills/agents:** `swift-concurrency`, `swiftui-expert-skill` (latest-apis, soft-deprecation), `iphone-duo-readiness`
 (audit only), agents `swift-build-resolver`, `refactor-cleaner`, `tdd-guide`.
 
+> **Progress (2026-11-18, branch `phase-0/foundation`, local commits only):** items ticked below are committed and
+> verified (`scripts/test.sh`: 27 package tests + 6 app-hosted tests green; app launches on iPhone 17 + iPhone Duo
+> simulators). Items marked **→ Phase N** were moved deliberately: they touch legacy screens that Phase 1/3 rewrite,
+> so doing them now would be throwaway work.
+
 ### 0.1 Toolchain & project
 
-- [ ] `project.yml`: set `deploymentTarget: iOS: "26.0"`; Swift 6 language mode; strict concurrency = complete
-- [ ] Build with Xcode 27.1 / iOS 27.1 SDK; confirm it compiles
-- [ ] Remove the broken `resources: [Resources]` entry (folder doesn't exist) or create the folder intentionally
-- [ ] `UISupportedInterfaceOrientations`: add landscape left/right (layouts fixed in Phase 3; camera in Phase 1)
-- [ ] Add targets: `SkinalyzeTests` (Swift Testing), `SkinalyzeUITests` (XCUITest)
-- [ ] Create local Swift package `SkinalyzeKit` (Sources: `DesignSystem`, `Persistence`, `Detection`, `Ingredients`,
-      `Insights`, `Layout`) and link it to the app
-- [ ] Add App Group capability (`group.com.Patani.Skinalyze`, name TBD with rebrand Q1) to app target
-- [ ] Add a CI-able script: `xcodegen && xcodebuild test` (local only; no remote CI required yet)
-- [ ] Add a banned-terms lint script (scans String Catalogs + Swift string literals for §15.1 terms)
+- [x] `project.yml`: `deploymentTarget: iOS: "26.0"`, iPhone-only, entitlements wired, team set
+- [ ] Swift 6 language mode for the **app** target → after the legacy views are replaced (Phase 3). *`SkinalyzeKit`
+      already builds in Swift 6 mode.*
+- [x] Builds with Xcode 27.2 / iOS 27.x SDK
+- [x] Removed the broken `resources: [Resources]` entry
+- [x] `UISupportedInterfaceOrientations`: landscape left/right added (layouts fixed in Phase 3; camera in Phase 1)
+- [x] `SkinalyzeTests` target (Swift Testing, app-hosted) · [ ] `SkinalyzeUITests` → Phase 3 (E2E on new screens)
+- [x] Local Swift package `SkinalyzeKit` (`Detection/`, `Persistence/` so far) linked to the app
+- [x] App Group entitlement (`group.com.Patani.Skinalyze`, name TBD with rebrand Q1) — **owner must register the App
+      Group in the developer portal before the next device/TestFlight build**
+- [x] `scripts/test.sh` — package tests + app build/tests + copy lint in one command
+- [x] `scripts/lint_copy.py` banned-terms lint (report-only until the Phase 2 copy rewrite; 12 current hits)
 
 ### 0.2 Dead code & duplicate removal
 
-- [ ] Delete `DetailVIew`, `CompareView`, `ContentCell`, `ScrollCell`, `CameraSheetTutor`, `CardStackView`, unused
-      `CameraView`, `temp` (`MainView.swift:87`), `LottieView`
-- [ ] Remove duplicate routes (`detailView`, `compareImagesView`, `prodUsed` duplicates); keep one of each
-- [ ] Rename `NewDetailViewTest` → `ScanDetailView`, move `ProductSearchView` out of `ProductTest.swift`
-- [ ] Delete unused assets (`imageTest`, empty `Image`, `Atas`, `brownTest`); fix missing `MaskotNone` reference
-- [ ] Verify color-name case mismatches (`textPrimary` vs `TextPrimary`, `TextReverse` vs `textReverse`) and fix
-- [ ] Merge `SkincareProducts1.json` + `FinalSkincareProductElFinale.json` into one catalog (id, name, brand, category,
-      ingredients, photo) with a one-off script; verify counts match
-- [ ] Collapse the four copy-pasted product slot blocks into one reusable view (both `ProductUsedView` and
-      `ProductUsedSaved`)
+- [x] Deleted `DetailVIew`, `CompareView`, `ContentCell`/`ScrollCell`, `CameraSheetTutor`, `CardStackView`, `temp`,
+      `LottieView` (`CameraView.swift` kept — it defines the live `CameraPreviewView`; `LineDivider` moved to its own file)
+- [x] Removed unreachable routes (`detailView`, `compareImagesView`); merged `prodUsed` into `productUsedView`
+- [ ] Rename `NewDetailViewTest`, move `ProductSearchView` → Phase 3 (screens are rebuilt)
+- [x] Deleted unused assets (`Atas`, empty `Image`, `capsuleInactive`); `brownTest`/`maskotScan` are in use and kept;
+      missing `MaskotNone` replaced with an invisible spacer
+- [x] Color-name case fixed: `TextPrimary` → `textPrimary` (51 call sites), `TextReverse` → `textReverse`
+- [x] Catalogs merged by `scripts/merge_catalog.py` → `ProductCatalog.json` (459 products, 457 with ingredients,
+      legacy `product_id`s preserved; 898 KB → 567 KB)
+- [ ] Collapse the copy-pasted product slot blocks → Phase 3 (Products screen rebuild)
 
 ### 0.3 State & architecture modernization
 
-- [ ] Migrate `ObservableObject`/`@Published` → `@Observable`; fix inline `@ObservedObject var vm = …()` →
-      `@State` ownership (`AnalyzedResultView.swift:18` and others)
-- [ ] Replace `Router` with an `@Observable AppRouter` (typed paths); remove nested `NavigationView`s
-- [ ] Remove `UIScreen.main.bounds` usages (replace with container-relative layout) — required before Duo work
-- [ ] Introduce a `ScanFlow` state machine type (states only; capture logic moves in Phase 1)
+- [ ] `ObservableObject` → `@Observable`, inline `@ObservedObject` fixes → Phase 1 (scan VMs) / Phase 3 (screens)
+- [ ] `@Observable AppRouter`, remove nested `NavigationView`s → Phase 3 (new shell)
+- [ ] Remove `UIScreen.main.bounds` → Phase 3 (every legacy screen using it is replaced)
+- [ ] `ScanFlow` state machine → Phase 1 (built together with the capture engine)
 
 ### 0.4 Storage migration (CloudKit-aware) — highest-risk task in this phase
 
-- [ ] Write fixture legacy stores (base64 `Result` records: 0, 1, 50 scans; missing images; corrupted base64)
-- [ ] Tests first: migration is idempotent, resumable, preserves counts/dates/product IDs, never deletes legacy data
-- [ ] Add new models (additive, CloudKit-compatible): `ScanSession`, `ScanCapture`, `Detection`, `UserProduct` (others
-      added in their phases)
-- [ ] `@Attribute(.externalStorage)` for image `Data` (HEIC, quality ~0.8)
-- [ ] App-level one-time migration on launch (background, progress-safe, marker per record)
-- [ ] Move store into App Group container (copy → verify → switch) — tested
-- [ ] Stop writing the duplicate "analyzed" images and JPEG overlays; store detections as data instead
-- [ ] Move profile from `@AppStorage` (standard) → App Group `UserDefaults(suiteName:)` with migration
-- [ ] Verify sync still works between two devices on a development CloudKit container before touching production
+- [x] Fixture-based tests: idempotent import, content preserved, bad/missing images tolerated, legacy never modified,
+      delete-without-resurrection, EXIF orientation preserved (Kit + app-hosted tests on the real `Result` model)
+- [x] New CloudKit-compatible models: `ScanSession`, `ScanCapture`, `StoredDetection` (`UserProduct` → Phase 3/6)
+- [x] `@Attribute(.externalStorage)` image `Data` (HEIC, JPEG fallback, quality 0.8)
+- [x] Launch-time background migration (`LegacyMigrationRunner` → `ScanStore` actor), batched, marker = `legacyResultID`
+- [x] **Store pinned to its pre-App-Group path** (the App Group entitlement would otherwise move SwiftData's default
+      store and hide existing history)
+- [ ] Move store into App Group container (copy → verify → switch) → start of Phase 5 (first extension that needs it)
+- [x] New scans stored once as photos + detections (no duplicate "analyzed" images / JPEG overlays)
+- [ ] Profile `@AppStorage` → App Group `UserDefaults` → start of Phase 5 (with the store move)
+- [ ] **Owner:** verify iCloud sync between two devices on the development CloudKit container (needs signed builds)
 
 ### 0.5 Quick correctness fixes (low risk, high value)
 
-- [ ] `"blackhead"` → `"blackheads"` key in severity (`ResultViewModel.swift:177`) — with a test
-- [ ] Never re-run ML when opening a saved scan (`NewDetailViewTest.swift:100`)
-- [ ] Guard against < 3 captures; remove force unwraps in `NewCompareView.swift:274,285`
-- [ ] Camera permission check + denied state with "Open Settings"
-- [ ] Remove the 0-interval `Timer` haptic spam; store and invalidate timers
+- [x] Blackheads now count toward severity (`LegacySeverityScale`, regression test); `geaScale` starts at 0
+- [x] Saved scans are never re-analyzed (Detail + Compare render stored detections)
+- [x] Compare no longer force-unwraps missing images
+- [ ] Camera permission denied state → Phase 1 (1.2 capture engine)
+- [ ] 0-interval `Timer` haptic spam → Phase 1 (1.2/1.3 gates rewrite)
 
 **Deliverables:** modern project, `SkinalyzeKit` package, migrated storage, tests running, cleaner code.
 
