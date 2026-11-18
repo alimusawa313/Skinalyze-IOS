@@ -12,6 +12,7 @@ import Vision
 import CoreML
 import SwiftData
 import SwiftUI
+import SkinalyzeKit
 
 
 class ResultViewModel: ObservableObject{
@@ -147,7 +148,8 @@ class ResultViewModel: ObservableObject{
     
     @Published var analyzedImages: [UIImage] = []
     @Published var isLoading = false
-    @Published var geaScale = 1
+    /// Starts at 0 so nothing reads as "Mild" before analysis has run.
+    @Published var geaScale = 0
     @Published var acneCounts: [String: Int] = [
         "blackheads": 0,
         "dark spot": 0,
@@ -158,41 +160,13 @@ class ResultViewModel: ObservableObject{
     ]
     
     func updateAcneCounts(with results: [VNRecognizedObjectObservation]) {
-        for result in results {
-            let label = result.labels.first?.identifier.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() ?? "unknown"
-            //            print("Detected label: \(label)")  // Debugging output
-            
-            // Increment count for the detected label, ensuring case insensitivity
-            if let _ = acneCounts[label] {
-                acneCounts[label, default: 0] += 1
-            }
-        }
+        let detected = LesionCounts(modelLabels: results.compactMap { $0.labels.first?.identifier })
+        acneCounts = LesionCounts(legacyDictionary: acneCounts).adding(detected).legacyDictionary
     }
     
     // GEA Scale calculation logic based on detected acne counts
     func calculateGEAScale() {
-        let papulesCount = acneCounts["papules"] ?? 0
-        let pustulesCount = acneCounts["pustules"] ?? 0
-        let nodulesCount = acneCounts["nodules"] ?? 0
-        let blackheadsCount = acneCounts["blackhead"] ?? 0
-        let whiteheadsCount = acneCounts["whiteheads"] ?? 0
-        
-        if nodulesCount > 5 || pustulesCount > 10 {
-            // Stage 4 (Very Severe Acne) or Stage 5 (Extremely Severe Acne)
-            geaScale = nodulesCount > 10 || pustulesCount > 15 ? 5 : 4
-        } else if pustulesCount > 5 || papulesCount > 10 {
-            // Stage 3 (Severe Ac ne)
-            geaScale = 3
-        } else if papulesCount > 5 || blackheadsCount > 10 || whiteheadsCount > 10 {
-            // Stage 2 (Moderate Acne)
-            geaScale = 2
-        } else if papulesCount == 0 && pustulesCount == 0 && nodulesCount == 0 && blackheadsCount == 0 && whiteheadsCount == 0 {
-            geaScale = 0
-        }
-        else {
-            // Stage 1 (Mild Acne)
-            geaScale = 1
-        }
+        geaScale = LegacySeverityScale.score(for: LesionCounts(legacyDictionary: acneCounts))
     }
     
 //    func drawBoundingBoxes(on image: UIImage, results: [VNRecognizedObjectObservation], originalImageSize: CGSize) -> UIImage {
