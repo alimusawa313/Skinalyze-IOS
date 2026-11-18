@@ -2,7 +2,7 @@ import CoreGraphics
 import Foundation
 
 /// A point in normalized image coordinates (Vision convention: origin bottom-left).
-public struct NormalizedPoint: Sendable, Hashable {
+public struct ImagePoint: Sendable, Hashable {
     public let x: Double
     public let y: Double
 
@@ -12,8 +12,8 @@ public struct NormalizedPoint: Sendable, Hashable {
     }
 }
 
-public extension NormalizedRect {
-    var center: NormalizedPoint { NormalizedPoint(x: x + width / 2, y: y + height / 2) }
+public extension ImageRect {
+    var center: ImagePoint { ImagePoint(x: x + width / 2, y: y + height / 2) }
     var area: Double { max(width, 0) * max(height, 0) }
 }
 
@@ -23,7 +23,7 @@ public enum FaceCrop {
     /// Square crop around the face with `margin` on every side, in **top-left-origin pixel** coordinates,
     /// clamped inside the image. Feeding the detector a consistent face-sized square removes the old
     /// device-dependent 224-px squash (PLAN.md §4.1 #5).
-    public static func squarePixelRect(face: NormalizedRect, imageSize: CGSize, margin: Double = 0.2) -> CGRect {
+    public static func squarePixelRect(face: ImageRect, imageSize: CGSize, margin: Double = 0.2) -> CGRect {
         let faceWidth = face.width * imageSize.width
         let faceHeight = face.height * imageSize.height
         let maxSide = min(imageSize.width, imageSize.height)
@@ -41,9 +41,9 @@ public enum FaceCrop {
 public struct RawDetection: Sendable, Hashable {
     public let type: LesionType
     public let confidence: Double
-    public let box: NormalizedRect
+    public let box: ImageRect
 
-    public init(type: LesionType, confidence: Double, box: NormalizedRect) {
+    public init(type: LesionType, confidence: Double, box: ImageRect) {
         self.type = type
         self.confidence = confidence
         self.box = box
@@ -55,7 +55,7 @@ public enum DetectionFilter {
     public static let defaultMinConfidence = 0.4
     public static let defaultIoUThreshold = 0.45
 
-    public static func iou(_ a: NormalizedRect, _ b: NormalizedRect) -> Double {
+    public static func iou(_ a: ImageRect, _ b: ImageRect) -> Double {
         let overlapWidth = min(a.x + a.width, b.x + b.width) - max(a.x, b.x)
         let overlapHeight = min(a.y + a.height, b.y + b.height) - max(a.y, b.y)
         guard overlapWidth > 0, overlapHeight > 0 else { return 0 }
@@ -103,7 +103,7 @@ public enum FaceZoneMapper {
     static let chinHalfWidth = 0.20
     static let noseHalfWidth = 0.13
 
-    public static func zone(of point: NormalizedPoint, face: NormalizedRect, angle: CaptureAngle) -> FaceZone? {
+    public static func zone(of point: ImagePoint, face: ImageRect, angle: CaptureAngle) -> FaceZone? {
         guard face.width > 0, face.height > 0 else { return nil }
         let u = (point.x - face.x) / face.width            // 0 = image left
         let v = 1 - (point.y - face.y) / face.height        // 0 = top of face

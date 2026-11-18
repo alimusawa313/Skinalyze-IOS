@@ -48,7 +48,7 @@ enum ScanDraftBuilder {
         return DetectionDraft(
             type: type,
             confidence: Double(label.confidence),
-            box: NormalizedRect(x: box.minX, y: box.minY, width: box.width, height: box.height),
+            box: ImageRect(x: box.minX, y: box.minY, width: box.width, height: box.height),
             captureAngle: angle
         )
     }

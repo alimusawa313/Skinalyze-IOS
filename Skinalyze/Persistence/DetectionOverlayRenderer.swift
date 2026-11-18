@@ -36,7 +36,7 @@ enum DetectionOverlayRenderer {
     }
 
     /// Vision boxes are normalized with a bottom-left origin; UIKit drawing uses top-left.
-    static func rect(for box: NormalizedRect, in size: CGSize) -> CGRect {
+    static func rect(for box: ImageRect, in size: CGSize) -> CGRect {
         CGRect(
             x: box.x * size.width,
             y: (1 - box.y - box.height) * size.height,

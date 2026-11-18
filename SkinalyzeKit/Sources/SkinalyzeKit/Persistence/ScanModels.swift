@@ -123,7 +123,7 @@ public final class StoredDetection {
 
     public var lesionType: LesionType? { LesionType(rawValue: typeRaw) }
     public var angle: CaptureAngle { CaptureAngle(rawValue: angleRaw) ?? .front }
-    public var box: NormalizedRect { NormalizedRect(x: x, y: y, width: width, height: height) }
+    public var box: ImageRect { ImageRect(x: x, y: y, width: width, height: height) }
 }
 
 public enum SkinalyzeSchema {

@@ -27,12 +27,12 @@ public enum GuidanceHint: String, Sendable, Hashable {
 
 /// Face geometry for one frame (Vision/ARKit), in upright image space.
 public struct FaceMeasurement: Sendable, Hashable {
-    public let bounds: NormalizedRect
+    public let bounds: ImageRect
     public let yawDegrees: Double
     public let pitchDegrees: Double
     public let rollDegrees: Double
 
-    public init(bounds: NormalizedRect, yawDegrees: Double, pitchDegrees: Double, rollDegrees: Double) {
+    public init(bounds: ImageRect, yawDegrees: Double, pitchDegrees: Double, rollDegrees: Double) {
         self.bounds = bounds
         self.yawDegrees = yawDegrees
         self.pitchDegrees = pitchDegrees

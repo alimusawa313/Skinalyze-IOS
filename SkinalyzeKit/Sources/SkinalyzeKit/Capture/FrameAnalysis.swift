@@ -51,7 +51,7 @@ public enum FrameAnalysis {
     }
 
     /// Face-centre movement between two frames, in normalized units per second.
-    public static func motion(from previous: NormalizedRect, to current: NormalizedRect, elapsed: TimeInterval) -> Double {
+    public static func motion(from previous: ImageRect, to current: ImageRect, elapsed: TimeInterval) -> Double {
         guard elapsed > 0 else { return 0 }
         let dx = (current.x + current.width / 2) - (previous.x + previous.width / 2)
         let dy = (current.y + current.height / 2) - (previous.y + previous.height / 2)

@@ -87,12 +87,28 @@ struct LegacyMigrationRunnerTests {
     }
 }
 
+@Suite("Detector coordinate mapping")
+struct AcneDetectorMappingTests {
+    @Test("A box in a face crop maps back to full-image normalized coordinates (bottom-left origin)")
+    func cropToImage() {
+        // 1000×2000 image; crop is the 600×600 square starting at (200, 700) in top-left pixel coordinates.
+        let crop = CGRect(x: 200, y: 700, width: 600, height: 600)
+        let mapped = AcneDetector.toImageSpace(
+            CGRect(x: 0.5, y: 0.5, width: 0.1, height: 0.1), crop: crop, imageSize: CGSize(width: 1000, height: 2000)
+        )
+        #expect(abs(mapped.x - 0.5) < 1e-9)              // (200 + 300) / 1000
+        #expect(abs(mapped.y - 0.5) < 1e-9)              // crop bottom at 700 px from image bottom; (700 + 300) / 2000
+        #expect(abs(mapped.width - 0.06) < 1e-9)
+        #expect(abs(mapped.height - 0.03) < 1e-9)
+    }
+}
+
 @Suite("Detection overlay")
 struct DetectionOverlayRendererTests {
     @Test("Vision's bottom-left normalized boxes map to top-left pixel rects")
     func flipsCoordinates() {
         let rect = DetectionOverlayRenderer.rect(
-            for: NormalizedRect(x: 0.1, y: 0.2, width: 0.3, height: 0.4),
+            for: ImageRect(x: 0.1, y: 0.2, width: 0.3, height: 0.4),
             in: CGSize(width: 100, height: 200)
         )
         #expect(rect == CGRect(x: 10, y: 80, width: 30, height: 80))

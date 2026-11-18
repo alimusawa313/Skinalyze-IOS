@@ -8,7 +8,7 @@ struct FaceCropTests {
     @Test("Square crop around the face with margin, in top-left pixel coordinates")
     func squareCrop() {
         // Face occupies the middle of a 1000×2000 portrait image (Vision coords: origin bottom-left).
-        let face = NormalizedRect(x: 0.3, y: 0.4, width: 0.4, height: 0.2) // 400×400 px
+        let face = ImageRect(x: 0.3, y: 0.4, width: 0.4, height: 0.2) // 400×400 px
         let crop = FaceCrop.squarePixelRect(face: face, imageSize: CGSize(width: 1000, height: 2000), margin: 0.25)
         #expect(crop.width == crop.height)
         #expect(crop.width == 600) // 400 * (1 + 2*0.25)
@@ -18,7 +18,7 @@ struct FaceCropTests {
 
     @Test("Crop is clamped inside the image and stays square")
     func clamped() {
-        let face = NormalizedRect(x: 0.0, y: 0.8, width: 0.5, height: 0.2)
+        let face = ImageRect(x: 0.0, y: 0.8, width: 0.5, height: 0.2)
         let size = CGSize(width: 800, height: 1000)
         let crop = FaceCrop.squarePixelRect(face: face, imageSize: size, margin: 0.3)
         #expect(crop.minX >= 0 && crop.minY >= 0)
@@ -29,8 +29,8 @@ struct FaceCropTests {
 
 @Suite("Detection filtering")
 struct DetectionFilterTests {
-    private func box(_ x: Double, _ y: Double, _ s: Double = 0.1) -> NormalizedRect {
-        NormalizedRect(x: x, y: y, width: s, height: s)
+    private func box(_ x: Double, _ y: Double, _ s: Double = 0.1) -> ImageRect {
+        ImageRect(x: x, y: y, width: s, height: s)
     }
 
     @Test("IoU of identical, disjoint and half-overlapping boxes")
@@ -64,11 +64,11 @@ struct DetectionFilterTests {
 
 @Suite("Face zones and once-only counting")
 struct FaceZoneTests {
-    private let face = NormalizedRect(x: 0.2, y: 0.2, width: 0.6, height: 0.6)
+    private let face = ImageRect(x: 0.2, y: 0.2, width: 0.6, height: 0.6)
 
     /// Point given in face-relative coordinates (u from image left, v from top of face).
-    private func point(u: Double, v: Double) -> NormalizedPoint {
-        NormalizedPoint(x: face.x + u * face.width, y: face.y + (1 - v) * face.height)
+    private func point(u: Double, v: Double) -> ImagePoint {
+        ImagePoint(x: face.x + u * face.width, y: face.y + (1 - v) * face.height)
     }
 
     @Test("Front capture maps forehead, nose, chin, cheeks and jaw",
@@ -95,7 +95,7 @@ struct FaceZoneTests {
 
     @Test("Points well outside the face are ignored")
     func outside() {
-        #expect(FaceZoneMapper.zone(of: NormalizedPoint(x: 0.01, y: 0.99), face: face, angle: .front) == nil)
+        #expect(FaceZoneMapper.zone(of: ImagePoint(x: 0.01, y: 0.99), face: face, angle: .front) == nil)
     }
 
     @Test("Each zone is owned by exactly one capture; side shots own the cheek and jaw they show")
@@ -109,7 +109,7 @@ struct FaceZoneTests {
 
     @Test("The same cheek seen in front and side shots is counted once (side shot owns it)")
     func dedupe() {
-        let lesion = RawDetection(type: .papule, confidence: 0.9, box: NormalizedRect(x: 0.3, y: 0.4, width: 0.02, height: 0.02))
+        let lesion = RawDetection(type: .papule, confidence: 0.9, box: ImageRect(x: 0.3, y: 0.4, width: 0.02, height: 0.02))
         let zoned = [
             ZonedDetection(detection: lesion, angle: .front, zone: .rightCheek),
             ZonedDetection(detection: lesion, angle: .left, zone: .rightCheek),

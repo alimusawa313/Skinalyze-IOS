@@ -30,7 +30,7 @@ struct ScanModelTests {
     @Test("Inserting a draft stores the session, its captures, detections and counts")
     func insertDraft() throws {
         let context = try makeContext()
-        let box = NormalizedRect(x: 0.1, y: 0.2, width: 0.05, height: 0.05)
+        let box = ImageRect(x: 0.1, y: 0.2, width: 0.05, height: 0.05)
         let session = ScanSession.insert(
             try draft(detections: [DetectionDraft(type: .papule, confidence: 0.8, box: box, captureAngle: .front)]),
             into: context
@@ -51,7 +51,7 @@ struct ScanModelTests {
     @Test("Deleting a session cascades to captures and detections")
     func cascadeDelete() throws {
         let context = try makeContext()
-        let box = NormalizedRect(x: 0, y: 0, width: 0.1, height: 0.1)
+        let box = ImageRect(x: 0, y: 0, width: 0.1, height: 0.1)
         let session = ScanSession.insert(
             try draft(detections: [DetectionDraft(type: .pustule, confidence: 0.6, box: box, captureAngle: .front)]),
             into: context
@@ -69,7 +69,7 @@ struct ScanModelTests {
     @Test("Detections can be filtered by lesion type and capture")
     func filtering() throws {
         let context = try makeContext()
-        let box = NormalizedRect(x: 0, y: 0, width: 0.1, height: 0.1)
+        let box = ImageRect(x: 0, y: 0, width: 0.1, height: 0.1)
         let session = ScanSession.insert(
             try draft(detections: [
                 DetectionDraft(type: .papule, confidence: 0.9, box: box, captureAngle: .front),

@@ -20,7 +20,7 @@ public enum CaptureMode: String, Codable, Sendable, Hashable {
 }
 
 /// A rectangle in normalized image coordinates (0…1), Vision convention: origin bottom-left.
-public struct NormalizedRect: Codable, Sendable, Hashable {
+public struct ImageRect: Codable, Sendable, Hashable {
     public let x: Double
     public let y: Double
     public let width: Double
@@ -37,10 +37,10 @@ public struct NormalizedRect: Codable, Sendable, Hashable {
 public struct DetectionDraft: Sendable, Hashable {
     public let type: LesionType
     public let confidence: Double
-    public let box: NormalizedRect
+    public let box: ImageRect
     public let captureAngle: CaptureAngle
 
-    public init(type: LesionType, confidence: Double, box: NormalizedRect, captureAngle: CaptureAngle) {
+    public init(type: LesionType, confidence: Double, box: ImageRect, captureAngle: CaptureAngle) {
         self.type = type
         self.confidence = confidence
         self.box = box

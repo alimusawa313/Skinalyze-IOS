@@ -9,7 +9,7 @@ struct CaptureGateTests {
     private func face(width: Double = 0.55, centerX: Double = 0.5, centerY: Double = 0.5,
                       yaw: Double = 0, pitch: Double = 0, roll: Double = 0) -> FaceMeasurement {
         FaceMeasurement(
-            bounds: NormalizedRect(x: centerX - width / 2, y: centerY - width * 0.65, width: width, height: width * 1.3),
+            bounds: ImageRect(x: centerX - width / 2, y: centerY - width * 0.65, width: width, height: width * 1.3),
             yawDegrees: yaw, pitchDegrees: pitch, rollDegrees: roll
         )
     }
@@ -151,8 +151,8 @@ struct FrameAnalysisTests {
 
     @Test("Motion is the face-centre displacement normalised per second")
     func motion() {
-        let a = NormalizedRect(x: 0.40, y: 0.40, width: 0.2, height: 0.2)
-        let b = NormalizedRect(x: 0.41, y: 0.40, width: 0.2, height: 0.2)
+        let a = ImageRect(x: 0.40, y: 0.40, width: 0.2, height: 0.2)
+        let b = ImageRect(x: 0.41, y: 0.40, width: 0.2, height: 0.2)
         #expect(abs(FrameAnalysis.motion(from: a, to: b, elapsed: 0.5) - 0.02) < 0.0001)
         #expect(FrameAnalysis.motion(from: a, to: b, elapsed: 0) == 0)
     }
