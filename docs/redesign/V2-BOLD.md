@@ -45,9 +45,17 @@ Scan engine + calibrated gates, ScanCaptureModel/FaceRing, persistence/migration
 share extension, widgets, intents, 3D viewer, iPhone Duo rules (CLAUDE.md §1).
 
 ### Build order
-1. `MirrorView` (live camera home + overlays + in-place scan) and `AppShell` (dock + paging) replacing `AppTabView`;
-   UI test identifiers `mirrorShutter`, `deckView`, `shelfView`.
-2. `DeckView` (vertical 3D card stack, pick-two compare).
-3. `ShelfView` (shelf tiles + verdict spring-open).
-4. Result chapters.
-5. Install on owner's iPhone (`xcrun devicectl device install app --device 00008150-000524560C80401C …`) and verify.
+- [x] 1. `MirrorView` + `AppShell` (glass dock) replacing `AppTabView` — `6892e21`
+- [x] 2. `DeckView` (vertical 3D-tilt card stack, mood backdrop, trend line, pick-two compare)
+- [x] 3. `ShelfView` (bouncy routine tiles, "Is it good for me?" search, label scanner)
+- [x] 4. Result chapters (What changed · What we noticed · What helps; 3D scan as hero)
+- [x] 5. Installed on owner's iPhone — awaiting owner's on-device check
+- [ ] Card fly-up into the Deck after a scan (currently: result sheet opens)
+- [ ] Delete dead V1 screens (TodayView, SearchView, ScanTimelineView grid, ScanFlowView capture screen)
+
+### 3D = real TrueDepth scan (owner, 2026-11-18)
+Every scan on a TrueDepth iPhone captures the front photo **with its depth map** (`CameraSession`, TrueDepth device,
+depth delivery). `DepthMeshBuilder` (SkinalyzeKit, tested) unprojects it with the camera intrinsics into a metric mesh of
+the user's actual face, textured with that photo; background and silhouette jumps are cut. Built automatically at
+analysis — no extra step. iPhone Duo has no TrueDepth → 2D only. On-device checks: `[scan] front depth: WxH` and
+`[scan] 3D mesh: N vertices` in the console log; the mesh should face you, upright, not mirrored.
