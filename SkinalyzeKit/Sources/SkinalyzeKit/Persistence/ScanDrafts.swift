@@ -1,6 +1,8 @@
 import Foundation
 
-/// Which face angle a capture shows. Legacy scans stored images in the order front, right, left.
+/// Which way the head is turned for a capture, from the subject's point of view.
+/// `.right` = head turned to the subject's right, so the camera sees the **left** cheek (and vice versa).
+/// Legacy scans stored images in the order front, right ("Facing Right"), left.
 public enum CaptureAngle: String, Codable, Sendable, CaseIterable, Hashable {
     case front
     case right
