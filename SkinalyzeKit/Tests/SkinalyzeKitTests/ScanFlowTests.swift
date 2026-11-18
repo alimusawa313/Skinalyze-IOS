@@ -29,6 +29,13 @@ struct ScanFlowTests {
         #expect(state == .capturing(.front, captured: []))
     }
 
+    @Test("After the front photo, either side can come first (turn whichever way feels natural)")
+    func eitherSideFirst() {
+        let state = run([.start, .permissionGranted, .captured(.front), .captured(.left)])
+        #expect(state == .capturing(.right, captured: [.front, .left]))
+        #expect(run([.captured(.right)], from: state) == .reviewing(captured: [.front, .right, .left]))
+    }
+
     @Test("Confirm without all three angles is ignored — fixes scans saved with fewer than 3 photos")
     func confirmNeedsAllAngles() {
         let partial = ScanFlowState.reviewing(captured: [.front, .right])

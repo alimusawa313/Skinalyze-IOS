@@ -38,7 +38,7 @@ struct OnboardingView: View {
             }
             footer
         }
-        .dsCanvas()
+        .background(LivingBackground(band: .calm))
         .sheet(isPresented: $showsPrivacyPolicy) { PrivacyPolicyView() }
         .sensoryFeedback(Haptic.scrub, trigger: step)
     }
@@ -63,12 +63,16 @@ struct OnboardingView: View {
 
     private var illustration: some View {
         TimelineView(.animation(paused: reduceMotion)) { context in
-            let phase = reduceMotion ? 0 : context.date.timeIntervalSinceReferenceDate * 0.35
-            ContourMotif(phase: phase, rings: 8)
-                .stroke(Color.ds.signal.opacity(0.55), lineWidth: 1.2)
-                .frame(maxWidth: 240, maxHeight: 240)
+            let t = reduceMotion ? 0.6 : (sin(context.date.timeIntervalSinceReferenceDate * 0.8) + 1) / 2
+            ZStack {
+                FaceRing(frontProgress: t, rightProgress: t * 0.9, leftProgress: t * 0.7)
+                    .frame(width: 220, height: 220)
+                Image(systemName: "faceid")
+                    .font(.system(size: 72, weight: .light))
+                    .foregroundStyle(Color.ds.ink)
+            }
         }
-        .frame(maxWidth: .infinity, minHeight: 160, maxHeight: 280)
+        .frame(maxWidth: .infinity, minHeight: 200, maxHeight: 280)
         .accessibilityHidden(true)
     }
 

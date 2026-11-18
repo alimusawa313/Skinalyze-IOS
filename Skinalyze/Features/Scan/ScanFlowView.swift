@@ -1,3 +1,4 @@
+import AudioToolbox
 import SwiftData
 import SwiftUI
 import SkinalyzeKit
@@ -101,44 +102,23 @@ private struct CaptureScreen: View {
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var flash = false
+    @State private var pop = false
+
+    private var instruction: String {
+        if let hint = model.hint, hint != .turnHeadLeft, hint != .turnHeadRight { return GuidanceCopy.text(for: hint) }
+        switch angle {
+        case .front: return String(localized: "Look straight at the camera")
+        default:
+            return captured.count == 1
+                ? String(localized: "Slowly turn your head to one side")
+                : String(localized: "Now turn to the other side")
+        }
+    }
 
     var body: some View {
-        AdaptivePair(.overlay) {
-            CameraPreview(camera: model.camera)
-                .ignoresSafeArea()
-                .overlay { faceGuide }
-                .overlay { Color.white.opacity(flash ? 0.6 : 0).ignoresSafeArea().allowsHitTesting(false) }
-        } secondary: {
-            controls
-        }
-        .onChange(of: model.captures.count) {
-            guard !reduceMotion else { return }
-            flash = true
-            withAnimation(.easeOut(duration: 0.35)) { flash = false }
-        }
-        .onChange(of: model.hint) { _, hint in
-            AccessibilityNotification.Announcement(GuidanceCopy.text(for: hint)).post()
-        }
-    }
-
-    private var faceGuide: some View {
-        GeometryReader { proxy in
-            let width = min(proxy.size.width, proxy.size.height) * 0.68
-            ZStack {
-                Ellipse()
-                    .stroke(Color.white.opacity(0.85), style: StrokeStyle(lineWidth: 2, dash: [6, 6]))
-                    .frame(width: width, height: width * 1.3)
-                CaptureRing(segments: GuidanceCopy.ringSegments(model.report), holdProgress: model.holdProgress)
-                    .frame(width: width * 1.18, height: width * 1.18 * 1.3)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-        .allowsHitTesting(false)
-        .sensoryFeedback(Haptic.gatePassed, trigger: model.report?.passed.count ?? 0) { old, new in new > old }
-    }
-
-    private var controls: some View {
-        VStack(spacing: Spacing.md) {
+        let progress = model.ringProgress
+        let ring = FaceRing(frontProgress: progress.front, rightProgress: progress.right, leftProgress: progress.left)
+        VStack(spacing: Spacing.lg) {
             HStack {
                 Button(action: close) {
                     Image(systemName: "xmark").font(.headline).frame(width: 44, height: 44)
@@ -146,35 +126,68 @@ private struct CaptureScreen: View {
                 .buttonStyle(.glass)
                 .accessibilityLabel("Cancel scan")
                 Spacer()
-                Text("\(GuidanceCopy.title(for: angle)) · \(captured.count + 1) of 3")
-                    .font(.ds.label)
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, Spacing.sm)
-                    .padding(.vertical, Spacing.xs)
-                    .glassEffect()
             }
-            Spacer(minLength: 0)
-            Text(GuidanceCopy.text(for: model.hint))
-                .font(.ds.titleSmall)
+            Text(instruction)
+                .font(.ds.title)
                 .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
                 .contentTransition(.opacity)
-                .dsAnimation(.smooth, value: model.hint)
-                .padding(.horizontal, Spacing.md)
-                .padding(.vertical, Spacing.sm)
-                .glassEffect(in: RoundedRectangle(cornerRadius: Radius.medium))
-            AngleTray(captures: model.captures, current: angle)
+                .dsAnimation(.smooth, value: instruction)
+                .frame(minHeight: 70)
+            GeometryReader { proxy in
+                let side = min(proxy.size.width, proxy.size.height)
+                ZStack {
+                    CameraPreview(camera: model.camera)
+                        .frame(width: side * 0.78, height: side * 0.78)
+                        .clipShape(Circle())
+                        .overlay(Circle().fill(Color.white.opacity(flash ? 0.7 : 0)))
+                        .scaleEffect(pop && !reduceMotion ? 0.96 : 1)
+                    ring.frame(width: side, height: side)
+                    if captured.count == 3 {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 72))
+                            .foregroundStyle(.white, Color.ds.positive)
+                            .transition(.scale.combined(with: .opacity))
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+            HStack(spacing: Spacing.xs) {
+                ForEach(0..<3, id: \.self) { index in
+                    Capsule()
+                        .fill(index < captured.count ? Color.ds.positive : Color.white.opacity(0.25))
+                        .frame(width: index < captured.count ? 28 : 10, height: 10)
+                }
+            }
+            .dsAnimation(.expressive, value: captured.count)
+            .accessibilityElement()
+            .accessibilityLabel(Text("\(captured.count) of 3 photos taken"))
             if model.canCaptureManually {
                 Button("Take photo anyway") { model.captureManually() }
                     .buttonStyle(.dsPrimary)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
             }
-            if model.captureFailed {
-                Text("That photo didn't take — hold still and we'll try again.")
-                    .font(.ds.footnote).foregroundStyle(.white.opacity(0.8))
-            }
         }
         .padding(Spacing.md)
+        .sensoryFeedback(.selection, trigger: ring.litCount)
+        .onChange(of: model.captures.count) {
+            AudioCue.capture()
+            guard !reduceMotion else { return }
+            flash = true
+            pop = true
+            withAnimation(.easeOut(duration: 0.4)) { flash = false }
+            withAnimation(.spring(duration: 0.4, bounce: 0.5).delay(0.05)) { pop = false }
+        }
+        .onChange(of: instruction) { _, text in
+            AccessibilityNotification.Announcement(text).post()
+        }
+    }
+}
+
+/// System camera-shutter sound (respects the silent switch).
+enum AudioCue {
+    static func capture() {
+        AudioServicesPlaySystemSound(1108)
     }
 }
 

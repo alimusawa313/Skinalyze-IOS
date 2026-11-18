@@ -59,20 +59,21 @@ public struct FrameQuality: Sendable, Hashable {
     }
 }
 
-/// Initial thresholds from PLAN.md §11.1 — to be calibrated with the consistency benchmark.
+/// Thresholds calibrated for real front cameras (the first set was far too strict: natural breathing failed the
+/// stillness gate and the photo never fired). Framing is lenient; blur/motion only reject clearly bad frames.
 public struct GateThresholds: Sendable, Hashable {
-    public var faceWidth: ClosedRange<Double> = 0.45...0.65
-    public var centerTolerance: Double = 0.08
-    public var frontMaxYaw: Double = 10
-    public var frontMaxPitch: Double = 10
-    public var frontMaxRoll: Double = 8
-    public var sideYaw: ClosedRange<Double> = 30...45
-    public var sideMaxPitch: Double = 12
-    public var sideMaxRoll: Double = 10
-    public var luma: ClosedRange<Double> = 90...180
-    public var maxClippedFraction: Double = 0.05
-    public var minSharpness: Double = 100
-    public var maxMotion: Double = 0.02
+    public var faceWidth: ClosedRange<Double> = 0.22...0.85
+    public var centerTolerance: Double = 0.18
+    public var frontMaxYaw: Double = 15
+    public var frontMaxPitch: Double = 18
+    public var frontMaxRoll: Double = 15
+    public var sideYaw: ClosedRange<Double> = 18...65
+    public var sideMaxPitch: Double = 22
+    public var sideMaxRoll: Double = 20
+    public var luma: ClosedRange<Double> = 55...225
+    public var maxClippedFraction: Double = 0.3
+    public var minSharpness: Double = 4
+    public var maxMotion: Double = 0.6
     /// Sign of the yaw reported when the head turns to the subject's right. Calibrate per sensor on device.
     public var rightTurnYawSign: Double = 1
 
@@ -92,6 +93,11 @@ public struct GateThresholds: Sendable, Hashable {
 public struct GateReport: Sendable, Hashable {
     public let passed: Set<CaptureGate>
     public let hint: GuidanceHint?
+
+    public init(passed: Set<CaptureGate>, hint: GuidanceHint?) {
+        self.passed = passed
+        self.hint = hint
+    }
 
     public var allPassed: Bool { passed.count == CaptureGate.allCases.count }
 }
@@ -165,7 +171,7 @@ public struct StabilityTracker: Sendable, Hashable {
     private let passingSince: TimeInterval?
     private static let epsilon = 1e-9
 
-    public init(holdDuration: TimeInterval = 0.7) {
+    public init(holdDuration: TimeInterval = 0.3) {
         self.init(holdDuration: holdDuration, passingSince: nil)
     }
 
@@ -187,5 +193,42 @@ public struct StabilityTracker: Sendable, Hashable {
     public func isReady(at time: TimeInterval) -> Bool {
         guard let passingSince else { return false }
         return time - passingSince + Self.epsilon >= holdDuration
+    }
+}
+
+/// Shows one instruction at a time without flicker: a new hint must persist for `delay` before it replaces the current
+/// one. Clearing (nil = all good) and the very first hint show immediately. Immutable: `updated` returns a copy.
+public struct HintStabilizer: Sendable, Hashable {
+    public let delay: TimeInterval
+    public private(set) var displayed: GuidanceHint?
+    private var candidate: GuidanceHint?
+    private var candidateSince: TimeInterval?
+    private var hasShown = false
+
+    public init(delay: TimeInterval = 0.6) {
+        self.delay = delay
+    }
+
+    public func updated(candidate new: GuidanceHint?, at time: TimeInterval) -> HintStabilizer {
+        var next = self
+        if new == nil || !hasShown {
+            next.displayed = new
+            next.candidate = new
+            next.candidateSince = time
+            next.hasShown = next.hasShown || new != nil
+            return next
+        }
+        if new == displayed {
+            next.candidate = new
+            next.candidateSince = time
+            return next
+        }
+        if new != candidate {
+            next.candidate = new
+            next.candidateSince = time
+        } else if let since = candidateSince, time - since >= delay {
+            next.displayed = new
+        }
+        return next
     }
 }

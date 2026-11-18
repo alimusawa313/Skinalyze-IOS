@@ -42,9 +42,6 @@ struct AppTabView: View {
         }
         .tabViewStyle(.sidebarAdaptable)
         .tabBarMinimizeBehavior(.onScrollDown)
-        .tabViewBottomAccessory {
-            ScanAccessory()
-        }
         .fullScreenCover(isPresented: $appModel.isScanning) {
             ScanFlowView()
         }

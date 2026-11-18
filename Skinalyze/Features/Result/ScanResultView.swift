@@ -32,7 +32,7 @@ struct ScanResultView: View {
                 disclaimer
             }
         }
-        .dsCanvas()
+        .background(LivingBackground(band: session.band))
         .navigationTitle(Text(session.createdAt, format: .dateTime.day().month().year()))
         .toolbarTitleDisplayMode(.inline)
         .toolbar {

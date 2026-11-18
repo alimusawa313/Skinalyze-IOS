@@ -29,7 +29,7 @@ struct CaptureGateTests {
     }
 
     @Test("Distance: too small asks to move closer, too big asks to move back",
-          arguments: [(0.30, GuidanceHint.moveCloser), (0.80, GuidanceHint.moveBack)])
+          arguments: [(0.15, GuidanceHint.moveCloser), (0.95, GuidanceHint.moveBack)])
     func distance(width: Double, hint: GuidanceHint) {
         let report = GateEvaluator.evaluate(face: face(width: width), quality: good, angle: .front)
         #expect(!report.passed.contains(.distance))
@@ -38,16 +38,16 @@ struct CaptureGateTests {
 
     @Test("Off-centre face fails centering")
     func centering() {
-        let report = GateEvaluator.evaluate(face: face(centerX: 0.7), quality: good, angle: .front)
+        let report = GateEvaluator.evaluate(face: face(centerX: 0.75), quality: good, angle: .front)
         #expect(!report.passed.contains(.centering))
         #expect(report.hint == .centerFace)
     }
 
     @Test("Front capture needs a level, forward-facing head")
     func frontPose() {
-        #expect(GateEvaluator.evaluate(face: face(yaw: 20), quality: good, angle: .front).hint == .faceForward)
-        #expect(GateEvaluator.evaluate(face: face(roll: 15), quality: good, angle: .front).hint == .levelHead)
-        #expect(GateEvaluator.evaluate(face: face(pitch: -18), quality: good, angle: .front).hint == .levelHead)
+        #expect(GateEvaluator.evaluate(face: face(yaw: 25), quality: good, angle: .front).hint == .faceForward)
+        #expect(GateEvaluator.evaluate(face: face(roll: 20), quality: good, angle: .front).hint == .levelHead)
+        #expect(GateEvaluator.evaluate(face: face(pitch: -25), quality: good, angle: .front).hint == .levelHead)
     }
 
     @Test("Side captures need the head turned into the target yaw range, in the right direction")
@@ -65,8 +65,8 @@ struct CaptureGateTests {
     @Test("Light gate: too dark, too bright, too many clipped pixels")
     func light() {
         let dark = FrameQuality(meanLuma: 50, clippedFraction: 0, sharpness: 400, motion: 0)
-        let bright = FrameQuality(meanLuma: 220, clippedFraction: 0, sharpness: 400, motion: 0)
-        let clipped = FrameQuality(meanLuma: 130, clippedFraction: 0.2, sharpness: 400, motion: 0)
+        let bright = FrameQuality(meanLuma: 245, clippedFraction: 0, sharpness: 400, motion: 0)
+        let clipped = FrameQuality(meanLuma: 130, clippedFraction: 0.4, sharpness: 400, motion: 0)
         #expect(GateEvaluator.evaluate(face: face(), quality: dark, angle: .front).hint == .needMoreLight)
         #expect(GateEvaluator.evaluate(face: face(), quality: bright, angle: .front).hint == .tooBright)
         #expect(GateEvaluator.evaluate(face: face(), quality: clipped, angle: .front).hint == .tooBright)
@@ -74,8 +74,8 @@ struct CaptureGateTests {
 
     @Test("Blur or motion asks the user to hold still")
     func stillness() {
-        let blurry = FrameQuality(meanLuma: 130, clippedFraction: 0, sharpness: 10, motion: 0)
-        let moving = FrameQuality(meanLuma: 130, clippedFraction: 0, sharpness: 400, motion: 0.2)
+        let blurry = FrameQuality(meanLuma: 130, clippedFraction: 0, sharpness: 1, motion: 0)
+        let moving = FrameQuality(meanLuma: 130, clippedFraction: 0, sharpness: 400, motion: 1.5)
         #expect(GateEvaluator.evaluate(face: face(), quality: blurry, angle: .front).hint == .holdStill)
         #expect(GateEvaluator.evaluate(face: face(), quality: moving, angle: .front).hint == .holdStill)
         #expect(!GateEvaluator.evaluate(face: face(), quality: blurry, angle: .front).passed.contains(.sharpness))
@@ -84,7 +84,7 @@ struct CaptureGateTests {
     @Test("Hints follow priority: framing before light before stillness")
     func hintPriority() {
         let bad = FrameQuality(meanLuma: 40, clippedFraction: 0, sharpness: 5, motion: 1)
-        #expect(GateEvaluator.evaluate(face: face(width: 0.2), quality: bad, angle: .front).hint == .moveCloser)
+        #expect(GateEvaluator.evaluate(face: face(width: 0.1), quality: bad, angle: .front).hint == .moveCloser)
         #expect(GateEvaluator.evaluate(face: face(), quality: bad, angle: .front).hint == .needMoreLight)
     }
 }
@@ -155,5 +155,38 @@ struct FrameAnalysisTests {
         let b = ImageRect(x: 0.41, y: 0.40, width: 0.2, height: 0.2)
         #expect(abs(FrameAnalysis.motion(from: a, to: b, elapsed: 0.5) - 0.02) < 0.0001)
         #expect(FrameAnalysis.motion(from: a, to: b, elapsed: 0) == 0)
+    }
+}
+
+@Suite("Calibrated for real phones")
+struct RealWorldGateTests {
+    @Test("Natural micro-movement and an unremarkable selfie pass every gate")
+    func naturalSelfie() {
+        let face = FaceMeasurement(bounds: ImageRect(x: 0.32, y: 0.3, width: 0.36, height: 0.45),
+                                   yawDegrees: 6, pitchDegrees: -8, rollDegrees: 4)
+        let quality = FrameQuality(meanLuma: 115, clippedFraction: 0.06, sharpness: 25, motion: 0.12)
+        #expect(GateEvaluator.evaluate(face: face, quality: quality, angle: .front).allPassed)
+    }
+}
+
+@Suite("Hint stabiliser")
+struct HintStabilizerTests {
+    @Test("A new hint only shows after it has persisted, so text never flickers")
+    func debounce() {
+        var stabilizer = HintStabilizer(delay: 0.6)
+        stabilizer = stabilizer.updated(candidate: .moveCloser, at: 0)
+        #expect(stabilizer.displayed == .moveCloser, "first hint shows immediately")
+        stabilizer = stabilizer.updated(candidate: .holdStill, at: 0.1)
+        stabilizer = stabilizer.updated(candidate: .moveCloser, at: 0.2)
+        stabilizer = stabilizer.updated(candidate: .holdStill, at: 0.3)
+        #expect(stabilizer.displayed == .moveCloser, "flapping candidates never reach the screen")
+        stabilizer = stabilizer.updated(candidate: .holdStill, at: 1.0)
+        #expect(stabilizer.displayed == .holdStill)
+    }
+
+    @Test("Clearing to 'all good' is immediate")
+    func clears() {
+        let stabilizer = HintStabilizer(delay: 0.6).updated(candidate: .moveCloser, at: 0).updated(candidate: nil, at: 0.05)
+        #expect(stabilizer.displayed == nil)
     }
 }

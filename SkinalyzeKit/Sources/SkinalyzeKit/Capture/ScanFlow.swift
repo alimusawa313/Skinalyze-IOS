@@ -45,7 +45,9 @@ public enum ScanFlow {
             return .capturing(sequence[0], captured: [])
         case (.needsPermission, .permissionDenied):
             return .permissionDenied
-        case let (.capturing(expected, captured), .captured(angle)) where angle == expected:
+        case let (.capturing(expected, captured), .captured(angle))
+            where angle == expected || (expected != .front && angle != .front && !captured.contains(angle)):
+            // After the front photo, either side may come first — turn whichever way feels natural.
             let updated = ordered(Set(captured).union([angle]))
             guard let next = sequence.first(where: { !updated.contains($0) }) else {
                 return .reviewing(captured: updated)

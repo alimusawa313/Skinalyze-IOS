@@ -66,26 +66,26 @@ public struct ColorToken: Sendable, Hashable, CustomStringConvertible {
     }
 }
 
-/// "Field Notes" palette (PLAN.md §6.3): bone paper, ink, and ONE vivid signal accent.
+/// "Glow" palette: warm-white / deep-night bases with a living, mood-driven accent (calm mint → flared magenta).
 /// Views use `Color.ds.*`; never raw hex.
 public enum Palette {
-    public static let canvas = ColorToken("canvas", light: 0xF6F3EE, dark: 0x121110)
-    public static let surface = ColorToken("surface", light: 0xFFFFFF, dark: 0x1C1A18)
-    public static let surfaceRaised = ColorToken("surfaceRaised", light: 0xFBF9F6, dark: 0x252220)
-    public static let ink = ColorToken("ink", light: 0x1A1817, dark: 0xF3EFEA)
-    public static let inkSecondary = ColorToken("inkSecondary", light: 0x625C56, dark: 0xADA59E)
-    public static let inkTertiary = ColorToken("inkTertiary", light: 0x8F8881, dark: 0x7C756F)
-    public static let hairline = ColorToken("hairline", light: 0xE5DED5, dark: 0x34302C)
-    public static let signal = ColorToken("signal", light: 0xD24A2F, dark: 0xFF6B4E)
-    public static let positive = ColorToken("positive", light: 0x2F7D5B, dark: 0x5CC296)
-    public static let caution = ColorToken("caution", light: 0xA86C12, dark: 0xE3A44A)
+    public static let canvas = ColorToken("canvas", light: 0xFBF7F4, dark: 0x0E0C14)
+    public static let surface = ColorToken("surface", light: 0xFFFFFF, dark: 0x1A1722)
+    public static let surfaceRaised = ColorToken("surfaceRaised", light: 0xF4EEEA, dark: 0x241F2E)
+    public static let ink = ColorToken("ink", light: 0x17141F, dark: 0xF6F2FA)
+    public static let inkSecondary = ColorToken("inkSecondary", light: 0x585266, dark: 0xB6AFC3)
+    public static let inkTertiary = ColorToken("inkTertiary", light: 0x8C8696, dark: 0x7E788A)
+    public static let hairline = ColorToken("hairline", light: 0xECE5E0, dark: 0x2E2938)
+    public static let signal = ColorToken("signal", light: 0xE5484D, dark: 0xFF6B6F)
+    public static let positive = ColorToken("positive", light: 0x1F8A5B, dark: 0x4CD49A)
+    public static let caution = ColorToken("caution", light: 0xB06A00, dark: 0xF2A93B)
 
     /// Calm → mild → active → flared. Always paired with a label + shape, never colour alone.
     public static let bandRamp: [ColorToken] = [
-        ColorToken("calm", light: 0xE4DED4, dark: 0x4A4540),
-        ColorToken("mild", light: 0xE8C9A0, dark: 0x9C7B4E),
-        ColorToken("active", light: 0xD98A55, dark: 0xD08A5C),
-        ColorToken("flared", light: 0x9E3F35, dark: 0xE0705F),
+        ColorToken("calm", light: 0xBFEFE2, dark: 0x3FBFA0),
+        ColorToken("mild", light: 0xFFD3A6, dark: 0xF2A65A),
+        ColorToken("active", light: 0xFF9473, dark: 0xFF7A59),
+        ColorToken("flared", light: 0xD9386A, dark: 0xF0508A),
     ]
 }
 

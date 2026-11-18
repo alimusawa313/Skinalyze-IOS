@@ -3,17 +3,17 @@ import SwiftUI
 /// Type scale (PLAN.md §6.4): New York serif for display + numerals, SF Pro for UI. Dynamic Type only — no fixed sizes.
 public extension Font {
     enum ds {
-        public static let display = Font.system(.largeTitle, design: .serif).weight(.semibold)
-        public static let title = Font.system(.title2, design: .serif).weight(.semibold)
-        public static let titleSmall = Font.system(.title3, design: .serif).weight(.semibold)
+        public static let display = Font.system(.largeTitle, design: .rounded).weight(.heavy)
+        public static let title = Font.system(.title2, design: .rounded).weight(.bold)
+        public static let titleSmall = Font.system(.title3, design: .rounded).weight(.bold)
         public static let headline = Font.headline
         public static let body = Font.body
         public static let callout = Font.callout
         public static let footnote = Font.footnote
         public static let caption = Font.caption
         /// Big serif number (scores, counts) with tabular digits.
-        public static let numeral = Font.system(.largeTitle, design: .serif).weight(.bold).monospacedDigit()
-        public static let numeralSmall = Font.system(.title3, design: .serif).weight(.semibold).monospacedDigit()
+        public static let numeral = Font.system(size: 72, weight: .heavy, design: .rounded).monospacedDigit()
+        public static let numeralSmall = Font.system(.title3, design: .rounded).weight(.bold).monospacedDigit()
         public static let label = Font.caption.weight(.semibold)
     }
 }
@@ -32,6 +32,6 @@ public enum Spacing {
 /// The only corner radii in the app.
 public enum Radius {
     public static let small: CGFloat = 10
-    public static let medium: CGFloat = 18
-    public static let large: CGFloat = 28
+    public static let medium: CGFloat = 22
+    public static let large: CGFloat = 36
 }

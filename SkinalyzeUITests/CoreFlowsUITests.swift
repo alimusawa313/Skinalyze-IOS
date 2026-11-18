@@ -13,8 +13,8 @@ final class CoreFlowsUITests: XCTestCase {
     }
 
     func testTodayShowsLatestScan() {
-        XCTAssertTrue(app.staticTexts["Latest scan"].waitForExistence(timeout: 10))
-        XCTAssertTrue(app.staticTexts["Breakout index"].firstMatch.exists)
+        XCTAssertTrue(app.buttons["heroCard"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["heroCard"].exists)
         attachScreenshot("Today")
     }
 
@@ -34,8 +34,8 @@ final class CoreFlowsUITests: XCTestCase {
     }
 
     func testLatestScanShows3DView() {
-        XCTAssertTrue(app.staticTexts["Latest scan"].waitForExistence(timeout: 10))
-        app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Latest scan'")).firstMatch.tap()
+        XCTAssertTrue(app.buttons["heroCard"].waitForExistence(timeout: 10))
+        app.buttons["heroCard"].tap()
         let toggle = app.switches["3D view"]
         XCTAssertTrue(toggle.waitForExistence(timeout: 10))
         toggle.tap()
@@ -78,8 +78,8 @@ final class CoreFlowsUITests: XCTestCase {
             }
             return false
         }
-        XCTAssertTrue(app.buttons["Scan my skin"].firstMatch.waitForExistence(timeout: 10))
-        app.buttons["Scan my skin"].firstMatch.tap()
+        XCTAssertTrue(app.buttons["todayScanButton"].waitForExistence(timeout: 10))
+        app.buttons["todayScanButton"].tap()
         let unavailable = app.staticTexts["Camera unavailable"]
         let denied = app.staticTexts["Camera access is off"]
         let deadline = Date.now.addingTimeInterval(15)
@@ -92,7 +92,7 @@ final class CoreFlowsUITests: XCTestCase {
     }
 
     func testAccessibilityAuditOnToday() throws {
-        XCTAssertTrue(app.staticTexts["Latest scan"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["heroCard"].waitForExistence(timeout: 10))
         do {
             try app.performAccessibilityAudit(for: [.dynamicType, .elementDetection, .hitRegion, .sufficientElementDescription]) { issue in
                 // System tab bar / bottom accessory internals are owned by UIKit.

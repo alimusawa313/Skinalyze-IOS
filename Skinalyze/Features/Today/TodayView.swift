@@ -2,7 +2,7 @@ import SwiftData
 import SwiftUI
 import SkinalyzeKit
 
-/// Today: latest state at a glance — last scan, change vs. the one before, routine, and the scan action.
+/// Today: one hero. Your latest skin card on your mood colour, one sentence, one big action — history is a deck you flick.
 struct TodayView: View {
     @Environment(AppModel.self) private var appModel
     @Query(sort: \ScanSession.createdAt, order: .reverse) private var scans: [ScanSession]
@@ -10,50 +10,38 @@ struct TodayView: View {
 
     var body: some View {
         NavigationStack {
-            Group {
-                if let latest = scans.first {
-                    AdaptivePanes(maxWidth: 900) {
-                        VStack(alignment: .leading, spacing: Spacing.lg) {
-                            greeting
-                            LatestScanCard(scan: latest, previous: scans.dropFirst().first)
+            ScrollView {
+                VStack(alignment: .leading, spacing: Spacing.lg) {
+                    greeting
+                    if let latest = scans.first {
+                        NavigationLink(value: latest) {
+                            SkinCard(session: latest)
                         }
-                    } secondary: {
-                        VStack(spacing: Spacing.lg) {
-                            InsightCard(scans: scans)
-                            RoutineSummaryCard()
-                        }
+                        .buttonStyle(CardPressStyle())
+                        .accessibilityIdentifier("heroCard")
+                        Text(headline(latest))
+                            .font(.ds.titleSmall)
+                            .foregroundStyle(Color.ds.ink)
+                    } else {
+                        FirstScanHero()
                     }
-                } else {
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: Spacing.lg) {
-                            greeting
-                            EmptyStateView(
-                                title: String(localized: "Your first scan takes about a minute"),
-                                message: String(localized: "Three quick photos — front, right, left. Everything stays on your phone.")
-                            ) {
-                                Button("Start a scan") { appModel.startScan() }
-                                    .buttonStyle(.dsPrimary)
-                            }
-                            .frame(maxWidth: .infinity)
-                            RoutineSummaryCard()
-                        }
-                        .padding(Spacing.md)
-                        .frame(maxWidth: 900)
-                        .frame(maxWidth: .infinity)
+                    Button { appModel.startScan() } label: {
+                        Label("Scan my skin", systemImage: "faceid").frame(maxWidth: .infinity)
                     }
+                    .buttonStyle(.dsPrimary)
+                    .accessibilityIdentifier("todayScanButton")
+                    if scans.count > 1 { deck }
+                    ChipRow(scans: scans)
                 }
+                .padding(Spacing.md)
+                .frame(maxWidth: 640)
+                .frame(maxWidth: .infinity)
             }
-            .dsCanvas()
-            .navigationTitle("Today")
-            .toolbarTitleDisplayMode(.inline)
+            .background(LivingBackground(band: scans.first?.band ?? .calm))
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        appModel.isShowingProfile = true
-                    } label: {
-                        Avatar(name: name)
-                    }
-                    .accessibilityLabel("Profile and settings")
+                    Button { appModel.isShowingProfile = true } label: { Avatar(name: name) }
+                        .accessibilityLabel("Profile and settings")
                 }
             }
             .navigationDestination(for: ScanSession.self) { ScanResultView(session: $0) }
@@ -61,7 +49,7 @@ struct TodayView: View {
     }
 
     private var greeting: some View {
-        VStack(alignment: .leading, spacing: Spacing.xxs) {
+        VStack(alignment: .leading, spacing: 2) {
             Text(Date.now, format: .dateTime.weekday(.wide).day().month(.wide))
                 .font(.ds.label)
                 .textCase(.uppercase)
@@ -73,51 +61,37 @@ struct TodayView: View {
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isHeader)
     }
-}
 
-private struct LatestScanCard: View {
-    let scan: ScanSession
-    let previous: ScanSession?
-
-    var body: some View {
-        NavigationLink(value: scan) {
-            VStack(alignment: .leading, spacing: Spacing.md) {
-                HStack(alignment: .firstTextBaseline) {
-                    Text("Latest scan").font(.ds.headline).foregroundStyle(Color.ds.ink)
-                    Spacer()
-                    Text(scan.createdAt, format: .relative(presentation: .named))
-                        .font(.ds.footnote)
-                        .foregroundStyle(Color.ds.inkSecondary)
-                }
-                if let image = scan.uiImage(at: 0) {
-                    ScanPhotoView(image: image, detections: scan.detections(for: .front, types: Set(LesionType.allCases)))
-                        .frame(maxHeight: 280)
-                        .frame(maxWidth: .infinity)
-                }
-                HStack(alignment: .lastTextBaseline, spacing: Spacing.sm) {
-                    Text(scan.breakoutIndex, format: .number)
-                        .font(.ds.numeral)
-                        .foregroundStyle(Color.ds.ink)
-                        .contentTransition(.numericText(value: Double(scan.breakoutIndex)))
-                    VStack(alignment: .leading, spacing: Spacing.xxs) {
-                        BandPill(scan.band)
-                        Text("Breakout index").font(.ds.caption).foregroundStyle(Color.ds.inkSecondary)
-                    }
-                    Spacer()
-                    if let previous {
-                        DeltaBadge(delta: scan.breakoutIndex - previous.breakoutIndex)
+    /// Past scans as a physical deck: cards tilt and shrink as they leave the centre.
+    private var deck: some View {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            Text("Your cards").font(.ds.titleSmall).foregroundStyle(Color.ds.ink)
+            ScrollView(.horizontal) {
+                LazyHStack(spacing: Spacing.md) {
+                    ForEach(scans.dropFirst()) { scan in
+                        NavigationLink(value: scan) {
+                            SkinCard(session: scan, size: .compact).frame(width: 150)
+                        }
+                        .buttonStyle(CardPressStyle())
+                        .scrollTransition(.interactive, axis: .horizontal) { content, phase in
+                            content
+                                .scaleEffect(1 - abs(phase.value) * 0.12)
+                                .rotation3DEffect(.degrees(phase.value * -18), axis: (x: 0, y: 1, z: 0))
+                                .opacity(1 - abs(phase.value) * 0.3)
+                        }
                     }
                 }
-                Text(headline).font(.ds.body).foregroundStyle(Color.ds.inkSecondary)
+                .scrollTargetLayout()
+                .padding(.vertical, Spacing.md)
             }
-            .dsCard()
+            .scrollTargetBehavior(.viewAligned)
+            .scrollIndicators(.hidden)
+            .sensoryFeedback(Haptic.scrub, trigger: scans.count)
         }
-        .buttonStyle(.plain)
-        .accessibilityHint("Opens this scan's details")
     }
 
-    private var headline: String {
-        guard let previous else { return BandCopy.summary(scan.band) }
+    private func headline(_ scan: ScanSession) -> String {
+        guard let previous = scans.dropFirst().first else { return BandCopy.summary(scan.band) }
         let delta = scan.breakoutIndex - previous.breakoutIndex
         if delta < 0 { return String(localized: "Calmer than your last scan. Keep going.") }
         if delta > 0 { return String(localized: "A bit more active than last time — worth watching.") }
@@ -125,49 +99,58 @@ private struct LatestScanCard: View {
     }
 }
 
-private struct InsightCard: View {
-    let scans: [ScanSession]
+/// Cards press in like something physical.
+struct CardPressStyle: ButtonStyle {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    var body: some View {
-        VStack(alignment: .leading, spacing: Spacing.xs) {
-            Label("Insight", systemImage: "lightbulb").font(.ds.label).foregroundStyle(Color.ds.signal)
-            Text(InsightEngine.headline(for: scans.map(InsightEngine.Point.init)))
-                .font(.ds.titleSmall)
-                .foregroundStyle(Color.ds.ink)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .dsCard()
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed && !reduceMotion ? 0.97 : 1)
+            .animation(.spring(duration: 0.3, bounce: 0.35), value: configuration.isPressed)
     }
 }
 
-private struct RoutineSummaryCard: View {
-    @Environment(AppModel.self) private var appModel
-    @AppStorage(UserProfile.Key.cleanserID) private var cleanser = 0
-    @AppStorage(UserProfile.Key.tonerID) private var toner = 0
-    @AppStorage(UserProfile.Key.moisturizerID) private var moisturizer = 0
-    @AppStorage(UserProfile.Key.sunscreenID) private var sunscreen = 0
+private struct FirstScanHero: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        let count = [cleanser, toner, moisturizer, sunscreen].filter { $0 > 0 }.count
-        Button {
-            appModel.selectedTab = .products
-        } label: {
-            HStack(spacing: Spacing.md) {
-                Image(systemName: "drop").font(.title2).foregroundStyle(Color.ds.signal)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Your routine").font(.ds.headline).foregroundStyle(Color.ds.ink)
-                    Text(count == 0
-                         ? String(localized: "Add the products you use to see what's helping.")
-                         : String(localized: "\(count) products in your routine"))
-                        .font(.ds.footnote)
-                        .foregroundStyle(Color.ds.inkSecondary)
-                }
-                Spacer()
-                Image(systemName: "chevron.right").foregroundStyle(Color.ds.inkTertiary)
+        VStack(spacing: Spacing.md) {
+            ZStack {
+                Circle().fill(Color.ds.surface.opacity(0.6)).frame(width: 200, height: 200)
+                FaceRing(frontProgress: 0.35, rightProgress: 0.6, leftProgress: 0.2).frame(width: 220, height: 220)
+                Image(systemName: "faceid").font(.system(size: 64, weight: .light)).foregroundStyle(Color.ds.ink)
+                    .symbolEffect(.pulse, isActive: !reduceMotion)
             }
-            .dsCard()
+            Text("Your first scan takes about a minute").font(.ds.title).multilineTextAlignment(.center)
+            Text("Look at the camera, then slowly turn your head — like setting up Face ID. Everything stays on your phone.")
+                .font(.ds.body).foregroundStyle(Color.ds.inkSecondary).multilineTextAlignment(.center)
         }
-        .buttonStyle(.plain)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, Spacing.lg)
+    }
+}
+
+private struct ChipRow: View {
+    let scans: [ScanSession]
+    @Environment(AppModel.self) private var appModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            Label(InsightEngine.headline(for: scans.map(InsightEngine.Point.init)), systemImage: "sparkle")
+                .font(.ds.callout.weight(.semibold))
+                .foregroundStyle(Color.ds.ink)
+                .padding(Spacing.md)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: Radius.medium, style: .continuous))
+            Button { appModel.selectedTab = .products } label: {
+                Label("Your routine", systemImage: "drop.fill")
+                    .font(.ds.callout.weight(.semibold))
+                    .padding(.horizontal, Spacing.md)
+                    .padding(.vertical, Spacing.sm)
+                    .background(.ultraThinMaterial, in: Capsule())
+            }
+            .buttonStyle(.plain)
+        }
     }
 }
 
@@ -180,6 +163,5 @@ struct Avatar: View {
             .foregroundStyle(Color.ds.ink)
             .frame(width: 32, height: 32)
             .background(Circle().fill(Color.ds.surfaceRaised))
-            .overlay(Circle().strokeBorder(Color.ds.hairline))
     }
 }
