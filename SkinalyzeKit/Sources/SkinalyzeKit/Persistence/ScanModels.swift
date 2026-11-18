@@ -46,6 +46,22 @@ public final class ScanSession {
 
     public var allDetections: [StoredDetection] { detections ?? [] }
 
+    /// Weighted breakout score (dark spots excluded) — see `BreakoutIndex`.
+    public var breakoutIndex: Int { BreakoutIndex.index(for: counts) }
+
+    public var band: BreakoutBand { BreakoutBand.classify(index: breakoutIndex) }
+
+    /// `true` when detections carry face zones (scans from the new pipeline).
+    public var hasZoneData: Bool { allDetections.contains { $0.zone != nil } }
+
+    /// Weighted breakout score for one face zone.
+    public func zoneIndex(_ zone: FaceZone) -> Int {
+        allDetections
+            .filter { $0.zone == zone }
+            .compactMap(\.lesionType)
+            .reduce(0) { $0 + BreakoutIndex.weight(of: $1) }
+    }
+
     public func detections(for angle: CaptureAngle, types: Set<LesionType>) -> [StoredDetection] {
         allDetections.filter { $0.angle == angle && $0.lesionType.map(types.contains) == true }
     }
@@ -109,6 +125,8 @@ public final class StoredDetection {
     public var width: Double = 0
     public var height: Double = 0
     public var angleRaw: String = CaptureAngle.front.rawValue
+    /// Added after first release — optional so the CloudKit schema change stays additive.
+    public var zoneRaw: String?
     public var session: ScanSession?
 
     public init(_ draft: DetectionDraft) {
@@ -119,8 +137,10 @@ public final class StoredDetection {
         width = draft.box.width
         height = draft.box.height
         angleRaw = draft.captureAngle.rawValue
+        zoneRaw = draft.zone?.rawValue
     }
 
+    public var zone: FaceZone? { zoneRaw.flatMap(FaceZone.init(rawValue:)) }
     public var lesionType: LesionType? { LesionType(rawValue: typeRaw) }
     public var angle: CaptureAngle { CaptureAngle(rawValue: angleRaw) ?? .front }
     public var box: ImageRect { ImageRect(x: x, y: y, width: width, height: height) }

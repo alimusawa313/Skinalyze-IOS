@@ -66,6 +66,26 @@ struct ScanModelTests {
         #expect(try context.fetchCount(FetchDescriptor<StoredDetection>()) == 0)
     }
 
+    @Test("Zones, breakout index and band are derived from stored detections")
+    func zonesAndScore() throws {
+        let context = try makeContext()
+        let box = ImageRect(x: 0, y: 0, width: 0.1, height: 0.1)
+        let session = ScanSession.insert(
+            try draft(detections: [
+                DetectionDraft(type: .pustule, confidence: 0.9, box: box, captureAngle: .front, zone: .chin),
+                DetectionDraft(type: .papule, confidence: 0.9, box: box, captureAngle: .front, zone: .chin),
+                DetectionDraft(type: .darkSpot, confidence: 0.9, box: box, captureAngle: .front, zone: .forehead),
+            ]),
+            into: context
+        )
+        #expect(session.allDetections.first?.zone == .chin)
+        #expect(session.zoneIndex(.chin) == 5)       // pustule 3 + papule 2
+        #expect(session.zoneIndex(.forehead) == 0)   // dark spots are marks, not breakouts
+        #expect(session.hasZoneData)
+        #expect(session.breakoutIndex == BreakoutIndex.index(for: session.counts))
+        #expect(session.band == BreakoutBand.classify(index: session.breakoutIndex))
+    }
+
     @Test("Detections can be filtered by lesion type and capture")
     func filtering() throws {
         let context = try makeContext()

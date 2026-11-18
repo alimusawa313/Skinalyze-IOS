@@ -39,12 +39,15 @@ public struct DetectionDraft: Sendable, Hashable {
     public let confidence: Double
     public let box: ImageRect
     public let captureAngle: CaptureAngle
+    /// Face zone the lesion was counted in (`nil` for legacy/unknown).
+    public let zone: FaceZone?
 
-    public init(type: LesionType, confidence: Double, box: ImageRect, captureAngle: CaptureAngle) {
+    public init(type: LesionType, confidence: Double, box: ImageRect, captureAngle: CaptureAngle, zone: FaceZone? = nil) {
         self.type = type
         self.confidence = confidence
         self.box = box
         self.captureAngle = captureAngle
+        self.zone = zone
     }
 }
 
