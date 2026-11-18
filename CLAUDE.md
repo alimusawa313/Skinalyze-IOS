@@ -40,7 +40,7 @@ Rules:
    `onDisappear` that a display change could trigger; tie session lifetime to scene phase / explicit user actions.
 8. **Camera / face-tracking availability is checked at runtime per display state** (`ARFaceTrackingConfiguration.isSupported`,
    `AVCaptureDeviceDirectionCoordinator`). iPhone Duo has **two front cameras, no TrueDepth, no Face ID (Touch ID), no
-   LiDAR** — so **iPhone Duo uses the 2D scan path only; no 3D face model on Duo**. Never assume a camera faces the user, never use the depth-less virtual front camera for scanning, and
+   LiDAR** — so **iPhone Duo uses the 2D scan path only; no 3D face model on Duo**. Never assume a camera faces the user. The 2D scan uses the default (virtual on Duo) front camera, which switches inner/outer automatically and needs no depth; any future depth/3D feature must pick individual cameras via `AVCaptureDeviceDirectionCoordinator`. Always
    branch biometric copy/glyphs on `LAContext.biometryType`. Camera open/close/flip behaviour must be tested on hardware.
 9. **Gate iOS 27.1+ APIs** (Duo APIs) with `if #available(iOS 27.1, *)`; deployment target stays iOS 26.0.
 10. **Verify every UI change** in Xcode Device Hub: iPhone Duo closed (portrait + landscape), partially folded,
