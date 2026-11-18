@@ -5,6 +5,7 @@
 //  Created by Ali Haidar on 11/8/24.
 //
 import SwiftUI
+import SkinalyzeKit
 import Vision
 import CoreML
 import SwiftData
@@ -30,14 +31,9 @@ struct NewDetailViewTest: View {
     
     @Namespace private var namespace
     
-    var selectedLogs: Result // The selected log containing the images
-    var images: [UIImage] { // Extract images from selectedLogs
-        return [
-            selectedLogs.image1?.toImage(),
-            selectedLogs.image2?.toImage(),
-            selectedLogs.image3?.toImage()
-        ].compactMap { $0 } // Ensure we only get non-nil images
-    }
+    var selectedLogs: ScanSession
+    /// Decoded once per appearance; saved scans are never re-analyzed (results must not change after saving).
+    @State private var images: [UIImage] = []
     
     private var acneTypesWithCounts: [Acne] {
         viewmodel.acneTypes.map { acne in
@@ -60,46 +56,27 @@ struct NewDetailViewTest: View {
                     .font(.subheadline)
                     .bold()
                     
-                    // Show loading indicator or analyze results
-                    if viewmodel.isLoading {
-                        ProgressView("Analyzing Images...")
-                    } else if !viewmodel.analyzedImages.isEmpty {
+                    if !images.isEmpty {
                         TabView(selection: $currentIndex) {
-                            ForEach(viewmodel.analyzedImages.indices, id: \.self) { index in
+                            ForEach(images.indices, id: \.self) { index in
                                 ZStack {
-                                    Image(uiImage: viewmodel.analyzedImages[index])
+                                    Image(uiImage: images[index])
                                         .resizable()
                                         .scaledToFit()
                                         .clipShape(RoundedRectangle(cornerRadius: 10))
-                                    
+
                                     Image(uiImage: filteredBoundingBoxImage(at: index))
                                         .resizable()
                                         .scaledToFit()
                                         .allowsHitTesting(false)
                                         .clipShape(RoundedRectangle(cornerRadius: 10))
+                                        .accessibilityHidden(true)
                                 }
                                 .tag(index)
-                                
                             }
                         }
                         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                         .frame(height: UIScreen.main.bounds.height / 2)
-                    } else if !images.isEmpty {
-                        TabView(selection: $currentIndex) {
-                            ForEach(images.indices, id: \.self) { index in
-                                Image(uiImage: images[index])
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 2)
-                                    .tag(index)
-                            }
-                        }
-                        .frame(height: UIScreen.main.bounds.height / 2)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                        .onAppear {
-                            analyzeImages() // Analyze images when the view appears
-                        }
                     } else {
                         ZStack {
                             RoundedRectangle(cornerRadius: 10)
@@ -233,16 +210,15 @@ struct NewDetailViewTest: View {
                             
                         }
                     } else {
-                        ProductUsedSaved(cleanserUsedID: selectedLogs.cleanserUsedID, tonerUsedID: selectedLogs.tonerUsedID, moisturizerUsedID: selectedLogs.moisturizerUsedID, sunscreenUsedID: selectedLogs.sunscreenUsedID)
+                        ProductUsedSaved(cleanserUsedID: selectedLogs.productID(in: .cleanser), tonerUsedID: selectedLogs.productID(in: .toner), moisturizerUsedID: selectedLogs.productID(in: .moisturizer), sunscreenUsedID: selectedLogs.productID(in: .sunscreen))
                     }
                 }
                 .padding()
             }
             .navigationTitle("Scan Result")
             .navigationBarTitleDisplayMode(.inline)
-            .onAppear{
-                
-                setInitialVisibleAcneType()
+            .onAppear {
+                loadSavedResult()
             }
             .sheet(isPresented: $showSheet) {
                 sheetView()
@@ -274,23 +250,24 @@ struct NewDetailViewTest: View {
         }
     }
     
+    /// Shows the saved result exactly as it was when the scan was saved.
+    private func loadSavedResult() {
+        images = selectedLogs.uiImages
+        viewmodel.acneCounts = selectedLogs.acneCounts
+        viewmodel.geaScale = selectedLogs.geaScale
+        setInitialVisibleAcneType()
+    }
+
+    /// Overlay drawn from stored detections (legacy scans have none, so they show the photo only).
     func filteredBoundingBoxImage(at index: Int) -> UIImage {
-        guard index < viewmodel.boundingBoxImages.count else {
+        guard images.indices.contains(index), let angle = selectedLogs.captureAngle(at: index) else {
             return UIImage()
         }
-        
-        // Use all visible types directly from the state
-        let visibleTypes = Array(visibleAcneTypes)
-        
-        // Pass the visible types to the bounding box drawing method
-        let filteredImage = viewmodel.drawBoundingBoxes(
-            on: viewmodel.analyzedImages[index],
-            results: viewmodel.detectedResults[index],
-            originalImageSize: viewmodel.analyzedImages[index].size,
-            visibleTypes: visibleTypes
+        let visibleTypes = Set(visibleAcneTypes.compactMap(LesionType.init(modelLabel:)))
+        return DetectionOverlayRenderer.overlay(
+            size: images[index].size,
+            detections: selectedLogs.detections(for: angle, types: visibleTypes)
         )
-        
-        return filteredImage
     }
     
     //    func filteredBoundingBoxImage(at index: Int) -> UIImage {
@@ -318,25 +295,6 @@ struct NewDetailViewTest: View {
     //        return filteredImage
     //    }
     //
-    func analyzeImages() {
-        viewmodel.analyzedImages.removeAll()
-        viewmodel.isLoading = true
-        viewmodel.resetAcneCounts() // Reset counts before new analysis
-        
-        let dispatchGroup = DispatchGroup()
-        
-        for image in images {
-            dispatchGroup.enter()
-            viewmodel.detectObjects(in: image) {
-                dispatchGroup.leave()
-            }
-        }
-        
-        dispatchGroup.notify(queue: .main) {
-            viewmodel.isLoading = false
-            viewmodel.calculateGEAScale() // Calculate the GEA Scale after detection
-        }
-    }
 }
 
 
@@ -362,5 +320,5 @@ struct sheetView: View {
 //}
 
 #Preview {
-    NewDetailViewTest(selectedLogs: Result()) // Provide a mock or real Result object
+    NewDetailViewTest(selectedLogs: ScanSession())
 }

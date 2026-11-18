@@ -16,13 +16,8 @@ struct SkinalyzeApp: App {
     @Namespace private var namespace
     
     var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Result.self
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
         do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+            return try AppPersistence.makeContainer()
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }
@@ -64,6 +59,9 @@ struct SkinalyzeApp: App {
                     .environmentObject(router)
             }
             .accentColor(tintColor)
+            .task {
+                await LegacyMigrationRunner.run(container: sharedModelContainer)
+            }
         }
         .modelContainer(sharedModelContainer)
     }

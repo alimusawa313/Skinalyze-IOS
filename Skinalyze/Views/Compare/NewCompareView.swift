@@ -6,11 +6,12 @@
 //
 
 import SwiftUI
+import SkinalyzeKit
 
 struct NewCompareView: View {
     @ObservedObject var viewmodel: ResultViewModel = ResultViewModel()
     @State private var xOffset: CGFloat = 0
-    var selectedLogs: [Result]
+    var selectedLogs: [ScanSession]
     @State private var selectedSide = 0
     @EnvironmentObject var router: Router
     
@@ -159,30 +160,14 @@ struct NewCompareView: View {
                     router.navigateBack()
                 }
             }
-            .onAppear{
-                analyzeImages()
-            }
         }
     }
-    
+
     private func displayImages(for side: Int) -> some View {
-        let imageStrings: (String?, String?) = {
-            switch side {
-            case 0:
-                return (selectedLogs[0].analyzedImages1, selectedLogs[1].analyzedImages1)
-            case 1:
-                return (selectedLogs[0].analyzedImages2, selectedLogs[1].analyzedImages2)
-            case 2:
-                return (selectedLogs[0].analyzedImages3, selectedLogs[1].analyzedImages3)
-            default:
-                return (nil, nil)
-            }
-        }()
-        
-        guard let firstImageString = imageStrings.0,
-              let firstImage = firstImageString.toImage(),
-              let secondImageString = imageStrings.1,
-              let secondImage = secondImageString.toImage() else {
+        // Saved scans are shown as saved — never re-analyzed. Missing images show nothing instead of crashing.
+        guard selectedLogs.count == 2,
+              let firstImage = selectedLogs[0].uiImage(at: side),
+              let secondImage = selectedLogs[1].uiImage(at: side) else {
             return AnyView(EmptyView())
         }
         
@@ -240,61 +225,16 @@ struct NewCompareView: View {
             return UIImage()
         }
         
-        // Select the specific log
         let selectedLog = selectedLogs[logIndex]
-        
-        // Determine the correct image index in the analyzedImages array
-        let analyzeImageIndex = logIndex * imagesPerLog + imageIndexInLog
-        
-        guard analyzeImageIndex < viewmodel.analyzedImages.count else {
+        guard let image = selectedLog.uiImage(at: imageIndexInLog),
+              let angle = selectedLog.captureAngle(at: imageIndexInLog) else {
             return UIImage()
         }
-        
-        // Pass the visible types to the bounding box drawing method
-        let filteredImage = viewmodel.drawBoundingBoxes(
-            on: viewmodel.analyzedImages[analyzeImageIndex],
-            results: viewmodel.detectedResults[analyzeImageIndex],
-            originalImageSize: viewmodel.analyzedImages[analyzeImageIndex].size,
-            visibleTypes: Array(visibleAcneTypes)
+        let visibleTypes = Set(visibleAcneTypes.compactMap(LesionType.init(modelLabel:)))
+        return DetectionOverlayRenderer.overlay(
+            size: image.size,
+            detections: selectedLog.detections(for: angle, types: visibleTypes)
         )
-        
-        return filteredImage
-    }
-    
-    func analyzeImages() {
-        viewmodel.analyzedImages.removeAll()
-        viewmodel.detectedResults.removeAll() // Make sure to clear detected results as well
-        viewmodel.isLoading = true
-        viewmodel.resetAcneCounts() // Reset counts before new analysis
-        
-        let dispatchGroup = DispatchGroup()
-        
-        // Analyze images for the first selected log
-        let firstLog = selectedLogs[0]
-        let firstLogImages = [firstLog.image1!.toImage(), firstLog.image2!.toImage(), firstLog.image3!.toImage()]
-        
-        for image in firstLogImages {
-            dispatchGroup.enter()
-            viewmodel.detectObjects(in: image!) {
-                dispatchGroup.leave()
-            }
-        }
-        
-        // Analyze images for the second selected log
-        let secondLog = selectedLogs[1]
-        let secondLogImages = [secondLog.image1!.toImage(), secondLog.image2!.toImage(), secondLog.image3!.toImage()]
-        
-        for image in secondLogImages {
-            dispatchGroup.enter()
-            viewmodel.detectObjects(in: image!) {
-                dispatchGroup.leave()
-            }
-        }
-        
-        dispatchGroup.notify(queue: .main) {
-            viewmodel.isLoading = false
-            viewmodel.calculateGEAScale() // Calculate the GEA Scale after detection
-        }
     }
 }
 

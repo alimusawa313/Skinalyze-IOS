@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SkinalyzeKit
 import Vision
 import CoreML
 import SwiftData
@@ -25,7 +26,7 @@ struct AnalyzedResultView: View {
     
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
-    @Query private var result: [Result]
+    @State private var saveFailed = false
     
     @State var selectedCardIndex = 0
     
@@ -268,6 +269,11 @@ struct AnalyzedResultView: View {
                 .padding()
             }
             .navigationTitle("Scan Result")
+            .alert("Couldn't save this scan", isPresented: $saveFailed) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text("Your scan is still here. Please try saving again.")
+            }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -354,36 +360,26 @@ struct AnalyzedResultView: View {
 //        return filteredImage
 //    }
     
+    /// Saves the scan once, as data: compact photos + detections (no duplicate "analyzed"/overlay images).
     func saveData() {
-        let imagesBase64 = images.compactMap { $0.base64 }
-        let analyzedImagesBase64 = viewmodel.analyzedImages.compactMap { $0.base64 }
-        let boundingBoxImagesBase64 = viewmodel.boundingBoxImages.compactMap { $0.base64 }
-        
-        let result = Result(
-            images: imagesBase64,
-            selectedCardIndex: selectedCardIndex,
-            analyzedImages: analyzedImagesBase64,
-            isLoading: viewmodel.isLoading,
-            acneCounts: viewmodel.acneCounts,
-            geaScale: viewmodel.geaScale,
-            currentDate: currentDate,
-            boundingBoxImages: boundingBoxImagesBase64,
-            cleanserUsedID: self.cleanserUsedID,
-            tonerUsedID: self.tonerUsedID,
-            moisturizerUsedID: self.moisturizerUsedID,
-            sunscreenUsedID: self.sunscreenUsedID
+        guard !viewmodel.isLoading, !viewmodel.analyzedImages.isEmpty else { return }
+        let draft = ScanDraftBuilder.makeDraft(
+            images: viewmodel.analyzedImages,
+            detectionsPerImage: viewmodel.detectedResults,
+            counts: viewmodel.acneCounts,
+            legacyScore: viewmodel.geaScale,
+            date: currentDate,
+            productIDs: [cleanserUsedID, tonerUsedID, moisturizerUsedID, sunscreenUsedID]
         )
-        
-        // Insert the result into the model context
-        modelContext.insert(result)
-        
-        // Save the model context
-        do {
-            router.navigateToRoot()
-            try modelContext.save()
-            print("Data saved successfully!")
-        } catch {
-            print("Error saving data: \(error.localizedDescription)")
+        let store = ScanStore(modelContainer: modelContext.container)
+        Task {
+            do {
+                try await store.save(draft)
+                router.navigateToRoot()
+            } catch {
+                AppPersistence.logger.error("Saving scan failed: \(error.localizedDescription)")
+                saveFailed = true
+            }
         }
     }
     

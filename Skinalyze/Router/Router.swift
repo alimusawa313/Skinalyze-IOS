@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SkinalyzeKit
 
 final class Router: ObservableObject {
     
@@ -14,8 +15,8 @@ final class Router: ObservableObject {
         case camScanView
         case capturedImagesView(images: [UIImage])
         case anlyzResultView(images: [UIImage])
-        case newCompareImagesView(selectedLogs: [Result])
-        case newDetailView(selectedLogs: Result)
+        case newCompareImagesView(selectedLogs: [ScanSession])
+        case newDetailView(selectedLogs: ScanSession)
         case chatView(isFromStartup: Bool)
         case productUsedView(isFromStartup: Bool)
     }

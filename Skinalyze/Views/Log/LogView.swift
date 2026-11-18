@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SkinalyzeKit
 import SwiftData
 
 struct LogView: View {
@@ -14,8 +15,8 @@ struct LogView: View {
     @Binding var isTabBarHidden: Bool
     @State private var isComparing = false
     @Environment(\.modelContext) private var modelContext
-    @Query private var logs: [Result]
-    @State private var selectedLogs: [Result] = []
+    @Query(sort: \ScanSession.createdAt, order: .reverse) private var logs: [ScanSession]
+    @State private var selectedLogs: [ScanSession] = []
     
     @Namespace private var namespace
     
@@ -81,15 +82,14 @@ struct LogView: View {
         .background(Color("splashScreen").ignoresSafeArea())
     }
     
-    private func groupLogsByDate(_ logs: [Result]) -> [Date: [Result]] {
-        var groupedLogs: [Date: [Result]] = [:]
+    private func groupLogsByDate(_ logs: [ScanSession]) -> [Date: [ScanSession]] {
+        var groupedLogs: [Date: [ScanSession]] = [:]
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         
         for log in logs {
-            let dateString = dateFormatter.string(from: log.currentDate)
-            let date = dateFormatter.date(from: dateString)!
-            groupedLogs[date, default: []].append(log)
+            let day = Calendar.current.startOfDay(for: log.currentDate)
+            groupedLogs[day, default: []].append(log)
         }
         
         return groupedLogs
@@ -99,10 +99,7 @@ struct LogView: View {
         withAnimation {
             let logsInSection = groupLogsByDate(logs)[section]!.sorted { $0.currentDate > $1.currentDate }
             for index in offsets {
-                let logToDelete = logsInSection[index]
-                if let indexInAllLogs = logs.firstIndex(where: { $0.id == logToDelete.id }) {
-                    modelContext.delete(logs[indexInAllLogs])
-                }
+                AppPersistence.delete(logsInSection[index], in: modelContext)
             }
         }
     }
@@ -110,7 +107,7 @@ struct LogView: View {
 
 
 struct CompareButtonView: View {
-    let selectedLogs: [Result]
+    let selectedLogs: [ScanSession]
     let onCompare: () -> Void
     
     var body: some View {
@@ -138,10 +135,10 @@ struct CompareButtonView: View {
 
 struct LogSectionView: View {
     let date: Date
-    let logs: [Result]
+    let logs: [ScanSession]
     let isComparing: Bool
-    let selectedLogs: [Result]
-    let onLogTap: (Result) -> Void
+    let selectedLogs: [ScanSession]
+    let onLogTap: (ScanSession) -> Void
     let onDelete: (IndexSet) -> Void
     
     var body: some View {
@@ -177,7 +174,7 @@ struct LogSectionView: View {
 }
 
 struct LogRowView: View {
-    let log: Result
+    let log: ScanSession
     let isComparing: Bool
     let onTap: () -> Void
     let isSelected: Bool
@@ -185,19 +182,11 @@ struct LogRowView: View {
     @Namespace private var namespace
     var body: some View {
         HStack {
-            if let imageString = log.analyzedImages1, let image = imageString.toImage() {
-                if #available(iOS 18.0, *) {
-                    Image(uiImage: image)
-                        .resizable()
-                        .matchedTransitionSource(id: "thumbnailImage", in: namespace)
-                        .frame(width: 85, height: 90)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                } else {
-                    Image(uiImage: image)
-                        .resizable()
-                        .frame(width: 85, height: 90)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                }
+            if let image = log.uiImage(at: 0) {
+                Image(uiImage: image)
+                    .resizable()
+                    .frame(width: 85, height: 90)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
             } else {
                 Text("No image available")
                     .foregroundColor(.gray)

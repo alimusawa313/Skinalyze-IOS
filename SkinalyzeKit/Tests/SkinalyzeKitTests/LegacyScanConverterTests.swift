@@ -70,6 +70,19 @@ struct ImageEncodingTests {
         #expect(ImageEncoding.pixelSize(of: encoded) == ImageEncoding.pixelSize(of: jpeg))
     }
 
+    @Test("EXIF orientation survives re-encoding (legacy photos were stored rotated + tagged)")
+    func preservesOrientation() throws {
+        let rotated = Fixtures.jpeg(orientation: 6) // 6 = rotated 90° CW, what the front camera produced
+        let encoded = try #require(ImageEncoding.compressedData(fromImageData: rotated))
+        #expect(ImageEncoding.orientation(of: encoded) == 6)
+    }
+
+    @Test("Encodes a CGImage directly")
+    func encodesCGImage() throws {
+        let encoded = try #require(ImageEncoding.compressedData(from: Fixtures.cgImage()))
+        #expect(ImageEncoding.pixelSize(of: encoded) == CGSize(width: Fixtures.imageWidth, height: Fixtures.imageHeight))
+    }
+
     @Test("Garbage input returns nil")
     func garbage() {
         #expect(ImageEncoding.compressedData(fromImageData: Data([0x00, 0x01, 0x02])) == nil)
