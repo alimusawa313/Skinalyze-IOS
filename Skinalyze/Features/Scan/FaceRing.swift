@@ -20,7 +20,7 @@ struct FaceRing: View {
                 ForEach(0..<Self.tickCount, id: \.self) { index in
                     let lit = isLit(index)
                     Capsule()
-                        .fill(lit ? Color.ds.positive : Color.white.opacity(0.28))
+                        .fill(lit ? Color.ds.positive : Color.ds.ink.opacity(0.28))
                         .frame(width: 3.5, height: lit ? 22 : 14)
                         .offset(y: -radius + 11)
                         .rotationEffect(.degrees(Double(index) / Double(Self.tickCount) * 360))
@@ -36,11 +36,11 @@ struct FaceRing: View {
     private func isLit(_ index: Int) -> Bool {
         let angle = Double(index) / Double(Self.tickCount) * 360
         switch angle {
-        case 30..<150: return abs(angle - 90) / 60 <= rightProgress
-        case 210..<330: return abs(angle - 270) / 60 <= leftProgress
+        case 30..<150: return rightProgress > 0 && abs(angle - 90) / 60 <= rightProgress
+        case 210..<330: return leftProgress > 0 && abs(angle - 270) / 60 <= leftProgress
         default:
             let distance = angle < 30 ? angle : (angle < 210 ? abs(angle - 180) : 360 - angle)
-            return distance / 30 <= frontProgress
+            return frontProgress > 0 && distance / 30 <= frontProgress
         }
     }
 }

@@ -34,7 +34,6 @@ struct MirrorView: View {
             overlay
             CaptureFlash(trigger: model.captures.count)
         }
-        .preferredColorScheme(.dark)
         .task { await model.startPreview() }
         .onChange(of: scenePhase) { _, phase in
             switch phase {
@@ -70,11 +69,13 @@ struct MirrorView: View {
                 Task { await model.confirm(productIDs: UserProfile.currentProductIDs, container: modelContext.container) }
             }
             .background(Color.black.opacity(0.88).ignoresSafeArea())
+            .environment(\.colorScheme, .dark) // capture review stays dark, like the system camera
             .transition(.opacity)
         case .analyzing, .finished:
             AnalyzingScreen(image: model.captures[.front])
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.black.opacity(0.88).ignoresSafeArea())
+                .environment(\.colorScheme, .dark)
         case .permissionDenied:
             MessageScreen(systemImage: "camera", title: "Camera access is off",
                           message: "Skinalyze uses the front camera as your mirror. Photos stay on this iPhone.",
@@ -110,13 +111,8 @@ private struct MirrorBackdrop: View {
                 CameraPreview(camera: model.camera)
             } else {
                 LivingBackground(band: band)
-                Image(systemName: "faceid")
-                    .font(.system(size: 160, weight: .ultraLight))
-                    .foregroundStyle(.white.opacity(0.16))
-                    .symbolEffect(.pulse, isActive: !reduceMotion)
-                    .accessibilityHidden(true)
             }
-            LinearGradient(colors: [.black.opacity(0.7), .clear, .clear, .black.opacity(0.85)],
+            LinearGradient(colors: [Color.ds.canvas.opacity(0.75), .clear, .clear, Color.ds.canvas.opacity(0.85)],
                            startPoint: .top, endPoint: .bottom)
                 .allowsHitTesting(false)
             RadialGradient(colors: [.clear, Color.ds.band(band).opacity(0.4)], center: .center,
@@ -173,8 +169,8 @@ private struct MirrorChrome: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .top, spacing: Spacing.md) {
                 headline
-                    .foregroundStyle(.white)
-                    .shadow(color: .black.opacity(0.45), radius: 12)
+                    .foregroundStyle(Color.ds.ink)
+                    .shadow(color: Color.ds.canvas.opacity(0.6), radius: 12)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 if isScanning {
                     Button { model.returnToMirror() } label: {
@@ -272,7 +268,7 @@ private struct MirrorShutter: View {
                                 Image(systemName: "faceid").font(.system(size: 48))
                             }
                         }
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Color.ds.ink)
                         .scaleEffect(breathing && !isScanning && !reduceMotion ? 1.06 : 1)
                         .animation(reduceMotion ? nil : .easeInOut(duration: 1.4).repeatForever(autoreverses: true), value: breathing)
                 }
@@ -290,7 +286,7 @@ private struct MirrorShutter: View {
             .sensoryFeedback(.selection, trigger: ring.litCount)
 
             if model.cameraUnavailable {
-                Text("Camera unavailable — scan on a real iPhone.").font(.ds.footnote).foregroundStyle(.white.opacity(0.8))
+                Text("Camera unavailable — scan on a real iPhone.").font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
             } else if isScanning, model.canCaptureManually {
                 Button("Take photo anyway") { model.captureManually() }
                     .buttonStyle(.glass)

@@ -18,6 +18,14 @@ struct ScanResultView: View {
             case .helps: "What helps"
             }
         }
+        /// Short tab label (the full title is the accessibility label).
+        var tab: LocalizedStringKey {
+            switch self {
+            case .changed: "Changed"
+            case .noticed: "Noticed"
+            case .helps: "Helps"
+            }
+        }
     }
 
     @Environment(\.dismiss) private var dismiss
@@ -65,7 +73,6 @@ struct ScanResultView: View {
             .clipped()
         }
         .background(MoodBackdrop(band: session.band))
-        .preferredColorScheme(.dark)
         .navigationTitle(Text(session.createdAt, format: .dateTime.day().month().year()))
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
@@ -87,17 +94,17 @@ struct ScanResultView: View {
         HStack(spacing: Spacing.xxs) {
             ForEach(Chapter.allCases) { item in
                 Button { go(to: item) } label: {
-                    Text(item.title)
-                        .font(.subheadline.weight(.heavy))
+                    Text(item.tab)
+                        .font(.system(.headline, design: .rounded).weight(.heavy))
                         .lineLimit(1)
-                        .minimumScaleFactor(0.7)
                         .padding(.horizontal, Spacing.sm)
                         .frame(maxWidth: .infinity, minHeight: 44)
-                        .foregroundStyle(chapter == item ? Color.black : Color.white)
-                        .background { if chapter == item { Capsule().fill(.white) } }
+                        .foregroundStyle(chapter == item ? Color.ds.canvas : Color.ds.ink)
+                        .background { if chapter == item { Capsule().fill(Color.ds.ink) } }
                         .contentShape(Capsule())
                 }
                 .buttonStyle(.bouncy(0.94))
+                .accessibilityLabel(Text(item.title))
                 .accessibilityAddTraits(chapter == item ? .isSelected : [])
             }
         }
@@ -205,7 +212,7 @@ struct ScanResultView: View {
                 HStack(spacing: Spacing.sm) {
                     Text(GuidanceCopy.zoneName(zone)).font(.ds.callout.weight(.semibold)).frame(minWidth: 96, alignment: .leading)
                     GeometryReader { proxy in
-                        Capsule().fill(.white.opacity(0.12))
+                        Capsule().fill(Color.ds.ink.opacity(0.1))
                             .overlay(alignment: .leading) {
                                 Capsule().fill(Color.ds.band(BreakoutBand.classify(index: value)))
                                     .frame(width: proxy.size.width * CGFloat(value) / CGFloat(maxIndex))

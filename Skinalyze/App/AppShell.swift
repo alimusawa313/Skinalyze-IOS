@@ -8,6 +8,7 @@ struct AppShell: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var capture = ScanCaptureModel()
+    @State private var isKeyboardVisible = false
 
     var body: some View {
         @Bindable var appModel = appModel
@@ -15,7 +16,7 @@ struct AppShell: View {
             page
                 .id(appModel.selectedTab == .search ? AppModel.Tab.products : appModel.selectedTab)
                 .transition(reduceMotion ? .opacity : .opacity.combined(with: .scale(scale: 0.97)))
-            if !appModel.isScanning {
+            if !appModel.isScanning, !isKeyboardVisible {
                 MirrorDock(selection: $appModel.selectedTab)
                     .padding(.bottom, Spacing.xs)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
@@ -24,6 +25,14 @@ struct AppShell: View {
         .animation(MotionToken.bouncy.resolved(reduceMotion: reduceMotion).animation, value: appModel.selectedTab)
         .animation(MotionToken.bouncy.resolved(reduceMotion: reduceMotion).animation, value: appModel.isScanning)
         .onChange(of: appModel.selectedTab) { _, tab in capture.setMirrorVisible(tab == .today) }
+        // The dock steps aside while typing so it never covers search results.
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
+            isKeyboardVisible = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
+            isKeyboardVisible = false
+        }
+        .animation(MotionToken.bouncy.resolved(reduceMotion: reduceMotion).animation, value: isKeyboardVisible)
         .sheet(item: $appModel.presentedScan) { presented in
             NavigationStack {
                 if let session = modelContext.model(for: presented.id) as? ScanSession {
@@ -95,9 +104,9 @@ struct MirrorDock: View {
             }
             .padding(.horizontal, selected ? 18 : 14)
             .frame(minHeight: 48)
-            .foregroundStyle(selected ? Color.black : Color.primary)
+            .foregroundStyle(selected ? Color.ds.canvas : Color.ds.ink)
             .background {
-                if selected { Capsule().fill(.white).matchedGeometryEffect(id: "pill", in: pill) }
+                if selected { Capsule().fill(Color.ds.ink).matchedGeometryEffect(id: "pill", in: pill) }
             }
             .contentShape(Capsule())
         }

@@ -35,7 +35,6 @@ struct DeckView: View {
             .navigationDestination(for: ScanSession.self) { ScanResultView(session: $0) }
             .safeAreaInset(edge: .bottom) { compareBar }
         }
-        .preferredColorScheme(.dark)
         .sheet(item: $comparePair) { pair in
             NavigationStack { CompareView(earlier: pair.earlier, later: pair.later) }
         }
@@ -132,6 +131,10 @@ struct DeckView: View {
     @ViewBuilder private func delta(for scan: ScanSession) -> some View {
         if let previous = scans.first(where: { $0.createdAt < scan.createdAt }) {
             DeltaBadge(delta: scan.breakoutIndex - previous.breakoutIndex)
+                .font(.headline)
+                .padding(Spacing.xxs)
+                .background(.black.opacity(0.6), in: Capsule())
+                .environment(\.colorScheme, .dark) // bright tints on the dark chip, in both modes
                 .padding(Spacing.md)
         }
     }
@@ -197,7 +200,7 @@ private struct DeckTrendLine: View {
             LineMark(x: .value("Date", scan.createdAt), y: .value("Index", scan.breakoutIndex))
                 .interpolationMethod(.catmullRom)
                 .lineStyle(StrokeStyle(lineWidth: 3, lineCap: .round))
-                .foregroundStyle(.white.opacity(0.85))
+                .foregroundStyle(Color.ds.ink.opacity(0.85))
             if scan.persistentModelID == focusedID {
                 PointMark(x: .value("Date", scan.createdAt), y: .value("Index", scan.breakoutIndex))
                     .symbolSize(160)
@@ -206,20 +209,20 @@ private struct DeckTrendLine: View {
         }
         .chartXAxis(.hidden)
         .chartYAxis(.hidden)
-        .shadow(color: .white.opacity(0.5), radius: 6)
+        .shadow(color: Color.ds.ink.opacity(0.35), radius: 6)
         .animation(.spring(duration: 0.4, bounce: 0.4), value: focusedID)
         .accessibilityLabel("Breakout index over time")
         .accessibilityValue(Text(points.map { "\($0.breakoutIndex)" }.joined(separator: ", ")))
     }
 }
 
-/// Black with a mood colour glowing through (Deck focus, scan result) — shifts smoothly when the band changes.
+/// The canvas with a mood colour glowing through (Deck focus, scan result) — shifts smoothly when the band changes.
 struct MoodBackdrop: View {
     let band: BreakoutBand
 
     var body: some View {
         ZStack {
-            Color.black
+            Color.ds.canvas
             RadialGradient(colors: [Color.ds.band(band).opacity(0.5), .clear], center: .center, startRadius: 20, endRadius: 520)
         }
         .ignoresSafeArea()

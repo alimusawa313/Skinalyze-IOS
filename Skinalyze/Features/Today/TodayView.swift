@@ -160,7 +160,7 @@ struct Avatar: View {
     var body: some View {
         Text(name.first.map { String($0).uppercased() } ?? "·")
             .font(.system(.title3, design: .rounded).weight(.heavy))
-            .foregroundStyle(.white)
+            .foregroundStyle(Color.ds.ink)
             .frame(width: 48, height: 48)
             .glassEffect(.regular.interactive(), in: Circle())
     }

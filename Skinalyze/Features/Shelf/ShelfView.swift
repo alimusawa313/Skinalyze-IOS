@@ -42,7 +42,6 @@ struct ShelfView: View {
             .sheet(item: $editingSlot) { ProductPicker(slot: $0) }
             .sheet(isPresented: $showsLabelScanner) { LabelScannerView() }
         }
-        .preferredColorScheme(.dark)
         .onAppear { if appModel.selectedTab == .search { isSearching = true } }
     }
 
@@ -103,7 +102,7 @@ struct ShelfView: View {
                         Image(systemName: "chevron.right").font(.footnote.weight(.bold)).foregroundStyle(.tertiary)
                     }
                     .padding(Spacing.sm)
-                    .background(.white.opacity(0.07), in: RoundedRectangle(cornerRadius: Radius.medium, style: .continuous))
+                    .background(Color.ds.surface.opacity(0.75), in: RoundedRectangle(cornerRadius: Radius.medium, style: .continuous))
                     .contentShape(RoundedRectangle(cornerRadius: Radius.medium, style: .continuous))
                 }
                 .buttonStyle(.bouncy(0.96))
@@ -191,7 +190,7 @@ private struct ShelfTile: View {
 private struct ShelfBackdrop: View {
     var body: some View {
         ZStack {
-            Color.black
+            Color.ds.canvas
             RadialGradient(colors: [Color.ds.band(.mild).opacity(0.35), .clear], center: .topTrailing, startRadius: 0, endRadius: 520)
             RadialGradient(colors: [Color.ds.band(.calm).opacity(0.22), .clear], center: .bottomLeading, startRadius: 0, endRadius: 480)
         }
