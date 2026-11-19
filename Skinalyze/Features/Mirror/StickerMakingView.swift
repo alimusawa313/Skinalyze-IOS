@@ -11,7 +11,7 @@ struct StickerMakingView: View {
     let onDone: () -> Void
 
     enum Phase: Int, Comparable {
-        case photo, lifted, outlined, floating, stuck
+        case photo, lifted, outlined, floating, stuck, filed
         static func < (lhs: Phase, rhs: Phase) -> Bool { lhs.rawValue < rhs.rawValue }
     }
 
@@ -34,6 +34,10 @@ struct StickerMakingView: View {
             }
             .aspectRatio(0.78, contentMode: .fit)
             .padding(.horizontal, Spacing.xl)
+            // Filed: the finished card drops into the Deck (the middle of the dock) before the result opens.
+            .scaleEffect(phase == .filed ? 0.08 : 1, anchor: .bottom)
+            .offset(y: phase == .filed ? Self.fileDrop : 0)
+            .opacity(phase == .filed ? 0 : 1)
             Text(caption)
                 .font(.system(.title2, design: .rounded).weight(.heavy))
                 .foregroundStyle(.white)
@@ -57,7 +61,7 @@ struct StickerMakingView: View {
         }
         .sensoryFeedback(.impact(flexibility: .soft, intensity: 0.6), trigger: phase == .lifted)
         .sensoryFeedback(.impact(weight: .light), trigger: phase == .outlined)
-        .sensoryFeedback(.impact(weight: .heavy), trigger: phase == .stuck)
+        .sensoryFeedback(.impact(weight: .heavy), trigger: phase >= .stuck)
         .accessibilityElement(children: .combine)
     }
 
@@ -70,8 +74,8 @@ struct StickerMakingView: View {
                 .fill(LinearGradient(colors: [Color.ds.band(resultBand ?? .calm), Color.ds.band(resultBand ?? .calm).opacity(0.55)],
                                      startPoint: .topLeading, endPoint: .bottomTrailing))
                 .shadow(color: Color.ds.band(resultBand ?? .calm).opacity(0.5), radius: 24, y: 14)
-                .offset(y: phase == .stuck ? 0 : proxy.size.height * 1.4)
-                .opacity(phase == .stuck ? 1 : 0)
+                .offset(y: phase >= .stuck ? 0 : proxy.size.height * 1.4)
+                .opacity(phase >= .stuck ? 1 : 0)
         }
     }
 
@@ -79,7 +83,7 @@ struct StickerMakingView: View {
         let lifted = phase >= .lifted
         let outlined = phase >= .outlined
         let floating = phase == .floating
-        let stuck = phase == .stuck
+        let stuck = phase >= .stuck
         return ZStack {
             if let photo = art?.photo ?? photo {
                 Image(uiImage: photo).resizable().scaledToFit()
@@ -117,7 +121,7 @@ struct StickerMakingView: View {
         switch phase {
         case .photo, .lifted: String(localized: "Lifting you out…")
         case .outlined, .floating: String(localized: "Reading your skin…")
-        case .stuck: resultBand.map { BandCopy.title($0) } ?? ""
+        case .stuck, .filed: resultBand.map { BandCopy.title($0) } ?? ""
         }
     }
 
@@ -137,6 +141,8 @@ struct StickerMakingView: View {
     }
 
     private static let maxWaitAfterResult: Double = 4
+    /// How far the finished card drops toward the dock when it is filed into the Deck.
+    private static let fileDrop: CGFloat = 220
 
     private func stickIfReady() {
         guard phase == .floating || photo == nil else { return }
@@ -149,7 +155,9 @@ struct StickerMakingView: View {
         didFinish = true
         withAnimation(reduceMotion ? .easeInOut(duration: 0.3) : .spring(duration: 0.55, bounce: 0.3)) { phase = .stuck }
         Task {
-            try? await Task.sleep(for: .seconds(1.3))
+            try? await Task.sleep(for: .seconds(1.0))
+            withAnimation(reduceMotion ? .easeInOut(duration: 0.25) : .spring(duration: 0.5, bounce: 0.15)) { phase = .filed }
+            try? await Task.sleep(for: .seconds(0.5))
             onDone()
         }
     }

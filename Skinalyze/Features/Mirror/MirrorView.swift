@@ -75,6 +75,9 @@ struct MirrorView: View {
                 await ScanReminders.rescheduleIfEnabled()
             }
         }
+        .onChange(of: model.captures.count) { old, new in
+            if new > old { AudioCue.capture() } // shutter sound with every photo
+        }
         .sensoryFeedback(Haptic.capture, trigger: model.captures.count)
         .sensoryFeedback(Haptic.success, trigger: model.state == .finished)
     }

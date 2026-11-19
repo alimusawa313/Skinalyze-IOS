@@ -81,7 +81,7 @@ struct RoutineChecklist: View {
             }
             .pickerStyle(.segmented)
             if steps.isEmpty {
-                Text("Add products below to build your routine.").font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
+                Text("Add products to your shelf to build your routine.").font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
             }
             ForEach(steps) { slot in
                 let done = log.isDone(part: part.rawValue, slot: slot.rawValue)

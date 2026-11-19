@@ -108,30 +108,6 @@ final class ScanCaptureModel {
 
     // MARK: - Lifecycle
 
-    func start() async {
-        guard state == .idle else { return }
-        send(.start)
-        let granted: Bool = switch CameraSession.authorizationStatus() {
-        case .authorized: true
-        case .notDetermined: await CameraSession.requestAccess()
-        default: false
-        }
-        guard granted else {
-            send(.permissionDenied)
-            return
-        }
-        do {
-            try await camera.configure()
-        } catch {
-            Self.logger.error("Camera configuration failed: \(error.localizedDescription)")
-            cameraUnavailable = true
-            return
-        }
-        send(.permissionGranted)
-        camera.start()
-        listenToFrames()
-    }
-
     /// Called when the app leaves/returns to the foreground or the device folds/unfolds: captured angles are kept.
     func pause() {
         camera.stop()
@@ -157,15 +133,6 @@ final class ScanCaptureModel {
         } else {
             camera.stop()
         }
-    }
-
-    func cancel() {
-        frameTask?.cancel()
-        frameTask = nil
-        camera.stop()
-        captures = [:]
-        resetHold()
-        send(.cancel)
     }
 
     // MARK: - Capture
@@ -405,6 +372,7 @@ final class ScanCaptureModel {
 /// Debug builds save each scan's raw inputs (photos + depth maps) to Documents/debug3d so the 3D pipeline can be
 /// developed and verified offline on real captures before anything ships. Never compiled into release builds.
 enum Debug3DDump {
+    static let maximumDumps = 3
     static func write(captures: [CaptureAngle: UIImage], depths: [CaptureAngle: DepthMap], frontFace: ImageRect?) {
         let stamp = ISO8601DateFormatter().string(from: .now).replacingOccurrences(of: ":", with: "-")
         Task.detached(priority: .utility) {
@@ -428,6 +396,10 @@ enum Debug3DDump {
                         .write(to: folder.appendingPathComponent("frontFace.txt"))
                 }
                 print("[scan] debug3d dump:", folder.lastPathComponent, "depths:", depths.keys.map(\.rawValue).sorted())
+                // Keep only the most recent dumps (each is several megabytes).
+                let root = folder.deletingLastPathComponent()
+                let all = (try? FileManager.default.contentsOfDirectory(at: root, includingPropertiesForKeys: nil))?.sorted { $0.lastPathComponent > $1.lastPathComponent } ?? []
+                for old in all.dropFirst(maximumDumps) { try? FileManager.default.removeItem(at: old) }
             } catch {
                 print("[scan] debug3d dump failed:", error.localizedDescription)
             }

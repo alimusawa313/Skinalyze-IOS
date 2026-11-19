@@ -13,7 +13,13 @@ struct DeckView: View {
     @State private var focusedID: PersistentIdentifier?
     @State private var isPicking = false
     @State private var picked: [ScanSession] = []
-    @State private var comparePair: ScanTimelineView.ComparePair?
+    @State private var comparePair: ComparePair?
+
+    struct ComparePair: Identifiable {
+        let earlier: ScanSession
+        let later: ScanSession
+        var id: String { "\(earlier.id)-\(later.id)" }
+    }
     @ScaledMetric(relativeTo: .largeTitle) private var titleSize: CGFloat = 54
 
     private var focused: ScanSession? { scans.first { $0.persistentModelID == focusedID } ?? scans.first }

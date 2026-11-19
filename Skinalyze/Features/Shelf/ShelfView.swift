@@ -25,6 +25,7 @@ struct ShelfView: View {
                     searchBar
                     if query.isEmpty {
                         tiles
+                        RoutineChecklist()
                     } else {
                         resultList
                     }

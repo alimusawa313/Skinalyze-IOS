@@ -20,3 +20,6 @@ xcodebuild -project "$ROOT/Skinalyze.xcodeproj" -scheme Skinalyze \
 
 echo "▶ Copy lint (gate)"
 python3 -I "$ROOT/scripts/lint_copy.py" "$ROOT/Skinalyze" "$ROOT/SkinalyzeKit/Sources"
+
+echo "▶ String catalog complete in Indonesian (gate)"
+"$ROOT/scripts/check_strings.sh" "$SIMULATOR"

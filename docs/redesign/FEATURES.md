@@ -183,7 +183,7 @@ holo styles, extra streak freezes and repair, all of Skin School, premium Pimpi 
 - [x] Face ID-style scan, calibrated on device; full side profile accepted.
 - [x] Die-cut holo sticker cards + photo → sticker → card moment after each scan.
 - [x] Real TrueDepth 3D: front + side captures fused into one head with real sides (`dd5b8ea`); viewer turns as far
-  as each side was captured. **Awaiting the owner's on-device check of the fused scan.**
+  as each side was captured. Confirmed working on the owner's phone (2026-11-19).
 - [x] Tappable spot pins; eye-aligned Compare.
 - [x] Product Check ("Is it good for me?"), share extension, label scanner, widgets, intents.
 - [x] Pimpi character (`1095516`).

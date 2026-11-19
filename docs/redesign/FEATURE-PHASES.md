@@ -19,24 +19,28 @@ These come from mistakes already made on this project; they are the definition o
 4. **Camera, depth, motion, notifications, purchases, widgets on the lock screen** cannot be proven in the
    Simulator — they are marked "needs owner's phone" and are not called done until the owner confirms.
 5. Full suite green (kit + app unit + UI), copy lint at 0, then install, then commit locally. **Never push.**
-6. Every new string ships in English and Indonesian.
+6. Every new string ships in English and Indonesian — `scripts/check_strings.sh` must pass.
 7. CloudKit schema changes are additive only (new optional fields / new models; never rename or delete).
 
 ---
 
-## Phase 0 — Close out what is open  ☐
+## Phase 0 — Close out what is open  ☑ (2026-11-19)
 
 **Why first:** new features should not be stacked on unconfirmed work.
 
-- Owner confirms the fused 3D scan (real sides) on the phone; fix whatever that shows.
-- "Card flies into the Deck" after a scan (open item from the V2 spec) — or drop it deliberately.
-- Delete dead V1 screens (`TodayView`, `SearchView`, the old `ScanTimelineView` grid, `ScanFlowView`'s capture
-  screen) — keeping the shared pieces they still host (`CardPressStyle`, `Avatar`, review screen, `TrendChart`).
-- Remove the debug-only raw 3D dump once the 3D is confirmed (or keep it behind a hidden debug switch).
-- Indonesian for every string added since the redesign.
+- [x] Owner confirmed the fused 3D scan (real sides) works on the phone.
+- [x] The finished card now drops into the Deck after the sticker sticks, then the result opens.
+- [x] Dead V1 screens deleted (Today, Search, the old timeline grid, the old capture screen). The pieces still in
+  use moved to their own files: `ScanScreens.swift` (review, messages, shutter sound), `TrendChart.swift`,
+  `Avatar.swift`, `ProductDetailView.swift`.
+- [x] Two things the redesign had dropped by accident are back: the shutter sound on each capture, and the daily
+  routine check-off (now on the Shelf).
+- [x] Indonesian for **every** string, not only the new ones: the catalog went from 101 to 328 strings (321
+  translated, 7 marked do-not-translate). `scripts/check_strings.sh` extracts strings with the compiler, syncs the
+  catalog and fails if any lacks Indonesian; it runs as part of `scripts/test.sh`.
+- [x] The debug-only raw 3D dump stays (debug builds only) but keeps just the three most recent scans.
 
-**Done when:** owner has confirmed the 3D on device; no unused screens remain; suite green.
-**Needs from owner:** one scan with a real turn each way, and a yes/no on the result.
+**Still open from this phase:** nothing.
 
 ---
 

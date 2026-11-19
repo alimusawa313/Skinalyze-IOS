@@ -1,1016 +1,3291 @@
 {
-  "sourceLanguage": "en",
-  "version": "1.0",
-  "strings": {
-    "%lld products in your routine": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld produk dalam rutinitasmu"
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ on %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ on %2$@"
           }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ di %2$@"
+          }
+        }
+      }
+    },
+    "%@ photo" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto %@"
+          }
+        }
+      }
+    },
+    "%@ · breakout index" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · indeks jerawat"
+          }
+        }
+      }
+    },
+    "%lld" : {
+      "shouldTranslate" : false
+    },
+    "%lld %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld %2$@"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "%lld percent earlier photo" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld persen foto sebelumnya"
+          }
+        }
+      }
+    },
+    "%lld products in your routine" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld produk dalam rutinitasmu"
+          }
+        }
+      }
+    },
+    "%lld · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld · %2$@"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "%lld → %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld → %2$lld"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "%lld-day streak" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld hari berturut-turut"
+          }
+        }
+      }
+    },
+    "%lld/3" : {
+      "shouldTranslate" : false
+    },
+    "1. No data collection by Skinalyze" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Skinalyze tidak mengumpulkan data"
+          }
+        }
+      }
+    },
+    "2. Data handling and storage" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. Pengelolaan dan penyimpanan data"
+          }
+        }
+      }
+    },
+    "3. Facial data" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3. Data wajah"
+          }
+        }
+      }
+    },
+    "3D scan captured" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindaian 3D tersimpan"
+          }
+        }
+      }
+    },
+    "3D view" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tampilan 3D"
+          }
+        }
+      }
+    },
+    "4. Product images" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4. Gambar produk"
+          }
+        }
+      }
+    },
+    "5. Data sharing" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5. Berbagi data"
+          }
+        }
+      }
+    },
+    "6. Your rights" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "6. Hak kamu"
+          }
+        }
+      }
+    },
+    "7. Cookies and tracking" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7. Cookie dan pelacakan"
+          }
+        }
+      }
+    },
+    "8. Changes" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "8. Perubahan"
+          }
+        }
+      }
+    },
+    "9. Contact" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "9. Kontak"
+          }
+        }
+      }
+    },
+    "A BHA that helps keep pores clear and reduce excess oil." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BHA yang membantu menjaga pori tetap bersih dan mengurangi minyak berlebih."
+          }
+        }
+      }
+    },
+    "A common cause of irritation, especially for sensitive skin." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Penyebab iritasi yang umum, terutama untuk kulit sensitif."
+          }
+        }
+      }
+    },
+    "A few spots are active. Small changes add up — keep tracking." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ada beberapa titik yang aktif. Perubahan kecil itu berarti — terus pantau."
+          }
+        }
+      }
+    },
+    "A harsh cleanser that strips natural oils." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pembersih keras yang mengikis minyak alami kulit."
+          }
+        }
+      }
+    },
+    "A humectant that helps skin hold water." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Humektan yang membantu kulit menahan air."
+          }
+        }
+      }
+    },
+    "A light oil that moisturises without heaviness." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minyak ringan yang melembapkan tanpa terasa berat."
+          }
+        }
+      }
+    },
+    "A little more active than usual. One scan isn't a trend — check again in a few days." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sedikit lebih aktif dari biasanya. Satu pindaian belum jadi tren — cek lagi beberapa hari lagi."
+          }
+        }
+      }
+    },
+    "A lot is active right now. If it's painful or persistent, a dermatologist can help." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Banyak yang aktif saat ini. Jika terasa sakit atau tidak kunjung hilang, dokter kulit bisa membantu."
+          }
+        }
+      }
+    },
+    "A one-minute scan, private to your phone. Track breakouts by face zone and see which products actually help." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindai satu menit, tersimpan pribadi di ponselmu. Pantau jerawat per area wajah dan lihat produk mana yang benar-benar membantu."
+          }
+        }
+      }
+    },
+    "AHAs" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AHA"
+          }
+        }
+      }
+    },
+    "Active" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktif"
+          }
+        }
+      }
+    },
+    "Add products to your shelf to build your routine." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambahkan produk ke rakmu untuk menyusun rutinitas."
+          }
+        }
+      }
+    },
+    "Add yours" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambahkan punyamu"
+          }
+        }
+      }
+    },
+    "Added fragrance" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pewangi tambahan"
+          }
+        }
+      }
+    },
+    "An antioxidant that brightens." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antioksidan yang mencerahkan."
+          }
+        }
+      }
+    },
+    "An antioxidant that soothes." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antioksidan yang menenangkan."
+          }
+        }
+      }
+    },
+    "Analyse my skin" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analisis kulitku"
+          }
+        }
+      }
+    },
+    "Angle" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sudut"
+          }
+        }
+      }
+    },
+    "Back" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kembali"
+          }
+        }
+      }
+    },
+    "Back to mirror" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kembali ke cermin"
+          }
+        }
+      }
+    },
+    "Balanced most days." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seimbang hampir setiap hari."
+          }
+        }
+      }
+    },
+    "Balances oilier and drier areas." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menyeimbangkan area yang lebih berminyak dan lebih kering."
+          }
+        }
+      }
+    },
+    "Based on your skin profile and recent scans. General information, not medical advice." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berdasarkan profil kulit dan pindaian terbarumu. Informasi umum, bukan saran medis."
+          }
+        }
+      }
+    },
+    "Before and after comparison" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perbandingan sebelum dan sesudah"
+          }
+        }
+      }
+    },
+    "Blackheads" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Komedo hitam"
+          }
+        }
+      }
+    },
+    "Breakout index" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indeks jerawat"
+          }
+        }
+      }
+    },
+    "Breakout index over time" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indeks jerawat dari waktu ke waktu"
+          }
+        }
+      }
+    },
+    "Breakout index · %@" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indeks jerawat · %@"
+          }
+        }
+      }
+    },
+    "Bring your face into the frame" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posisikan wajah di dalam bingkai"
+          }
+        }
+      }
+    },
+    "By type" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per jenis"
+          }
+        }
+      }
+    },
+    "By zone" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per area"
+          }
+        }
+      }
+    },
+    "Calm" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tenang"
+          }
+        }
+      }
+    },
+    "Calmer than your last scan. Keep going." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lebih tenang dari pindaian sebelumnya. Lanjutkan."
+          }
+        }
+      }
+    },
+    "Camera access is off" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akses kamera nonaktif"
+          }
+        }
+      }
+    },
+    "Camera preview" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pratinjau kamera"
+          }
+        }
+      }
+    },
+    "Camera unavailable" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamera tidak tersedia"
+          }
+        }
+      }
+    },
+    "Camera unavailable — scan on a real iPhone." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamera tidak tersedia — pindai di iPhone sungguhan."
+          }
+        }
+      }
+    },
+    "Can feel heavy on oilier areas." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bisa terasa berat di area yang lebih berminyak."
+          }
+        }
+      }
+    },
+    "Can make dry skin feel tighter." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bisa membuat kulit kering terasa makin tertarik."
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batal"
+          }
+        }
+      }
+    },
+    "Cancel scan" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batalkan pindaian"
+          }
+        }
+      }
+    },
+    "Center your face in the outline" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posisikan wajah di tengah garis"
+          }
+        }
+      }
+    },
+    "Changed" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perubahan"
+          }
+        }
+      }
+    },
+    "Check a label" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cek label"
+          }
+        }
+      }
+    },
+    "Check ingredients" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cek kandungan"
+          }
+        }
+      }
+    },
+    "Check my products" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cek produkku"
+          }
+        }
+      }
+    },
+    "Checks an ingredient list against your skin profile and recent scans." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mencocokkan daftar kandungan dengan profil kulit dan pindaian terbarumu."
+          }
+        }
+      }
+    },
+    "Chin" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dagu"
+          }
+        }
+      }
+    },
+    "Cleanser" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pembersih"
+          }
+        }
+      }
+    },
+    "Clear search" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hapus pencarian"
+          }
+        }
+      }
+    },
+    "Close" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tutup"
+          }
+        }
+      }
+    },
+    "Closed, clogged pores that sit just under the surface." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pori tertutup dan tersumbat yang berada tepat di bawah permukaan kulit."
+          }
+        }
+      }
+    },
+    "Coconut oil" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minyak kelapa"
+          }
+        }
+      }
+    },
+    "Combination" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kombinasi"
+          }
+        }
+      }
+    },
+    "Compare" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bandingkan"
+          }
+        }
+      }
+    },
+    "Compare these two" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bandingkan keduanya"
+          }
+        }
+      }
+    },
+    "Contains fragrance or essential oils, which often sting sensitive skin." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mengandung pewangi atau minyak esensial, yang sering terasa perih di kulit sensitif."
+          }
+        }
+      }
+    },
+    "Continue" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lanjut"
+          }
+        }
+      }
+    },
+    "Create PDF" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buat PDF"
+          }
+        }
+      }
+    },
+    "Creates a PDF of your last %lld scans — the trend, per-zone changes and the products you used. It stays on your phone until you share it." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membuat PDF dari %lld pindaian terakhirmu — tren, perubahan per area, dan produk yang kamu pakai. Tetap di ponselmu sampai kamu membagikannya."
+          }
+        }
+      }
+    },
+    "Dark spots" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noda gelap"
+          }
+        }
+      }
+    },
+    "Date" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanggal"
+          }
+        }
+      }
+    },
+    "Daylight makes scans more consistent — face a window for best results." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cahaya siang membuat pindaian lebih konsisten — menghadap jendela untuk hasil terbaik."
+          }
+        }
+      }
+    },
+    "Deck" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dek"
+          }
+        }
+      }
+    },
+    "Delete all %lld scans?" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hapus semua %lld pindaian?"
+          }
+        }
+      }
+    },
+    "Delete all scans" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hapus semua pindaian"
+          }
+        }
+      }
+    },
+    "Delete scan" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hapus pindaian"
+          }
+        }
+      }
+    },
+    "Does it sting or redden with new products?" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apakah terasa perih atau memerah saat memakai produk baru?"
+          }
+        }
+      }
+    },
+    "Done" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selesai"
+          }
+        }
+      }
+    },
+    "Drag to turn · pinch to zoom · double-tap to reset" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geser untuk memutar · cubit untuk zoom · ketuk dua kali untuk reset"
+          }
+        }
+      }
+    },
+    "Draws moisture into the skin." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menarik kelembapan ke dalam kulit."
+          }
+        }
+      }
+    },
+    "Dry" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kering"
+          }
+        }
+      }
+    },
+    "Drying alcohol" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alkohol yang mengeringkan"
+          }
+        }
+      }
+    },
+    "Earlier" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sebelumnya"
+          }
+        }
+      }
+    },
+    "Evening" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Malam"
+          }
+        }
+      }
+    },
+    "Every %lld days" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setiap %lld hari"
+          }
+        }
+      }
+    },
+    "Export" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekspor"
+          }
+        }
+      }
+    },
+    "Export for your dermatologist" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekspor untuk dokter kulitmu"
+          }
+        }
+      }
+    },
+    "Face photos (and, on iPhones with Face ID, face-shape data used for the 3D view) are used only for skin tracking inside the app. They are never shared, uploaded to us, or used for advertising." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto wajah (dan, di iPhone dengan Face ID, data bentuk wajah untuk tampilan 3D) hanya digunakan untuk memantau kulit di dalam aplikasi. Tidak pernah dibagikan, diunggah ke kami, atau dipakai untuk iklan."
+          }
+        }
+      }
+    },
+    "Fade dark marks" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Samarkan noda gelap"
+          }
+        }
+      }
+    },
+    "Feels tight, can flake." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terasa tertarik, bisa mengelupas."
+          }
+        }
+      }
+    },
+    "Fewer breakouts" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lebih sedikit jerawat"
+          }
+        }
+      }
+    },
+    "Find softer, brighter light — try facing a window" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cari cahaya yang lebih terang dan lembut — coba hadap ke jendela"
+          }
+        }
+      }
+    },
+    "Flared" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meradang"
+          }
+        }
+      }
+    },
+    "Focus" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fokus"
+          }
+        }
+      }
+    },
+    "For %@ skin" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untuk kulit %@"
+          }
+        }
+      }
+    },
+    "Forehead" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dahi"
+          }
+        }
+      }
+    },
+    "Front" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Depan"
+          }
+        }
+      }
+    },
+    "Generated %@. Not a medical document; visible-change tracking only." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dibuat %@. Bukan dokumen medis; hanya pemantauan perubahan yang terlihat."
+          }
+        }
+      }
+    },
+    "Gentle exfoliation for uneven texture." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksfoliasi lembut untuk tekstur yang tidak rata."
+          }
+        }
+      }
+    },
+    "Get started" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mulai"
+          }
+        }
+      }
+    },
+    "Go easy for your skin type" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gunakan secukupnya untuk jenis kulitmu"
+          }
+        }
+      }
+    },
+    "Go easy on" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batasi"
+          }
+        }
+      }
+    },
+    "Good for your skin type" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cocok untuk jenis kulitmu"
+          }
+        }
+      }
+    },
+    "Good match" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cocok"
+          }
+        }
+      }
+    },
+    "Green tea extract" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekstrak teh hijau"
+          }
+        }
+      }
+    },
+    "Has an ingredient many people use for active breakouts." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Punya kandungan yang banyak dipakai orang saat jerawat sedang aktif."
+          }
+        }
+      }
+    },
+    "Has pore-clogging oils, which tend to worsen blackheads and whiteheads." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Punya minyak yang menyumbat pori, yang cenderung memperbanyak komedo hitam dan putih."
+          }
+        }
+      }
+    },
+    "Hello" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halo"
+          }
+        }
+      }
+    },
+    "Hello, %@" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halo, %@"
+          }
+        }
+      }
+    },
+    "Helps" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membantu"
+          }
+        }
+      }
+    },
+    "Helps balance oil and refine the look of pores." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membantu menyeimbangkan minyak dan menyamarkan tampilan pori."
+          }
+        }
+      }
+    },
+    "Hey, %@." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hai, %@."
+          }
+        }
+      }
+    },
+    "Hey." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hai."
+          }
+        }
+      }
+    },
+    "High in drying alcohol or harsh cleansers, which can leave dry skin tight." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tinggi alkohol yang mengeringkan atau pembersih keras, yang bisa membuat kulit kering terasa tertarik."
+          }
+        }
+      }
+    },
+    "Hold still" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tahan posisi"
+          }
+        }
+      }
+    },
+    "Hold still — 3D scan…" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tahan sebentar — pindai 3D…"
+          }
+        }
+      }
+    },
+    "Hold still…" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tahan posisi…"
+          }
+        }
+      }
+    },
+    "Hold the ingredient list steady inside the frame." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tahan daftar kandungan agar stabil di dalam bingkai."
+          }
+        }
+      }
+    },
+    "Holding steady compared with your recent scans." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stabil dibanding pindaian terbarumu."
+          }
+        }
+      }
+    },
+    "How does your skin usually feel?" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bagaimana kulitmu biasanya terasa?"
+          }
+        }
+      }
+    },
+    "How sensitive is your skin?" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seberapa sensitif kulitmu?"
+          }
+        }
+      }
+    },
+    "Hydrates and plumps." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menghidrasi dan membuat kulit tampak kenyal."
+          }
+        }
+      }
+    },
+    "Hydrating, barrier-friendly basics." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kandungan dasar yang menghidrasi dan ramah untuk lapisan pelindung kulit."
+          }
+        }
+      }
+    },
+    "Hydration that isn't too heavy." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hidrasi yang tidak terlalu berat."
+          }
+        }
+      }
+    },
+    "Includes ingredients suited to %@ skin." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mengandung bahan yang cocok untuk kulit %@."
+          }
+        }
+      }
+    },
+    "Index" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indeks"
+          }
+        }
+      }
+    },
+    "Index %lld · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Index %1$lld · %2$@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indeks %lld · %@"
+          }
+        }
+      }
+    },
+    "Ingredient suggestions are general information from these sources, not medical advice." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saran kandungan adalah informasi umum dari sumber-sumber ini, bukan saran medis."
+          }
+        }
+      }
+    },
+    "Ingredients" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kandungan"
+          }
+        }
+      }
+    },
+    "Insight" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wawasan"
+          }
+        }
+      }
+    },
+    "Is it good for me?" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cocok buatku?"
+          }
+        }
+      }
+    },
+    "Is it good for you?" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cocok untukmu?"
+          }
+        }
+      }
+    },
+    "It's been %lld days since your last scan — a quick check keeps the trend honest." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sudah %lld hari sejak pindaian terakhirmu — cek sebentar supaya trennya tetap akurat."
+          }
+        }
+      }
+    },
+    "Keep your head level" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jaga kepala tetap lurus"
+          }
+        }
+      }
+    },
+    "Larger, deeper, firm bumps under the skin. If they hurt or linger, consider seeing a dermatologist." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benjolan yang lebih besar, lebih dalam, dan keras di bawah kulit. Jika terasa sakit atau tidak kunjung hilang, pertimbangkan menemui dokter kulit."
+          }
+        }
+      }
+    },
+    "Later" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesudahnya"
+          }
+        }
+      }
+    },
+    "Latest scan" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindaian terbaru"
+          }
+        }
+      }
+    },
+    "Left cheek" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pipi kiri"
+          }
+        }
+      }
+    },
+    "Left jaw" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rahang kiri"
+          }
+        }
+      }
+    },
+    "Let's meet your skin." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yuk kenali kulitmu."
+          }
+        }
+      }
+    },
+    "Lifting you out…" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mengangkat fotomu…"
+          }
+        }
+      }
+    },
+    "Lightweight hydration without heaviness." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hidrasi ringan tanpa terasa berat."
+          }
+        }
+      }
+    },
+    "Lined up by your eyes" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disejajarkan berdasarkan matamu"
+          }
+        }
+      }
+    },
+    "Live label scanning isn't available here. Paste the ingredient list instead." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pemindaian label langsung tidak tersedia di sini. Tempel daftar kandungannya saja."
+          }
+        }
+      }
+    },
+    "Lock with Face ID" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunci dengan Face ID"
+          }
+        }
+      }
+    },
+    "Lock with Optic ID" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunci dengan Optic ID"
+          }
+        }
+      }
+    },
+    "Lock with Touch ID" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunci dengan Touch ID"
+          }
+        }
+      }
+    },
+    "Lock with passcode" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunci dengan kode sandi"
+          }
+        }
+      }
+    },
+    "Look at me." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lihat ke sini."
+          }
+        }
+      }
+    },
+    "Look for" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cari kandungan"
+          }
         }
       }
     },
-    "Active": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aktif"
+    "Look straight at the camera" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lihat lurus ke kamera"
           }
         }
       }
     },
-    "Analyse my skin": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Analisis kulitku"
+    "Looking good" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sudah bagus"
           }
         }
       }
     },
-    "Blackheads": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Komedo hitam"
+    "Marks left behind after spots heal or from sun exposure. They fade over time." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bekas yang tertinggal setelah jerawat pulih atau akibat paparan matahari. Akan memudar seiring waktu."
           }
         }
       }
     },
-    "Breakout index": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Indeks jerawat"
+    "Mild" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ringan"
           }
         }
       }
     },
-    "Bring your face into the frame": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Posisikan wajah di dalam bingkai"
+    "Mineral oil" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minyak mineral"
           }
         }
       }
     },
-    "By type": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Per jenis"
+    "Mirror" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cermin"
           }
         }
       }
     },
-    "By zone": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Per area"
+    "Moisturizer" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pelembap"
           }
         }
       }
     },
-    "Calm": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tenang"
+    "Morning" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pagi"
           }
         }
       }
     },
-    "Calmer than your last scan. Keep going.": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lebih tenang dari pindaian sebelumnya. Lanjutkan."
+    "Move a little closer" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mendekat sedikit"
           }
         }
       }
     },
-    "Camera access is off": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Akses kamera nonaktif"
+    "Move back a little" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mundur sedikit"
           }
         }
       }
     },
-    "Camera unavailable": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kamera tidak tersedia"
+    "My skin trend" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tren kulitku"
           }
         }
       }
     },
-    "Cancel": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Batal"
+    "Name" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nama"
           }
         }
       }
     },
-    "Center your face in the outline": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Posisikan wajah di tengah garis"
+    "Name, brand or ingredient" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nama, merek, atau kandungan"
           }
         }
       }
     },
-    "Check a label": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cek label"
+    "No change" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada perubahan"
           }
         }
       }
     },
-    "Check my products": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cek produkku"
+    "No clear change since starting." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belum ada perubahan jelas sejak mulai memakai."
           }
         }
       }
     },
-    "Chin": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dagu"
+    "No ingredient list for this product yet." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belum ada daftar kandungan untuk produk ini."
           }
         }
       }
     },
-    "Close": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tutup"
+    "No scans yet. Say “Start a skin scan in Skinalyze” to begin." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belum ada pindaian. Ucapkan “Mulai pindai kulit di Skinalyze” untuk memulai."
           }
         }
       }
     },
-    "Combination": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kombinasi"
+    "Nodules" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nodul"
           }
         }
       }
     },
-    "Compare": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bandingkan"
+    "Normal" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normal"
           }
         }
       }
     },
-    "Compare these two": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bandingkan keduanya"
+    "Nose" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hidung"
           }
         }
       }
     },
-    "Continue": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lanjut"
+    "Not done" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belum selesai"
           }
         }
       }
     },
-    "Dark spots": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Noda gelap"
+    "Not enough info" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Info belum cukup"
           }
         }
       }
     },
-    "Delete all scans": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hapus semua pindaian"
+    "Not now" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nanti saja"
           }
         }
       }
     },
-    "Done": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Selesai"
+    "Nothing on the shelf matches “%@”. Try a label scan." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada di rak yang cocok dengan “%@”. Coba pindai labelnya."
           }
         }
       }
     },
-    "Dry": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kering"
+    "Nothing stood out in this scan." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada yang menonjol di pindaian ini."
           }
         }
       }
     },
-    "Fade dark marks": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Samarkan noda gelap"
+    "Noticed" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temuan"
           }
         }
       }
     },
-    "Fewer breakouts": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lebih sedikit jerawat"
+    "Now the other way." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sekarang ke arah sebaliknya."
           }
         }
       }
     },
-    "Find softer, brighter light — try facing a window": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cari cahaya yang lebih terang dan lembut — coba hadap ke jendela"
+    "Often used in oil-control routines." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sering dipakai dalam rutinitas pengontrol minyak."
           }
         }
       }
     },
-    "Flared": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Meradang"
+    "Oily" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berminyak"
           }
         }
       }
     },
-    "Forehead": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dahi"
+    "Oily T-zone, drier cheeks." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zona T berminyak, pipi lebih kering."
           }
         }
       }
     },
-    "Front": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Depan"
+    "Open Settings" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka Pengaturan"
           }
         }
       }
     },
-    "Get started": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mulai"
+    "Open Skinalyze once to set up your skin profile." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka Skinalyze sekali untuk menyiapkan profil kulitmu."
           }
         }
       }
     },
-    "Go easy on": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Batasi"
+    "Open pores filled with oil and dead skin; the dark colour is oxidation, not dirt." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pori terbuka yang terisi minyak dan sel kulit mati; warna gelapnya karena oksidasi, bukan kotoran."
           }
         }
       }
     },
-    "Good match": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cocok"
+    "Opens Skinalyze straight into a three-angle face scan." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membuka Skinalyze langsung ke pemindaian wajah tiga sudut."
           }
         }
       }
     },
-    "Hello": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Halo"
+    "Opens your latest scan" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membuka pindaian terbarumu"
           }
         }
       }
     },
-    "Hello, %@": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Halo, %@"
+    "Optional — used only for greetings on this phone." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opsional — hanya dipakai untuk sapaan di ponsel ini."
           }
         }
       }
     },
-    "Hold still": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tahan posisi"
+    "Other things change too — think of this as a clue, not proof." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hal lain juga ikut berubah — anggap ini petunjuk, bukan bukti."
           }
         }
       }
     },
-    "Hold still…": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tahan posisi…"
+    "Papules" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Papula"
           }
         }
       }
     },
-    "How does your skin usually feel?": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bagaimana kulitmu biasanya terasa?"
+    "Parabens" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paraben"
           }
         }
       }
     },
-    "How sensitive is your skin?": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Seberapa sensitif kulitmu?"
+    "Peptides" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peptida"
           }
         }
       }
     },
-    "Insight": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wawasan"
+    "Photo analysis happens on your device; your data never leaves it during analysis. Saved scans and products are stored in your personal iCloud account via CloudKit, which Skinalyze cannot access." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analisis foto dilakukan di perangkatmu; datamu tidak pernah keluar selama analisis. Pindaian dan produk yang disimpan berada di akun iCloud pribadimu melalui CloudKit, yang tidak bisa diakses Skinalyze."
           }
         }
       }
     },
-    "Is it good for you?": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cocok untukmu?"
+    "Photos are analysed on this iPhone. Saved scans stay on your device and your own iCloud — never on our servers." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto dianalisis di iPhone ini. Pindaian yang disimpan tetap di perangkatmu dan iCloud milikmu — tidak pernah di server kami."
           }
         }
       }
     },
-    "Keep your head level": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Jaga kepala tetap lurus"
+    "Pick %lld more" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih %lld lagi"
           }
         }
       }
     },
-    "Latest scan": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pindaian terbaru"
+    "Pick any — you can change this later." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih yang mana saja — bisa diubah nanti."
           }
         }
       }
     },
-    "Left cheek": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pipi kiri"
+    "Pick your %@" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih %@ milikmu"
           }
         }
       }
     },
-    "Left jaw": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rahang kiri"
+    "Pimpi" : {
+      "shouldTranslate" : false
+    },
+    "Preservatives some people prefer to avoid; can irritate sensitive skin." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pengawet yang dihindari sebagian orang; bisa mengiritasi kulit sensitif."
+          }
+        }
+      }
+    },
+    "Privacy & data" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privasi & data"
+          }
+        }
+      }
+    },
+    "Privacy policy" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kebijakan privasi"
+          }
+        }
+      }
+    },
+    "Private by design" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privat sejak awal"
+          }
+        }
+      }
+    },
+    "Probably not for you" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mungkin kurang cocok"
+          }
+        }
+      }
+    },
+    "Product photos are loaded from public product pages when you browse products. No personal data or scan data is sent with these requests." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto produk dimuat dari halaman produk publik saat kamu melihat produk. Tidak ada data pribadi atau data pindaian yang dikirim bersama permintaan ini."
+          }
+        }
+      }
+    },
+    "Products" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produk"
+          }
+        }
+      }
+    },
+    "Profile" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profil"
+          }
+        }
+      }
+    },
+    "Profile and settings" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profil dan pengaturan"
+          }
+        }
+      }
+    },
+    "Pustules" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pustula"
+          }
+        }
+      }
+    },
+    "Questions? Email skinalyze.id@gmail.com" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ada pertanyaan? Email skinalyze.id@gmail.com"
+          }
+        }
+      }
+    },
+    "Raised spots with a white or yellow centre, often with redness around them." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Titik menonjol dengan bagian tengah putih atau kuning, sering disertai kemerahan di sekitarnya."
+          }
+        }
+      }
+    },
+    "Read the privacy policy" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baca kebijakan privasi"
+          }
+        }
+      }
+    },
+    "Reading your skin…" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membaca kulitmu…"
+          }
+        }
+      }
+    },
+    "Retake %@" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ulangi %@"
+          }
+        }
+      }
+    },
+    "Retake any angle, or analyse now." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ulangi sudut mana pun, atau analisis sekarang."
+          }
+        }
+      }
+    },
+    "Rich and pore-clogging for many oily skin types." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terlalu kaya dan menyumbat pori bagi banyak jenis kulit berminyak."
+          }
+        }
+      }
+    },
+    "Right cheek" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pipi kanan"
+          }
+        }
+      }
+    },
+    "Right jaw" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rahang kanan"
+          }
+        }
+      }
+    },
+    "Routine" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rutinitas"
+          }
+        }
+      }
+    },
+    "Routine changes in between" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perubahan rutinitas di antaranya"
+          }
+        }
+      }
+    },
+    "Same" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sama"
+          }
+        }
+      }
+    },
+    "Saved with an earlier version — counts are shown as recorded." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disimpan dengan versi sebelumnya — jumlah ditampilkan sesuai catatan."
+          }
+        }
+      }
+    },
+    "Scan %lld more times to unlock trends." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindai %lld kali lagi untuk membuka tren."
+          }
+        }
+      }
+    },
+    "Scan 1 more time to unlock trends." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindai 1 kali lagi untuk membuka tren."
+          }
+        }
+      }
+    },
+    "Scan a label" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindai label"
+          }
+        }
+      }
+    },
+    "Scan from %@, breakout index %lld, %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Scan from %1$@, breakout index %2$lld, %3$@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindaian %1$@, indeks jerawat %2$lld, %3$@"
+          }
+        }
+      }
+    },
+    "Scan my skin" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindai kulitku"
+          }
+        }
+      }
+    },
+    "Scan photo with %lld spots marked." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto pindaian dengan %lld titik ditandai."
+          }
+        }
+      }
+    },
+    "Scan photo. No spots marked." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto pindaian. Tidak ada titik yang ditandai."
+          }
+        }
+      }
+    },
+    "Scan reminders" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pengingat pindai"
+          }
+        }
+      }
+    },
+    "Scanning, %lld of 3 photos" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memindai, %lld dari 3 foto"
+          }
+        }
+      }
+    },
+    "Scans stay on this iPhone and in your own iCloud. %lld scans saved." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindaian tetap di iPhone ini dan iCloud milikmu. %lld pindaian tersimpan."
+          }
+        }
+      }
+    },
+    "Search" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cari"
+          }
+        }
+      }
+    },
+    "See how your skin is changing" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lihat bagaimana kulitmu berubah"
+          }
+        }
+      }
+    },
+    "Sensitivity" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sensitivitas"
+          }
+        }
+      }
+    },
+    "Several spots are active. Watch how this zone changes over the next scans." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beberapa titik sedang aktif. Perhatikan perubahan area ini di pindaian berikutnya."
+          }
+        }
+      }
+    },
+    "Share PDF" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bagikan PDF"
+          }
+        }
+      }
+    },
+    "Shelf" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rak"
+          }
+        }
+      }
+    },
+    "Shiny by midday, visible pores." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mengilap di siang hari, pori terlihat."
+          }
+        }
+      }
+    },
+    "Show my skin trend" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tampilkan tren kulitku"
+          }
+        }
+      }
+    },
+    "Shows what this spot is" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menampilkan keterangan titik ini"
+          }
+        }
+      }
+    },
+    "Since starting, breakouts are down %lld%%. Other changes may also play a part." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sejak mulai memakai, jerawat turun %lld%%. Perubahan lain mungkin juga berpengaruh."
+          }
+        }
+      }
+    },
+    "Since starting, breakouts are up %lld%%. Worth watching — many things affect skin." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sejak mulai memakai, jerawat naik %lld%%. Perlu dipantau — banyak hal memengaruhi kulit."
+          }
+        }
+      }
+    },
+    "Skin looks calmer than your recent scans." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kulit tampak lebih tenang dari pindaian terakhir."
+          }
+        }
+      }
+    },
+    "Skin type" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jenis kulit"
+          }
+        }
+      }
+    },
+    "Skinalyze does not collect, store, or access your personal data or photos. All analysis runs locally on your device using Apple's on-device machine learning." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skinalyze tidak mengumpulkan, menyimpan, atau mengakses data pribadi maupun fotomu. Semua analisis berjalan di perangkatmu menggunakan machine learning bawaan Apple."
+          }
+        }
+      }
+    },
+    "Skinalyze does not share personal data or facial photos with third parties." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skinalyze tidak membagikan data pribadi atau foto wajah kepada pihak ketiga."
+          }
+        }
+      }
+    },
+    "Skinalyze does not use cookies or tracking technologies." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skinalyze tidak menggunakan cookie atau teknologi pelacakan."
+          }
+        }
+      }
+    },
+    "Skinalyze is locked" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skinalyze terkunci"
+          }
+        }
+      }
+    },
+    "Skinalyze tracks visible changes. It isn't a medical device and doesn't diagnose." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skinalyze memantau perubahan yang terlihat. Ini bukan alat medis dan tidak mendiagnosis."
+          }
+        }
+      }
+    },
+    "Skinalyze tracks visible changes. It isn't a medical device and doesn't diagnose. If something is painful or persistent, see a dermatologist." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skinalyze memantau perubahan yang terlihat. Ini bukan alat medis dan tidak mendiagnosis. Jika ada yang terasa sakit atau tidak kunjung hilang, temui dokter kulit."
+          }
+        }
+      }
+    },
+    "Skinalyze uses the front camera as your mirror. Photos stay on this iPhone." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skinalyze memakai kamera depan sebagai cerminmu. Foto tetap di iPhone ini."
+          }
+        }
+      }
+    },
+    "Skinalyze — skin tracking summary" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skinalyze — ringkasan pemantauan kulit"
+          }
+        }
+      }
+    },
+    "Skip" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lewati"
+          }
+        }
+      }
+    },
+    "Slowly turn your head." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Putar kepalamu perlahan."
+          }
+        }
+      }
+    },
+    "Small, firm, red bumps without a visible white tip." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benjolan kecil, keras, dan merah tanpa ujung putih yang terlihat."
+          }
+        }
+      }
+    },
+    "Sources" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sumber"
+          }
+        }
+      }
+    },
+    "Spot" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Titik"
+          }
+        }
+      }
+    },
+    "Start a scan" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mulai pindai"
+          }
+        }
+      }
+    },
+    "Start a skin scan" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mulai pindai kulit"
+          }
+        }
+      }
+    },
+    "Start using Skinalyze" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mulai pakai Skinalyze"
+          }
+        }
+      }
+    },
+    "Started %@" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mulai memakai %@"
+          }
+        }
+      }
+    },
+    "Step %lld of %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Step %1$lld of %2$lld"
           }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Langkah %1$lld dari %2$lld"
+          }
         }
       }
     },
-    "Look for": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cari kandungan"
+    "Stopped %@" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berhenti memakai %@"
           }
         }
       }
     },
-    "Look straight at the camera": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lihat lurus ke kamera"
+    "Strips oil, which can leave skin feeling tight." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mengikis minyak, yang bisa membuat kulit terasa tertarik."
           }
         }
       }
     },
-    "Looking good": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sudah bagus"
+    "Sunscreen" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabir surya"
           }
         }
       }
     },
-    "Mild": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ringan"
+    "Support firmness." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mendukung kekencangan kulit."
           }
         }
       }
     },
-    "Move a little closer": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mendekat sedikit"
+    "Support the skin barrier and lock in moisture." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mendukung lapisan pelindung kulit dan mengunci kelembapan."
           }
         }
       }
     },
-    "Move back a little": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mundur sedikit"
+    "Supports cell turnover; start slowly and use SPF." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mendukung pergantian sel kulit; mulai perlahan dan pakai SPF."
           }
         }
       }
     },
-    "Nodules": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nodul"
+    "Swap product" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ganti produk"
           }
         }
       }
     },
-    "Normal": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Normal"
+    "Take off the shelf" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keluarkan dari rak"
           }
         }
       }
     },
-    "Nose": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hidung"
+    "Take photo anyway" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tetap ambil foto"
           }
         }
       }
     },
-    "Not enough info": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Info belum cukup"
+    "Tells you your latest breakout index and how it changed." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memberi tahu indeks jerawat terbarumu dan perubahannya."
           }
         }
       }
     },
-    "Not now": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nanti saja"
+    "This removes them from this iPhone and your iCloud. It can't be undone." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ini menghapusnya dari iPhone ini dan iCloud-mu. Tidak bisa dibatalkan."
           }
         }
       }
     },
-    "Oily": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Berminyak"
+    "This shapes ingredient suggestions." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ini menentukan saran kandungan."
           }
         }
       }
     },
-    "Open Settings": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Buka Pengaturan"
+    "Time for a quick skin scan" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Waktunya pindai kulit sebentar"
           }
         }
       }
     },
-    "Papules": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Papula"
+    "Timeline" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Linimasa"
           }
         }
       }
     },
-    "Privacy policy": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kebijakan privasi"
+    "Today" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hari ini"
           }
         }
       }
     },
-    "Private by design": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Privat sejak awal"
+    "Toner" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toner"
           }
         }
       }
     },
-    "Probably not for you": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mungkin kurang cocok"
+    "Too bright — step out of direct light" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terlalu terang — hindari cahaya langsung"
           }
         }
       }
     },
-    "Products": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Produk"
+    "Try again" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coba lagi"
           }
         }
       }
     },
-    "Profile": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Profil"
+    "Turn left" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toleh kiri"
           }
         }
       }
     },
-    "Pustules": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pustula"
+    "Turn right" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toleh kanan"
           }
         }
       }
     },
-    "Reading your skin…": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Membaca kulitmu…"
+    "Turn your head to your left" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tolehkan kepala ke kiri"
           }
         }
       }
     },
-    "Retake any angle, or analyse now.": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ulangi sudut mana pun, atau analisis sekarang."
+    "Turn your head to your right" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tolehkan kepala ke kanan"
           }
         }
       }
     },
-    "Right cheek": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pipi kanan"
+    "Understand my skin" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memahami kulitku"
           }
         }
       }
     },
-    "Right jaw": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rahang kanan"
+    "Unlock" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka kunci"
           }
         }
       }
     },
-    "Routine": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rutinitas"
+    "Unlock your skin scans" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka kunci pindaian kulitmu"
           }
         }
       }
     },
-    "Scan %lld more times to unlock trends.": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pindai %lld kali lagi untuk membuka tren."
+    "Use with care" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pakai dengan hati-hati"
           }
         }
       }
     },
-    "Scan 1 more time to unlock trends.": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pindai 1 kali lagi untuk membuka tren."
+    "Using at the time" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dipakai saat itu"
           }
         }
       }
     },
-    "Scan a label": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pindai label"
+    "View source page" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lihat halaman sumber"
           }
         }
       }
     },
-    "Scan my skin": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pindai kulitku"
+    "Vitamin C" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vitamin C"
           }
         }
       }
     },
-    "Search": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cari"
+    "We couldn't read these photos" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kami tidak bisa membaca foto-foto ini"
           }
         }
       }
     },
-    "See how your skin is changing": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lihat bagaimana kulitmu berubah"
+    "We couldn't recognise enough ingredients. Try scanning the full ingredient list." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kandungan yang dikenali belum cukup. Coba pindai daftar kandungan lengkapnya."
           }
         }
       }
     },
-    "Skin looks calmer than your recent scans.": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kulit tampak lebih tenang dari pindaian terakhir."
+    "We may update this policy; changes will be shown in app updates." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kami dapat memperbarui kebijakan ini; perubahan akan ditampilkan di pembaruan aplikasi."
           }
         }
       }
     },
-    "Skinalyze tracks visible changes. It isn't a medical device and doesn't diagnose.": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Skinalyze memantau perubahan yang terlihat. Ini bukan alat medis dan tidak mendiagnosis."
+    "What changed" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apa yang berubah"
           }
         }
       }
     },
-    "Skip": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lewati"
+    "What helps" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apa yang membantu"
           }
         }
       }
     },
-    "Start a scan": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mulai pindai"
+    "What should we call you?" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kami panggil kamu siapa?"
           }
         }
       }
     },
-    "Start using Skinalyze": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mulai pakai Skinalyze"
+    "What we noticed" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yang kami temukan"
           }
         }
       }
     },
-    "Timeline": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Linimasa"
+    "What would you like to focus on?" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apa yang ingin kamu fokuskan?"
           }
         }
       }
     },
-    "Today": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hari ini"
+    "Where this comes from" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dari mana info ini"
           }
         }
       }
     },
-    "Too bright — step out of direct light": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Terlalu terang — hindari cahaya langsung"
+    "Whiteheads" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Komedo putih"
           }
         }
       }
     },
-    "Try again": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Coba lagi"
+    "You" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu"
           }
         }
       }
     },
-    "Turn left": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Toleh kiri"
+    "You already use a retinoid — alternate nights instead of layering with this acid." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu sudah memakai retinoid — pakai bergantian malam, jangan ditumpuk dengan asam ini."
           }
         }
       }
     },
-    "Turn right": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Toleh kanan"
+    "You control all saved data. Delete scans in the app (Profile → Delete all scans) or from your iCloud settings at any time." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu mengendalikan semua data tersimpan. Hapus pindaian di aplikasi (Profil → Hapus semua pindaian) atau dari pengaturan iCloud kapan saja."
           }
         }
       }
     },
-    "Turn your head to your left": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tolehkan kepala ke kiri"
+    "Your %@ has been more active three scans in a row." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kamu lebih aktif tiga pindaian berturut-turut."
           }
         }
       }
     },
-    "Turn your head to your right": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tolehkan kepala ke kanan"
+    "Your calmest scan yet — whatever you're doing, it's showing." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindaian paling tenang sejauh ini — usahamu terlihat hasilnya."
           }
         }
       }
     },
-    "Understand my skin": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Memahami kulitku"
+    "Your deck starts with one scan" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dekmu dimulai dari satu pindaian"
           }
         }
       }
     },
-    "Use with care": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pakai dengan hati-hati"
+    "Your first scan sets your baseline." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindaian pertamamu menjadi titik awal."
           }
         }
       }
     },
-    "What should we call you?": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kami panggil kamu siapa?"
+    "Your latest breakout index is %lld (%@), %@ from the scan before." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Your latest breakout index is %1$lld (%2$@), %3$@ from the scan before."
           }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indeks jerawat terbarumu %1$lld (%2$@), %3$@ dari pindaian sebelumnya."
+          }
         }
       }
     },
-    "What we noticed": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Yang kami temukan"
+    "Your name" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Namamu"
           }
         }
       }
     },
-    "What would you like to focus on?": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apa yang ingin kamu fokuskan?"
+    "Your photos are still here. Try again, or retake them in softer light." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotomu masih ada. Coba lagi, atau ambil ulang dengan cahaya yang lebih lembut."
           }
         }
       }
     },
-    "Where this comes from": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dari mana info ini"
+    "Your privacy comes first. This explains how your data is handled when you use Skinalyze." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privasimu yang utama. Ini menjelaskan cara datamu dikelola saat memakai Skinalyze."
           }
         }
       }
     },
-    "Whiteheads": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Komedo putih"
+    "Your routine" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rutinitasmu"
           }
         }
       }
     },
-    "Your calmest scan yet — whatever you're doing, it's showing.": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pindaian paling tenang sejauh ini — usahamu terlihat hasilnya."
+    "Your routine already has an exfoliating acid — don't layer it with this retinoid on the same night." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rutinitasmu sudah punya asam eksfoliasi — jangan ditumpuk dengan retinoid ini di malam yang sama."
           }
         }
       }
     },
-    "Your first scan sets your baseline.": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pindaian pertamamu menjadi titik awal."
+    "Your skin looks calm — nothing active stood out." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kulitmu tampak tenang — tidak ada yang aktif menonjol."
           }
         }
       }
     },
-    "Your routine": {
-      "localizations": {
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rutinitasmu"
+    "vs. last scan" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "vs pindaian terakhir"
           }
         }
       }
+    },
+    "z" : {
+      "shouldTranslate" : false
     }
-  }
+  },
+  "version" : "1.0"
 }
