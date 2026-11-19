@@ -2,7 +2,9 @@
 
 These rules apply to every change in this repo, by humans or AI agents. The full redesign plan lives in
 [docs/redesign/PLAN.md](docs/redesign/PLAN.md) and the build order in [docs/redesign/PHASES.md](docs/redesign/PHASES.md).
-Read them before starting redesign work, and tick off checklist items there as you complete them.
+Read them before starting redesign work, and tick off checklist items there as you complete them. The growth,
+engagement, mascot (Pimpi) and paywall backlog lives in [docs/redesign/FEATURES.md](docs/redesign/FEATURES.md) —
+its §0 rules (score effort never skin, the scan is never paywalled, social shares no photos) are binding.
 
 ## 1. Every iPhone shape, every pose (NON-NEGOTIABLE)
 

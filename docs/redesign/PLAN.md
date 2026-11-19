@@ -91,7 +91,7 @@ which products are actually helping.
 | Q4 | Is **Bahasa Indonesia** supported by Apple Intelligence / Foundation Models? | Phase 5 | Determines whether ID users get LLM phrasing or template fallback. |
 | Q5 | **Licensing** of the bundled product catalog (appears sourced from skinsort.com) | Phase 5 start | Need rights to use names, ingredient lists, and photos; otherwise build our own catalog. |
 | Q6 | Opt-in **cloud product identification** — do we want it at all? | Phase 5 | Needs a proxy backend + consent flow. Can ship without it. |
-| Q7 | **Monetization** (none / one-time / subscription)? | Before Phase 6 | Affects whether insights are gated. Plan assumes free. |
+| Q7 | **Monetization** (none / one-time / subscription)? | Before Phase 6 | **Answered 2026-11-19:** free core + Pro subscription (and optional lifetime) — see [FEATURES.md](FEATURES.md) §6. Price points still open. |
 | Q8 | ~~Does ARKit face tracking work on iPhone Duo?~~ | — | **Answered 2026-11-18: no 3D on Duo** (owner decision, see §2). Remaining Duo camera facts: Duo has two front cameras (inner under-display, outer ultra-wide, both square sensors), no TrueDepth. Camera selection via `AVCaptureDeviceDirectionCoordinator` (AVKit). Face tracking support needs a **real device** — the simulator has no camera. |
 | Q9 | Exact iPhone Duo API signatures | — | **Answered** by the vendored `iphone-duo-*` skills: `onHingeChange { old, new in }` → `DeviceHingeContext.hinge: DeviceHinge?` (`angle`, `status: .closed/.partiallyOpen/.fullyOpen`); `UIHingeInteraction`; `proxy.reservedRegions(kind: .division)` with `isActive`; `ArrangementView(.split / .overlay)`. Still compile-check in Xcode 27.1. |
 

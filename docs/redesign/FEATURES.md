@@ -1,0 +1,186 @@
+# Skinalyze — Feature Tracker (growth, engagement, product, paywall)
+
+> One list of everything we have agreed to build after the V2 "Mirror" redesign and the 3D scan work, so nothing
+> gets lost. Tick items as they ship. Owner approved the direction and the Pimpi mascot on 2026-11-19.
+>
+> Related: [PLAN.md](PLAN.md) (original redesign plan) · [PHASES.md](PHASES.md) (build status) ·
+> [V2-BOLD.md](V2-BOLD.md) (Mirror spec) · project rules in [CLAUDE.md](../../CLAUDE.md).
+
+**How to read this**
+
+- `[ ]` not started · `[~]` in progress · `[x]` shipped (add the commit).
+- **Free / Pro** says which side of the paywall a feature sits on.
+- IDs (E1, G3, …) are stable — use them in commits and conversations.
+
+---
+
+## 0. Rules every feature must respect
+
+1. **Score effort, never skin.** Streaks, points, quests, leagues and rewards count showing up and learning — never
+   breakout numbers. A bad skin week must not cost the user anything.
+2. **Tracker, not diagnosis.** No medical claims; correlations are worded "coincided with", never "caused"
+   (App Review 1.4.1 history — the copy lint gates this).
+3. **Private by default.** Face photos, scans and 3D data stay on the device (plus the user's own iCloud). Anything
+   shared leaves only when the user exports it. Social features share streaks and points, never photos.
+4. **HealthKit data never goes to iCloud.** No third-party AI sees personal data without per-use consent.
+5. **The scan is never paywalled.** It is the loop that makes people share.
+6. All existing engineering rules still apply (iPhone Duo in every pose, design tokens, additive CloudKit schema,
+   tests first for logic).
+
+---
+
+## 1. Build queue (in order)
+
+| # | What | IDs |
+|---|------|-----|
+| 1 | Pimpi on the Mirror, reacting to the streak | PI2, E1 |
+| 2 | Streaks with freeze, weekend-off and repair | E1–E4 |
+| 3 | Pimpi widget (home + lock screen) | PI3 |
+| 4 | Shareable skin card + product verdict share card | G2, G4 |
+| 5 | Glow-up reel export | G1 |
+| 6 | Paywall (StoreKit, plans, trial, triggers) | M1–M6 |
+| 7 | Daily quests, glow points, chests | E5–E8 |
+| 8 | Skin School | E9–E10 |
+| 9 | Spot timeline + zone heat map on the 3D head | P1, P2 |
+| 10 | Everything else, re-prioritised after launch data | — |
+
+---
+
+## 2. Pimpi (mascot)
+
+Evolved from the original mascot: same pink blob, head bump, navy eyes, cream cheeks — redrawn as a vector character
+with depth, no outlines, and moods.
+
+- [x] **PI1 Pimpi character** — six moods (happy, excited, curious, sleepy, worried, sad); blinks, breathes, bump
+  wobbles; still under Reduce Motion. `Skinalyze/Shared/Pimpi.swift`, commit `1095516`. Look approved by owner.
+- [ ] **PI2 Pimpi on the Mirror** — mood follows the streak: excited after a scan, sleepy when a scan is due,
+  worried when the streak is at risk, sad when it breaks. · Free
+- [ ] **PI3 Pimpi widget** — home and lock screen; shows Pimpi's current mood + streak. · Free
+- [ ] **PI4 Notifications in Pimpi's voice** — gentle escalation ("I've been waiting with my magnifying glass…");
+  never about skin condition, never guilt about results. · Free
+- [ ] **PI5 Pimpi celebrations** — streak milestones, quest chests, first 3D scan. · Free
+- [ ] **PI6 Pimpi outfits and hats** — cosmetic rewards from chests; premium sets in Pro. · Free + Pro
+- [ ] **PI7 More moods / poses as needed** (e.g. proud, waving, holding sunscreen). · —
+
+---
+
+## 3. Engagement (the Duolingo layer)
+
+### Streaks
+- [ ] **E1 Scan streak** — weekly rhythm (scan day), flame on the Mirror. · Free
+- [ ] **E2 Routine streak** — daily AM/PM check-off in ~5 seconds. · Free
+- [ ] **E3 Streak freeze, weekend-off mode, repair within 24 h** — freezes earned from quests. · Free (earned) / Pro (extra)
+- [ ] **E4 Milestones** — 7 / 30 / 100 days with a Pimpi celebration and a shareable card. · Free
+
+### Quests and rewards
+- [ ] **E5 Daily quests** — three small ones (check off routine, check a product, log sleep). · Free
+- [ ] **E6 Glow points** — earned for effort only (rule 1). · Free (Pro: double points)
+- [ ] **E7 Chests** — cosmetic rewards: sticker-card themes, holo styles, Pimpi outfits. · Free + Pro sets
+- [ ] **E8 Monthly quest** — limited badge. · Free
+
+### Skin School
+- [ ] **E9 Lessons** — 60-second lessons ("What niacinamide does", "Why sunscreen indoors") + two-question quiz + XP.
+  Content must pass the copy rules (general information, sources listed). · Free (first units) / Pro (all)
+- [ ] **E10 Lesson path** — units on a path, so there is always something to do between scans. · Free + Pro
+
+### Progress
+- [ ] **E11 Journey map** — levels as the user scans and learns. · Free
+- [ ] **E12 Weekly recap from Pimpi** — every Sunday. · Free
+- [ ] **E13 Badge shelf** — first 3D scan, 10 product checks, a month of sunscreen… · Free
+- [ ] **E14 Monthly recap** — short summary card. · Free
+
+### Social (no faces)
+- [ ] **E15 Friend streaks and friend quests** — share streak and points only. · Free
+- [ ] **E16 Weekly leagues** — ranked on consistency points, never on skin. · Free
+- [ ] **E17 30-day challenges** ("30 days of sunscreen") with a finisher card. · Free
+
+---
+
+## 4. Growth and sharing
+
+- [ ] **G1 Glow-up reel** — one-tap video: sticker cards morphing oldest → newest, eye-aligned, index counting;
+  export for TikTok / Reels. The main viral loop. · Free (watermark) / Pro (no watermark)
+- [ ] **G2 Shareable skin card** — the holo sticker card as image or tilt-shimmer video; "hide my face" option
+  (silhouette + stats). · Free
+- [ ] **G3 3D face turntable export** — looping video of the fused 3D head rotating. · Pro
+- [ ] **G4 Product verdict share card** — "Is it good for me?" result as a card; every check advertises the app. · Free
+- [ ] **G5 Before/after slider export** — from the eye-aligned Compare. · Free (watermark) / Pro
+- [ ] **G6 Skin Wrapped** — yearly/quarterly recap: best streak, most-improved zone, product that coincided with the
+  best month. · Free
+- [ ] **G7 Routine cards** — "my shelf" as a shareable image; others tap to check those products for their skin. · Free
+- [ ] **G8 Referral** — give a month of Pro, get a month. · —
+- [ ] **G9 Creator kit** — reel templates + affiliate code. · —
+- [ ] **G10 Share-sheet entry from TikTok Shop / Shopee / Tokopedia product pages** — extends the existing share
+  extension. · Free
+- [ ] **G11 Sticker-card widgets** — home / lock screen widgets that look like the card. · Free
+
+---
+
+## 5. Product features
+
+- [ ] **P1 Spot timeline** — tap a dot to follow that same spot across scans (appeared, fading, gone). · Pro
+- [ ] **P2 Zone heat map over time** — on the 3D head, scrubbable by date. · Pro
+- [ ] **P3 Trigger journal** — sleep, stress, cycle, diet, new product; shows what coincided with flare-ups. · Free
+  (log) / Pro (insights)
+- [ ] **P4 Cycle and sleep correlation via HealthKit** — on-device only (rule 4). · Pro
+- [ ] **P5 Routine builder** — AM/PM steps, reminders, "don't mix these two actives" warning from the ingredient
+  rules. · Free
+- [ ] **P6 Patch-test timer** — "day 3 of 14: anything changed?" for a new product. · Free
+- [ ] **P7 Product expiry tracker** — opened-on date and period-after-opening. · Free
+- [ ] **P8 Barcode scan** — needs a product-barcode data source. · Free
+- [ ] **P9 Dupe finder** — same key ingredients, cheaper. · Pro
+- [ ] **P10 UV and humidity nudge** — "UV 9 today: sunscreen". · Free
+- [ ] **P11 Dermatologist visit pack** — PDF with photos, trend, products used (extends the existing export). · Pro
+- [ ] **P12 Scan-quality coach** — more consistent lighting between scans. · Free
+- [ ] **P13 Private vault** — biometric lock exists; add hidden album and decoy mode. · Free
+- [ ] **P14 Apple Watch routine check-off; Siri and Shortcuts** (some intents already exist). · Free
+
+---
+
+## 6. Paywall and money
+
+**Free (drives growth):** scanning, latest result, sticker card and sharing, 7-scan history, 3 product checks a
+month, streaks, basic quests, first Skin School units.
+
+**Pro:** unlimited history and Compare, 3D head + turntable export, reels without watermark, spot timeline, zone heat
+map, trigger insights, unlimited product checks, dupe finder, PDF pack, sync across devices, custom card themes and
+holo styles, extra streak freezes and repair, all of Skin School, premium Pimpi outfits, double glow points.
+
+- [ ] **M1 StoreKit subscriptions** — weekly, monthly, annual; 7-day trial. · —
+- [ ] **M2 Lifetime one-time purchase.** · —
+- [ ] **M3 Localised pricing** — IDR, plus a student price. Actual price points: **owner decision, still open**. · —
+- [ ] **M4 Paywall screen** — Pimpi-led, shows what Pro adds; restore purchases; clear terms. · —
+- [ ] **M5 Paywall triggers** — after the first sticker moment; opening an 8th scan; first 3D turn; "export without
+  watermark". Never before the first scan result. · —
+- [ ] **M6 Entitlement gating in code** — one tested place that answers "is this Pro?" · —
+- [ ] **M7 Affiliate links on product pages** — clearly labelled; must never influence the verdict (verdicts stay
+  rule-based). · optional
+
+---
+
+## 7. Deliberately not doing
+
+- **Public feed of faces** — privacy and moderation burden.
+- **AI "dermatologist chat"** — diagnosis risk; the app already had a 1.4.1 rejection.
+- **Paywalling the scan** — kills the loop that makes people share.
+- **Rewards or rankings based on skin results** — see rule 1.
+
+---
+
+## 8. Already built (for reference)
+
+- [x] V2 "Mirror" redesign: live-camera home, glass dock, Deck, Shelf, result chapters, light + dark.
+- [x] Face ID-style scan, calibrated on device; full side profile accepted.
+- [x] Die-cut holo sticker cards + photo → sticker → card moment after each scan.
+- [x] Real TrueDepth 3D: front + side captures fused into one head with real sides (`dd5b8ea`); viewer turns as far
+  as each side was captured. **Awaiting the owner's on-device check of the fused scan.**
+- [x] Tappable spot pins; eye-aligned Compare.
+- [x] Product Check ("Is it good for me?"), share extension, label scanner, widgets, intents.
+- [x] Pimpi character (`1095516`).
+
+## 9. Open decisions (owner)
+
+1. Price points (M3) and whether a lifetime option ships at launch (M2).
+2. Scan rhythm for the scan streak (E1): weekly is proposed.
+3. Which Skin School topics come first (E9), and who signs off the wording.
+4. Whether affiliate links (M7) are wanted at all.
