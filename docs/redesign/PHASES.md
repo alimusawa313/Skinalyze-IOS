@@ -607,7 +607,8 @@ considered, App Store presence ready (when a release is eventually planned).
 ## After the redesign: growth, engagement and paywall
 
 The backlog agreed on 2026-11-19 (Pimpi mascot, streaks and quests, sharing, product features, paywall) is tracked in
-[FEATURES.md](FEATURES.md), with its own build queue and rules. Tick items there as they ship.
+[FEATURES.md](FEATURES.md), with its own rules; its build phases are in [FEATURE-PHASES.md](FEATURE-PHASES.md).
+Tick items there as they ship.
 
 ---
 

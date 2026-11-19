@@ -3,7 +3,8 @@
 > One list of everything we have agreed to build after the V2 "Mirror" redesign and the 3D scan work, so nothing
 > gets lost. Tick items as they ship. Owner approved the direction and the Pimpi mascot on 2026-11-19.
 >
-> Related: [PLAN.md](PLAN.md) (original redesign plan) · [PHASES.md](PHASES.md) (build status) ·
+> Related: [FEATURE-PHASES.md](FEATURE-PHASES.md) (how this backlog gets built) · [PLAN.md](PLAN.md) (original redesign plan) ·
+> [PHASES.md](PHASES.md) (redesign build status) ·
 > [V2-BOLD.md](V2-BOLD.md) (Mirror spec) · project rules in [CLAUDE.md](../../CLAUDE.md).
 
 **How to read this**
@@ -31,6 +32,9 @@
 ---
 
 ## 1. Build queue (in order)
+
+The detailed phases — steps, how each is checked, and what each needs from the owner — are in
+[FEATURE-PHASES.md](FEATURE-PHASES.md). Phase 0 there (closing out open work) comes before this queue.
 
 | # | What | IDs |
 |---|------|-----|
