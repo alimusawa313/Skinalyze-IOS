@@ -23,7 +23,8 @@
 3. **Private by default.** Face photos, scans and 3D data stay on the device (plus the user's own iCloud). Anything
    shared leaves only when the user exports it. Social features share streaks and points, never photos.
 4. **HealthKit data never goes to iCloud.** No third-party AI sees personal data without per-use consent.
-5. **The scan is never paywalled.** It is the loop that makes people share.
+5. **The first scan of the day is always free.** Scanning is the loop that makes people share, so it is never
+   locked — free users get one saved scan per day (owner decision 2026-11-19), Pro is unlimited. See M8.
 6. All existing engineering rules still apply (iPhone Duo in every pose, design tokens, additive CloudKit schema,
    tests first for logic).
 
@@ -139,10 +140,10 @@ with depth, no outlines, and moods.
 
 ## 6. Paywall and money
 
-**Free (drives growth):** scanning, latest result, sticker card and sharing, 7-scan history, 3 product checks a
-month, streaks, basic quests, first Skin School units.
+**Free (drives growth):** one scan per day, latest result, sticker card and sharing, 7-scan history, 3 product checks
+a month, streaks, basic quests, first Skin School units.
 
-**Pro:** unlimited history and Compare, 3D head + turntable export, reels without watermark, spot timeline, zone heat
+**Pro:** unlimited scans, unlimited history and Compare, 3D head + turntable export, reels without watermark, spot timeline, zone heat
 map, trigger insights, unlimited product checks, dupe finder, PDF pack, sync across devices, custom card themes and
 holo styles, extra streak freezes and repair, all of Skin School, premium Pimpi outfits, double glow points.
 
@@ -150,11 +151,16 @@ holo styles, extra streak freezes and repair, all of Skin School, premium Pimpi 
 - [ ] **M2 Lifetime one-time purchase.** · —
 - [ ] **M3 Localised pricing** — IDR, plus a student price. Actual price points: **owner decision, still open**. · —
 - [ ] **M4 Paywall screen** — Pimpi-led, shows what Pro adds; restore purchases; clear terms. · —
-- [ ] **M5 Paywall triggers** — after the first sticker moment; opening an 8th scan; first 3D turn; "export without
-  watermark". Never before the first scan result. · —
+- [ ] **M5 Paywall triggers** — after the first sticker moment; starting a second scan the same day (M8); opening an
+  8th scan; first 3D turn; "export without watermark". Never before the first scan result. · —
 - [ ] **M6 Entitlement gating in code** — one tested place that answers "is this Pro?" · —
 - [ ] **M7 Affiliate links on product pages** — clearly labelled; must never influence the verdict (verdicts stay
   rule-based). · optional
+- [ ] **M8 Free scan limit: one saved scan per day** — Pro is unlimited. Details so it never feels unfair:
+  only a scan that was analysed and saved counts (a cancelled scan, a retake during capture, or a failed analysis does
+  not); the day resets at local midnight; the Mirror (live camera) stays open and shows when the next free scan is
+  available; a second scan the same day opens the paywall instead of the capture. The limit (1/day) is a tunable
+  constant, tested. · Free limit / Pro unlimited
 
 ---
 
@@ -162,7 +168,7 @@ holo styles, extra streak freezes and repair, all of Skin School, premium Pimpi 
 
 - **Public feed of faces** — privacy and moderation burden.
 - **AI "dermatologist chat"** — diagnosis risk; the app already had a 1.4.1 rejection.
-- **Paywalling the scan** — kills the loop that makes people share.
+- **Locking the scan entirely for free users** — kills the loop that makes people share (a daily limit is fine: M8).
 - **Rewards or rankings based on skin results** — see rule 1.
 
 ---
