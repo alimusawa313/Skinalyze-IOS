@@ -75,7 +75,7 @@ with depth, no outlines, and moods.
 - [x] **E1 Scan streak** (Phase 1) — weekly rhythm (scan day), flame on the Mirror. · Free
 - [x] **E2 Routine streak** (Phase 1) — daily AM/PM check-off in ~5 seconds. · Free
 - [x] **E3 Streak freeze, weekend-off mode, repair within 24 h** (Phase 1) — freezes earned from quests. · Free (earned) / Pro (extra)
-- [x] **E4 Milestones** (Phase 1; shareable card comes with Phase 3) — 7 / 30 / 100 days with a Pimpi celebration and a shareable card. · Free
+- [x] **E4 Milestones** (Phase 1; shareable card Phase 3) — 7 / 30 / 100 days with a Pimpi celebration and a shareable card. · Free
 
 ### Quests and rewards
 - [ ] **E5 Daily quests** — three small ones (check off routine, check a product, log sleep). · Free
@@ -105,11 +105,11 @@ with depth, no outlines, and moods.
 
 - [ ] **G1 Glow-up reel** — one-tap video: sticker cards morphing oldest → newest, eye-aligned, index counting;
   export for TikTok / Reels. The main viral loop. · Free (watermark) / Pro (no watermark)
-- [ ] **G2 Shareable skin card** — the holo sticker card as image or tilt-shimmer video; "hide my face" option
+- [x] **G2 Shareable skin card** (Phase 3: image; shimmer video with Phase 4) — the holo sticker card as image or tilt-shimmer video; "hide my face" option
   (silhouette + stats). · Free
 - [ ] **G3 3D face turntable export** — looping video of the fused 3D head rotating. · Pro
-- [ ] **G4 Product verdict share card** — "Is it good for me?" result as a card; every check advertises the app. · Free
-- [ ] **G5 Before/after slider export** — from the eye-aligned Compare. · Free (watermark) / Pro
+- [x] **G4 Product verdict share card** (Phase 3) — "Is it good for me?" result as a card; every check advertises the app. · Free
+- [x] **G5 Before/after slider export** (Phase 3: still image; slider video with Phase 4) — from the eye-aligned Compare. · Free (watermark) / Pro
 - [ ] **G6 Skin Wrapped** — yearly/quarterly recap: best streak, most-improved zone, product that coincided with the
   best month. · Free
 - [ ] **G7 Routine cards** — "my shelf" as a shareable image; others tap to check those products for their skin. · Free
@@ -117,7 +117,7 @@ with depth, no outlines, and moods.
 - [ ] **G9 Creator kit** — reel templates + affiliate code. · —
 - [ ] **G10 Share-sheet entry from TikTok Shop / Shopee / Tokopedia product pages** — extends the existing share
   extension. · Free
-- [ ] **G11 Sticker-card widgets** (moved to Phase 3) — home / lock screen widgets that look like the card. · Free
+- [x] **G11 Sticker-card widgets** (Phase 3: home screen, no photo) — home / lock screen widgets that look like the card. · Free
 
 ---
 

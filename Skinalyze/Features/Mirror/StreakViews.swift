@@ -49,6 +49,8 @@ struct StreakSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @ScaledMetric(relativeTo: .largeTitle) private var numberSize: CGFloat = 72
+    /// A streak worth showing off starts at two days.
+    private static let minimumSharedDays = 2
 
     var body: some View {
         @Bindable var engagement = engagement
@@ -103,7 +105,14 @@ struct StreakSheet: View {
             .background(Color.ds.canvas)
             .navigationTitle("Streaks")
             .toolbarTitleDisplayMode(.inline)
-            .toolbar { Button("Done") { dismiss() } }
+            .toolbar {
+                if engagement.routine.count >= Self.minimumSharedDays {
+                    ToolbarItem(placement: .topBarLeading) {
+                        ShareCardButton { .streak(days: engagement.routine.count) }
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
+            }
         }
         .presentationDetents([.large])
         .sensoryFeedback(Haptic.success, trigger: engagement.milestone)

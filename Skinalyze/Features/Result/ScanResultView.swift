@@ -29,6 +29,7 @@ struct ScanResultView: View {
     }
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(EngagementModel.self) private var engagement: EngagementModel?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Query(sort: \ScanSession.createdAt, order: .reverse) private var allScans: [ScanSession]
     @AppStorage(UserProfile.Key.skinType) private var skinTypeRaw = ""
@@ -76,6 +77,9 @@ struct ScanResultView: View {
         .navigationTitle(Text(session.createdAt, format: .dateTime.day().month().year()))
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                ShareCardButton { .skin(session, streakDays: engagement?.routine.count ?? 0) }
+            }
             if isFreshScan {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }

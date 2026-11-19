@@ -552,6 +552,16 @@
         }
       }
     },
+    "Based on my skin profile. General information, not medical advice." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berdasarkan profil kulit saya. Informasi umum, bukan saran medis."
+          }
+        }
+      }
+    },
     "Based on your skin profile and recent scans. General information, not medical advice." : {
       "localizations" : {
         "id" : {
@@ -862,6 +872,16 @@
         }
       }
     },
+    "Close this and try again." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tutup ini lalu coba lagi."
+          }
+        }
+      }
+    },
     "Closed, clogged pores that sit just under the surface." : {
       "localizations" : {
         "id" : {
@@ -928,6 +948,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lanjut"
+          }
+        }
+      }
+    },
+    "Couldn't make the image" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gambar tidak bisa dibuat"
           }
         }
       }
@@ -1418,6 +1448,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hai."
+          }
+        }
+      }
+    },
+    "Hide my face" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sembunyikan wajah saya"
           }
         }
       }
@@ -2387,12 +2427,42 @@
         }
       }
     },
+    "Post" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Postingan"
+          }
+        }
+      }
+    },
     "Preservatives some people prefer to avoid; can irritate sensitive skin." : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pengawet yang dihindari sebagian orang; bisa mengiritasi kulit sensitif."
+          }
+        }
+      }
+    },
+    "Preview of your card" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pratinjau kartumu"
+          }
+        }
+      }
+    },
+    "Preview of your card with your face hidden" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pratinjau kartumu dengan wajah disembunyikan"
           }
         }
       }
@@ -2913,6 +2983,26 @@
         }
       }
     },
+    "Shape" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bentuk"
+          }
+        }
+      }
+    },
+    "Share" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bagikan"
+          }
+        }
+      }
+    },
     "Share PDF" : {
       "localizations" : {
         "id" : {
@@ -2929,6 +3019,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bagikan foto daftar kandungan agar terbaca lebih baik."
+          }
+        }
+      }
+    },
+    "Shares your sticker's outline and numbers only." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hanya membagikan bentuk stiker dan angkamu."
           }
         }
       }
@@ -3009,6 +3109,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kulit"
+          }
+        }
+      }
+    },
+    "Skin card" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kartu kulit"
           }
         }
       }
@@ -3103,6 +3213,16 @@
         }
       }
     },
+    "Skinalyze uploads nothing. The image goes only where you send it." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skinalyze tidak mengunggah apa pun. Gambar hanya pergi ke tempat yang kamu pilih."
+          }
+        }
+      }
+    },
     "Skinalyze uses the front camera as your mirror. Photos stay on this iPhone." : {
       "localizations" : {
         "id" : {
@@ -3169,6 +3289,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Titik"
+          }
+        }
+      }
+    },
+    "Square" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Persegi"
           }
         }
       }
@@ -3265,6 +3395,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Berhenti memakai %@"
+          }
+        }
+      }
+    },
+    "Story" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Story"
           }
         }
       }
@@ -3801,6 +3941,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Indeks jerawat terbarumu, perubahannya, dan jumlah hari sejak pindaian terakhir."
+          }
+        }
+      }
+    },
+    "Your latest scan as a card. No photo." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan terbarumu dalam bentuk kartu. Tanpa foto."
           }
         }
       }

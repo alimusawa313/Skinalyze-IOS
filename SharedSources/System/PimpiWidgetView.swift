@@ -69,6 +69,12 @@ struct PimpiWidgetGallery: View {
               scan: ScanStreak(weeks: 0, status: .none, milestone: nil), mood: .sad)
     ]
 
+    private static let cards: [WidgetSnapshot] = [
+        WidgetSnapshot(lastScanDate: .now, breakoutIndex: 6, bandRaw: BreakoutBand.mild.rawValue, delta: -2, trend: []),
+        WidgetSnapshot(lastScanDate: .now, breakoutIndex: 128, bandRaw: BreakoutBand.flared.rawValue, delta: 9, trend: []),
+        .empty
+    ]
+
     var body: some View {
         VStack(spacing: 0) {
             sheet.environment(\.colorScheme, .light)
@@ -85,6 +91,17 @@ struct PimpiWidgetGallery: View {
                         .padding(Spacing.md)
                         .frame(width: Self.smallSide, height: Self.smallSide)
                         .background(Color.ds.canvas, in: .rect(cornerRadius: Radius.medium))
+                        .scaleEffect(Self.previewScale)
+                        .frame(width: Self.smallSide * Self.previewScale, height: Self.smallSide * Self.previewScale)
+                }
+            }
+            HStack(spacing: Spacing.xs) {
+                ForEach(Array(Self.cards.enumerated()), id: \.offset) { _, card in
+                    SkinCardWidgetView(snapshot: card, mood: .happy)
+                        .padding(Spacing.md)
+                        .frame(width: Self.smallSide, height: Self.smallSide)
+                        .background { SkinCardWidgetView.background(for: card) }
+                        .clipShape(.rect(cornerRadius: Radius.medium))
                         .scaleEffect(Self.previewScale)
                         .frame(width: Self.smallSide * Self.previewScale, height: Self.smallSide * Self.previewScale)
                 }

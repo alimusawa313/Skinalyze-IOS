@@ -107,8 +107,26 @@ weekly is the right scan rhythm.
 
 ---
 
-## Phase 3 — Share cards  ☐
-**Ships:** G2, G4, G5 · **Size:** medium
+## Phase 3 — Share cards  ☑
+**Ships:** G2, G4, G5, G11, the E4 streak card · **Size:** medium
+
+**Shipped (2026-11-19):**
+- [x] One pipeline (`Features/Share`): card view → image at fixed sizes (story 1080×1920, post 1080×1350, square
+  1080×1080, tested) → system share sheet. Nothing is uploaded by the app.
+- [x] Skin card with **Hide my face** (asked on every share, never remembered). The hidden version is built from the
+  sticker's outline only; a test proves no photo pixel survives, and the card view never receives the photo.
+- [x] Product verdict card (same rule-based verdict as the page; the disclaimer line is never truncated).
+- [x] Earlier / later card from the eye-aligned Compare photos.
+- [x] Streak card from the Streaks sheet (two days or more).
+- [x] Watermark is one switch (`ShareCardPolicy`), on for everyone until Phase 5.
+- [x] G11: "Skin card" home-screen widget — mood colour, index and Pimpi, no photo.
+- [x] All 15 exports (5 cards × 3 shapes) opened and checked from the Simulator (`-shareCardDump <folder>`);
+  share sheet covered by a UI test. EN + ID.
+
+**Still open:**
+- [ ] **Owner's phone:** the Simulator cannot cut out a face, so the real sticker and its hidden outline were only
+  seen as a rounded photo there — share one real scan both ways and check it. Add the Skin card widget.
+- [ ] Moving exports (tilt-shimmer card video, before/after slider video) come with Phase 4's video writer.
 
 **Build**
 1. One share-rendering pipeline: a SwiftUI card → image at fixed export sizes (story 9:16, square, 4:5).

@@ -58,6 +58,27 @@ final class CoreFlowsUITests: XCTestCase {
         attachScreenshot("3D view")
     }
 
+    /// A scan can be shared as a card, and hiding the face makes a new picture before sharing is offered again.
+    func testShareSkinCardWithFaceHidden() {
+        openDock("dock.deck")
+        let firstRow = scanRows.element(boundBy: 0)
+        XCTAssertTrue(firstRow.waitForExistence(timeout: 10))
+        firstRow.tap()
+        let share = app.buttons["shareCard"].firstMatch
+        XCTAssertTrue(share.waitForExistence(timeout: 10))
+        share.tap()
+        let preview = app.images["shareCardPreview"]
+        XCTAssertTrue(preview.waitForExistence(timeout: 20))
+        XCTAssertTrue(app.buttons["shareCardButton"].waitForExistence(timeout: 5))
+        attachScreenshot("Share card")
+        // The row's label does not flip the switch; tap the switch itself at the trailing edge.
+        app.switches["shareHideFace"].firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
+        XCTAssertTrue(app.images["Preview of your card with your face hidden"].waitForExistence(timeout: 20))
+        app.buttons["Square"].tap()
+        XCTAssertTrue(app.images["Preview of your card with your face hidden"].waitForExistence(timeout: 20))
+        attachScreenshot("Share card · face hidden")
+    }
+
     func testCompareTwoScans() {
         openDock("dock.deck")
         XCTAssertTrue(app.buttons["Compare"].waitForExistence(timeout: 10))

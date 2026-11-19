@@ -109,10 +109,16 @@ final class VisualTourUITests: XCTestCase {
             field.typeText("niacinamide")
             sleep(1)
             snap("11 Shelf · search")
-            app.buttons.matching(identifier: "shelfResult").firstMatch.tap()
+            let result = app.buttons.matching(identifier: "shelfResult").firstMatch
+            if result.waitForExistence(timeout: 5) { result.tap() }
             sleep(2)
             snap("12 Product check")
+            // Back to the Shelf with the keyboard down, so the dock is on screen again.
+            let back = app.navigationBars.buttons.firstMatch
+            if back.exists { back.tap() }
+            if app.keyboards.firstMatch.exists { field.typeText("\n") }
         }
+        XCTAssertTrue(app.buttons["dock.mirror"].waitForExistence(timeout: 10))
 
         // Profile from the Mirror avatar.
         app.buttons["dock.mirror"].tap()

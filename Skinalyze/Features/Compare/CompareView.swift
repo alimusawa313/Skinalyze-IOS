@@ -36,7 +36,16 @@ struct CompareView: View {
         .task(id: angle) { await alignPhotos() }
         .navigationTitle("Compare")
         .toolbarTitleDisplayMode(.inline)
-        .toolbar { Button("Done") { dismiss() } }
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                ShareCardButton {
+                    guard let before = alignedEarlier?.image, let after = alignedLater?.image else { return nil }
+                    return .compare(earlier: earlier, later: later, earlierPhoto: before, laterPhoto: after)
+                }
+                .disabled(alignedEarlier == nil || alignedLater == nil)
+            }
+            ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
+        }
     }
 
     private func alignPhotos() async {

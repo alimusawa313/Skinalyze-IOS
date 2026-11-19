@@ -57,6 +57,14 @@ struct AppShell: View {
             if let tab = UserDefaults.standard.string(forKey: "startTab"), let url = URL(string: "skinalyze://\(tab)") {
                 appModel.open(url)
             }
+            // `-shareCardDump <folder>`: export every share card in every shape for checking.
+            if let folder = UserDefaults.standard.string(forKey: "shareCardDump") {
+                Task {
+                    try? await Task.sleep(for: .seconds(2.5))
+                    let descriptor = FetchDescriptor<ScanSession>(sortBy: [SortDescriptor(\.createdAt, order: .reverse)])
+                    await ShareCardDump.run(into: folder, scans: (try? modelContext.fetch(descriptor)) ?? [])
+                }
+            }
             // `-openLatestScan YES`: present the newest scan's result (renderer checks in the Simulator).
             if UserDefaults.standard.bool(forKey: "openLatestScan") {
                 Task {

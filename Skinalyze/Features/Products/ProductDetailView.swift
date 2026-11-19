@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 import SkinalyzeKit
 
@@ -63,6 +64,7 @@ struct ProductPicker: View {
 struct ProductDetailView: View {
     let product: CatalogProduct
     @AppStorage(UserProfile.Key.skinType) private var skinTypeRaw = ""
+    @Query(sort: \ScanSession.createdAt, order: .reverse) private var scans: [ScanSession]
 
     var body: some View {
         let guidance = SkinTypeGuidance.for(SkinType(stored: skinTypeRaw))
@@ -116,5 +118,13 @@ struct ProductDetailView: View {
         .dsCanvas()
         .navigationTitle(product.name)
         .toolbarTitleDisplayMode(.inline)
+        .toolbar {
+            ShareCardButton {
+                // The same rule-based verdict the page shows.
+                .verdict(product: product, result: ProductVerdictEngine.evaluate(
+                    ingredients: product.ingredientList.map { $0.lowercased() },
+                    profile: VerdictProfileBuilder.make(latest: scans.first)))
+            }
+        }
     }
 }

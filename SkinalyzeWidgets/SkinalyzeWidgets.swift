@@ -9,6 +9,7 @@ struct SkinalyzeWidgetBundle: WidgetBundle {
     var body: some Widget {
         SkinTrendWidget()
         PimpiWidget()
+        SkinCardWidget()
         StartScanControl()
     }
 }
@@ -117,6 +118,49 @@ struct StartScanControl: ControlWidget {
         }
         .displayName("Scan skin")
         .description("Start a Skinalyze face scan.")
+    }
+}
+
+// MARK: - Skin card (looks like the card; no photo)
+
+struct SkinCardEntry: TimelineEntry {
+    let date: Date
+    let snapshot: WidgetSnapshot
+    let mood: MascotMood
+}
+
+struct SkinCardProvider: TimelineProvider {
+    func placeholder(in context: Context) -> SkinCardEntry {
+        SkinCardEntry(date: .now, snapshot: WidgetSnapshot(lastScanDate: .now, breakoutIndex: 6, bandRaw: "mild", delta: -2, trend: []),
+                      mood: .happy)
+    }
+
+    func getSnapshot(in context: Context, completion: @escaping (SkinCardEntry) -> Void) {
+        completion(context.isPreview ? placeholder(in: context) : entry(at: .now))
+    }
+
+    func getTimeline(in context: Context, completion: @escaping (Timeline<SkinCardEntry>) -> Void) {
+        // The app reloads timelines after every scan; the daily refresh keeps Pimpi's mood current.
+        let next = Calendar.current.startOfDay(for: .now.addingTimeInterval(86_400))
+        completion(Timeline(entries: [entry(at: .now)], policy: .after(next)))
+    }
+
+    private func entry(at date: Date) -> SkinCardEntry {
+        SkinCardEntry(date: date, snapshot: WidgetSummary.load(),
+                      mood: EngagementShared.load().state(at: date, calendar: .current).mood)
+    }
+}
+
+struct SkinCardWidget: Widget {
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: "SkinCard", provider: SkinCardProvider()) { entry in
+            SkinCardWidgetView(snapshot: entry.snapshot, mood: entry.mood)
+                .containerBackground(for: .widget) { SkinCardWidgetView.background(for: entry.snapshot) }
+                .widgetURL(URL(string: entry.snapshot.breakoutIndex == nil ? "skinalyze://scan" : "skinalyze://timeline"))
+        }
+        .configurationDisplayName("Skin card")
+        .description("Your latest scan as a card. No photo.")
+        .supportedFamilies([.systemSmall])
     }
 }
 
