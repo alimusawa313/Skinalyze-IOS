@@ -60,8 +60,8 @@ with depth, no outlines, and moods.
   wobbles; still under Reduce Motion. `Skinalyze/Shared/Pimpi.swift`, commit `1095516`. Look approved by owner.
 - [x] **PI2 Pimpi on the Mirror** (Phase 1) — mood follows the streak: excited after a scan, sleepy when a scan is due,
   worried when the streak is at risk, sad when it breaks. · Free
-- [ ] **PI3 Pimpi widget** — home and lock screen; shows Pimpi's current mood + streak. · Free
-- [ ] **PI4 Notifications in Pimpi's voice** — gentle escalation ("I've been waiting with my magnifying glass…");
+- [x] **PI3 Pimpi widget** (Phase 2) — home and lock screen; shows Pimpi's current mood + streak. · Free
+- [x] **PI4 Notifications in Pimpi's voice** (Phase 2) — gentle escalation ("I've been waiting with my magnifying glass…");
   never about skin condition, never guilt about results. · Free
 - [ ] **PI5 Pimpi celebrations** — streak milestones, quest chests, first 3D scan. · Free
 - [ ] **PI6 Pimpi outfits and hats** — cosmetic rewards from chests; premium sets in Pro. · Free + Pro
@@ -117,7 +117,7 @@ with depth, no outlines, and moods.
 - [ ] **G9 Creator kit** — reel templates + affiliate code. · —
 - [ ] **G10 Share-sheet entry from TikTok Shop / Shopee / Tokopedia product pages** — extends the existing share
   extension. · Free
-- [ ] **G11 Sticker-card widgets** — home / lock screen widgets that look like the card. · Free
+- [ ] **G11 Sticker-card widgets** (moved to Phase 3) — home / lock screen widgets that look like the card. · Free
 
 ---
 

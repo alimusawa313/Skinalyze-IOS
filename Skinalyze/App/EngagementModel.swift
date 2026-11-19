@@ -155,5 +155,11 @@ final class EngagementModel {
         let reached = routine.milestone.map { Milestone(kind: .routine, value: $0) }
             ?? scan.milestone.map { Milestone(kind: .scan, value: $0) }
         if let reached, !store.celebrated.contains(reached.id) { milestone = reached }
+
+        // Widgets and reminders work from the same snapshot, evaluated at later times.
+        let snapshot = EngagementSnapshot(doneDays: doneDays.sorted(), ledger: ledger, weekendOff: weekendOff,
+                                          scanDates: scanDates, lastScanCelebration: store.lastScanCelebration)
+        EngagementShared.publish(snapshot)
+        Task { await PimpiReminders.reschedule(snapshot: snapshot) }
     }
 }

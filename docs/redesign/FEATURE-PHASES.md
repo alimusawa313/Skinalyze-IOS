@@ -75,8 +75,23 @@ weekly is the right scan rhythm.
 
 ---
 
-## Phase 2 — Pimpi widget and Pimpi's notifications  ☐
-**Ships:** PI3, PI4, G11 · **Size:** small–medium
+## Phase 2 — Pimpi widget and Pimpi's notifications  ☑
+**Ships:** PI3, PI4 (G11 moved out — see below) · **Size:** small–medium
+
+**Shipped (2026-11-19):**
+- [x] Shared engagement snapshot in the App Group (`EngagementSnapshot`, tolerant decoding, tested).
+- [x] Pimpi widget: small, lock-screen circular and rectangular. Mood and streak change through the day without
+  opening the app. Every family looked at in light and dark in the Simulator (`-pimpiWidgetGallery YES` draws the
+  same view the widget uses).
+- [x] `ReminderPlanner` — pure, tested: at most one notification a day, stops after three in a row with no visit.
+  "Reminders from Pimpi" switch in Profile replaces the old scan reminder.
+- [x] String catalog moved to `SharedSources/Localization` so app, widget and share extension share one file;
+  `check_strings.sh` covers all three. EN + ID complete.
+
+**Still open:**
+- [ ] **G11 sticker-card widget** — not built; it needs a small face-free card image written to the App Group.
+  Build it with Phase 3, which makes that card image anyway.
+- [ ] **Owner's phone:** add the widget to the home and lock screen; turn reminders on and confirm one arrives.
 
 **Build**
 1. Extend the widget snapshot (App Group) with streak and Pimpi mood; additive, old snapshots still decode (tested).
@@ -225,7 +240,7 @@ when picked.
 |---|---|---|---|
 | 0 Close out | open items | — | confirm 3D on phone |
 | 1 Streaks + Pimpi on Mirror | E1–E4, PI2 | 0 | scan rhythm (default weekly) |
-| 2 Widget + notifications | PI3, PI4, G11 | 1 | test on phone |
+| 2 Widget + notifications | PI3, PI4 | 1 | test on phone |
 | 3 Share cards | G2, G4, G5 | — (can run alongside 1–2) | — |
 | 4 Reel + turntable | G1, G3 | 3 | test on phone |
 | 5 Paywall | M1–M6, M8 | 3 (watermark), ideally 4 | prices, App Store Connect, existing-user policy |

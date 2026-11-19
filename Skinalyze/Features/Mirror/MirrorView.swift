@@ -77,7 +77,6 @@ struct MirrorView: View {
             let container = modelContext.container
             Task {
                 await WidgetSummary.refresh(from: container)
-                await ScanReminders.rescheduleIfEnabled()
             }
         }
         .onChange(of: model.captures.count) { old, new in

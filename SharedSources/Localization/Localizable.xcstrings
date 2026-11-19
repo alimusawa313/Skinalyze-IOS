@@ -152,6 +152,16 @@
     "%lld/3" : {
       "shouldTranslate" : false
     },
+    "%lldd since last scan" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld hr sejak pindaian terakhir"
+          }
+        }
+      }
+    },
     "1 week" : {
       "localizations" : {
         "id" : {
@@ -362,6 +372,16 @@
         }
       }
     },
+    "A new streak starts with one step." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rangkaian baru dimulai dari satu langkah."
+          }
+        }
+      }
+    },
     "A new streak starts with your next scan." : {
       "localizations" : {
         "id" : {
@@ -378,6 +398,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pindai satu menit, tersimpan pribadi di ponselmu. Pantau jerawat per area wajah dan lihat produk mana yang benar-benar membantu."
+          }
+        }
+      }
+    },
+    "A quick routine check-off keeps the streak going." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Centang rutinitas sebentar agar rangkaianmu berlanjut."
           }
         }
       }
@@ -468,6 +498,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sudut"
+          }
+        }
+      }
+    },
+    "At most one a day. Pimpi stops after three in a row." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paling banyak satu per hari. Pimpi berhenti setelah tiga kali berturut-turut."
           }
         }
       }
@@ -1002,6 +1042,16 @@
         }
       }
     },
+    "Done for today" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selesai untuk hari ini"
+          }
+        }
+      }
+    },
     "Done for today. See you tomorrow." : {
       "localizations" : {
         "id" : {
@@ -1198,6 +1248,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Depan"
+          }
+        }
+      }
+    },
+    "General information based on your profile, not medical advice." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informasi umum berdasarkan profilmu, bukan saran medis."
           }
         }
       }
@@ -1472,6 +1532,16 @@
         }
       }
     },
+    "I'll stop reminding you now. Come back whenever you like." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aku berhenti mengingatkan dulu ya. Kembali kapan pun kamu mau."
+          }
+        }
+      }
+    },
     "Includes ingredients suited to %@ skin." : {
       "localizations" : {
         "id" : {
@@ -1504,6 +1574,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Indeks %lld · %@"
+          }
+        }
+      }
+    },
+    "Index %lld%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Index %1$lld%2$@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indeks %1$lld%2$@"
           }
         }
       }
@@ -1578,6 +1664,16 @@
         }
       }
     },
+    "Keep your streak tonight" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jaga rangkaianmu malam ini"
+          }
+        }
+      }
+    },
     "Larger, deeper, firm bumps under the skin. If they hurt or linger, consider seeing a dermatologist." : {
       "localizations" : {
         "id" : {
@@ -1594,6 +1690,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hari terakhir untuk pindai minggu ini."
+          }
+        }
+      }
+    },
+    "Last nudge from Pimpi" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pengingat terakhir dari Pimpi"
           }
         }
       }
@@ -1908,6 +2014,16 @@
         }
       }
     },
+    "No scans yet" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belum ada pindaian"
+          }
+        }
+      }
+    },
     "No scans yet. Say “Start a skin scan in Skinalyze” to begin." : {
       "localizations" : {
         "id" : {
@@ -2048,12 +2164,32 @@
         }
       }
     },
+    "One routine step tonight keeps your %lld-day streak." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satu langkah rutinitas malam ini menjaga rangkaian %lld harimu."
+          }
+        }
+      }
+    },
     "Open Settings" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Buka Pengaturan"
+          }
+        }
+      }
+    },
+    "Open Skinalyze once to set up your skin profile, then share again." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka Skinalyze sekali untuk menyiapkan profil kulitmu, lalu bagikan lagi."
           }
         }
       }
@@ -2200,6 +2336,36 @@
     },
     "Pimpi" : {
       "shouldTranslate" : false
+    },
+    "Pimpi and your streak." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pimpi dan rangkaianmu."
+          }
+        }
+      }
+    },
+    "Pimpi is keeping your streak warm" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pimpi menjaga rangkaianmu tetap hangat"
+          }
+        }
+      }
+    },
+    "Pimpi misses you" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pimpi kangen kamu"
+          }
+        }
+      }
     },
     "Pimpi. No routine streak yet" : {
       "localizations" : {
@@ -2351,12 +2517,32 @@
         }
       }
     },
+    "Reading ingredients…" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membaca kandungan…"
+          }
+        }
+      }
+    },
     "Reading your skin…" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Membaca kulitmu…"
+          }
+        }
+      }
+    },
+    "Reminders from Pimpi" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pengingat dari Pimpi"
           }
         }
       }
@@ -2451,6 +2637,16 @@
         }
       }
     },
+    "Routine waiting" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rutinitas menunggu"
+          }
+        }
+      }
+    },
     "Same" : {
       "localizations" : {
         "id" : {
@@ -2477,6 +2673,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Disimpan dengan versi sebelumnya — jumlah ditampilkan sesuai catatan."
+          }
+        }
+      }
+    },
+    "Scan" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindai"
           }
         }
       }
@@ -2517,6 +2723,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pindai paling lambat besok agar tetap berlanjut."
+          }
+        }
+      }
+    },
+    "Scan day" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hari pindai"
           }
         }
       }
@@ -2597,6 +2813,16 @@
         }
       }
     },
+    "Scan skin" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindai kulit"
+          }
+        }
+      }
+    },
     "Scan streak" : {
       "localizations" : {
         "id" : {
@@ -2613,6 +2839,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sudah pindai minggu ini."
+          }
+        }
+      }
+    },
+    "Scanned today" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sudah pindai hari ini"
           }
         }
       }
@@ -2687,6 +2923,16 @@
         }
       }
     },
+    "Share a photo of the ingredient list for a better read." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bagikan foto daftar kandungan agar terbaca lebih baik."
+          }
+        }
+      }
+    },
     "Shelf" : {
       "localizations" : {
         "id" : {
@@ -2757,12 +3003,32 @@
         }
       }
     },
+    "Skin" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kulit"
+          }
+        }
+      }
+    },
     "Skin looks calmer than your recent scans." : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kulit tampak lebih tenang dari pindaian terakhir."
+          }
+        }
+      }
+    },
+    "Skin trend" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tren kulit"
           }
         }
       }
@@ -2907,6 +3173,16 @@
         }
       }
     },
+    "Start a Skinalyze face scan." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mulai pindai wajah Skinalyze."
+          }
+        }
+      }
+    },
     "Start a scan" : {
       "localizations" : {
         "id" : {
@@ -2923,6 +3199,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mulai pindai kulit"
+          }
+        }
+      }
+    },
+    "Start a streak today" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mulai rangkaian hari ini"
           }
         }
       }
@@ -2959,6 +3245,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Langkah %1$lld dari %2$lld"
+          }
+        }
+      }
+    },
+    "Still here with my magnifying glass" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masih di sini dengan kaca pembesarku"
           }
         }
       }
@@ -3069,6 +3365,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tetap ambil foto"
+          }
+        }
+      }
+    },
+    "Tap to scan" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketuk untuk pindai"
           }
         }
       }
@@ -3485,6 +3791,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Indeks jerawat terbarumu %1$lld (%2$@), %3$@ dari pindaian sebelumnya."
+          }
+        }
+      }
+    },
+    "Your latest breakout index, its change, and days since your last scan." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indeks jerawat terbarumu, perubahannya, dan jumlah hari sejak pindaian terakhir."
           }
         }
       }

@@ -1,6 +1,6 @@
 #!/bin/zsh
-# Keeps the string catalog complete: every user-facing string (app + SkinalyzeKit) must be in
-# Skinalyze/Localizable.xcstrings with an Indonesian translation, or be marked do-not-translate.
+# Keeps the string catalog complete: every user-facing string (app, widgets, share extension, SkinalyzeKit) must be in
+# SharedSources/Localization/Localizable.xcstrings with an Indonesian translation, or be marked do-not-translate.
 #
 # It builds once with the compiler's string extraction on, syncs any newly found keys into the catalog (existing
 # translations are untouched, nothing is removed), then fails listing the keys that still need Indonesian.
@@ -11,7 +11,7 @@ cd "$(dirname "$0")/.."
 
 SIMULATOR="${1:-iPhone 17}"
 DERIVED=".build/LocData"
-CATALOG="Skinalyze/Localizable.xcstrings"
+CATALOG="SharedSources/Localization/Localizable.xcstrings"
 
 echo "▶ Extracting strings (build with SWIFT_EMIT_LOC_STRINGS)…"
 xcodebuild -project Skinalyze.xcodeproj -scheme Skinalyze \
@@ -22,7 +22,8 @@ xcodebuild -project Skinalyze.xcodeproj -scheme Skinalyze \
 files=()
 while IFS= read -r file; do files+=("$file"); done < <(
   find "$DERIVED/Build/Intermediates.noindex" \
-    \( -path "*Skinalyze.build/*/Skinalyze.build*" -o -path "*SkinalyzeKit.build*" \) -name "*.stringsdata"
+    \( -path "*Skinalyze.build/*/Skinalyze.build*" -o -path "*SkinalyzeWidgets.build*" -o -path "*ProductCheckShare.build*" \
+       -o -path "*SkinalyzeKit.build*" \) -name "*.stringsdata"
 )
 if (( ${#files[@]} == 0 )); then
   echo "✘ No extracted strings found — did the build fail?" >&2

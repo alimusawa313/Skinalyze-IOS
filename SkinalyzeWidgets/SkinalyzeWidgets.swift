@@ -8,6 +8,7 @@ import SkinalyzeKit
 struct SkinalyzeWidgetBundle: WidgetBundle {
     var body: some Widget {
         SkinTrendWidget()
+        PimpiWidget()
         StartScanControl()
     }
 }
@@ -117,4 +118,61 @@ struct StartScanControl: ControlWidget {
         .displayName("Scan skin")
         .description("Start a Skinalyze face scan.")
     }
+}
+
+// MARK: - Pimpi (streak + mood)
+
+struct PimpiEntry: TimelineEntry {
+    let date: Date
+    let state: EngagementSnapshot.State
+}
+
+/// Works the streaks and Pimpi's mood out from the shared snapshot at each entry's time, so the widget changes
+/// through the day (worried in the evening, a fresh day after midnight) without the app being opened.
+struct PimpiProvider: TimelineProvider {
+    private static let sample = EngagementSnapshot.State(
+        routine: RoutineStreak(count: 5, status: .doneToday, milestone: nil),
+        scan: ScanStreak(weeks: 3, status: .doneThisWeek, milestone: nil), mood: .happy)
+
+    func placeholder(in context: Context) -> PimpiEntry { PimpiEntry(date: .now, state: Self.sample) }
+
+    func getSnapshot(in context: Context, completion: @escaping (PimpiEntry) -> Void) {
+        completion(context.isPreview ? placeholder(in: context) : entry(at: .now))
+    }
+
+    func getTimeline(in context: Context, completion: @escaping (Timeline<PimpiEntry>) -> Void) {
+        let calendar = Calendar.current
+        let now = Date.now
+        let startOfTomorrow = calendar.startOfDay(for: now.addingTimeInterval(86_400))
+        // Moments today when the state can change by itself.
+        let hours = [StreakEngine.atRiskHour, PimpiMoodEngine.sleepyFromHour]
+        let moments = hours.compactMap { calendar.date(bySettingHour: $0, minute: 0, second: 0, of: now) }.filter { $0 > now }
+        let dates = [now] + moments + [startOfTomorrow.addingTimeInterval(60)]
+        completion(Timeline(entries: dates.map(entry(at:)), policy: .after(startOfTomorrow.addingTimeInterval(3600 * 6))))
+    }
+
+    private func entry(at date: Date) -> PimpiEntry {
+        PimpiEntry(date: date, state: EngagementShared.load().state(at: date, calendar: .current))
+    }
+}
+
+struct PimpiWidget: Widget {
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: "Pimpi", provider: PimpiProvider()) { entry in
+            PimpiWidgetEntryView(entry: entry)
+                .containerBackground(Color.ds.canvas, for: .widget)
+                .widgetURL(URL(string: "skinalyze://today"))
+        }
+        .configurationDisplayName("Pimpi")
+        .description("Pimpi and your streak.")
+        .supportedFamilies([.systemSmall, .accessoryCircular, .accessoryRectangular])
+    }
+}
+
+/// Reads the family the system asked for and hands it to the shared view.
+private struct PimpiWidgetEntryView: View {
+    let entry: PimpiEntry
+    @Environment(\.widgetFamily) private var family
+
+    var body: some View { PimpiWidgetView(state: entry.state, family: family) }
 }

@@ -12,6 +12,7 @@ struct AppShell: View {
     @State private var engagement = EngagementModel()
     #if DEBUG
     @State private var showsPimpiGallery = UserDefaults.standard.bool(forKey: "pimpiGallery")
+    @State private var showsPimpiWidgetGallery = UserDefaults.standard.bool(forKey: "pimpiWidgetGallery")
     #endif
 
     var body: some View {
@@ -48,6 +49,7 @@ struct AppShell: View {
         .environment(engagement)
         #if DEBUG
         .fullScreenCover(isPresented: $showsPimpiGallery) { PimpiGallery() }
+        .fullScreenCover(isPresented: $showsPimpiWidgetGallery) { PimpiWidgetGallery() }
         #endif
         .onOpenURL { appModel.open($0) }
         #if DEBUG
