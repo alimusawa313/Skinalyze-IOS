@@ -80,6 +80,13 @@ public enum Palette {
     public static let positive = ColorToken("positive", light: 0x1F8A5B, dark: 0x4CD49A)
     public static let caution = ColorToken("caution", light: 0xB06A00, dark: 0xF2A93B)
 
+    /// Pimpi, the mascot (the original character's pink, navy eyes and cream cheeks, with depth instead of outlines).
+    public static let pimpiBody = ColorToken("pimpiBody", light: 0xFF7F8A, dark: 0xFF8A94)
+    public static let pimpiBodyDeep = ColorToken("pimpiBodyDeep", light: 0xEC5A72, dark: 0xF0627A)
+    public static let pimpiHighlight = ColorToken("pimpiHighlight", light: 0xFFB4BA, dark: 0xFFBFC4)
+    public static let pimpiEye = ColorToken("pimpiEye", light: 0x23224F, dark: 0x23224F)
+    public static let pimpiCheek = ColorToken("pimpiCheek", light: 0xFFF3E4, dark: 0xFFF3E4)
+
     /// Calm → mild → active → flared. Always paired with a label + shape, never colour alone.
     public static let bandRamp: [ColorToken] = [
         ColorToken("calm", light: 0xBFEFE2, dark: 0x3FBFA0),
@@ -103,6 +110,12 @@ public extension Color {
         public static var signalSoft: Color { Palette.signal.color.opacity(0.14) }
         public static var positive: Color { Palette.positive.color }
         public static var caution: Color { Palette.caution.color }
+
+        public static var pimpiBody: Color { Palette.pimpiBody.color }
+        public static var pimpiBodyDeep: Color { Palette.pimpiBodyDeep.color }
+        public static var pimpiHighlight: Color { Palette.pimpiHighlight.color }
+        public static var pimpiEye: Color { Palette.pimpiEye.color }
+        public static var pimpiCheek: Color { Palette.pimpiCheek.color }
 
         public static func band(_ band: BreakoutBand) -> Color {
             Palette.bandRamp[BreakoutBand.allCases.firstIndex(of: band) ?? 0].color
