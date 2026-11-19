@@ -92,8 +92,64 @@ final class CoreFlowsUITests: XCTestCase {
         attachScreenshot("Glow-up reel")
     }
 
+    /// Relaunches with extra arguments (a free account, or a scan already taken today).
+    private func relaunch(_ extra: [String]) {
+        app.terminate()
+        app.launchArguments = ["-seedDemoData"] + extra
+        app.launch()
+    }
+
+    /// Free accounts: after today's saved scan, the shutter explains Pro and the camera stays on.
+    func testSecondScanTodayOpensPaywall() {
+        relaunch(["-proOverride", "free", "-demoNewestDaysAgo", "0", "-resetDemoData", "YES"])
+        let note = app.staticTexts["Next free scan at midnight"]
+        XCTAssertTrue(note.waitForExistence(timeout: 15))
+        let shutter = app.buttons["mirrorShutter"]
+        XCTAssertTrue(shutter.isEnabled)
+        shutter.tap()
+        XCTAssertTrue(app.buttons["paywallClose"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["Restore purchases"].exists)
+        attachScreenshot("Paywall · scan limit")
+        app.buttons["paywallClose"].tap()
+        XCTAssertTrue(shutter.waitForExistence(timeout: 5))
+    }
+
+    /// Profile opens the paywall; the plans come from the App Store (the local StoreKit file here).
+    func testPaywallFromProfile() {
+        relaunch(["-proOverride", "free"])
+        XCTAssertTrue(app.buttons["mirrorIndex"].waitForExistence(timeout: 10))
+        app.buttons["Profile and settings"].tap()
+        let pro = app.buttons["profilePro"]
+        XCTAssertTrue(pro.waitForExistence(timeout: 10))
+        pro.tap()
+        XCTAssertTrue(app.buttons["paywallClose"].waitForExistence(timeout: 10))
+        let plans = app.buttons["plan.com.Patani.Skinalyze.pro.annual"]
+        let unavailable = app.otherElements["paywallUnavailable"]
+        _ = plans.waitForExistence(timeout: 10)
+        XCTAssertTrue(plans.exists || unavailable.exists)
+        attachScreenshot("Paywall · profile")
+    }
+
+    /// Turning the 3D head asks for Pro on a free account.
+    func testTurning3DAsksForPro() {
+        relaunch(["-proOverride", "free"])
+        let index = app.buttons["mirrorIndex"]
+        XCTAssertTrue(index.waitForExistence(timeout: 10))
+        let hint = app.staticTexts["Drag to turn · pinch to zoom · double-tap to reset"]
+        for _ in 0..<3 where !hint.exists {
+            index.tap()
+            _ = hint.waitForExistence(timeout: 4)
+        }
+        XCTAssertTrue(hint.exists)
+        let head = hint.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: -4))
+        head.press(forDuration: 0.1, thenDragTo: hint.coordinate(withNormalizedOffset: CGVector(dx: 1.4, dy: -4)))
+        XCTAssertTrue(app.buttons["paywallClose"].waitForExistence(timeout: 10))
+        attachScreenshot("Paywall · 3D turn")
+    }
+
     /// A scan with a 3D head can be exported as a turntable video.
     func testTurntableIsMade() {
+        relaunch(["-proOverride", "pro"])
         openDock("dock.deck")
         let firstRow = scanRows.element(boundBy: 0)
         XCTAssertTrue(firstRow.waitForExistence(timeout: 10))

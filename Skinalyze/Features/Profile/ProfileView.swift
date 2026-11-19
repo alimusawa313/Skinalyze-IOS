@@ -18,6 +18,10 @@ struct ProfileView: View {
     var body: some View {
         NavigationStack {
             Form {
+                Section { ProStatusRow() }
+                #if DEBUG
+                Section { DebugAccessToggle() } footer: { Text(verbatim: "Debug builds only.") }
+                #endif
                 Section("You") {
                     TextField("Name", text: $name).textContentType(.givenName)
                     Picker("Skin type", selection: $skinTypeRaw) {

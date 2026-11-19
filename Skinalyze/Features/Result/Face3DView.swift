@@ -8,6 +8,9 @@ import SkinalyzeKit
 /// to reset; tap a pin for what it is. The model auto-fits its frame. VoiceOver users get the zone list instead.
 struct Face3DView: View {
     let mesh: FaceMeshRecord
+    /// Without it, a drag asks for Pro instead of turning the head (pinch and pins still work).
+    var canTurn = true
+    var onLockedTurn: () -> Void = {}
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var yaw: Float = Face3DView.debugStartYaw
@@ -60,6 +63,13 @@ struct Face3DView: View {
         .gesture(
             DragGesture(minimumDistance: 4)
                 .onChanged { value in
+                    guard canTurn else {
+                        if dragStart == nil {
+                            dragStart = (yaw, pitch)
+                            onLockedTurn()
+                        }
+                        return
+                    }
                     let start = dragStart ?? (yaw, pitch)
                     dragStart = start
                     let targetYaw = start.yaw + Float(value.translation.width) * Self.dragSensitivity

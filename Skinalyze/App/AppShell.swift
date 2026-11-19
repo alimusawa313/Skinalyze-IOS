@@ -10,6 +10,8 @@ struct AppShell: View {
     @State private var capture = ScanCaptureModel()
     @State private var isKeyboardVisible = false
     @State private var engagement = EngagementModel()
+    @State private var paywall: PaywallReason?
+    @Environment(ProAccess.self) private var access: ProAccess?
     #if DEBUG
     @State private var showsPimpiGallery = UserDefaults.standard.bool(forKey: "pimpiGallery")
     @State private var showsPimpiWidgetGallery = UserDefaults.standard.bool(forKey: "pimpiWidgetGallery")
@@ -38,7 +40,7 @@ struct AppShell: View {
             isKeyboardVisible = false
         }
         .animation(MotionToken.bouncy.resolved(reduceMotion: reduceMotion).animation, value: isKeyboardVisible)
-        .sheet(item: $appModel.presentedScan) { presented in
+        .sheet(item: $appModel.presentedScan, onDismiss: offerProAfterFirstScan) { presented in
             NavigationStack {
                 if let session = modelContext.model(for: presented.id) as? ScanSession {
                     ScanResultView(session: session, isFreshScan: true)
@@ -46,6 +48,7 @@ struct AppShell: View {
             }
         }
         .sheet(isPresented: $appModel.isShowingProfile) { ProfileView() }
+        .paywallSheet($paywall)
         .environment(engagement)
         #if DEBUG
         .fullScreenCover(isPresented: $showsPimpiGallery) { PimpiGallery() }
@@ -119,6 +122,15 @@ struct AppShell: View {
         case .timeline: DeckView().accessibilityIdentifier("deckView")
         case .products, .search: ShelfView().accessibilityIdentifier("shelfView")
         }
+    }
+
+    /// Once, when the very first scan result is closed: what Pro adds. Never before a result has been seen.
+    private func offerProAfterFirstScan() {
+        let shownKey = "welcomePaywallShown"
+        guard let access, !access.policy.hasFullAccess, !UserDefaults.standard.bool(forKey: shownKey),
+              (try? modelContext.fetchCount(FetchDescriptor<ScanSession>())) == 1 else { return }
+        UserDefaults.standard.set(true, forKey: shownKey)
+        paywall = .welcome
     }
 }
 

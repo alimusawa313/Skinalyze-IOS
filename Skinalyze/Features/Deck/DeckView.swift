@@ -15,6 +15,8 @@ struct DeckView: View {
     @State private var picked: [ScanSession] = []
     @State private var comparePair: ComparePair?
     @State private var showsReel = false
+    @State private var paywall: PaywallReason?
+    @Environment(ProAccess.self) private var access: ProAccess?
 
     struct ComparePair: Identifiable {
         let earlier: ScanSession
@@ -46,6 +48,7 @@ struct DeckView: View {
             NavigationStack { CompareView(earlier: pair.earlier, later: pair.later) }
         }
         .sheet(isPresented: $showsReel) { VideoShareSheet(source: .reel(scans: scans)) }
+        .paywallSheet($paywall)
     }
 
     // MARK: Parts
@@ -117,7 +120,16 @@ struct DeckView: View {
 
     @ViewBuilder private func card(_ scan: ScanSession) -> some View {
         let isPicked = picked.contains(scan)
-        if isPicking {
+        let policy = access?.policy ?? AccessPolicy(hasFullAccess: true)
+        if !policy.canOpenScan(atPosition: scans.firstIndex(of: scan) ?? 0) {
+            Button { paywall = .history } label: {
+                SkinCard(session: scan, size: .deck)
+                    .overlay { LockedCardCover() }
+            }
+            .buttonStyle(.bouncy(0.95))
+            .accessibilityHint("Opens Skinalyze Pro")
+            .accessibilityIdentifier("lockedScan")
+        } else if isPicking {
             Button { toggle(scan) } label: {
                 SkinCard(session: scan, size: .deck)
                     .overlay(alignment: .topTrailing) {

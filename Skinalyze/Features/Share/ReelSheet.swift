@@ -10,7 +10,7 @@ struct VideoShareSource: Identifiable {
     let id = UUID()
     let title: LocalizedStringKey
     let offersHideFace: Bool
-    let make: @MainActor (_ hidesFace: Bool, _ progress: @escaping Progress) async throws -> URL
+    let make: @MainActor (_ hidesFace: Bool, _ showsWatermark: Bool, _ progress: @escaping Progress) async throws -> URL
 }
 
 extension VideoShareSource {
@@ -18,16 +18,17 @@ extension VideoShareSource {
     @MainActor
     static func reel(scans: [ScanSession]) -> VideoShareSource {
         let inputs = ReelExporter.inputs(from: scans)
-        return VideoShareSource(title: "Glow-up reel", offersHideFace: true) { hidesFace, progress in
+        return VideoShareSource(title: "Glow-up reel", offersHideFace: true) { hidesFace, showsWatermark, progress in
             let prepared = try await ReelExporter.prepare(inputs, hidesFace: hidesFace)
-            return try await ReelExporter.export(prepared, name: hidesFace ? "skinalyze-reel-private" : "skinalyze-reel", progress: progress)
+            return try await ReelExporter.export(prepared, name: hidesFace ? "skinalyze-reel-private" : "skinalyze-reel",
+                                                 showsWatermark: showsWatermark, progress: progress)
         }
     }
 
     /// The scanned head turning as far as each side was captured.
     static func turntable(_ input: TurntableInput) -> VideoShareSource {
-        VideoShareSource(title: "3D turntable", offersHideFace: false) { _, progress in
-            try await TurntableExporter.export(input, name: "skinalyze-3d", progress: progress)
+        VideoShareSource(title: "3D turntable", offersHideFace: false) { _, showsWatermark, progress in
+            try await TurntableExporter.export(input, name: "skinalyze-3d", showsWatermark: showsWatermark, progress: progress)
         }
     }
 }
@@ -40,6 +41,7 @@ struct VideoShareSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(ProAccess.self) private var access: ProAccess?
     @State private var hidesFace = false
     @State private var phase = Phase.working(0)
     @State private var player: AVQueuePlayer?
@@ -142,7 +144,8 @@ struct VideoShareSheet: View {
         looper = nil
         phase = .working(0)
         do {
-            let url = try await source.make(hidesFace) { phase = .working($0) }
+            let watermark = ShareCardPolicy.showsWatermark(isPro: access?.policy.hasFullAccess ?? false)
+            let url = try await source.make(hidesFace, watermark) { phase = .working($0) }
             try Task.checkCancellation()
             let queue = AVQueuePlayer()
             queue.isMuted = true

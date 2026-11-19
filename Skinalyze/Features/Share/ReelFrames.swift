@@ -17,6 +17,7 @@ struct ReelFrameView: View {
     let frame: ReelPlan.Frame
     /// 0…1 through the whole reel.
     let progress: Double
+    var showsWatermark = true
 
     private static let format = ShareCardFormat.story
     private static let barHeight: CGFloat = 4
@@ -47,7 +48,7 @@ struct ReelFrameView: View {
                 Text("Breakout index · \(BandCopy.title(labelled.band))").font(CardMetrics.body)
             }
             progressBar
-            if ShareCardPolicy.showsWatermark(isPro: false) { ShareWatermark() }
+            if showsWatermark { ShareWatermark() }
         }
         .padding(Spacing.lg)
         .frame(width: Self.format.pointSize.width, height: Self.format.pointSize.height)

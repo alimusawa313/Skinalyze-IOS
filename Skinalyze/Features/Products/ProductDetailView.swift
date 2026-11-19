@@ -65,6 +65,7 @@ struct ProductDetailView: View {
     let product: CatalogProduct
     @AppStorage(UserProfile.Key.skinType) private var skinTypeRaw = ""
     @Query(sort: \ScanSession.createdAt, order: .reverse) private var scans: [ScanSession]
+    @State private var checkAllowed: Bool?
 
     var body: some View {
         let guidance = SkinTypeGuidance.for(SkinType(stored: skinTypeRaw))
@@ -82,7 +83,9 @@ struct ProductDetailView: View {
                         }
                     }
                 }
-                ProductCheckSummary(product: product)
+                ProductCheckGate(key: "product-\(product.productID)", allowed: $checkAllowed) {
+                    ProductCheckSummary(product: product)
+                }
                 VStack(alignment: .leading, spacing: Spacing.xs) {
                     SectionTitle("Ingredients")
                     if product.ingredientList.isEmpty {
@@ -119,11 +122,13 @@ struct ProductDetailView: View {
         .navigationTitle(product.name)
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
+            if checkAllowed == true {
             ShareCardButton {
                 // The same rule-based verdict the page shows.
                 .verdict(product: product, result: ProductVerdictEngine.evaluate(
                     ingredients: product.ingredientList.map { $0.lowercased() },
                     profile: VerdictProfileBuilder.make(latest: scans.first)))
+            }
             }
         }
     }

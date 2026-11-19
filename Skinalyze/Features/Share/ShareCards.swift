@@ -61,11 +61,12 @@ enum CardMetrics {
 struct ShareCardView: View {
     let content: ShareCardContent
     let format: ShareCardFormat
+    var showsWatermark = true
 
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             card.frame(maxWidth: .infinity, maxHeight: .infinity)
-            if ShareCardPolicy.showsWatermark(isPro: false) { ShareWatermark() }
+            if showsWatermark { ShareWatermark() }
         }
         .padding(Spacing.lg)
         .frame(width: format.pointSize.width, height: format.pointSize.height)

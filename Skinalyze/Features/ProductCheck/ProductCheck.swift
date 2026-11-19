@@ -106,6 +106,9 @@ struct LabelScannerView: View {
     @State private var recognizedText = ""
     @State private var result: VerdictResult?
     @State private var pastedText = ""
+    /// One label scan counts as one product check, however long the camera keeps reading it.
+    @State private var checkKey = "label-\(UUID().uuidString)"
+    @State private var checkAllowed: Bool?
 
     var body: some View {
         NavigationStack {
@@ -124,7 +127,9 @@ struct LabelScannerView: View {
                         .onChange(of: pastedText) { _, text in recognizedText = text }
                 }
                 if let result {
-                    ScrollView { VerdictCard(result: result) }
+                    ScrollView {
+                        ProductCheckGate(key: checkKey, allowed: $checkAllowed) { VerdictCard(result: result) }
+                    }
                 } else {
                     Text("Hold the ingredient list steady inside the frame.")
                         .font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)

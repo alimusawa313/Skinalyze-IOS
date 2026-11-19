@@ -48,6 +48,7 @@ struct ShareCardSheet: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.verticalSizeClass) private var verticalSizeClass
+    @Environment(ProAccess.self) private var access: ProAccess?
     @State private var format = ShareCardFormat.story
     @State private var hidesFace = false
     @State private var rendered: Rendered?
@@ -154,7 +155,8 @@ struct ShareCardSheet: View {
         failed = false
         let content = await source.content(hidesFace)
         guard !Task.isCancelled else { return }
-        guard let content, let image = ShareCardRenderer.image(of: content, format: format),
+        let watermark = ShareCardPolicy.showsWatermark(isPro: access?.policy.hasFullAccess ?? false)
+        guard let content, let image = ShareCardRenderer.image(of: content, format: format, showsWatermark: watermark),
               let url = ShareCardRenderer.write(image, name: "\(source.fileName)-\(format.rawValue)") else {
             failed = true
             return

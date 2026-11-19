@@ -151,16 +151,16 @@ a month, streaks, basic quests, first Skin School units.
 map, trigger insights, unlimited product checks, dupe finder, PDF pack, sync across devices, custom card themes and
 holo styles, extra streak freezes and repair, all of Skin School, premium Pimpi outfits, double glow points.
 
-- [ ] **M1 StoreKit subscriptions** — weekly, monthly, annual; 7-day trial. · —
-- [ ] **M2 Lifetime one-time purchase.** · —
+- [x] **M1 StoreKit subscriptions** — weekly, monthly, annual; 7-day trial. · —
+- [ ] ~~**M2 Lifetime one-time purchase.**~~ Dropped by owner (2026-11-19). · —
 - [ ] **M3 Localised pricing** — IDR, plus a student price. Actual price points: **owner decision, still open**. · —
-- [ ] **M4 Paywall screen** — Pimpi-led, shows what Pro adds; restore purchases; clear terms. · —
-- [ ] **M5 Paywall triggers** — after the first sticker moment; starting a second scan the same day (M8); opening an
+- [x] **M4 Paywall screen** — Pimpi-led, shows what Pro adds; restore purchases; clear terms. · —
+- [x] **M5 Paywall triggers** — after the first sticker moment; starting a second scan the same day (M8); opening an
   8th scan; first 3D turn; "export without watermark". Never before the first scan result. · —
-- [ ] **M6 Entitlement gating in code** — one tested place that answers "is this Pro?" · —
+- [x] **M6 Entitlement gating in code** — one tested place that answers "is this Pro?" · —
 - [ ] **M7 Affiliate links on product pages** — clearly labelled; must never influence the verdict (verdicts stay
   rule-based). · optional
-- [ ] **M8 Free scan limit: one saved scan per day** — Pro is unlimited. Details so it never feels unfair:
+- [x] **M8 Free scan limit: one saved scan per day** — Pro is unlimited. Details so it never feels unfair:
   only a scan that was analysed and saved counts (a cancelled scan, a retake during capture, or a failed analysis does
   not); the day resets at local midnight; the Mirror (live camera) stays open and shows when the next free scan is
   available; a second scan the same day opens the paywall instead of the capture. The limit (1/day) is a tunable

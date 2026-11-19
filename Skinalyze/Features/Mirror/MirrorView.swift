@@ -14,6 +14,8 @@ struct MirrorView: View {
     @AppStorage(UserProfile.Key.name) private var name = ""
     @AppStorage("routineLog") private var routineLogRaw = ""
     @Environment(EngagementModel.self) private var engagement
+    @Environment(ProAccess.self) private var access: ProAccess?
+    @State private var paywall: PaywallReason?
     /// Owned by the shell so the camera survives dock paging, folding and rotation.
     let model: ScanCaptureModel
 
@@ -26,6 +28,22 @@ struct MirrorView: View {
     #endif
 
     private var latest: ScanSession? { scans.first }
+
+    /// When today's free scan is used: the moment the next one opens.
+    private var nextFreeScan: Date? {
+        let policy = access?.policy ?? AccessPolicy(hasFullAccess: true)
+        guard case let .limitReached(next) = policy.scanAllowance(savedScanDates: scans.map(\.createdAt),
+                                                                  now: .now, calendar: .current) else { return nil }
+        return next
+    }
+
+    private func requestScan() {
+        if let nextFreeScan {
+            paywall = .scanLimit(nextFreeScan: nextFreeScan)
+        } else {
+            model.beginScan()
+        }
+    }
     private var band: BreakoutBand { latest?.band ?? .calm }
 
     private var isScanning: Bool {
@@ -65,10 +83,11 @@ struct MirrorView: View {
             }
         }
         .onChange(of: isScanning) { _, scanning in appModel.isScanning = scanning }
+        .paywallSheet($paywall)
         .onChange(of: appModel.pendingScan, initial: true) { _, pending in
             guard pending else { return }
             appModel.pendingScan = false
-            model.beginScan()
+            requestScan()
         }
         .onChange(of: model.state) { _, state in
             guard state == .finished else { return }
@@ -112,7 +131,8 @@ struct MirrorView: View {
         default:
             MirrorChrome(model: model, latest: latest, name: name, isScanning: isScanning,
                          showProfile: { appModel.isShowingProfile = true },
-                         openLatest: { latest.map { appModel.presentedScan = .init(id: $0.persistentModelID) } })
+                         openLatest: { latest.map { appModel.presentedScan = .init(id: $0.persistentModelID) } },
+                         nextFreeScan: nextFreeScan, requestScan: requestScan)
         }
     }
 
@@ -204,6 +224,9 @@ private struct MirrorChrome: View {
     let isScanning: Bool
     let showProfile: () -> Void
     let openLatest: () -> Void
+    /// Set when today's free scan is used.
+    let nextFreeScan: Date?
+    let requestScan: () -> Void
     @ScaledMetric(relativeTo: .largeTitle) private var indexSize: CGFloat = 96
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     /// Counts up to the real index on arrival — a small hello every time you open the app.
@@ -231,7 +254,7 @@ private struct MirrorChrome: View {
             .padding(.horizontal, Spacing.lg)
             .padding(.top, Spacing.md)
             Spacer(minLength: Spacing.md)
-            MirrorShutter(model: model, isScanning: isScanning)
+            MirrorShutter(model: model, isScanning: isScanning, nextFreeScan: nextFreeScan, startScan: requestScan)
                 .frame(maxWidth: .infinity)
                 .overlay(alignment: .trailing) {
                     if !isScanning {
@@ -298,6 +321,9 @@ private struct MirrorChrome: View {
 private struct MirrorShutter: View {
     let model: ScanCaptureModel
     let isScanning: Bool
+    /// Set when today's free scan is used; tapping then explains Pro instead of scanning.
+    let nextFreeScan: Date?
+    let startScan: () -> Void
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var breathing = false
 
@@ -307,7 +333,7 @@ private struct MirrorShutter: View {
                             rightProgress: isScanning ? progress.right : 0,
                             leftProgress: isScanning ? progress.left : 0)
         VStack(spacing: Spacing.md) {
-            Button { model.beginScan() } label: {
+            Button(action: startScan) {
                 ZStack {
                     ring.frame(width: 200, height: 200)
                     Circle()
@@ -335,12 +361,16 @@ private struct MirrorShutter: View {
                 SpringKeyframe(1.16, duration: 0.12, spring: .snappy)
                 SpringKeyframe(1.0, duration: 0.5, spring: .bouncy(extraBounce: 0.2))
             }
-            .disabled(isScanning || !model.isPreviewing)
+            .disabled(isScanning || (!model.isPreviewing && nextFreeScan == nil))
             .accessibilityIdentifier("mirrorShutter")
             .accessibilityLabel(isScanning ? Text("Scanning, \(model.captures.count) of 3 photos") : Text("Scan my skin"))
             .sensoryFeedback(.selection, trigger: ring.litCount)
 
-            if model.cameraUnavailable {
+            if nextFreeScan != nil, !isScanning {
+                Label("Next free scan at midnight", systemImage: "moon.stars")
+                    .font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
+                    .accessibilityIdentifier("nextFreeScan")
+            } else if model.cameraUnavailable {
                 Text("Camera unavailable — scan on a real iPhone.").font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
             } else if isScanning, model.canCaptureManually {
                 Button("Take photo anyway") { model.captureManually() }

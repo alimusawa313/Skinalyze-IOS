@@ -1,6 +1,36 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ a month" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ per bulan"
+          }
+        }
+      }
+    },
+    "%@ a week" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ per minggu"
+          }
+        }
+      }
+    },
+    "%@ a year" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ per tahun"
+          }
+        }
+      }
+    },
     "%@ on %@" : {
       "localizations" : {
         "en" : {
@@ -1182,6 +1212,26 @@
         }
       }
     },
+    "Everything Skinalyze can do, without limits." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semua yang bisa dilakukan Skinalyze, tanpa batas."
+          }
+        }
+      }
+    },
+    "Everything is unlocked" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semuanya terbuka"
+          }
+        }
+      }
+    },
     "Export" : {
       "localizations" : {
         "id" : {
@@ -1288,6 +1338,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dahi"
+          }
+        }
+      }
+    },
+    "Free keeps your newest %lld scans open. Pro opens them all." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versi gratis membuka %lld scan terbarumu. Pro membuka semuanya."
           }
         }
       }
@@ -1608,6 +1668,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aku berhenti mengingatkan dulu ya. Kembali kapan pun kamu mau."
+          }
+        }
+      }
+    },
+    "Includes a free trial" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Termasuk uji coba gratis"
           }
         }
       }
@@ -2064,6 +2134,16 @@
         }
       }
     },
+    "Next free scan at midnight" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan gratis berikutnya tengah malam"
+          }
+        }
+      }
+    },
     "No change" : {
       "localizations" : {
         "id" : {
@@ -2080,6 +2160,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Belum ada perubahan jelas sejak mulai memakai."
+          }
+        }
+      }
+    },
+    "No earlier purchase was found for this Apple Account." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada pembelian sebelumnya untuk Akun Apple ini."
           }
         }
       }
@@ -2294,6 +2384,16 @@
         }
       }
     },
+    "Opens Skinalyze Pro" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membuka Skinalyze Pro"
+          }
+        }
+      }
+    },
     "Opens Skinalyze straight into a three-angle face scan." : {
       "localizations" : {
         "id" : {
@@ -2467,6 +2567,26 @@
         }
       }
     },
+    "Plans aren't available right now." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paket belum tersedia saat ini."
+          }
+        }
+      }
+    },
+    "Plans renew automatically until you cancel. Cancel any time in Settings, at least a day before renewal. A free trial turns into the paid plan when it ends." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paket diperpanjang otomatis sampai kamu membatalkannya. Batalkan kapan saja di Pengaturan, paling lambat sehari sebelum perpanjangan. Uji coba gratis berubah menjadi paket berbayar saat berakhir."
+          }
+        }
+      }
+    },
     "Post" : {
       "localizations" : {
         "id" : {
@@ -2543,6 +2663,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mungkin kurang cocok"
+          }
+        }
+      }
+    },
+    "Product check" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cek produk"
           }
         }
       }
@@ -2673,6 +2803,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Perbaiki hari kemarin yang terlewat"
+          }
+        }
+      }
+    },
+    "Restore purchases" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pulihkan pembelian"
           }
         }
       }
@@ -2833,6 +2973,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pindai label"
+          }
+        }
+      }
+    },
+    "Scan as often as you like" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan sesering yang kamu mau"
           }
         }
       }
@@ -3003,6 +3153,16 @@
         }
       }
     },
+    "See Skinalyze Pro" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lihat Skinalyze Pro"
+          }
+        }
+      }
+    },
     "See how your skin is changing" : {
       "localizations" : {
         "id" : {
@@ -3069,6 +3229,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bagikan foto daftar kandungan agar terbaca lebih baik."
+          }
+        }
+      }
+    },
+    "Share without the Skinalyze mark" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bagikan tanpa tanda Skinalyze"
           }
         }
       }
@@ -3199,6 +3369,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Jenis kulit"
+          }
+        }
+      }
+    },
+    "Skinalyze Pro is active" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skinalyze Pro aktif"
           }
         }
       }
@@ -3403,6 +3583,16 @@
         }
       }
     },
+    "Start free trial" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mulai uji coba gratis"
+          }
+        }
+      }
+    },
     "Start using Skinalyze" : {
       "localizations" : {
         "id" : {
@@ -3589,6 +3779,46 @@
         }
       }
     },
+    "Terms of use" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketentuan penggunaan"
+          }
+        }
+      }
+    },
+    "That was your first scan. Pro lets you scan as often as you like." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Itu scan pertamamu. Dengan Pro kamu bisa scan sesering yang kamu mau."
+          }
+        }
+      }
+    },
+    "The 3D turntable video comes with Pro." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video putaran 3D tersedia dengan Pro."
+          }
+        }
+      }
+    },
+    "The purchase didn't go through. You weren't charged." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pembelian tidak berhasil. Kamu tidak dikenai biaya."
+          }
+        }
+      }
+    },
     "This removes them from this iPhone and your iCloud. It can't be undone." : {
       "localizations" : {
         "id" : {
@@ -3649,6 +3879,16 @@
         }
       }
     },
+    "Today's free scan is done. Your next one opens at midnight." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan gratis hari ini sudah dipakai. Scan berikutnya terbuka tengah malam."
+          }
+        }
+      }
+    },
     "Toner" : {
       "localizations" : {
         "id" : {
@@ -3699,6 +3939,26 @@
         }
       }
     },
+    "Turn your 3D scan and export the turntable" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Putar scan 3D-mu dan ekspor videonya"
+          }
+        }
+      }
+    },
+    "Turn your 3D scan and see every side with Pro." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Putar scan 3D-mu dan lihat setiap sisi dengan Pro."
+          }
+        }
+      }
+    },
     "Turn your head to your left" : {
       "localizations" : {
         "id" : {
@@ -3725,6 +3985,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Memahami kulitku"
+          }
+        }
+      }
+    },
+    "Unlimited product checks" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cek produk tanpa batas"
           }
         }
       }
@@ -3929,6 +4199,36 @@
         }
       }
     },
+    "You were here before Pro, so you keep it all." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu sudah di sini sebelum ada Pro, jadi semuanya tetap milikmu."
+          }
+        }
+      }
+    },
+    "You've used this month's %lld free product checks." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu sudah memakai %lld cek produk gratis bulan ini."
+          }
+        }
+      }
+    },
+    "You've used this month's %lld free product checks. Products you already checked stay open." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu sudah memakai %lld cek produk gratis bulan ini. Produk yang sudah dicek tetap terbuka."
+          }
+        }
+      }
+    },
     "Your %@ has been more active three scans in a row." : {
       "localizations" : {
         "id" : {
@@ -4045,6 +4345,16 @@
         }
       }
     },
+    "Your purchase is waiting for approval." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pembelianmu menunggu persetujuan."
+          }
+        }
+      }
+    },
     "Your routine" : {
       "localizations" : {
         "id" : {
@@ -4091,6 +4401,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Videomu dengan wajah disembunyikan"
+          }
+        }
+      }
+    },
+    "Your whole history and Compare" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seluruh riwayat dan Bandingkan"
           }
         }
       }

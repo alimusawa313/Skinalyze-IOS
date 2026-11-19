@@ -32,6 +32,8 @@ struct ScanResultView: View {
     @Environment(EngagementModel.self) private var engagement: EngagementModel?
     @State private var sharedCard: ShareCardSource?
     @State private var sharedVideo: VideoShareSource?
+    @State private var paywall: PaywallReason?
+    @Environment(ProAccess.self) private var access: ProAccess?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Query(sort: \ScanSession.createdAt, order: .reverse) private var allScans: [ScanSession]
     @AppStorage(UserProfile.Key.skinType) private var skinTypeRaw = ""
@@ -88,6 +90,7 @@ struct ScanResultView: View {
         }
         .sensoryFeedback(Haptic.scrub, trigger: chapter)
         .sheet(item: $sharedVideo) { VideoShareSheet(source: $0) }
+        .paywallSheet($paywall)
         .sheet(item: $sharedCard) { ShareCardSheet(source: $0) }
         .sheet(isPresented: $showsSources) {
             SourcesView(skinType: SkinType(stored: skinTypeRaw))
@@ -96,6 +99,8 @@ struct ScanResultView: View {
 
     // MARK: Sharing
 
+    private var policy: AccessPolicy { access?.policy ?? AccessPolicy(hasFullAccess: true) }
+
     /// Scans with a 3D head offer the turntable video as well as the card; others share the card directly.
     @ViewBuilder private var shareControl: some View {
         let label = Label("Share", systemImage: "square.and.arrow.up")
@@ -103,7 +108,11 @@ struct ScanResultView: View {
             Menu {
                 Button("Skin card", systemImage: "rectangle.portrait") { shareCard() }
                 Button("3D turntable", systemImage: "rotate.3d") {
-                    sharedVideo = TurntableInput(session: session).map(VideoShareSource.turntable)
+                    if policy.allows(.turntableExport) {
+                        sharedVideo = TurntableInput(session: session).map(VideoShareSource.turntable)
+                    } else {
+                        paywall = .turntable
+                    }
                 }
             } label: { label }
             .accessibilityIdentifier("shareCard")
@@ -175,7 +184,7 @@ struct ScanResultView: View {
                     .buttonStyle(.glass)
             }
             if shows3D, let mesh = session.faceMesh {
-                Face3DView(mesh: mesh)
+                Face3DView(mesh: mesh, canTurn: policy.allows(.turn3D), onLockedTurn: { paywall = .turn3D })
                     .transition(.scale(scale: 0.85).combined(with: .opacity))
                 Text("Drag to turn · pinch to zoom · double-tap to reset")
                     .font(.ds.caption).foregroundStyle(.secondary)

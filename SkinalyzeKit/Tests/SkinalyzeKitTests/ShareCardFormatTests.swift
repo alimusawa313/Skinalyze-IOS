@@ -25,9 +25,9 @@ struct ShareCardFormatTests {
         #expect(ShareCardFormat.allCases.first == .story)
     }
 
-    @Test("The watermark is on for everyone until the paywall decides otherwise")
+    @Test("Free exports carry the Skinalyze mark; full access shares without it")
     func watermark() {
         #expect(ShareCardPolicy.showsWatermark(isPro: false))
-        #expect(ShareCardPolicy.showsWatermark(isPro: true))
+        #expect(!ShareCardPolicy.showsWatermark(isPro: true))
     }
 }

@@ -35,6 +35,6 @@ public enum ShareCardFormat: String, CaseIterable, Sendable, Identifiable {
 
 /// The one place that decides whether an export carries the Skinalyze mark.
 public enum ShareCardPolicy {
-    /// Always on for now; Phase 5 (paywall) decides who may turn it off.
-    public static func showsWatermark(isPro: Bool) -> Bool { true }
+    /// Free exports carry the mark (every share advertises the app); full access shares without it.
+    public static func showsWatermark(isPro: Bool) -> Bool { !isPro }
 }

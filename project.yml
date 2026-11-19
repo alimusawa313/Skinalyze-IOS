@@ -95,7 +95,10 @@ targets:
   SkinalyzeTests:
     type: bundle.unit-test
     platform: iOS
-    sources: [SkinalyzeTests]
+    sources:
+      - SkinalyzeTests
+      - path: Config/SkinalyzePro.storekit
+        buildPhase: resources
     dependencies:
       - target: Skinalyze
       - package: SkinalyzeKit
@@ -121,7 +124,11 @@ schemes:
     build:
       targets:
         Skinalyze: all
+    run:
+      # Local plans for development; the App Store's own plans take over in TestFlight and release builds.
+      storeKitConfiguration: Config/SkinalyzePro.storekit
     test:
+      storeKitConfiguration: Config/SkinalyzePro.storekit
       gatherCoverageData: true
       targets:
         - SkinalyzeTests

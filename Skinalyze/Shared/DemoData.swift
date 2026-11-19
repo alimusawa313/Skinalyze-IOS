@@ -14,12 +14,19 @@ enum DemoData {
     static func seedIfRequested(into container: ModelContainer) async {
         guard isRequested else { return }
         let context = container.mainContext
+        // `-resetDemoData YES`: start from a clean set of demo scans (tests that need a particular newest scan).
+        if UserDefaults.standard.bool(forKey: "resetDemoData") {
+            try? context.delete(model: ScanSession.self)
+            try? context.save()
+        }
         guard (try? context.fetchCount(FetchDescriptor<ScanSession>())) == 0 else { return }
         UserDefaults.standard.set(true, forKey: UserProfile.Key.onboardingComplete)
         UserDefaults.standard.set("Combination", forKey: UserProfile.Key.skinType)
         UserDefaults.standard.set("Demo", forKey: UserProfile.Key.name)
 
         let store = ScanStore(modelContainer: container)
+        // `-demoNewestDaysAgo 0`: the newest demo scan is from today, to test the daily scan limit.
+        let newestDaysAgo = UserDefaults.standard.string(forKey: "demoNewestDaysAgo").flatMap(Int.init) ?? 1
         let plan: [(daysAgo: Int, lesions: [(LesionType, FaceZone)])] = [
             (35, [(.papule, .chin), (.papule, .chin), (.pustule, .chin), (.whitehead, .forehead), (.blackhead, .nose),
                   (.papule, .leftCheek), (.pustule, .rightJaw), (.darkSpot, .leftCheek)]),
@@ -28,7 +35,7 @@ enum DemoData {
             (21, [(.papule, .chin), (.whitehead, .forehead), (.blackhead, .nose), (.papule, .rightCheek), (.darkSpot, .leftCheek)]),
             (14, [(.papule, .chin), (.blackhead, .nose), (.whitehead, .forehead), (.darkSpot, .leftCheek)]),
             (7, [(.blackhead, .nose), (.whitehead, .forehead), (.darkSpot, .leftCheek)]),
-            (1, [(.blackhead, .nose), (.darkSpot, .leftCheek)]),
+            (newestDaysAgo, [(.blackhead, .nose), (.darkSpot, .leftCheek)]),
         ]
         for (index, entry) in plan.enumerated() {
             let detections = entry.lesions.enumerated().map { offset, lesion in

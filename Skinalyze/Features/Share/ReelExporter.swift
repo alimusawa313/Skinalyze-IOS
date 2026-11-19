@@ -113,7 +113,8 @@ enum ReelExporter {
         return result
     }
 
-    static func export(_ scans: [ReelScan], name: String, progress: @MainActor (Double) -> Void) async throws -> URL {
+    static func export(_ scans: [ReelScan], name: String, showsWatermark: Bool = true,
+                       progress: @MainActor (Double) -> Void) async throws -> URL {
         guard let plan = ReelPlan(scanCount: scans.count) else { throw ReelError.notEnoughScans }
         let format = ShareCardFormat.story
         let folder = FileManager.default.temporaryDirectory.appendingPathComponent(folderName, isDirectory: true)
@@ -124,7 +125,7 @@ enum ReelExporter {
             for index in 0..<plan.frameCount {
                 try Task.checkCancellation()
                 let view = ReelFrameView(scans: scans, frame: plan.frame(at: index),
-                                         progress: Double(index + 1) / Double(plan.frameCount))
+                                         progress: Double(index + 1) / Double(plan.frameCount), showsWatermark: showsWatermark)
                 let renderer = ImageRenderer(content: view)
                 renderer.scale = ShareCardFormat.renderScale
                 renderer.isOpaque = true

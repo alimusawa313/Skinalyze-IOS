@@ -43,8 +43,8 @@ enum SharePortrait: @unchecked Sendable { // UIImage is immutable once made.
 enum ShareCardRenderer {
     private static let folderName = "ShareCards"
 
-    static func image(of content: ShareCardContent, format: ShareCardFormat) -> UIImage? {
-        let renderer = ImageRenderer(content: ShareCardView(content: content, format: format))
+    static func image(of content: ShareCardContent, format: ShareCardFormat, showsWatermark: Bool = true) -> UIImage? {
+        let renderer = ImageRenderer(content: ShareCardView(content: content, format: format, showsWatermark: showsWatermark))
         renderer.scale = ShareCardFormat.renderScale
         renderer.isOpaque = true
         return renderer.uiImage

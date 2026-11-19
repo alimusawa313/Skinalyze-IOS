@@ -181,8 +181,34 @@ clipped, large text sizes do not break the card); hide-face export verified to c
 
 ---
 
-## Phase 5 — Paywall  ☐
-**Ships:** M1, M2, M3, M4, M5, M6, M8 · **Size:** large
+## Phase 5 — Paywall  ☑ (in code; App Store Connect setup by owner)
+**Ships:** M1, M3 (placeholder prices), M4, M5, M6, M8 · M2 dropped (no lifetime) · **Size:** large
+
+**Owner decisions (2026-11-19):** no lifetime purchase; existing users keep everything; prices researched (below);
+owner sets up the products in App Store Connect later.
+
+**Shipped:**
+- [x] `AccessPolicy` in SkinalyzeKit — the one place for "is this allowed?" (13 tests): 1 saved scan a day (local
+  midnight, clock-change and future-dated cases), newest 7 scans open, 3 product checks a month, Pro features.
+- [x] `ProAccess` (StoreKit 2): plans, purchase, restore, live updates; full access = Pro **or existing user**.
+  Existing user = phone already held scans the first time this build ran (tested), or — once
+  `ProAccess.paywallLaunch` is set at release — first got the app before that date (covers reinstalls).
+- [x] Plans: weekly / monthly / annual (7-day free trial on annual only). Local file `Config/SkinalyzePro.storekit`
+  with placeholder prices **$3.99 / $7.99 / $39.99** — in line with similar skin apps ($3–7 a week, $8–13 a month,
+  $30–50 a year). Suggested IDR tiers: Rp 29.000 / Rp 59.000 / Rp 299.000. Prices shown in the app always come
+  from the App Store, never from code.
+- [x] Purchase, trial, expiry and refund walked through in StoreKit's test environment (unit tests).
+- [x] Paywall (Pimpi, what Pro adds, plans, restore, renewal terms, terms + privacy links, always closable) opened by:
+  second scan the same day (the Mirror stays live and says "Next free scan at midnight"), an 8th-or-older scan,
+  turning the 3D head, the turntable export, the 4th product check, Profile, and once after the very first scan
+  result is closed. Never before the first result. Pro shares without the watermark.
+- [x] Debug builds: Profile → "Act as a free user" to see the paywall on a phone that keeps everything.
+
+**Still open (owner):**
+- [ ] App Store Connect: create the subscription group and the three products with these IDs:
+  `com.Patani.Skinalyze.pro.annual` (7-day free trial), `.pro.monthly`, `.pro.weekly`; set prices.
+- [ ] Set `ProAccess.paywallLaunch` to the release date of the first build with the paywall.
+- [ ] A sandbox purchase on the phone. The share extension's product check is not limited yet.
 
 **Build**
 1. `Entitlements` in SkinalyzeKit: one tested place that answers "is this allowed?" — free limits as named

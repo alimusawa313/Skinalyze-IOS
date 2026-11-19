@@ -70,6 +70,7 @@ final class HeadRenderer {
 struct TurntableFrameView: View {
     let head: CGImage
     let date: Date
+    var showsWatermark = true
 
     private static let format = ShareCardFormat.story
     static let backgroundToken = Palette.canvas
@@ -82,7 +83,7 @@ struct TurntableFrameView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-            if ShareCardPolicy.showsWatermark(isPro: false) { ShareWatermark() }
+            if showsWatermark { ShareWatermark() }
         }
         .padding(Spacing.lg)
         .frame(width: Self.format.pointSize.width, height: Self.format.pointSize.height)
@@ -119,7 +120,8 @@ enum TurntableExporter {
     private static let headHeight = ShareCardFormat.portrait.pixelHeight
     private static let folderName = "ShareCards"
 
-    static func export(_ input: TurntableInput, name: String, progress: @MainActor (Double) -> Void) async throws -> URL {
+    static func export(_ input: TurntableInput, name: String, showsWatermark: Bool = true,
+                       progress: @MainActor (Double) -> Void) async throws -> URL {
         guard let head = Face3DView.headEntity(vertices: input.vertices, textureCoordinates: input.textureCoordinates,
                                                indices: input.indices, textureData: input.textureData, pins: []) else {
             throw ReelError.cannotStart
@@ -138,7 +140,7 @@ enum TurntableExporter {
             for index in 0..<plan.frameCount {
                 try Task.checkCancellation()
                 let headImage = try await renderer.image(yaw: Float(plan.yaw(at: index)))
-                let frame = ImageRenderer(content: TurntableFrameView(head: headImage, date: input.date))
+                let frame = ImageRenderer(content: TurntableFrameView(head: headImage, date: input.date, showsWatermark: showsWatermark))
                 frame.scale = ShareCardFormat.renderScale
                 frame.isOpaque = true
                 guard let image = frame.cgImage else { throw ReelError.cannotRenderFrame }

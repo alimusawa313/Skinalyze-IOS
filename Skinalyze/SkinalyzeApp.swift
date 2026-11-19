@@ -5,6 +5,7 @@ import SkinalyzeKit
 @main
 struct SkinalyzeApp: App {
     @State private var appModel = AppModel()
+    @State private var proAccess = ProAccess()
     private let container: ModelContainer
 
     init() {
@@ -19,11 +20,16 @@ struct SkinalyzeApp: App {
         WindowGroup {
             RootView()
                 .environment(appModel)
+                .environment(proAccess)
                 .appLockGate()
                 .task {
                     await LegacyMigrationRunner.run(container: container)
+                    // Before any demo data: a phone that already holds scans belongs to an existing user.
                     #if DEBUG
+                    await proAccess.start(container: container, seedsDemoData: DemoData.isRequested)
                     await DemoData.seedIfRequested(into: container)
+                    #else
+                    await proAccess.start(container: container)
                     #endif
                     await WidgetSummary.refresh(from: container)
                 }
