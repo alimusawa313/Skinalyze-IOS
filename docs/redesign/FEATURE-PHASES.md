@@ -44,31 +44,34 @@ These come from mistakes already made on this project; they are the definition o
 
 ---
 
-## Phase 1 — Streaks and Pimpi on the Mirror  ☐
+## Phase 1 — Streaks and Pimpi on the Mirror  ☑ (2026-11-19, one item deferred)
 **Ships:** E1, E2, E3, E4, PI2, part of PI5 · **Size:** medium
 
-**What the user gets:** a scan streak (weekly rhythm) and a daily routine streak, a flame on the Mirror, streak
-freeze / weekend-off / 24-hour repair, milestone celebrations, and Pimpi on the Mirror whose mood follows it all.
+**What the user gets:** Pimpi stands beside the shutter on the Mirror with a flame showing the routine streak; its
+mood follows the streaks. Tapping it opens the streak sheet: routine streak (days), scan streak (weeks), freezes,
+weekends-off and repair. Milestones (7 / 30 / 100 days; 4 / 12 / 26 / 52 weeks) open the sheet once with Pimpi excited.
 
-**Build**
-1. `StreakEngine` in SkinalyzeKit — pure and tested first. Streaks are **derived** from history (scan dates,
-   routine check-off days) plus a small ledger of freezes, so they can never drift out of sync with the data.
-   Cases to test: weekly scan rhythm, day boundaries at local midnight, time-zone travel, weekend-off, a freeze
-   covering a missed day, repair inside 24 h, repair refused after 24 h, milestones at 7 / 30 / 100.
-2. `PimpiMoodEngine` in SkinalyzeKit — pure and tested: (streak state, scanned today?, scan due?, streak at risk?,
-   just broke?) → mood. Mood never depends on skin results (FEATURES rule 1).
-3. Routine check-offs currently live in `UserDefaults` on one device. Add an additive SwiftData model for
-   check-off days so the routine streak survives reinstall and syncs; import existing check-offs once (tested,
-   idempotent, like the legacy scan migration).
-4. Freeze ledger: additive SwiftData model (earned / used / date).
-5. Mirror: Pimpi and the streak flame in the home chrome — must stay uncluttered (index, avatar, shutter, dock,
-   plus one Pimpi + flame element). Milestone moment with Pimpi `excited`.
-6. Move `Pimpi.swift` to the shared sources so widgets can use it in Phase 2.
+**Built**
+- [x] `StreakEngine` (SkinalyzeKit, 13 tests): streaks are derived from history — routine done-days and scan dates —
+  plus a freeze ledger. Covers local-midnight day change, time-zone travel, weekends-off, automatic freezes (never
+  wasted on a gap they can't bridge), repair (yesterday only, once per 30 days), milestones, earning a freeze every
+  7 days (cap 2).
+- [x] `PimpiMoodEngine` (SkinalyzeKit, tested): mood from streak state and time of day only — never skin results.
+  A lapsed *scan* habit makes Pimpi curious, not sad.
+- [x] `EngagementStore` (4 tests) + `EngagementModel`: done-days kept separately from the routine log (which only
+  holds ~2 months, so a 100-day streak was uncountable); existing check-offs imported once; freeze ledger; settings.
+- [x] Mirror: `PimpiStreakBadge` beside the ring; `StreakSheet`. Checked in light and dark for done-today and for
+  a broken streak; the other states are covered by the engine tests and the Pimpi mood gallery.
+- [x] `Pimpi.swift` moved to the shared sources (widgets can use it in Phase 2). New strings in EN + ID.
 
-**Done when:** engine tests green; tour screenshots show Pimpi in each streak state in light and dark; streak
-survives relaunch in the Simulator. **Needs owner's phone:** nothing new (no camera/motion involved).
-**Needs from owner:** confirm weekly as the scan rhythm (default if no answer).
-**Risk:** clutter on the Mirror — settle the layout from screenshots before wiring behaviour.
+**Deferred (still open):**
+- [ ] **Synced storage.** Streak inputs (done-days, freeze ledger) live in on-device settings, like the routine log
+  they come from. They do not survive a reinstall and do not sync between devices. Moving them (and the routine
+  log) to an additive SwiftData/CloudKit model is its own careful step because it changes the synced schema — do it
+  before Phase 9 (social) at the latest.
+
+**Needs from owner:** try it on the phone — check off a routine step on the Shelf and watch the flame; say if
+weekly is the right scan rhythm.
 
 ---
 

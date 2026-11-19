@@ -49,6 +49,7 @@ struct RoutineChecklist: View {
     }
 
     @AppStorage("routineLog") private var logRaw = ""
+    @Environment(EngagementModel.self) private var engagement
     @AppStorage(UserProfile.Key.cleanserID) private var cleanser = 0
     @AppStorage(UserProfile.Key.tonerID) private var toner = 0
     @AppStorage(UserProfile.Key.moisturizerID) private var moisturizer = 0
@@ -72,8 +73,9 @@ struct RoutineChecklist: View {
             HStack {
                 SectionTitle("Today")
                 Spacer()
-                if log.streak > 0 {
-                    Label("\(log.streak)-day streak", systemImage: "flame").font(.ds.label).foregroundStyle(Color.ds.signal)
+                if engagement.routine.count > 0 {
+                    Label("\(engagement.routine.count)-day streak", systemImage: "flame.fill").font(.ds.label).foregroundStyle(Color.ds.signal)
+                        .contentTransition(.numericText(value: Double(engagement.routine.count)))
                 }
             }
             Picker("Routine", selection: $part) {
@@ -109,6 +111,9 @@ struct RoutineChecklist: View {
             }
         }
         .dsCard()
+        .onChange(of: logRaw) { _, raw in
+            engagement.routineChanged(anyStepDoneToday: RoutineLog(raw: raw).hasAnyStep())
+        }
     }
 }
 
@@ -141,18 +146,9 @@ struct RoutineLog: Equatable {
         return RoutineLog(raw: updated.filter { $0 >= cutoff }.sorted().joined(separator: "|"))
     }
 
-    /// Consecutive days (ending today or yesterday) with at least one step checked.
-    var streak: Int {
-        let days = Set(entries.compactMap { $0.split(separator: ":").first.map(String.init) })
-        var count = 0
-        var date = Date.now
-        if !days.contains(Self.formatter.string(from: date)) {
-            date = Calendar.current.date(byAdding: .day, value: -1, to: date) ?? date
-        }
-        while days.contains(Self.formatter.string(from: date)) {
-            count += 1
-            date = Calendar.current.date(byAdding: .day, value: -1, to: date) ?? date
-        }
-        return count
+    /// Whether at least one step is checked on `date`.
+    func hasAnyStep(on date: Date = .now) -> Bool {
+        let prefix = Self.formatter.string(from: date) + ":"
+        return entries.contains { $0.hasPrefix(prefix) }
     }
 }

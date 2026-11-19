@@ -8,7 +8,12 @@ final class VisualTourUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = true
         app = XCUIApplication()
-        app.launchArguments = ["-seedDemoData"]
+        // Demo scans plus a five-day routine streak ending today.
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.dateFormat = "yyyy-MM-dd"
+        let days = (0..<5).map { formatter.string(from: Calendar.current.date(byAdding: .day, value: -$0, to: .now)!) }
+        app.launchArguments = ["-seedDemoData", "-routineDoneDays", days.joined(separator: ","), "-routineDoneDaysImported", "YES"]
         addUIInterruptionMonitor(withDescription: "Camera permission") { alert in
             for title in ["Allow", "OK"] where alert.buttons[title].firstMatch.exists {
                 alert.buttons[title].firstMatch.tap()
@@ -22,6 +27,17 @@ final class VisualTourUITests: XCTestCase {
     func testTour() {
         XCTAssertTrue(app.buttons["mirrorIndex"].waitForExistence(timeout: 10))
         snap("01 Mirror")
+        let pimpi = app.buttons["pimpiStreak"]
+        if pimpi.waitForExistence(timeout: 5) {
+            for _ in 0..<3 where !app.staticTexts["Scan streak"].exists {
+                pimpi.tap()
+                _ = app.staticTexts["Scan streak"].waitForExistence(timeout: 3)
+            }
+            sleep(1)
+            snap("01b Streaks")
+            app.buttons["Done"].firstMatch.tap()
+            sleep(1)
+        }
 
         // Result: chapters + 3D hero.
         let toggle = app.switches["3D view"]

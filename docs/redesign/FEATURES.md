@@ -58,7 +58,7 @@ with depth, no outlines, and moods.
 
 - [x] **PI1 Pimpi character** — six moods (happy, excited, curious, sleepy, worried, sad); blinks, breathes, bump
   wobbles; still under Reduce Motion. `Skinalyze/Shared/Pimpi.swift`, commit `1095516`. Look approved by owner.
-- [ ] **PI2 Pimpi on the Mirror** — mood follows the streak: excited after a scan, sleepy when a scan is due,
+- [x] **PI2 Pimpi on the Mirror** (Phase 1) — mood follows the streak: excited after a scan, sleepy when a scan is due,
   worried when the streak is at risk, sad when it breaks. · Free
 - [ ] **PI3 Pimpi widget** — home and lock screen; shows Pimpi's current mood + streak. · Free
 - [ ] **PI4 Notifications in Pimpi's voice** — gentle escalation ("I've been waiting with my magnifying glass…");
@@ -72,10 +72,10 @@ with depth, no outlines, and moods.
 ## 3. Engagement (the Duolingo layer)
 
 ### Streaks
-- [ ] **E1 Scan streak** — weekly rhythm (scan day), flame on the Mirror. · Free
-- [ ] **E2 Routine streak** — daily AM/PM check-off in ~5 seconds. · Free
-- [ ] **E3 Streak freeze, weekend-off mode, repair within 24 h** — freezes earned from quests. · Free (earned) / Pro (extra)
-- [ ] **E4 Milestones** — 7 / 30 / 100 days with a Pimpi celebration and a shareable card. · Free
+- [x] **E1 Scan streak** (Phase 1) — weekly rhythm (scan day), flame on the Mirror. · Free
+- [x] **E2 Routine streak** (Phase 1) — daily AM/PM check-off in ~5 seconds. · Free
+- [x] **E3 Streak freeze, weekend-off mode, repair within 24 h** (Phase 1) — freezes earned from quests. · Free (earned) / Pro (extra)
+- [x] **E4 Milestones** (Phase 1; shareable card comes with Phase 3) — 7 / 30 / 100 days with a Pimpi celebration and a shareable card. · Free
 
 ### Quests and rewards
 - [ ] **E5 Daily quests** — three small ones (check off routine, check a product, log sleep). · Free

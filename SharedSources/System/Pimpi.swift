@@ -5,10 +5,8 @@ import SkinalyzeKit
 /// redrawn as a vector character with depth (no outlines) and moods: it blinks, breathes, and its bump wobbles.
 /// Decorative: hidden from VoiceOver (pair it with real text). Reduce Motion: still.
 struct Pimpi: View {
-    enum Mood: String, CaseIterable, Identifiable {
-        case happy, excited, curious, sleepy, worried, sad
-        var id: String { rawValue }
-    }
+    /// The moods are defined with the rule that picks them (`PimpiMoodEngine` in SkinalyzeKit).
+    typealias Mood = MascotMood
 
     var mood: Mood = .happy
 
@@ -288,7 +286,7 @@ struct PimpiGallery: View {
         VStack(spacing: Spacing.xs) {
             Text("Pimpi").font(.system(.title, design: .rounded).weight(.heavy)).foregroundStyle(Color.ds.ink)
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: Spacing.sm) {
-                ForEach(Pimpi.Mood.allCases) { mood in
+                ForEach(Pimpi.Mood.allCases, id: \.self) { mood in
                     VStack(spacing: 2) {
                         Pimpi(mood: mood).frame(height: 104)
                         Text(mood.rawValue).font(.ds.caption.weight(.semibold)).foregroundStyle(Color.ds.inkSecondary)

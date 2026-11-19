@@ -12,6 +12,8 @@ struct MirrorView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Query(sort: \ScanSession.createdAt, order: .reverse) private var scans: [ScanSession]
     @AppStorage(UserProfile.Key.name) private var name = ""
+    @AppStorage("routineLog") private var routineLogRaw = ""
+    @Environment(EngagementModel.self) private var engagement
     /// Owned by the shell so the camera survives dock paging, folding and rotation.
     let model: ScanCaptureModel
 
@@ -49,12 +51,15 @@ struct MirrorView: View {
             #endif
         }
         .task { await model.startPreview() }
+        .onChange(of: scans.count, initial: true) { _, _ in refreshEngagement() }
         #if DEBUG
         .task { await playStickerDemoIfRequested() }
         #endif
         .onChange(of: scenePhase) { _, phase in
             switch phase {
-            case .active: model.resume()
+            case .active:
+                model.resume()
+                refreshEngagement()
             case .background: model.pause()
             default: break
             }
@@ -112,7 +117,12 @@ struct MirrorView: View {
         }
     }
 
+    private func refreshEngagement() {
+        engagement.refresh(scanDates: scans.map(\.createdAt), routineLogRaw: routineLogRaw)
+    }
+
     private func finishScan() {
+        engagement.scanCompleted()
         appModel.scanFinished(model.savedSessionID)
         model.returnToMirror()
         finishedBand = nil
@@ -224,6 +234,15 @@ private struct MirrorChrome: View {
             Spacer(minLength: Spacing.md)
             MirrorShutter(model: model, isScanning: isScanning)
                 .frame(maxWidth: .infinity)
+                .overlay(alignment: .trailing) {
+                    if !isScanning {
+                        // Pimpi stands beside the lower half of the ring.
+                        PimpiStreakBadge()
+                            .padding(.trailing, Spacing.sm)
+                            .offset(y: 44)
+                            .transition(.scale.combined(with: .opacity))
+                    }
+                }
                 .padding(.bottom, 96)
         }
     }

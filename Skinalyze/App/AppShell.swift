@@ -9,6 +9,7 @@ struct AppShell: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var capture = ScanCaptureModel()
     @State private var isKeyboardVisible = false
+    @State private var engagement = EngagementModel()
     #if DEBUG
     @State private var showsPimpiGallery = UserDefaults.standard.bool(forKey: "pimpiGallery")
     #endif
@@ -44,6 +45,7 @@ struct AppShell: View {
             }
         }
         .sheet(isPresented: $appModel.isShowingProfile) { ProfileView() }
+        .environment(engagement)
         #if DEBUG
         .fullScreenCover(isPresented: $showsPimpiGallery) { PimpiGallery() }
         #endif
