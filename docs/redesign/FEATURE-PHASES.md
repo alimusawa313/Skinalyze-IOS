@@ -142,8 +142,29 @@ clipped, large text sizes do not break the card); hide-face export verified to c
 
 ---
 
-## Phase 4 — Glow-up reel and 3D turntable  ☐
+## Phase 4 — Glow-up reel and 3D turntable  ☑
 **Ships:** G1, G3 · **Size:** large · **Start with a spike**
+
+**Shipped (2026-11-19):**
+- [x] Spike passed: RealityKit's offscreen renderer (`RealityRenderer`) draws the same head entity the viewer shows,
+  so the turntable ships now rather than later.
+- [x] Glow-up reel (Deck → film button): eye-aligned stickers oldest → newest, index counting, colour shifting,
+  6–12 s, 1080×1920 at 30 fps. Timing is `ReelPlan` (tested); more than 16 scans are sampled evenly.
+  Hide-my-face carries over (outlines only).
+- [x] 3D turntable (scan result → Share → 3D turntable): front → each side → front within the captured turn range,
+  6 s, loops. `TurntablePlan` tested. Spot pins are left out of the video.
+- [x] Progress shown while making; closing the sheet cancels; nothing is uploaded.
+- [x] Checked frame by frame in the Simulator: reel with 2 scans and with 6, reel with the face hidden, turntable
+  on a real head mesh captured from the phone. Reel and turntable each covered by a UI test.
+- [x] Fixed on the way: sleepy Pimpi's "z" was text and failed the accessibility audit at night; now drawn.
+
+**Still open:**
+- [ ] **Owner's phone:** make one reel and one turntable from real scans (the Simulator cannot cut out a face, so
+  real stickers were not seen in the reel); check export time; post one to TikTok / Reels.
+- [ ] Frames are drawn on the main thread with a pause between each (the encoder runs off it). Fast in the
+  Simulator (2–5 s); if the phone stutters while making a video, move the drawing to Core Graphics.
+- [ ] A reel with 10+ real scans has only been covered by the timing tests, not viewed.
+- [ ] Turntable is free until Phase 5 puts it behind Pro; watermark stays on for everyone until then.
 
 **Build**
 1. **Spike first (time-boxed):** offscreen rendering of the 3D head to video frames, and writing a video file

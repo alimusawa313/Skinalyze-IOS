@@ -67,6 +67,9 @@ final class CoreFlowsUITests: XCTestCase {
         let share = app.buttons["shareCard"].firstMatch
         XCTAssertTrue(share.waitForExistence(timeout: 10))
         share.tap()
+        // Scans with a 3D head open a menu first (card or turntable).
+        let cardItem = app.buttons["Skin card"]
+        if cardItem.waitForExistence(timeout: 3) { cardItem.tap() }
         let preview = app.images["shareCardPreview"]
         XCTAssertTrue(preview.waitForExistence(timeout: 20))
         XCTAssertTrue(app.buttons["shareCardButton"].waitForExistence(timeout: 5))
@@ -77,6 +80,32 @@ final class CoreFlowsUITests: XCTestCase {
         app.buttons["Square"].tap()
         XCTAssertTrue(app.images["Preview of your card with your face hidden"].waitForExistence(timeout: 20))
         attachScreenshot("Share card · face hidden")
+    }
+
+    /// The glow-up reel is made from the Deck and offered for sharing once it is ready.
+    func testGlowUpReelIsMade() {
+        openDock("dock.deck")
+        let reel = app.buttons["deckReel"]
+        XCTAssertTrue(reel.waitForExistence(timeout: 10))
+        reel.tap()
+        XCTAssertTrue(app.buttons["videoShareButton"].waitForExistence(timeout: 60))
+        attachScreenshot("Glow-up reel")
+    }
+
+    /// A scan with a 3D head can be exported as a turntable video.
+    func testTurntableIsMade() {
+        openDock("dock.deck")
+        let firstRow = scanRows.element(boundBy: 0)
+        XCTAssertTrue(firstRow.waitForExistence(timeout: 10))
+        firstRow.tap()
+        let share = app.buttons["shareCard"].firstMatch
+        XCTAssertTrue(share.waitForExistence(timeout: 10))
+        share.tap()
+        let item = app.buttons["3D turntable"]
+        XCTAssertTrue(item.waitForExistence(timeout: 5))
+        item.tap()
+        XCTAssertTrue(app.buttons["videoShareButton"].waitForExistence(timeout: 60))
+        attachScreenshot("3D turntable")
     }
 
     func testCompareTwoScans() {

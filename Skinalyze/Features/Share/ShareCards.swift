@@ -36,8 +36,8 @@ enum ShareCardContent: @unchecked Sendable { // Values and immutable images only
     case streak(days: Int)
 }
 
-/// Fixed type and sizes for exports.
-private enum CardMetrics {
+/// Fixed type and sizes for exports (cards and reel frames).
+enum CardMetrics {
     static let numeral = Font.system(size: 92, weight: .heavy, design: .rounded).monospacedDigit()
     static let numeralCompact = Font.system(size: 64, weight: .heavy, design: .rounded).monospacedDigit()
     static let numeralSmall = Font.system(size: 40, weight: .heavy, design: .rounded).monospacedDigit()
@@ -122,7 +122,7 @@ extension ProductVerdict {
 }
 
 /// Pimpi and the name — the single mark on every export.
-private struct ShareWatermark: View {
+struct ShareWatermark: View {
     var body: some View {
         HStack(spacing: Spacing.xs) {
             Pimpi(mood: .happy)

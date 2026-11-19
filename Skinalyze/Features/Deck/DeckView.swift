@@ -14,6 +14,7 @@ struct DeckView: View {
     @State private var isPicking = false
     @State private var picked: [ScanSession] = []
     @State private var comparePair: ComparePair?
+    @State private var showsReel = false
 
     struct ComparePair: Identifiable {
         let earlier: ScanSession
@@ -44,6 +45,7 @@ struct DeckView: View {
         .sheet(item: $comparePair) { pair in
             NavigationStack { CompareView(earlier: pair.earlier, later: pair.later) }
         }
+        .sheet(isPresented: $showsReel) { VideoShareSheet(source: .reel(scans: scans)) }
     }
 
     // MARK: Parts
@@ -52,10 +54,20 @@ struct DeckView: View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
             HStack(alignment: .firstTextBaseline) {
                 Text("Deck").font(.system(size: titleSize, weight: .heavy, design: .rounded))
+                    .lineLimit(1).fixedSize()
                     .accessibilityAddTraits(.isHeader)
                 Text("\(scans.count)").font(.system(.title2, design: .rounded).weight(.heavy)).foregroundStyle(.secondary)
                     .contentTransition(.numericText(value: Double(scans.count)))
                 Spacer()
+                if scans.count >= 2, !isPicking {
+                    Button { showsReel = true } label: {
+                        Label("Glow-up reel", systemImage: "film")
+                    }
+                    .labelStyle(.iconOnly)
+                    .font(.headline)
+                    .buttonStyle(.glass)
+                    .accessibilityIdentifier("deckReel")
+                }
                 if scans.count >= 2 {
                     Button(isPicking ? "Cancel" : "Compare") {
                         withAnimation(MotionToken.bouncy.resolved(reduceMotion: reduceMotion).animation) {

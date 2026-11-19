@@ -103,11 +103,11 @@ with depth, no outlines, and moods.
 
 ## 4. Growth and sharing
 
-- [ ] **G1 Glow-up reel** — one-tap video: sticker cards morphing oldest → newest, eye-aligned, index counting;
+- [x] **G1 Glow-up reel** (Phase 4) — one-tap video: sticker cards morphing oldest → newest, eye-aligned, index counting;
   export for TikTok / Reels. The main viral loop. · Free (watermark) / Pro (no watermark)
 - [x] **G2 Shareable skin card** (Phase 3: image; shimmer video with Phase 4) — the holo sticker card as image or tilt-shimmer video; "hide my face" option
   (silhouette + stats). · Free
-- [ ] **G3 3D face turntable export** — looping video of the fused 3D head rotating. · Pro
+- [x] **G3 3D face turntable export** (Phase 4; free until the paywall) — looping video of the fused 3D head rotating. · Pro
 - [x] **G4 Product verdict share card** (Phase 3) — "Is it good for me?" result as a card; every check advertises the app. · Free
 - [x] **G5 Before/after slider export** (Phase 3: still image; slider video with Phase 4) — from the eye-aligned Compare. · Free (watermark) / Pro
 - [ ] **G6 Skin Wrapped** — yearly/quarterly recap: best streak, most-improved zone, product that coincided with the

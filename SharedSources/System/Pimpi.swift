@@ -184,9 +184,11 @@ struct Pimpi: View {
             .position(x: u * 0.66, y: u * 0.47)
         case .sleepy:
             ForEach(0..<3, id: \.self) { index in
-                Text("z")
-                    .font(.system(size: u * (0.07 + 0.03 * CGFloat(index)), weight: .heavy, design: .rounded))
-                    .foregroundStyle(Color.ds.inkSecondary)
+                // A drawn "z", not text: it is part of the mascot and scales with Pimpi, not with the text size.
+                let side = u * (0.05 + 0.022 * CGFloat(index))
+                SleepZ()
+                    .stroke(Color.ds.inkSecondary, style: StrokeStyle(lineWidth: side * 0.24, lineCap: .round, lineJoin: .round))
+                    .frame(width: side, height: side)
                     .position(x: u * (0.74 + 0.07 * CGFloat(index)), y: u * (0.26 - 0.08 * CGFloat(index)))
             }
         case .excited:
@@ -267,6 +269,18 @@ private struct PimpiMouth: Shape {
             path.addQuadCurve(to: CGPoint(x: rect.maxX - rect.width * 0.2, y: rect.minY + rect.height * 0.7),
                               control: CGPoint(x: rect.midX, y: rect.minY))
         }
+        return path
+    }
+}
+
+/// The letter z as three strokes.
+private struct SleepZ: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.move(to: CGPoint(x: rect.minX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
         return path
     }
 }

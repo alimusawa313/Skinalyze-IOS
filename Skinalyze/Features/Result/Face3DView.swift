@@ -146,7 +146,13 @@ struct Face3DView: View {
     }
 
     private func makeFaceEntity() -> Entity? {
-        let vertices = mesh.vertices, uvs = mesh.textureCoordinates, indices = mesh.indices
+        Self.headEntity(vertices: mesh.vertices, textureCoordinates: mesh.textureCoordinates, indices: mesh.indices,
+                        textureData: mesh.textureData, pins: mesh.pins)
+    }
+
+    /// The scanned head as an entity, centred and fitted. Shared with the turntable export (which passes no pins).
+    static func headEntity(vertices: [SIMD3<Float>], textureCoordinates uvs: [SIMD2<Float>], indices: [UInt16],
+                           textureData: Data?, pins: [FacePin]) -> Entity? {
         guard !vertices.isEmpty, uvs.count == vertices.count, !indices.isEmpty else { return nil }
         var descriptor = MeshDescriptor(name: "face")
         descriptor.positions = MeshBuffers.Positions(vertices)
@@ -155,13 +161,13 @@ struct Face3DView: View {
         guard let resource = try? MeshResource.generate(from: [descriptor]) else { return nil }
 
         var material = UnlitMaterial()
-        if let data = mesh.textureData, let image = UIImage(data: data)?.cgImage,
+        if let data = textureData, let image = UIImage(data: data)?.cgImage,
            let texture = try? TextureResource(image: image, options: .init(semantic: .color)) {
             material.color = .init(texture: .init(texture))
         }
         let face = ModelEntity(mesh: resource, materials: [material])
 
-        for (index, pin) in mesh.pins.enumerated() where vertices.indices.contains(pin.vertexIndex) {
+        for (index, pin) in pins.enumerated() where vertices.indices.contains(pin.vertexIndex) {
             let marker = ModelEntity(
                 mesh: .generateSphere(radius: 0.003),
                 materials: [UnlitMaterial(color: pin.type.isMark ? UIColor(Color.ds.caution) : UIColor(Color.ds.signal))]

@@ -30,6 +30,8 @@ struct ScanResultView: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(EngagementModel.self) private var engagement: EngagementModel?
+    @State private var sharedCard: ShareCardSource?
+    @State private var sharedVideo: VideoShareSource?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Query(sort: \ScanSession.createdAt, order: .reverse) private var allScans: [ScanSession]
     @AppStorage(UserProfile.Key.skinType) private var skinTypeRaw = ""
@@ -77,9 +79,7 @@ struct ScanResultView: View {
         .navigationTitle(Text(session.createdAt, format: .dateTime.day().month().year()))
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                ShareCardButton { .skin(session, streakDays: engagement?.routine.count ?? 0) }
-            }
+            ToolbarItem(placement: .primaryAction) { shareControl }
             if isFreshScan {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
@@ -87,9 +87,34 @@ struct ScanResultView: View {
             }
         }
         .sensoryFeedback(Haptic.scrub, trigger: chapter)
+        .sheet(item: $sharedVideo) { VideoShareSheet(source: $0) }
+        .sheet(item: $sharedCard) { ShareCardSheet(source: $0) }
         .sheet(isPresented: $showsSources) {
             SourcesView(skinType: SkinType(stored: skinTypeRaw))
         }
+    }
+
+    // MARK: Sharing
+
+    /// Scans with a 3D head offer the turntable video as well as the card; others share the card directly.
+    @ViewBuilder private var shareControl: some View {
+        let label = Label("Share", systemImage: "square.and.arrow.up")
+        if session.faceMesh != nil {
+            Menu {
+                Button("Skin card", systemImage: "rectangle.portrait") { shareCard() }
+                Button("3D turntable", systemImage: "rotate.3d") {
+                    sharedVideo = TurntableInput(session: session).map(VideoShareSource.turntable)
+                }
+            } label: { label }
+            .accessibilityIdentifier("shareCard")
+        } else {
+            Button(action: shareCard) { label }
+                .accessibilityIdentifier("shareCard")
+        }
+    }
+
+    private func shareCard() {
+        sharedCard = .skin(session, streakDays: engagement?.routine.count ?? 0)
     }
 
     // MARK: Chapters

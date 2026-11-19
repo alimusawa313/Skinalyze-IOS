@@ -212,6 +212,16 @@
         }
       }
     },
+    "3D turntable" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Putaran 3D"
+          }
+        }
+      }
+    },
     "3D view" : {
       "localizations" : {
         "id" : {
@@ -962,6 +972,16 @@
         }
       }
     },
+    "Couldn't make the video" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video tidak bisa dibuat"
+          }
+        }
+      }
+    },
     "Create PDF" : {
       "localizations" : {
         "id" : {
@@ -1318,6 +1338,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mulai"
+          }
+        }
+      }
+    },
+    "Glow-up reel" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reel glow-up"
           }
         }
       }
@@ -1910,6 +1940,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sudah bagus"
+          }
+        }
+      }
+    },
+    "Making your video…" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membuat videomu…"
           }
         }
       }
@@ -2607,6 +2647,16 @@
         }
       }
     },
+    "Reel" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reel"
+          }
+        }
+      }
+    },
     "Reminders from Pimpi" : {
       "localizations" : {
         "id" : {
@@ -3219,6 +3269,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Skinalyze tidak mengunggah apa pun. Gambar hanya pergi ke tempat yang kamu pilih."
+          }
+        }
+      }
+    },
+    "Skinalyze uploads nothing. The video goes only where you send it." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skinalyze tidak mengunggah apa pun. Video hanya pergi ke tempat yang kamu pilih."
           }
         }
       }
@@ -4011,6 +4071,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kulitmu tampak tenang — tidak ada yang aktif menonjol."
+          }
+        }
+      }
+    },
+    "Your video" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Videomu"
+          }
+        }
+      }
+    },
+    "Your video with your face hidden" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Videomu dengan wajah disembunyikan"
           }
         }
       }

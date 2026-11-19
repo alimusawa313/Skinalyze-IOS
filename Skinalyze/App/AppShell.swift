@@ -65,6 +65,39 @@ struct AppShell: View {
                     await ShareCardDump.run(into: folder, scans: (try? modelContext.fetch(descriptor)) ?? [])
                 }
             }
+            // `-reelDump <folder>`: export the glow-up reel (and the face-hidden one) for frame-by-frame checking.
+            if let folder = UserDefaults.standard.string(forKey: "reelDump") {
+                Task {
+                    try? await Task.sleep(for: .seconds(2.5))
+                    let limit = UserDefaults.standard.integer(forKey: "reelDumpLimit")
+                    var descriptor = FetchDescriptor<ScanSession>(sortBy: [SortDescriptor(\.createdAt, order: .reverse)])
+                    if limit > 0 { descriptor.fetchLimit = limit }
+                    await ReelDump.run(into: folder, scans: (try? modelContext.fetch(descriptor)) ?? [])
+                }
+            }
+            // `-turntableDump <folder>`: export the newest 3D scan's turntable video for frame-by-frame checking.
+            if let folder = UserDefaults.standard.string(forKey: "turntableDump") {
+                Task {
+                    try? await Task.sleep(for: .seconds(2.5))
+                    let descriptor = FetchDescriptor<ScanSession>(sortBy: [SortDescriptor(\.createdAt, order: .reverse)])
+                    let scans = (try? modelContext.fetch(descriptor)) ?? []
+                    let target = URL(fileURLWithPath: folder, isDirectory: true)
+                    try? FileManager.default.createDirectory(at: target, withIntermediateDirectories: true)
+                    let started = Date()
+                    var note = "no scan with a 3D mesh"
+                    if let input = scans.lazy.compactMap(TurntableInput.init(session:)).first {
+                        do {
+                            let url = try await TurntableExporter.export(input, name: "dump-turntable", progress: { _ in })
+                            try? FileManager.default.removeItem(at: target.appendingPathComponent("turntable.mp4"))
+                            try FileManager.default.copyItem(at: url, to: target.appendingPathComponent("turntable.mp4"))
+                            note = "made in \(String(format: "%.1f", Date().timeIntervalSince(started))) s"
+                        } catch {
+                            note = "failed: \(error)"
+                        }
+                    }
+                    try? note.write(to: target.appendingPathComponent("turntable.txt"), atomically: true, encoding: .utf8)
+                }
+            }
             // `-openLatestScan YES`: present the newest scan's result (renderer checks in the Simulator).
             if UserDefaults.standard.bool(forKey: "openLatestScan") {
                 Task {
