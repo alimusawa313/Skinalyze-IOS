@@ -26,6 +26,12 @@ public enum ProFeature: String, CaseIterable, Sendable {
     case areaHistory
     /// The zone map on the head over time.
     case zoneMap
+    /// Products with a similar formula (P9).
+    case dupes
+    /// The dermatologist visit PDF (P11).
+    case dermPack
+    /// Sleep and cycle from Apple Health next to scans (P4).
+    case healthPatterns
 }
 
 /// The one place that answers "is this allowed?". Full access means a Pro subscription or an existing user from

@@ -29,6 +29,8 @@ final class AppModel {
     var isShowingProfile = false
     /// Set by an invite link (`skinalyze://friend/<code>`).
     var pendingInvite: FriendCode?
+    /// Set by a shelf link (`skinalyze://shelf?p=1,2,3`).
+    var sharedShelf: SharedShelf?
 
     func startScan() {
         selectedTab = .today
@@ -50,6 +52,9 @@ final class AppModel {
         case "timeline": selectedTab = .timeline
         case "products": selectedTab = .products
         case "search": selectedTab = .search
+        case "shelf":
+            let ids = RoutineLink.productIDs(from: url)
+            if !ids.isEmpty { sharedShelf = SharedShelf(productIDs: ids) }
         case "friend": pendingInvite = url.pathComponents.dropFirst().first.flatMap { FriendCode($0) }
         default: selectedTab = .today
         }

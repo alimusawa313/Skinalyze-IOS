@@ -25,9 +25,11 @@ struct ShelfView: View {
                     searchBar
                     if query.isEmpty {
                         RecapBanner()
+                        ShelfToolsCard()
                         JourneyCard()
                         SkinSchoolCard()
                         tiles
+                        ShareShelfButton()
                         RoutineChecklist()
                     } else {
                         resultList

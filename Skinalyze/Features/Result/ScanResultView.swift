@@ -38,6 +38,8 @@ struct ScanResultView: View {
     @Environment(QuestModel.self) private var quests: QuestModel?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Query(sort: \ScanSession.createdAt, order: .reverse) private var allScans: [ScanSession]
+    @Environment(ShelfToolsModel.self) private var tools: ShelfToolsModel?
+    @State private var lightingTips: [LightingCoach.Tip] = []
     @AppStorage(UserProfile.Key.skinType) private var skinTypeRaw = ""
     @State private var angle: CaptureAngle = .front
     @State private var visibleTypes = Set(LesionType.allCases)
@@ -66,6 +68,7 @@ struct ScanResultView: View {
             heroSection
         } secondary: {
             VStack(alignment: .leading, spacing: Spacing.lg) {
+                if isFreshScan, !lightingTips.isEmpty { LightingTipCard(tips: lightingTips) }
                 chapterTabs
                 chapterContent
                     .id(chapter)
@@ -91,6 +94,11 @@ struct ScanResultView: View {
             }
         }
         .sensoryFeedback(Haptic.scrub, trigger: chapter)
+        .task {
+            guard isFreshScan, let tools else { return }
+            let earlier = allScans.filter { !$0.isDeleted && $0.modelContext != nil && $0.createdAt < session.createdAt }.reversed()
+            lightingTips = await tools.lightingTips(for: session, earlier: Array(earlier))
+        }
         .onAppear {
             // Opening an earlier scan (not the one just taken) is looking back.
             if !isFreshScan { quests?.did(.lookBack, isPro: policy.hasFullAccess) }
@@ -405,6 +413,34 @@ struct SourcesView: View {
             }
             .navigationTitle("Sources")
             .toolbar { Button("Done") { dismiss() } }
+        }
+    }
+}
+
+/// Scan-quality coach (P12): light that differs from usual makes scans harder to compare.
+struct LightingTipCard: View {
+    let tips: [LightingCoach.Tip]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Spacing.xxs) {
+            Label("Tip for next time", systemImage: "lightbulb.fill").font(.ds.footnote.weight(.semibold))
+                .foregroundStyle(Color.ds.caution)
+            ForEach(tips, id: \.self) { tip in
+                Text(Self.text(tip)).font(.ds.footnote).fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .dsCard()
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("lightingTip")
+    }
+
+    static func text(_ tip: LightingCoach.Tip) -> String {
+        switch tip {
+        case .tooDark: String(localized: "This scan was darker than usual. Face a window or a bright lamp, like last time.")
+        case .tooBright: String(localized: "This scan was brighter than usual. Step out of direct sun so the light is even.")
+        case .warmerThanUsual: String(localized: "The light was warmer (more yellow) than usual. Scanning in the same spot keeps scans comparable.")
+        case .coolerThanUsual: String(localized: "The light was cooler (more blue) than usual. Scanning in the same spot keeps scans comparable.")
         }
     }
 }

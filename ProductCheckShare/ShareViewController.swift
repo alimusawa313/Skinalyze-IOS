@@ -43,8 +43,12 @@ final class ShareCheckModel {
             phase = .needsProfile
             return
         }
-        let (title, text) = await extract(from: items)
-        let catalogIngredients = title.flatMap(ProductCatalog.shared.bestMatch(forTitle:))?.ingredients ?? ""
+        let (pageTitle, text, url) = await extract(from: items)
+        // Shopping apps (TikTok Shop, Shopee, Tokopedia) share a link and/or the product name as text.
+        let shop = ProductCatalog.shared.shopMatch(url: url, text: pageTitle == nil ? text : nil)
+        let title = pageTitle ?? shop?.product.map { "\($0.brand) \($0.name)" } ?? shop?.title
+        let matched = shop?.product ?? title.flatMap(ProductCatalog.shared.bestMatch(forTitle:))
+        let catalogIngredients = matched?.ingredients ?? ""
         let combined = [text, catalogIngredients].filter { !$0.isEmpty }.joined(separator: ", ")
         // A product is identified by its page title, or else by what was read from it.
         let key = "share-" + (title ?? combined).lowercased().trimmingCharacters(in: .whitespacesAndNewlines).prefix(120)
@@ -58,9 +62,10 @@ final class ShareCheckModel {
         phase = .result(title: title, context.verdict(forIngredientText: combined))
     }
 
-    private func extract(from items: [NSExtensionItem]) async -> (title: String?, text: String) {
+    private func extract(from items: [NSExtensionItem]) async -> (title: String?, text: String, url: URL?) {
         var title: String?
         var texts: [String] = []
+        var sharedURL: URL?
         for provider in items.flatMap({ $0.attachments ?? [] }) {
             if provider.hasItemConformingToTypeIdentifier(UTType.propertyList.identifier),
                let dict = try? await provider.loadItem(forTypeIdentifier: UTType.propertyList.identifier) as? [String: Any],
@@ -75,10 +80,13 @@ final class ShareCheckModel {
                 texts.append(text)
             } else if provider.hasItemConformingToTypeIdentifier(UTType.url.identifier),
                       let url = try? await provider.loadItem(forTypeIdentifier: UTType.url.identifier) as? URL {
-                title = title ?? url.lastPathComponent.replacingOccurrences(of: "-", with: " ")
+                sharedURL = url
+                if ShopLinkParser.shop(of: url) == .other {
+                    title = title ?? url.lastPathComponent.replacingOccurrences(of: "-", with: " ")
+                }
             }
         }
-        return (title, texts.joined(separator: ", "))
+        return (title, texts.joined(separator: ", "), sharedURL)
     }
 
     private func loadImage(_ provider: NSItemProvider) async -> CGImage? {

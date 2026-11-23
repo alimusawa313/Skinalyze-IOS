@@ -209,6 +209,7 @@ enum ShareCardDump {
         sources.append(("recap", .recap(period: month, recap: RecapEngine.recap(month, history: busy, calendar: calendar)), false))
         let wrapped = RecapEngine.latestWrapped(now: .now, calendar: calendar)
         sources.append(("wrapped", .recap(period: wrapped, recap: RecapEngine.recap(wrapped, history: busy, calendar: calendar)), false))
+        sources.append(("shelf", .routine(productIDs: [18, 1, 40, 120]), false))
         sources.append(("challenge", .challenge(Challenge(kind: .morningAndEvening, started: days[0], finished: days[29])), false))
         var videos: [(String, VideoShareSource, Bool)] = []
         if let latest = scans.first {

@@ -1,5 +1,6 @@
 import Foundation
 import OSLog
+import SkinalyzeKit
 
 /// One product from the bundled, merged catalog (`ProductCatalog.json`, built by `scripts/merge_catalog.py`).
 struct CatalogProduct: Codable, Identifiable, Hashable, Sendable {
@@ -75,6 +76,8 @@ final class ProductCatalog: Sendable {
 
     let products: [CatalogProduct]
     private let byID: [Int: CatalogProduct]
+    /// What matching rules (dupes, shop links) need, in catalog order.
+    let facts: [ProductFacts]
 
     init(bundle: Bundle = .main) {
         do {
@@ -87,6 +90,7 @@ final class ProductCatalog: Sendable {
             products = []
         }
         byID = Dictionary(products.map { ($0.productID, $0) }, uniquingKeysWith: { first, _ in first })
+        facts = products.map(Self.facts(for:))
     }
 
     func product(id: Int) -> CatalogProduct? { byID[id] }
@@ -108,6 +112,19 @@ final class ProductCatalog: Sendable {
             }
             .filter { $0.1 >= max(2, words.count * 2 / 3) }
             .max { $0.1 < $1.1 }?.0
+    }
+
+    static func facts(for product: CatalogProduct) -> ProductFacts {
+        ProductFacts(id: product.productID, brand: product.brand, name: product.name, category: product.category ?? "",
+                     ingredients: product.ingredientList.map { $0.lowercased() })
+    }
+
+    /// A product from a shopping-app link or shared text (TikTok Shop, Shopee, Tokopedia), read without fetching.
+    func shopMatch(url: URL?, text: String?) -> (title: String, product: CatalogProduct?)? {
+        let title = url.flatMap(ShopLinkParser.title(from:)) ?? text.flatMap(ShopLinkParser.title(fromText:))
+        guard let title else { return nil }
+        let match = ShopLinkParser.bestMatch(title: title, in: facts).flatMap { product(id: $0.id) } ?? bestMatch(forTitle: title)
+        return (title, match)
     }
 
     /// Matches name, brand **and** ingredients (the old search matched brand only).

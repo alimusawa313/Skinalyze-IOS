@@ -174,6 +174,16 @@
         }
       }
     },
+    "%lld months" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld bulan"
+          }
+        }
+      }
+    },
     "%lld of %lld" : {
       "localizations" : {
         "en" : {
@@ -278,6 +288,16 @@
         }
       }
     },
+    "%lld products share most of this formula." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld produk punya formula yang mirip."
+          }
+        }
+      }
+    },
     "%lld pts" : {
       "localizations" : {
         "id" : {
@@ -329,6 +349,16 @@
         }
       },
       "shouldTranslate" : false
+    },
+    "%lld%% similar" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%% mirip"
+          }
+        }
+      }
     },
     "%lld-day streak" : {
       "localizations" : {
@@ -623,6 +653,16 @@
         }
       }
     },
+    "A friend's shelf" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rak temanmu"
+          }
+        }
+      }
+    },
     "A harsh cleanser that strips natural oils." : {
       "localizations" : {
         "id" : {
@@ -869,6 +909,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sudut"
+          }
+        }
+      }
+    },
+    "Anything changed on the test spot today? Redness, itching or bumps?" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ada perubahan di area uji hari ini? Kemerahan, gatal, atau bentol?"
           }
         }
       }
@@ -1279,6 +1329,16 @@
         }
       }
     },
+    "Change" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ubah"
+          }
+        }
+      }
+    },
     "Changed" : {
       "localizations" : {
         "id" : {
@@ -1359,6 +1419,16 @@
         }
       }
     },
+    "Checked today" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sudah dicek hari ini"
+          }
+        }
+      }
+    },
     "Checks an ingredient list against your skin profile and recent scans." : {
       "localizations" : {
         "id" : {
@@ -1395,6 +1465,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pembersih"
+          }
+        }
+      }
+    },
+    "Clear" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hapus"
           }
         }
       }
@@ -1965,6 +2045,16 @@
         }
       }
     },
+    "Find products with a similar formula with Pro." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temukan produk dengan formula mirip lewat Pro."
+          }
+        }
+      }
+    },
     "Find softer, brighter light — try facing a window" : {
       "localizations" : {
         "id" : {
@@ -2331,6 +2421,16 @@
         }
       }
     },
+    "Good for %lld more days" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masih bagus %lld hari lagi"
+          }
+        }
+      }
+    },
     "Good for your skin type" : {
       "localizations" : {
         "id" : {
@@ -2631,6 +2731,16 @@
         }
       }
     },
+    "I opened it" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sudah kubuka"
+          }
+        }
+      }
+    },
     "I'll stop reminding you now. Come back whenever you like." : {
       "localizations" : {
         "id" : {
@@ -2839,6 +2949,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Jaga rangkaianmu malam ini"
+          }
+        }
+      }
+    },
+    "Keeps for" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tahan selama"
           }
         }
       }
@@ -3113,6 +3233,16 @@
         }
       }
     },
+    "Look for the open-jar symbol on the pack, like \"12M\". It shows how many months it keeps once opened." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cari simbol toples terbuka di kemasan, seperti \"12M\". Itu menunjukkan berapa bulan produk tahan setelah dibuka."
+          }
+        }
+      }
+    },
     "Look straight at the camera" : {
       "localizations" : {
         "id" : {
@@ -3279,6 +3409,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Naik liga"
+          }
+        }
+      }
+    },
+    "My shelf" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rakku"
           }
         }
       }
@@ -3523,12 +3663,42 @@
         }
       }
     },
+    "Note when you open it, and Skinalyze reminds you when it's past its best." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Catat kapan kamu membukanya, dan Skinalyze akan memberitahumu saat sudah lewat masa terbaiknya."
+          }
+        }
+      }
+    },
     "Nothing" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tanpa aksesori"
+          }
+        }
+      }
+    },
+    "Nothing changed in %lld days." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada perubahan dalam %lld hari."
+          }
+        }
+      }
+    },
+    "Nothing close in the catalog yet." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belum ada yang mirip di katalog."
           }
         }
       }
@@ -3723,6 +3893,42 @@
         }
       }
     },
+    "Opened" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dibuka"
+          }
+        }
+      }
+    },
+    "Opened %@ · keeps %lld months" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Opened %1$@ · keeps %2$lld months"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dibuka %@ · tahan %lld bulan"
+          }
+        }
+      }
+    },
+    "Opened on" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dibuka pada"
+          }
+        }
+      }
+    },
     "Opens Skinalyze Pro" : {
       "localizations" : {
         "id" : {
@@ -3829,6 +4035,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Topi pesta"
+          }
+        }
+      }
+    },
+    "Past its best %lld days ago" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lewat masa terbaik %lld hari lalu"
+          }
+        }
+      }
+    },
+    "Past its best in %lld days" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lewat masa terbaik dalam %lld hari"
+          }
+        }
+      }
+    },
+    "Patch test" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uji tempel"
+          }
+        }
+      }
+    },
+    "Patch test · %@ · day %lld of %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Patch test · %1$@ · day %2$lld of %3$lld"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uji tempel · %@ · hari %lld dari %lld"
           }
         }
       }
@@ -4506,6 +4758,16 @@
         }
       }
     },
+    "Save" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Simpan"
+          }
+        }
+      }
+    },
     "Saved with an earlier version — counts are shown as recorded." : {
       "localizations" : {
         "id" : {
@@ -4692,6 +4954,16 @@
         }
       }
     },
+    "Scan to check these for your skin in Skinalyze" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindai untuk cek apakah ini cocok untuk kulitmu di Skinalyze"
+          }
+        }
+      }
+    },
     "Scanned this week." : {
       "localizations" : {
         "id" : {
@@ -4782,12 +5054,32 @@
         }
       }
     },
+    "See them with Pro" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lihat dengan Pro"
+          }
+        }
+      }
+    },
     "See this area over time" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lihat area ini dari waktu ke waktu"
+          }
+        }
+      }
+    },
+    "See your sleep and cycle next to your scans with Pro." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lihat tidur dan siklusmu di samping pindaianmu dengan Pro."
           }
         }
       }
@@ -5018,6 +5310,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Liga Perak"
+          }
+        }
+      }
+    },
+    "Similar by ingredients, not by price — compare prices where you shop." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mirip dari bahan, bukan dari harga — bandingkan harga di tempat kamu belanja."
+          }
+        }
+      }
+    },
+    "Similar formulas" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formula mirip"
           }
         }
       }
@@ -5292,6 +5604,26 @@
         }
       }
     },
+    "Something changed" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ada perubahan"
+          }
+        }
+      }
+    },
+    "Something changed on day %lld. Stop using it on that spot. If it doesn't settle, ask a pharmacist or doctor." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ada perubahan di hari ke-%lld. Hentikan pemakaian di area itu. Kalau tidak membaik, tanyakan ke apoteker atau dokter."
+          }
+        }
+      }
+    },
     "Sources" : {
       "localizations" : {
         "id" : {
@@ -5342,6 +5674,16 @@
         }
       }
     },
+    "Start a %lld-day patch test" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mulai uji tempel %lld hari"
+          }
+        }
+      }
+    },
     "Start a Skinalyze face scan." : {
       "localizations" : {
         "id" : {
@@ -5378,6 +5720,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mulai rangkaian hari ini"
+          }
+        }
+      }
+    },
+    "Start again" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mulai lagi"
           }
         }
       }
@@ -5720,6 +6072,16 @@
         }
       }
     },
+    "Tap a product to see if it suits your skin." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketuk produk untuk melihat apakah cocok untuk kulitmu."
+          }
+        }
+      }
+    },
     "Tap to scan" : {
       "localizations" : {
         "id" : {
@@ -5800,6 +6162,36 @@
         }
       }
     },
+    "The dermatologist visit pack comes with Pro." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paket kunjungan dokter kulit tersedia dengan Pro."
+          }
+        }
+      }
+    },
+    "The light was cooler (more blue) than usual. Scanning in the same spot keeps scans comparable." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cahayanya lebih dingin (lebih biru) dari biasanya. Memindai di tempat yang sama membuat hasil mudah dibandingkan."
+          }
+        }
+      }
+    },
+    "The light was warmer (more yellow) than usual. Scanning in the same spot keeps scans comparable." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cahayanya lebih hangat (lebih kuning) dari biasanya. Memindai di tempat yang sama membuat hasil mudah dibandingkan."
+          }
+        }
+      }
+    },
     "The purchase didn't go through. You weren't charged." : {
       "localizations" : {
         "id" : {
@@ -5850,6 +6242,26 @@
         }
       }
     },
+    "This scan was brighter than usual. Step out of direct sun so the light is even." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindaian ini lebih terang dari biasanya. Hindari sinar matahari langsung agar cahayanya merata."
+          }
+        }
+      }
+    },
+    "This scan was darker than usual. Face a window or a bright lamp, like last time." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindaian ini lebih gelap dari biasanya. Hadap ke jendela atau lampu terang, seperti sebelumnya."
+          }
+        }
+      }
+    },
     "This shapes ingredient suggestions." : {
       "localizations" : {
         "id" : {
@@ -5896,6 +6308,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Linimasa"
+          }
+        }
+      }
+    },
+    "Tip for next time" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tips untuk berikutnya"
           }
         }
       }
@@ -5966,6 +6388,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Terlalu terang — hindari cahaya langsung"
+          }
+        }
+      }
+    },
+    "Try a little behind your ear or on your inner arm for %lld days before using it on your face." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coba sedikit di belakang telinga atau lengan bagian dalam selama %lld hari sebelum dipakai di wajah."
           }
         }
       }

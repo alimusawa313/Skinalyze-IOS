@@ -86,6 +86,7 @@ struct ProductDetailView: View {
                 ProductCheckGate(key: "product-\(product.productID)", allowed: $checkAllowed) {
                     ProductCheckSummary(product: product)
                 }
+                ProductToolsSection(product: product)
                 VStack(alignment: .leading, spacing: Spacing.xs) {
                     SectionTitle("Ingredients")
                     if product.ingredientList.isEmpty {
@@ -118,6 +119,8 @@ struct ProductDetailView: View {
             .frame(maxWidth: 800)
             .frame(maxWidth: .infinity)
         }
+        // Clear of the floating dock.
+        .safeAreaPadding(.bottom, 88)
         .dsCanvas()
         .navigationTitle(product.name)
         .toolbarTitleDisplayMode(.inline)
