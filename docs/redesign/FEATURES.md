@@ -84,9 +84,9 @@ with depth, no outlines, and moods.
 - [x] **E8 Monthly quest** — limited badge. · Free
 
 ### Skin School
-- [ ] **E9 Lessons** — 60-second lessons ("What niacinamide does", "Why sunscreen indoors") + two-question quiz + XP.
+- [~] **E9 Lessons** — 60-second lessons ("What niacinamide does", "Why sunscreen indoors") + two-question quiz + XP.
   Content must pass the copy rules (general information, sources listed). · Free (first units) / Pro (all)
-- [ ] **E10 Lesson path** — units on a path, so there is always something to do between scans. · Free + Pro
+- [~] **E10 Lesson path** — units on a path, so there is always something to do between scans. · Free + Pro
 
 ### Progress
 - [ ] **E11 Journey map** — levels as the user scans and learns. · Free
@@ -192,5 +192,5 @@ holo styles, extra streak freezes and repair, all of Skin School, premium Pimpi 
 
 1. Price points (M3) and whether a lifetime option ships at launch (M2).
 2. Scan rhythm for the scan streak (E1): weekly is proposed.
-3. Which Skin School topics come first (E9), and who signs off the wording.
+3. Sign-off on the Skin School wording (E9) — draft of 10 lessons in [SKIN-SCHOOL.md](SKIN-SCHOOL.md).
 4. Whether affiliate links (M7) are wanted at all.

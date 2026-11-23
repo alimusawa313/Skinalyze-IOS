@@ -24,6 +24,7 @@ struct ShelfView: View {
                         .accessibilityAddTraits(.isHeader)
                     searchBar
                     if query.isEmpty {
+                        SkinSchoolCard()
                         tiles
                         RoutineChecklist()
                     } else {

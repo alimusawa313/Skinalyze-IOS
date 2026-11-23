@@ -11,21 +11,41 @@ public struct SyncedEngagement: Codable, Equatable, Sendable {
     public var celebrated: Set<String>
     public var rewards: RewardLedger
     public var bestRoutineStreak: Int
+    public var school: SchoolProgress
     /// When this copy last changed. `distantPast` for a copy that has never been synced (a fresh install).
     public var updatedAt: Date
 
     public static let empty = SyncedEngagement(doneDays: [], freezes: FreezeLedger(available: 1), weekendOff: false,
-                                               celebrated: [], rewards: .empty, bestRoutineStreak: 0, updatedAt: .distantPast)
+                                               celebrated: [], rewards: .empty, bestRoutineStreak: 0, school: .empty,
+                                               updatedAt: .distantPast)
 
     public init(doneDays: Set<DayStamp>, freezes: FreezeLedger, weekendOff: Bool, celebrated: Set<String>,
-                rewards: RewardLedger, bestRoutineStreak: Int, updatedAt: Date) {
+                rewards: RewardLedger, bestRoutineStreak: Int, school: SchoolProgress = .empty, updatedAt: Date) {
         self.doneDays = doneDays
         self.freezes = freezes
         self.weekendOff = weekendOff
         self.celebrated = celebrated
         self.rewards = rewards
         self.bestRoutineStreak = bestRoutineStreak
+        self.school = school
         self.updatedAt = updatedAt
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case doneDays, freezes, weekendOff, celebrated, rewards, bestRoutineStreak, school, updatedAt
+    }
+
+    /// Tolerant: copies synced before a field existed still load.
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        doneDays = try c.decodeIfPresent(Set<DayStamp>.self, forKey: .doneDays) ?? []
+        freezes = try c.decodeIfPresent(FreezeLedger.self, forKey: .freezes) ?? FreezeLedger(available: 1)
+        weekendOff = try c.decodeIfPresent(Bool.self, forKey: .weekendOff) ?? false
+        celebrated = try c.decodeIfPresent(Set<String>.self, forKey: .celebrated) ?? []
+        rewards = try c.decodeIfPresent(RewardLedger.self, forKey: .rewards) ?? .empty
+        bestRoutineStreak = try c.decodeIfPresent(Int.self, forKey: .bestRoutineStreak) ?? 0
+        school = try c.decodeIfPresent(SchoolProgress.self, forKey: .school) ?? .empty
+        updatedAt = try c.decodeIfPresent(Date.self, forKey: .updatedAt) ?? .distantPast
     }
 
     public static func merged(_ a: SyncedEngagement, _ b: SyncedEngagement) -> SyncedEngagement {
@@ -41,6 +61,7 @@ public struct SyncedEngagement: Codable, Equatable, Sendable {
                                 celebrated: a.celebrated.union(b.celebrated),
                                 rewards: RewardLedger.merged(newer: newer.rewards, older: older.rewards),
                                 bestRoutineStreak: max(a.bestRoutineStreak, b.bestRoutineStreak),
+                                school: SchoolProgress.merged(a.school, b.school),
                                 updatedAt: max(a.updatedAt, b.updatedAt))
     }
 

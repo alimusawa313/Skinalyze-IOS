@@ -15,6 +15,8 @@ public enum QuestKind: String, CaseIterable, Codable, Sendable {
     case share
     /// Open an earlier scan or compare two.
     case lookBack
+    /// Finish a Skin School lesson.
+    case lesson
 }
 
 /// What the user can actually do today, so no quest is impossible.
@@ -26,12 +28,15 @@ public struct QuestContext: Sendable, Equatable {
     /// A product check is still available this month.
     public var canCheckProduct: Bool
     public var scanCount: Int
+    /// A Skin School lesson is open to take.
+    public var hasLesson: Bool
 
-    public init(canScan: Bool, hasRoutine: Bool, canCheckProduct: Bool, scanCount: Int) {
+    public init(canScan: Bool, hasRoutine: Bool, canCheckProduct: Bool, scanCount: Int, hasLesson: Bool = false) {
         self.canScan = canScan
         self.hasRoutine = hasRoutine
         self.canCheckProduct = canCheckProduct
         self.scanCount = scanCount
+        self.hasLesson = hasLesson
     }
 }
 
@@ -44,6 +49,7 @@ public enum QuestEngine {
         case .share: 10
         case .lookBack: 10
         case .productCheck: 15
+        case .lesson: 15
         case .scan: 20
         }
     }
@@ -57,6 +63,7 @@ public enum QuestEngine {
             case .productCheck: context.canCheckProduct
             case .share: true
             case .lookBack: context.scanCount >= 2
+            case .lesson: context.hasLesson
             }
         }
         guard !possible.isEmpty else { return [] }

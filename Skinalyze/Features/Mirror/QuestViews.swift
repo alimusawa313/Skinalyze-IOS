@@ -12,6 +12,7 @@ extension QuestKind {
         case .productCheck: "Check a product"
         case .share: "Share a card"
         case .lookBack: "Look back at an earlier scan"
+        case .lesson: "Finish a Skin School lesson"
         }
     }
 
@@ -22,6 +23,7 @@ extension QuestKind {
         case .productCheck: "checkmark.seal"
         case .share: "square.and.arrow.up"
         case .lookBack: "clock.arrow.circlepath"
+        case .lesson: "graduationcap"
         }
     }
 }

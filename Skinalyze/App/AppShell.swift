@@ -11,6 +11,7 @@ struct AppShell: View {
     @State private var isKeyboardVisible = false
     @State private var engagement = EngagementModel()
     @State private var quests = QuestModel()
+    @State private var school = SchoolModel()
     /// Synced streaks and rewards; changes here come from the user's other devices (or a restore).
     @Query private var engagementRecords: [EngagementRecord]
     @Environment(\.scenePhase) private var scenePhase
@@ -55,6 +56,7 @@ struct AppShell: View {
         .paywallSheet($paywall)
         .environment(engagement)
         .environment(quests)
+        .environment(school)
         .environment(\.pimpiOutfit, quests.ledger.worn)
         .onChange(of: scenePhase, initial: true) { _, phase in
             if phase == .active { prepareQuests() }
@@ -144,10 +146,11 @@ struct AppShell: View {
     /// Streaks and rewards through the user's own iCloud: merge, keep one copy, apply what changed.
     private func syncEngagement() {
         let sync = EngagementSync()
-        let local = sync.local(rewards: quests.ledger, bestRoutineStreak: quests.bestRoutineStreak)
+        let local = sync.local(rewards: quests.ledger, bestRoutineStreak: quests.bestRoutineStreak, school: school.progress)
         guard let merged = sync.sync(local: local, context: modelContext) else { return }
         sync.applyStreaks(merged)
         quests.applySynced(merged)
+        school.applySynced(merged.school)
         engagement.reloadFromStore()
     }
 
@@ -160,7 +163,8 @@ struct AppShell: View {
         let canScan = !scannedToday && policy.scanAllowance(savedScanDates: dates, now: .now, calendar: .current) == .allowed
         quests.prepare(context: QuestContext(canScan: canScan, hasRoutine: true,
                                              canCheckProduct: ProductCheckLedger().canCheck("quest-probe", policy: policy),
-                                             scanCount: dates.count))
+                                             scanCount: dates.count,
+                                             hasLesson: school.hasOpenLesson(hasFullAccess: policy.hasFullAccess)))
     }
 
     /// Once, when the very first scan result is closed: what Pro adds. Never before a result has been seen.

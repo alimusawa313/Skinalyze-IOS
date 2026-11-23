@@ -81,6 +81,16 @@
       },
       "shouldTranslate" : false
     },
+    "%lld XP" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld XP"
+          }
+        }
+      }
+    },
     "%lld days in a row!" : {
       "localizations" : {
         "id" : {
@@ -145,6 +155,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld dari %lld aksesori"
+          }
+        }
+      }
+    },
+    "%lld of %lld right" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld of %2$lld right"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld dari %lld benar"
           }
         }
       }
@@ -240,6 +266,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "+%lld"
+          }
+        }
+      }
+    },
+    "+%lld XP" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld XP"
           }
         }
       }
@@ -1094,6 +1130,16 @@
         }
       }
     },
+    "Comes with Pro" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tersedia dengan Pro"
+          }
+        }
+      }
+    },
     "Compare" : {
       "localizations" : {
         "id" : {
@@ -1374,6 +1420,16 @@
         }
       }
     },
+    "Every lesson done!" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semua pelajaran selesai!"
+          }
+        }
+      }
+    },
     "Everything Skinalyze can do, without limits." : {
       "localizations" : {
         "id" : {
@@ -1464,12 +1520,32 @@
         }
       }
     },
+    "Finish a Skin School lesson" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selesaikan satu pelajaran Sekolah Kulit"
+          }
+        }
+      }
+    },
     "Finish all three for a chest." : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Selesaikan ketiganya untuk dapat peti."
+          }
+        }
+      }
+    },
+    "Finish the lesson before first" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selesaikan pelajaran sebelumnya dulu"
           }
         }
       }
@@ -1580,6 +1656,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Informasi umum berdasarkan profilmu, bukan saran medis."
+          }
+        }
+      }
+    },
+    "General information, not medical advice." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informasi umum, bukan saran medis."
           }
         }
       }
@@ -2096,6 +2182,16 @@
         }
       }
     },
+    "Lesson done!" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pelajaran selesai!"
+          }
+        }
+      }
+    },
     "Let's meet your skin." : {
       "localizations" : {
         "id" : {
@@ -2382,6 +2478,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Scan gratis berikutnya tengah malam"
+          }
+        }
+      }
+    },
+    "Next: %@" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berikutnya: %@"
           }
         }
       }
@@ -3119,6 +3225,16 @@
         }
       }
     },
+    "Ready to start" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siap dimulai"
+          }
+        }
+      }
+    },
     "Reel" : {
       "localizations" : {
         "id" : {
@@ -3695,6 +3811,16 @@
         }
       }
     },
+    "Skin School" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sekolah Kulit"
+          }
+        }
+      }
+    },
     "Skin card" : {
       "localizations" : {
         "id" : {
@@ -4207,6 +4333,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pembelian tidak berhasil. Kamu tidak dikenai biaya."
+          }
+        }
+      }
+    },
+    "The rest of Skin School comes with Pro." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sisa Sekolah Kulit tersedia dengan Pro."
           }
         }
       }

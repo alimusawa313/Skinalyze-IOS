@@ -19,6 +19,15 @@ final class CoreFlowsUITests: XCTestCase {
             return false
         }
         app.launch()
+        waitForDemoData()
+    }
+
+    /// Demo scans are saved one by one, oldest first; the Mirror shows the newest (index 1) once all are in.
+    /// Waiting avoids screens rebuilding (and sheets closing) while scans are still arriving.
+    private func waitForDemoData(newestIndex: String = "1,") {
+        let index = app.buttons["mirrorIndex"]
+        let done = NSPredicate(format: "label BEGINSWITH %@", newestIndex)
+        _ = XCTWaiter().wait(for: [XCTNSPredicateExpectation(predicate: done, object: index)], timeout: 30)
     }
 
     func testMirrorShowsLatestScanAndShutter() {
@@ -98,6 +107,7 @@ final class CoreFlowsUITests: XCTestCase {
         app.terminate()
         app.launchArguments = ["-seedDemoData", "-resetDemoData", "YES"] + extra
         app.launch()
+        waitForDemoData()
     }
 
     /// Pimpi's streak sheet shows today's quests; a chest opens into an outfit Pimpi can wear.
@@ -118,11 +128,13 @@ final class CoreFlowsUITests: XCTestCase {
         XCTAssertTrue(chest.waitForExistence(timeout: 5))
         attachScreenshot("Chest · closed")
         chest.tap()
+        // A new outfit to wear — or, once every free outfit is owned (as on a reused Simulator), bonus points.
         let wear = app.buttons["chestWear"]
-        XCTAssertTrue(wear.waitForExistence(timeout: 5))
+        let bonus = app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'glow points instead'")).firstMatch
+        XCTAssertTrue(wear.waitForExistence(timeout: 5) || bonus.exists)
         sleep(1)
         attachScreenshot("Chest · opened")
-        wear.tap()
+        if wear.exists { wear.tap() } else { app.buttons["Done"].firstMatch.tap() }
         let wardrobe = app.buttons["wardrobeLink"]
         for _ in 0..<4 where !wardrobe.isHittable { app.swipeUp() }
         attachScreenshot("Badges")
@@ -194,6 +206,50 @@ final class CoreFlowsUITests: XCTestCase {
         item.tap()
         XCTAssertTrue(app.buttons["videoShareButton"].waitForExistence(timeout: 60))
         attachScreenshot("3D turntable")
+    }
+
+    /// Skin School from the Shelf: path → lesson cards → two questions → result with XP and sources.
+    private func takeFirstLesson(_ label: String) {
+        openDock("dock.shelf")
+        let card = app.buttons["skinSchoolCard"]
+        XCTAssertTrue(card.waitForExistence(timeout: 10))
+        let first = app.buttons["lesson.how-a-spot-starts"]
+        sleep(1) // let the Shelf finish sliding in, so the tap lands on the card
+        // Tap again only while the card is still on screen (the path covers it once open).
+        for _ in 0..<3 where !first.exists && card.exists {
+            card.tap()
+            _ = first.waitForExistence(timeout: 5)
+        }
+        XCTAssertTrue(first.exists)
+        attachScreenshot("School path\(label)")
+        first.tap()
+        let next = app.buttons["lessonContinue"]
+        XCTAssertTrue(next.waitForExistence(timeout: 10))
+        attachScreenshot("Lesson card\(label)")
+        for _ in 0..<4 { next.tap() } // four cards
+        for question in 0..<2 {
+            let option = app.buttons["quizOption.0"]
+            XCTAssertTrue(option.waitForExistence(timeout: 5))
+            option.tap()
+            if question == 0 { attachScreenshot("Lesson quiz\(label)") }
+            next.tap()
+        }
+        XCTAssertTrue(app.staticTexts["Lesson done!"].waitForExistence(timeout: 5))
+        attachScreenshot("Lesson done\(label)")
+        next.tap()
+    }
+
+    func testSkinSchoolLesson() {
+        takeFirstLesson("")
+    }
+
+    func testSkinSchoolAtLargestText() {
+        app.terminate()
+        app.launchArguments = ["-seedDemoData", "-resetDemoData", "YES",
+                               "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"]
+        app.launch()
+        waitForDemoData()
+        takeFirstLesson(" · AX5")
     }
 
     /// Compare can be shared as a before/after slider video.

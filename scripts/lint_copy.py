@@ -72,6 +72,27 @@ def scan_catalog(path: Path) -> list[tuple[str, int, str, list[str]]]:
     return found
 
 
+def scan_lessons(path: Path) -> list[tuple[str, int, str, list[str]]]:
+    """Skin School lessons (SkinSchool.json): every English and Indonesian string."""
+    found = []
+
+    def walk(value):
+        if isinstance(value, dict):
+            for key, inner in value.items():
+                if key != "url":
+                    walk(inner)
+        elif isinstance(value, list):
+            for inner in value:
+                walk(inner)
+        elif isinstance(value, str):
+            hits = violations_in(value)
+            if hits:
+                found.append((str(path), 0, value[:90], hits))
+
+    walk(json.loads(path.read_text(encoding="utf-8")))
+    return found
+
+
 def main(argv: list[str]) -> int:
     report_only = "--report" in argv
     roots = [Path(a) for a in argv if a != "--report"] or [Path(".")]
@@ -84,6 +105,9 @@ def main(argv: list[str]) -> int:
             results += scan_swift(path)
         for path in root.rglob("*.xcstrings"):
             results += scan_catalog(path)
+        for path in root.rglob("SkinSchool.json"):
+            if ".build" not in path.parts:
+                results += scan_lessons(path)
     for file, line, text, hits in results:
         print(f"{file}:{line}: {sorted(set(h.lower() for h in hits))}  \"{text}\"")
     print(f"{len(results)} copy violation(s)")

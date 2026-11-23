@@ -1,0 +1,377 @@
+{
+  "units": [
+    {
+      "id": "basics",
+      "title": { "en": "Skin basics", "id": "Dasar-dasar kulit" },
+      "lessons": [
+        {
+          "id": "how-a-spot-starts",
+          "reviewed": false,
+          "title": { "en": "How a spot starts", "id": "Bagaimana jerawat muncul" },
+          "cards": [
+            { "en": "Your skin is covered in tiny hair follicles — pores — and each has a small gland that makes oil.", "id": "Kulitmu dipenuhi folikel rambut kecil — pori-pori — dan masing-masing punya kelenjar kecil penghasil minyak." },
+            { "en": "A spot can start when a pore gets blocked with extra oil and dead skin cells.", "id": "Jerawat bisa muncul saat pori-pori tersumbat oleh minyak berlebih dan sel kulit mati." },
+            { "en": "Bacteria can then grow in the blocked pore, which can make it red, swollen and filled with pus.", "id": "Bakteri lalu bisa tumbuh di pori yang tersumbat, sehingga bisa jadi merah, bengkak, dan bernanah." },
+            { "en": "Hormone changes — like during puberty or around periods — can make the glands produce more oil.", "id": "Perubahan hormon — misalnya saat pubertas atau sekitar menstruasi — bisa membuat kelenjar menghasilkan lebih banyak minyak." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "What can block a pore?", "id": "Apa yang bisa menyumbat pori-pori?" },
+              "options": [
+                { "en": "Extra oil and dead skin cells", "id": "Minyak berlebih dan sel kulit mati" },
+                { "en": "Drinking water", "id": "Minum air" },
+                { "en": "Cold weather only", "id": "Hanya cuaca dingin" }
+              ],
+              "answer": 0,
+              "explain": { "en": "Extra oil plus dead skin cells can clog a pore — that's often where a spot begins.", "id": "Minyak berlebih ditambah sel kulit mati bisa menyumbat pori — sering kali di situlah jerawat dimulai." }
+            },
+            {
+              "question": { "en": "Which can make skin produce more oil?", "id": "Apa yang bisa membuat kulit menghasilkan lebih banyak minyak?" },
+              "options": [
+                { "en": "Washing with lukewarm water", "id": "Mencuci dengan air hangat suam-suam kuku" },
+                { "en": "Hormone changes", "id": "Perubahan hormon" },
+                { "en": "Looking in the mirror", "id": "Bercermin" }
+              ],
+              "answer": 1,
+              "explain": { "en": "Hormone changes, such as in puberty, can make the oil glands more active.", "id": "Perubahan hormon, seperti saat pubertas, bisa membuat kelenjar minyak lebih aktif." }
+            }
+          ],
+          "sources": [
+            { "title": "NHS — Acne", "url": "https://www.nhs.uk/conditions/acne/" },
+            { "title": "NHS — Acne: causes", "url": "https://www.nhs.uk/conditions/acne/causes/" }
+          ]
+        },
+        {
+          "id": "spot-myths",
+          "reviewed": false,
+          "title": { "en": "Spot myths", "id": "Mitos jerawat" },
+          "cards": [
+            { "en": "Myth: spots come from dirty skin. Spots are not caused by poor hygiene.", "id": "Mitos: jerawat berasal dari kulit kotor. Jerawat tidak disebabkan oleh kurang bersih." },
+            { "en": "Washing more often doesn't help — washing too much can make spots worse.", "id": "Lebih sering mencuci tidak membantu — mencuci berlebihan justru bisa memperparah jerawat." },
+            { "en": "Spots are not contagious. You can't catch them from someone else.", "id": "Jerawat tidak menular. Kamu tidak bisa tertular dari orang lain." },
+            { "en": "Spots often run in families, so it isn't something you did wrong.", "id": "Jerawat sering menurun dalam keluarga, jadi itu bukan karena kesalahanmu." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "Does washing your face many times a day stop spots?", "id": "Apakah mencuci muka berkali-kali sehari menghentikan jerawat?" },
+              "options": [
+                { "en": "Yes, the more the better", "id": "Ya, makin sering makin baik" },
+                { "en": "No — washing too much can make them worse", "id": "Tidak — mencuci berlebihan bisa memperparahnya" },
+                { "en": "Only with very hot water", "id": "Hanya dengan air yang sangat panas" }
+              ],
+              "answer": 1,
+              "explain": { "en": "Spots aren't caused by dirt, and over-washing can irritate skin.", "id": "Jerawat tidak disebabkan kotoran, dan mencuci berlebihan bisa membuat kulit iritasi." }
+            },
+            {
+              "question": { "en": "Can you catch spots from a friend?", "id": "Bisakah kamu tertular jerawat dari teman?" },
+              "options": [
+                { "en": "Yes, by touching", "id": "Ya, dengan bersentuhan" },
+                { "en": "Only by sharing towels", "id": "Hanya jika berbagi handuk" },
+                { "en": "No, spots are not contagious", "id": "Tidak, jerawat tidak menular" }
+              ],
+              "answer": 2,
+              "explain": { "en": "Spots don't spread from person to person.", "id": "Jerawat tidak menular dari orang ke orang." }
+            }
+          ],
+          "sources": [
+            { "title": "NHS — Acne: causes", "url": "https://www.nhs.uk/conditions/acne/causes/" }
+          ]
+        },
+        {
+          "id": "washing-your-face",
+          "reviewed": false,
+          "title": { "en": "Washing your face", "id": "Mencuci muka" },
+          "cards": [
+            { "en": "Twice a day is plenty: once in the morning, once at night.", "id": "Dua kali sehari sudah cukup: sekali pagi, sekali malam." },
+            { "en": "Use lukewarm water — very hot or very cold water can irritate.", "id": "Gunakan air suam-suam kuku — air yang sangat panas atau sangat dingin bisa membuat iritasi." },
+            { "en": "Use a mild cleanser and your fingertips. Scrubbing hard doesn't clean better.", "id": "Gunakan pembersih yang lembut dan ujung jari. Menggosok keras tidak membuat lebih bersih." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "How often is enough to wash your face?", "id": "Seberapa sering cukup untuk mencuci muka?" },
+              "options": [
+                { "en": "Twice a day", "id": "Dua kali sehari" },
+                { "en": "Every hour", "id": "Setiap jam" },
+                { "en": "Once a week", "id": "Seminggu sekali" }
+              ],
+              "answer": 0,
+              "explain": { "en": "Morning and night is enough for most people.", "id": "Pagi dan malam sudah cukup untuk kebanyakan orang." }
+            },
+            {
+              "question": { "en": "Which water temperature is kindest to skin?", "id": "Suhu air mana yang paling ramah untuk kulit?" },
+              "options": [
+                { "en": "Very hot", "id": "Sangat panas" },
+                { "en": "Lukewarm", "id": "Suam-suam kuku" },
+                { "en": "Ice cold", "id": "Sedingin es" }
+              ],
+              "answer": 1,
+              "explain": { "en": "Lukewarm water cleans without the irritation hot or cold water can cause.", "id": "Air suam-suam kuku membersihkan tanpa iritasi yang bisa ditimbulkan air panas atau dingin." }
+            }
+          ],
+          "sources": [
+            { "title": "NHS — Acne", "url": "https://www.nhs.uk/conditions/acne/" }
+          ]
+        },
+        {
+          "id": "hands-off",
+          "reviewed": false,
+          "title": { "en": "Hands off", "id": "Jangan dipencet" },
+          "cards": [
+            { "en": "Squeezing or picking a spot can push what's inside deeper into the skin.", "id": "Memencet atau mengorek jerawat bisa mendorong isinya lebih dalam ke kulit." },
+            { "en": "Picking can leave marks and scars that last much longer than the spot.", "id": "Mengorek bisa meninggalkan bekas dan luka yang bertahan jauh lebih lama dari jerawatnya." },
+            { "en": "If you want to do something, check off your routine and let Pimpi track the change.", "id": "Kalau ingin melakukan sesuatu, centang rutinitasmu dan biarkan Pimpi mencatat perubahannya." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "What can picking a spot leave behind?", "id": "Apa yang bisa tertinggal setelah mengorek jerawat?" },
+              "options": [
+                { "en": "Nothing at all", "id": "Tidak ada sama sekali" },
+                { "en": "Marks and scars", "id": "Bekas dan luka" },
+                { "en": "Clearer skin overnight", "id": "Kulit lebih bersih dalam semalam" }
+              ],
+              "answer": 1,
+              "explain": { "en": "Picking can leave marks that last longer than the spot did.", "id": "Mengorek bisa meninggalkan bekas yang lebih lama dari jerawatnya." }
+            },
+            {
+              "question": { "en": "What's a better habit than squeezing?", "id": "Kebiasaan apa yang lebih baik daripada memencet?" },
+              "options": [
+                { "en": "Keeping hands off and sticking to your routine", "id": "Tidak menyentuh dan tetap pada rutinitasmu" },
+                { "en": "Squeezing with clean hands", "id": "Memencet dengan tangan bersih" },
+                { "en": "Covering it with toothpaste", "id": "Menutupinya dengan pasta gigi" }
+              ],
+              "answer": 0,
+              "explain": { "en": "Leaving spots alone and keeping a steady routine is the gentler path.", "id": "Membiarkan jerawat dan menjaga rutinitas yang konsisten adalah cara yang lebih lembut." }
+            }
+          ],
+          "sources": [
+            { "title": "NHS — Acne", "url": "https://www.nhs.uk/conditions/acne/" }
+          ]
+        },
+        {
+          "id": "why-track",
+          "reviewed": false,
+          "title": { "en": "Why track your skin", "id": "Kenapa mencatat kulitmu" },
+          "cards": [
+            { "en": "Skin changes slowly. New products often take weeks before you can see any difference.", "id": "Kulit berubah perlahan. Produk baru sering butuh berminggu-minggu sebelum terlihat perbedaannya." },
+            { "en": "Day to day, it's hard to remember how your skin looked last month. Photos remember for you.", "id": "Dari hari ke hari, sulit mengingat bagaimana kulitmu bulan lalu. Foto mengingatnya untukmu." },
+            { "en": "Scan in similar light each time so the comparison is fair — Compare lines up your photos by the eyes.", "id": "Scan dengan cahaya yang mirip setiap kali agar perbandingannya adil — Bandingkan menyejajarkan fotomu berdasarkan mata." },
+            { "en": "Skinalyze tracks visible changes. It isn't a medical device; for worries about your skin, talk to a doctor.", "id": "Skinalyze mencatat perubahan yang terlihat. Ini bukan alat medis; jika khawatir tentang kulitmu, bicarakan dengan dokter." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "How long can a new product take to show a difference?", "id": "Berapa lama produk baru bisa menunjukkan perbedaan?" },
+              "options": [
+                { "en": "Overnight", "id": "Semalam" },
+                { "en": "Often several weeks", "id": "Sering beberapa minggu" },
+                { "en": "Exactly one day", "id": "Tepat satu hari" }
+              ],
+              "answer": 1,
+              "explain": { "en": "Changes take time, which is why a steady record helps.", "id": "Perubahan butuh waktu, itulah kenapa catatan yang konsisten membantu." }
+            },
+            {
+              "question": { "en": "What makes two scans easier to compare?", "id": "Apa yang membuat dua scan lebih mudah dibandingkan?" },
+              "options": [
+                { "en": "Different light each time", "id": "Cahaya yang berbeda setiap kali" },
+                { "en": "Scanning in similar light", "id": "Scan dengan cahaya yang mirip" },
+                { "en": "Wearing makeup", "id": "Memakai riasan" }
+              ],
+              "answer": 1,
+              "explain": { "en": "Similar light keeps the comparison fair.", "id": "Cahaya yang mirip menjaga perbandingan tetap adil." }
+            }
+          ],
+          "sources": [
+            { "title": "NHS — Acne", "url": "https://www.nhs.uk/conditions/acne/" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sun-and-ingredients",
+      "title": { "en": "Sun and ingredients", "id": "Matahari dan bahan" },
+      "lessons": [
+        {
+          "id": "sunscreen-every-day",
+          "reviewed": false,
+          "title": { "en": "Sunscreen every day", "id": "Tabir surya setiap hari" },
+          "cards": [
+            { "en": "Dermatologists suggest a sunscreen that covers both UVA and UVB rays — labelled \"broad spectrum\".", "id": "Dokter kulit menyarankan tabir surya yang melindungi dari sinar UVA dan UVB — berlabel \"broad spectrum\"." },
+            { "en": "Choose SPF 30 or higher.", "id": "Pilih SPF 30 atau lebih tinggi." },
+            { "en": "Water-resistant sunscreen stays on better when you sweat or swim.", "id": "Tabir surya tahan air bertahan lebih baik saat berkeringat atau berenang." },
+            { "en": "Mineral sunscreens sit on top of the skin and are often suggested for sensitive skin.", "id": "Tabir surya mineral berada di permukaan kulit dan sering disarankan untuk kulit sensitif." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "Which SPF is suggested at minimum?", "id": "SPF berapa yang disarankan paling sedikit?" },
+              "options": [
+                { "en": "SPF 8", "id": "SPF 8" },
+                { "en": "SPF 15", "id": "SPF 15" },
+                { "en": "SPF 30", "id": "SPF 30" }
+              ],
+              "answer": 2,
+              "explain": { "en": "The American Academy of Dermatology suggests SPF 30 or higher.", "id": "American Academy of Dermatology menyarankan SPF 30 atau lebih." }
+            },
+            {
+              "question": { "en": "What does \"broad spectrum\" mean?", "id": "Apa arti \"broad spectrum\"?" },
+              "options": [
+                { "en": "It covers UVA and UVB rays", "id": "Melindungi dari sinar UVA dan UVB" },
+                { "en": "It's extra thick", "id": "Sangat tebal" },
+                { "en": "It works only at the beach", "id": "Hanya bekerja di pantai" }
+              ],
+              "answer": 0,
+              "explain": { "en": "Broad spectrum means protection from both kinds of UV rays.", "id": "Broad spectrum berarti perlindungan dari kedua jenis sinar UV." }
+            }
+          ],
+          "sources": [
+            { "title": "American Academy of Dermatology — Sunscreen FAQs", "url": "https://www.aad.org/public/everyday-care/sun-protection/shade-clothing-sunscreen/sunscreen-faqs" },
+            { "title": "American Academy of Dermatology — How to select a sunscreen", "url": "https://www.aad.org/public/everyday-care/sun-protection/shade-clothing-sunscreen/how-to-select-sunscreen" }
+          ]
+        },
+        {
+          "id": "enough-sunscreen",
+          "reviewed": false,
+          "title": { "en": "Using enough sunscreen", "id": "Memakai tabir surya yang cukup" },
+          "cards": [
+            { "en": "Most people put on only a quarter to half of the amount of sunscreen they need.", "id": "Kebanyakan orang hanya memakai seperempat sampai setengah dari jumlah tabir surya yang dibutuhkan." },
+            { "en": "Outdoors, put it on again about every two hours.", "id": "Di luar ruangan, oleskan lagi kira-kira setiap dua jam." },
+            { "en": "Put it on again after swimming or sweating, even if it says water resistant.", "id": "Oleskan lagi setelah berenang atau berkeringat, meskipun tertulis tahan air." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "How often should you put sunscreen on again outdoors?", "id": "Seberapa sering tabir surya perlu dioleskan lagi di luar ruangan?" },
+              "options": [
+                { "en": "About every two hours", "id": "Kira-kira setiap dua jam" },
+                { "en": "Once a day is always enough", "id": "Sekali sehari selalu cukup" },
+                { "en": "Only when it feels hot", "id": "Hanya saat terasa panas" }
+              ],
+              "answer": 0,
+              "explain": { "en": "Outdoors, about every two hours — and after swimming or sweating.", "id": "Di luar ruangan, kira-kira setiap dua jam — dan setelah berenang atau berkeringat." }
+            },
+            {
+              "question": { "en": "How much sunscreen do most people use?", "id": "Berapa banyak tabir surya yang dipakai kebanyakan orang?" },
+              "options": [
+                { "en": "Too much", "id": "Terlalu banyak" },
+                { "en": "Exactly the right amount", "id": "Tepat sesuai jumlahnya" },
+                { "en": "Far less than they need", "id": "Jauh lebih sedikit dari yang dibutuhkan" }
+              ],
+              "answer": 2,
+              "explain": { "en": "Most people apply only 25–50% of the amount they need.", "id": "Kebanyakan orang hanya memakai 25–50% dari jumlah yang dibutuhkan." }
+            }
+          ],
+          "sources": [
+            { "title": "American Academy of Dermatology — Sunscreen FAQs", "url": "https://www.aad.org/public/everyday-care/sun-protection/shade-clothing-sunscreen/sunscreen-faqs" },
+            { "title": "American Academy of Dermatology — How to apply sunscreen", "url": "https://www.aad.org/public/everyday-care/sun-protection/shade-clothing-sunscreen/how-to-apply-sunscreen" }
+          ]
+        },
+        {
+          "id": "patch-test",
+          "reviewed": false,
+          "title": { "en": "Try before you apply", "id": "Coba dulu sebelum dipakai" },
+          "cards": [
+            { "en": "Before using a new product on your face, test it on a small patch of skin first.", "id": "Sebelum memakai produk baru di wajah, coba dulu pada sedikit area kulit." },
+            { "en": "A common way: put a little on the inside of your arm every day for 7 to 10 days.", "id": "Cara yang umum: oleskan sedikit di bagian dalam lengan setiap hari selama 7 sampai 10 hari." },
+            { "en": "If your skin stays clear, the product is more likely to suit you.", "id": "Jika kulitmu tetap baik-baik saja, produk itu lebih mungkin cocok untukmu." },
+            { "en": "Fragrance often causes reactions — and \"unscented\" doesn't always mean fragrance-free.", "id": "Pewangi sering menimbulkan reaksi — dan \"unscented\" tidak selalu berarti bebas pewangi." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "How long is a typical patch test?", "id": "Berapa lama uji tempel biasanya?" },
+              "options": [
+                { "en": "One minute", "id": "Satu menit" },
+                { "en": "7 to 10 days", "id": "7 sampai 10 hari" },
+                { "en": "A whole year", "id": "Satu tahun penuh" }
+              ],
+              "answer": 1,
+              "explain": { "en": "Testing for 7 to 10 days gives a reaction time to show.", "id": "Menguji selama 7 sampai 10 hari memberi waktu bagi reaksi untuk muncul." }
+            },
+            {
+              "question": { "en": "Does \"unscented\" always mean no fragrance?", "id": "Apakah \"unscented\" selalu berarti tanpa pewangi?" },
+              "options": [
+                { "en": "Yes, always", "id": "Ya, selalu" },
+                { "en": "No, not always", "id": "Tidak, tidak selalu" }
+              ],
+              "answer": 1,
+              "explain": { "en": "Some unscented products still contain fragrance ingredients.", "id": "Beberapa produk unscented tetap mengandung bahan pewangi." }
+            }
+          ],
+          "sources": [
+            { "title": "American Academy of Dermatology — How to test skin care products before use", "url": "https://www.aad.org/news/how-to-test-skin-care-products-before-use" }
+          ]
+        },
+        {
+          "id": "niacinamide",
+          "reviewed": false,
+          "title": { "en": "What niacinamide is", "id": "Apa itu niacinamide" },
+          "cards": [
+            { "en": "Niacinamide (also called nicotinamide) is a form of vitamin B3 found in many skin care products.", "id": "Niacinamide (disebut juga nicotinamide) adalah bentuk vitamin B3 yang ada di banyak produk perawatan kulit." },
+            { "en": "It is generally well tolerated, so people who find stronger ingredients irritating often pick it.", "id": "Umumnya mudah diterima kulit, sehingga orang yang merasa bahan yang lebih kuat membuat iritasi sering memilihnya." },
+            { "en": "In studies it was linked with fewer red blotches and dark spots over time.", "id": "Dalam penelitian, bahan ini dikaitkan dengan berkurangnya bercak merah dan noda gelap seiring waktu." },
+            { "en": "Use the Shelf to check if a product with it suits your skin type.", "id": "Gunakan Rak untuk mengecek apakah produk dengan bahan ini cocok untuk jenis kulitmu." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "Niacinamide is a form of which vitamin?", "id": "Niacinamide adalah bentuk vitamin apa?" },
+              "options": [
+                { "en": "Vitamin B3", "id": "Vitamin B3" },
+                { "en": "Vitamin C", "id": "Vitamin C" },
+                { "en": "Vitamin D", "id": "Vitamin D" }
+              ],
+              "answer": 0,
+              "explain": { "en": "Niacinamide, or nicotinamide, is vitamin B3.", "id": "Niacinamide, atau nicotinamide, adalah vitamin B3." }
+            },
+            {
+              "question": { "en": "Why do people with easily irritated skin often choose it?", "id": "Kenapa orang dengan kulit yang mudah iritasi sering memilihnya?" },
+              "options": [
+                { "en": "It is generally well tolerated", "id": "Umumnya mudah diterima kulit" },
+                { "en": "It works overnight", "id": "Bekerja dalam semalam" },
+                { "en": "It replaces sunscreen", "id": "Menggantikan tabir surya" }
+              ],
+              "answer": 0,
+              "explain": { "en": "It tends to be gentle, so it's a common choice for sensitive skin.", "id": "Bahan ini cenderung lembut, jadi sering dipilih untuk kulit sensitif." }
+            }
+          ],
+          "sources": [
+            { "title": "DermNet — Nicotinamide", "url": "https://dermnetnz.org/topics/nicotinamide" }
+          ]
+        },
+        {
+          "id": "reading-a-label",
+          "reviewed": false,
+          "title": { "en": "Reading a label", "id": "Membaca label" },
+          "cards": [
+            { "en": "\"Non-comedogenic\" means the product is made not to clog pores.", "id": "\"Non-comedogenic\" berarti produk dibuat agar tidak menyumbat pori-pori." },
+            { "en": "Some make-up and greasy products can block pores, so this label is worth looking for.", "id": "Beberapa riasan dan produk berminyak bisa menyumbat pori, jadi label ini layak dicari." },
+            { "en": "Salicylic acid is an ingredient often found in products for spot-prone skin.", "id": "Asam salisilat adalah bahan yang sering ada di produk untuk kulit yang mudah berjerawat." },
+            { "en": "Strong ingredients like retinol or glycolic acid can irritate, especially sensitive skin — start slowly.", "id": "Bahan kuat seperti retinol atau asam glikolat bisa membuat iritasi, terutama kulit sensitif — mulai perlahan." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "What does \"non-comedogenic\" mean?", "id": "Apa arti \"non-comedogenic\"?" },
+              "options": [
+                { "en": "Made not to clog pores", "id": "Dibuat agar tidak menyumbat pori" },
+                { "en": "Smells nice", "id": "Wanginya enak" },
+                { "en": "Very cheap", "id": "Sangat murah" }
+              ],
+              "answer": 0,
+              "explain": { "en": "It's a label for products made not to block pores.", "id": "Itu label untuk produk yang dibuat agar tidak menyumbat pori." }
+            },
+            {
+              "question": { "en": "How should you start with a strong ingredient like retinol?", "id": "Bagaimana sebaiknya memulai bahan kuat seperti retinol?" },
+              "options": [
+                { "en": "Use a lot right away", "id": "Langsung pakai banyak" },
+                { "en": "Start slowly", "id": "Mulai perlahan" },
+                { "en": "Mix it with everything", "id": "Campur dengan semuanya" }
+              ],
+              "answer": 1,
+              "explain": { "en": "Strong ingredients can irritate, so starting slowly is gentler.", "id": "Bahan kuat bisa membuat iritasi, jadi mulai perlahan lebih lembut." }
+            }
+          ],
+          "sources": [
+            { "title": "NHS — Acne: causes", "url": "https://www.nhs.uk/conditions/acne/causes/" },
+            { "title": "DermNet — Acne", "url": "https://dermnetnz.org/cme/follicular/acne" },
+            { "title": "American Academy of Dermatology — How to test skin care products before use", "url": "https://www.aad.org/news/how-to-test-skin-care-products-before-use" }
+          ]
+        }
+      ]
+    }
+  ]
+}

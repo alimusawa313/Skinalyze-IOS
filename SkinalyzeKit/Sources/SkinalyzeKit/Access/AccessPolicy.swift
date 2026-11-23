@@ -8,6 +8,8 @@ public enum FreeLimits {
     public static let historyScans = 7
     /// Different products a free account can check in a calendar month.
     public static let productChecksPerMonth = 3
+    /// Skin School units open to everyone; the rest come with Pro.
+    public static let freeSchoolUnits = 1
 }
 
 /// Things only full access unlocks (beyond the limits above).
@@ -18,6 +20,8 @@ public enum ProFeature: String, CaseIterable, Sendable {
     case turntableExport
     /// Exports without the Skinalyze mark.
     case noWatermark
+    /// Skin School beyond the free units.
+    case allSkinSchool
 }
 
 /// The one place that answers "is this allowed?". Full access means a Pro subscription or an existing user from

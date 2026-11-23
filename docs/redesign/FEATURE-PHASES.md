@@ -269,8 +269,20 @@ history and 3D as it is today).
 
 ---
 
-## Phase 7 — Skin School  ☐
+## Phase 7 — Skin School  ◐ (built; wording waits for owner sign-off)
 **Ships:** E9, E10 · **Size:** medium (code) + content work
+
+**Built (2026-11-23):**
+- [x] Lessons as data (`Skinalyze/Features/School/SkinSchool.json`): title, 3–5 cards, two questions, sources, EN + ID.
+- [x] `SkinSchoolEngine` (tested): quiz scoring, XP the first time only, lessons open in order, unit 1 free and the
+  rest through `AccessPolicy` (`allSkinSchool`), unsigned lessons hidden in release builds, data checks.
+- [x] Skin School card on the Shelf → lesson path (winding stones, Pro locks) → lesson player (cards → quiz with
+  explanations → result with XP and sources). "Finish a lesson" joins the daily quests. Progress syncs via iCloud.
+- [x] 10 draft lessons in two units, sources from the NHS, the American Academy of Dermatology and DermNet; the copy
+  lint now also reads the lesson file. Lesson played end to end in UI tests at normal and the largest text size.
+
+**Needs from owner:** read [SKIN-SCHOOL.md](SKIN-SCHOOL.md), change any wording, and mark each approved lesson
+`"reviewed": true`. Until then release builds show no Skin School at all.
 
 **Build**
 1. Lesson format as data (title, 3–5 cards, two quiz questions, sources) so lessons are added without code.

@@ -204,6 +204,37 @@ struct EngagementSyncTests {
     }
 }
 
+/// The lessons shipped in the app are complete and well formed.
+@MainActor
+@Suite("Skin School lessons")
+struct SkinSchoolContentTests {
+    private let course = SchoolModel.loadBundledCourse()
+
+    @Test("The lesson file loads with at least ten lessons in two or more units")
+    func loads() {
+        #expect(course.units.count >= 2)
+        #expect(course.units.flatMap(\.lessons).count >= 10)
+    }
+
+    @Test("Every lesson has 3–5 cards, two answerable questions, English and Indonesian, and https sources")
+    func wellFormed() {
+        let problems = course.units.flatMap(\.lessons).flatMap(SkinSchoolEngine.problems(in:))
+        #expect(problems.isEmpty, "\(problems)")
+    }
+
+    @Test("Lesson ids are unique")
+    func uniqueIDs() {
+        let ids = course.units.flatMap(\.lessons).map(\.id)
+        #expect(Set(ids).count == ids.count)
+    }
+
+    @Test("Release builds show only signed-off lessons (none are signed off yet)")
+    func draftsStayHidden() {
+        let released = SkinSchoolEngine.visibleLessons(in: course, includeDrafts: false)
+        #expect(released.allSatisfy { $0.reviewed })
+    }
+}
+
 /// The app and the share extension name the same plans.
 @Suite("Shared access")
 struct SharedAccessTests {
