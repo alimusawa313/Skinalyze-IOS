@@ -111,6 +111,16 @@
         }
       }
     },
+    "%lld marked here" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld ditandai di sini"
+          }
+        }
+      }
+    },
     "%lld of %lld" : {
       "localizations" : {
         "en" : {
@@ -1300,6 +1310,16 @@
         }
       }
     },
+    "Detection is not perfect: a mark can be missed in one scan and found in the next. Use your own eyes." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deteksi tidak sempurna: sebuah noda bisa terlewat di satu scan dan terdeteksi di scan berikutnya. Gunakan matamu sendiri."
+          }
+        }
+      }
+    },
     "Does it sting or redden with new products?" : {
       "localizations" : {
         "id" : {
@@ -1606,6 +1626,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fokus"
+          }
+        }
+      }
+    },
+    "Follow any patch of skin through every scan with Pro." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ikuti area kulit mana pun di setiap scan dengan Pro."
           }
         }
       }
@@ -2642,6 +2672,16 @@
         }
       }
     },
+    "Nothing marked here" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada yang ditandai di sini"
+          }
+        }
+      }
+    },
     "Nothing on the shelf matches “%@”. Try a label scan." : {
       "localizations" : {
         "id" : {
@@ -3455,6 +3495,16 @@
         }
       }
     },
+    "Scan date" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanggal scan"
+          }
+        }
+      }
+    },
     "Scan day" : {
       "localizations" : {
         "id" : {
@@ -3621,12 +3671,32 @@
         }
       }
     },
+    "See every area of your face over time with Pro." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lihat setiap area wajahmu dari waktu ke waktu dengan Pro."
+          }
+        }
+      }
+    },
     "See how your skin is changing" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lihat bagaimana kulitmu berubah"
+          }
+        }
+      }
+    },
+    "See this area over time" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lihat area ini dari waktu ke waktu"
           }
         }
       }
@@ -3761,6 +3831,16 @@
         }
       }
     },
+    "Shows how many spots were marked in each area, not what they are." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menunjukkan berapa banyak titik yang ditandai di tiap area, bukan apa itu."
+          }
+        }
+      }
+    },
     "Shows what this spot is" : {
       "localizations" : {
         "id" : {
@@ -3777,6 +3857,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Menampilkan rangkaianmu"
+          }
+        }
+      }
+    },
+    "Side photos line up less exactly than the front." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto samping tidak sejajar setepat foto depan."
           }
         }
       }
@@ -4347,6 +4437,26 @@
         }
       }
     },
+    "The same patch of skin in each scan, lined up by your eyes. Rings show where a spot was marked." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Area kulit yang sama di setiap scan, disejajarkan berdasarkan matamu. Lingkaran menunjukkan titik yang ditandai."
+          }
+        }
+      }
+    },
+    "This area over time" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Area ini dari waktu ke waktu"
+          }
+        }
+      }
+    },
     "This removes them from this iPhone and your iCloud. It can't be undone." : {
       "localizations" : {
         "id" : {
@@ -4817,6 +4927,16 @@
         }
       }
     },
+    "Your 3D scan with the busier areas glowing" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan 3D-mu dengan area yang lebih ramai menyala"
+          }
+        }
+      }
+    },
     "Your calmest scan yet — whatever you're doing, it's showing." : {
       "localizations" : {
         "id" : {
@@ -4979,6 +5099,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seluruh riwayat dan Bandingkan"
+          }
+        }
+      }
+    },
+    "Zone map" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peta area"
           }
         }
       }

@@ -22,6 +22,10 @@ public enum ProFeature: String, CaseIterable, Sendable {
     case noWatermark
     /// Skin School beyond the free units.
     case allSkinSchool
+    /// "This area over time" from a tapped spot.
+    case areaHistory
+    /// The zone map on the head over time.
+    case zoneMap
 }
 
 /// The one place that answers "is this allowed?". Full access means a Pro subscription or an existing user from

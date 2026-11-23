@@ -20,6 +20,7 @@ struct AppShell: View {
     #if DEBUG
     @State private var showsPimpiGallery = UserDefaults.standard.bool(forKey: "pimpiGallery")
     @State private var showsPimpiWidgetGallery = UserDefaults.standard.bool(forKey: "pimpiWidgetGallery")
+    @State private var showsZoneMapDebug = false
     #endif
 
     var body: some View {
@@ -66,6 +67,7 @@ struct AppShell: View {
         #if DEBUG
         .fullScreenCover(isPresented: $showsPimpiGallery) { PimpiGallery() }
         .fullScreenCover(isPresented: $showsPimpiWidgetGallery) { PimpiWidgetGallery() }
+        .sheet(isPresented: $showsZoneMapDebug) { ZoneMapView() }
         #endif
         .onOpenURL { appModel.open($0) }
         #if DEBUG
@@ -118,6 +120,13 @@ struct AppShell: View {
                         }
                     }
                     try? note.write(to: target.appendingPathComponent("turntable.txt"), atomically: true, encoding: .utf8)
+                }
+            }
+            // `-openZoneMap YES`: the zone map over the demo scans (renderer checks in the Simulator).
+            if UserDefaults.standard.bool(forKey: "openZoneMap") {
+                Task {
+                    try? await Task.sleep(for: .seconds(4)) // after demo seeding
+                    showsZoneMapDebug = true
                 }
             }
             // `-openLatestScan YES`: present the newest scan's result (renderer checks in the Simulator).

@@ -10,6 +10,8 @@ enum PaywallReason: Identifiable, Equatable {
     case turntable
     case productChecks
     case school
+    case areaHistory
+    case zoneMap
     case welcome
     case profile
 
@@ -21,6 +23,8 @@ enum PaywallReason: Identifiable, Equatable {
         case .turntable: "turntable"
         case .productChecks: "productChecks"
         case .school: "school"
+        case .areaHistory: "areaHistory"
+        case .zoneMap: "zoneMap"
         case .welcome: "welcome"
         case .profile: "profile"
         }
@@ -35,6 +39,8 @@ enum PaywallReason: Identifiable, Equatable {
         case .turntable: Text("The 3D turntable video comes with Pro.")
         case .productChecks: Text("You've used this month's \(FreeLimits.productChecksPerMonth) free product checks.")
         case .school: Text("The rest of Skin School comes with Pro.")
+        case .areaHistory: Text("Follow any patch of skin through every scan with Pro.")
+        case .zoneMap: Text("See every area of your face over time with Pro.")
         case .welcome: Text("That was your first scan. Pro lets you scan as often as you like.")
         case .profile: Text("Everything Skinalyze can do, without limits.")
         }

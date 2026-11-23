@@ -9,6 +9,8 @@ struct ScanPhotoView: View {
     /// Optional remap of a detection centre (Vision-normalized, bottom-left) to a normalized top-left point in the
     /// displayed image — used by Compare, where photos are re-aligned by the eyes.
     var mapPoint: ((CGPoint) -> CGPoint)?
+    /// When set, a tapped spot's pop-up offers "See this area over time".
+    var onFollow: ((StoredDetection) -> Void)?
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var revealed = false
@@ -47,8 +49,13 @@ struct ScanPhotoView: View {
         .animation(MotionToken.expressive.resolved(reduceMotion: reduceMotion).animation
             .delay(reduceMotion ? 0 : MotionToken.stagger(index)), value: revealed)
         .popover(isPresented: Binding(get: { isSelected }, set: { if !$0 { selectedID = nil } })) {
-            SpotDetail(type: detection.lesionType, zone: detection.zone)
-                .presentationCompactAdaptation(.popover)
+            SpotDetail(type: detection.lesionType, zone: detection.zone, follow: onFollow.map { follow in
+                {
+                    selectedID = nil
+                    follow(detection)
+                }
+            })
+            .presentationCompactAdaptation(.popover)
         }
         .sensoryFeedback(.selection, trigger: isSelected)
         .accessibilityLabel(SpotDetail.label(type: detection.lesionType, zone: detection.zone))
@@ -89,6 +96,7 @@ struct ScanPhotoView: View {
 struct SpotDetail: View {
     let type: LesionType?
     let zone: FaceZone?
+    var follow: (() -> Void)?
 
     static func label(type: LesionType?, zone: FaceZone?) -> String {
         let name = type.map(LesionGlyph.displayName(for:)) ?? String(localized: "Spot")
@@ -114,6 +122,13 @@ struct SpotDetail: View {
                 Text(LesionGlyph.explanation(for: type))
                     .font(.ds.footnote)
                     .fixedSize(horizontal: false, vertical: true)
+            }
+            if let follow {
+                Button(action: follow) {
+                    Label("See this area over time", systemImage: "clock.arrow.circlepath")
+                        .font(.ds.footnote.weight(.semibold))
+                }
+                .accessibilityIdentifier("followArea")
             }
         }
         .padding(Spacing.md)

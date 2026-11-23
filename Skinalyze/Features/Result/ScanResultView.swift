@@ -33,6 +33,7 @@ struct ScanResultView: View {
     @State private var sharedCard: ShareCardSource?
     @State private var sharedVideo: VideoShareSource?
     @State private var paywall: PaywallReason?
+    @State private var areaFollow: AreaFollow?
     @Environment(ProAccess.self) private var access: ProAccess?
     @Environment(QuestModel.self) private var quests: QuestModel?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -96,6 +97,7 @@ struct ScanResultView: View {
         }
         .sheet(item: $sharedVideo) { VideoShareSheet(source: $0) }
         .paywallSheet($paywall)
+        .sheet(item: $areaFollow) { AreaTimelineView(follow: $0) }
         .sheet(item: $sharedCard) { ShareCardSheet(source: $0) }
         .sheet(isPresented: $showsSources) {
             SourcesView(skinType: SkinType(stored: skinTypeRaw))
@@ -201,7 +203,15 @@ struct ScanResultView: View {
                 }
                 .pickerStyle(.segmented)
                 if let image = session.uiImage(at: availableAngles.firstIndex(of: angle) ?? 0) {
-                    ScanPhotoView(image: image, detections: session.detections(for: angle, types: visibleTypes))
+                    ScanPhotoView(image: image, detections: session.detections(for: angle, types: visibleTypes),
+                                  onFollow: { detection in
+                                      if policy.allows(.areaHistory) {
+                                          areaFollow = AreaFollow(sessionID: session.id, angle: angle,
+                                                                  centre: CGPoint(x: detection.box.center.x, y: detection.box.center.y))
+                                      } else {
+                                          paywall = .areaHistory
+                                      }
+                                  })
                         .clipShape(RoundedRectangle(cornerRadius: Radius.large, style: .continuous))
                         .id(angle)
                         .transition(.opacity)

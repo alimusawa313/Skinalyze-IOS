@@ -252,6 +252,44 @@ final class CoreFlowsUITests: XCTestCase {
         takeFirstLesson(" · AX5")
     }
 
+    /// Pro: the zone map opens from the Deck and scrubs through the scans.
+    func testZoneMap() {
+        // DEBUG_MESH_DIR (passed as TEST_RUNNER_DEBUG_MESH_DIR): check the glows on a real captured head.
+        let mesh = ProcessInfo.processInfo.environment["DEBUG_MESH_DIR"].map { ["-debugMeshDir", $0] } ?? []
+        relaunch(["-proOverride", "pro"] + mesh)
+        openDock("dock.deck")
+        let button = app.buttons["deckZoneMap"]
+        XCTAssertTrue(button.waitForExistence(timeout: 10))
+        button.tap()
+        let slider = app.sliders.firstMatch
+        XCTAssertTrue(slider.waitForExistence(timeout: 10))
+        sleep(2)
+        attachScreenshot("Zone map · newest")
+        slider.adjust(toNormalizedSliderPosition: 0)
+        sleep(1)
+        attachScreenshot("Zone map · oldest")
+    }
+
+    /// Pro: a tapped spot on a scan photo opens the same area across every scan.
+    func testAreaOverTime() {
+        relaunch(["-proOverride", "pro"])
+        openDock("dock.deck")
+        let firstRow = scanRows.element(boundBy: 0)
+        XCTAssertTrue(firstRow.waitForExistence(timeout: 10))
+        firstRow.tap()
+        let toggle = app.switches["3D view"]
+        if toggle.waitForExistence(timeout: 5), (toggle.value as? String) == "1" { toggle.tap() }
+        let pin = app.buttons.matching(identifier: "spotPin").firstMatch
+        XCTAssertTrue(pin.waitForExistence(timeout: 10))
+        pin.tap()
+        let follow = app.buttons["followArea"]
+        XCTAssertTrue(follow.waitForExistence(timeout: 5))
+        follow.tap()
+        XCTAssertTrue(app.navigationBars["This area over time"].waitForExistence(timeout: 10))
+        sleep(3)
+        attachScreenshot("Area over time")
+    }
+
     /// Compare can be shared as a before/after slider video.
     func testSliderVideoIsMade() {
         openDock("dock.deck")

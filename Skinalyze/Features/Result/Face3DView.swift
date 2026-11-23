@@ -11,6 +11,9 @@ struct Face3DView: View {
     /// Without it, a drag asks for Pro instead of turning the head (pinch and pins still work).
     var canTurn = true
     var onLockedTurn: () -> Void = {}
+    /// Zone map: each zone glows by its share (0…1). Nil: no glows.
+    var heat: [FaceZone: Double]?
+    var showsPins = true
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var yaw: Float = Face3DView.debugStartYaw
@@ -46,6 +49,9 @@ struct Face3DView: View {
         RealityView { content in
             guard let face = makeFaceEntity() else { return }
             face.name = "face"
+            if heat != nil, let model = face.findEntity(named: Self.modelName) {
+                Self.addHeatGlows(to: model, vertices: mesh.vertices, indices: mesh.indices)
+            }
             content.add(face)
             yawBounds = Self.turnRange(vertices: mesh.vertices, indices: mesh.indices)
             #if DEBUG
@@ -55,6 +61,14 @@ struct Face3DView: View {
             guard let face = content.entities.first(where: { $0.name == "face" }) else { return }
             face.transform.rotation = simd_quatf(angle: yaw, axis: [0, 1, 0]) * simd_quatf(angle: pitch, axis: [1, 0, 0])
             face.transform.scale = SIMD3(repeating: scale)
+            if let heat {
+                for zone in FaceZone.allCases {
+                    guard let glow = face.findEntity(named: "\(Self.heatPrefix)\(zone.rawValue)") else { continue }
+                    let level = Float(heat[zone] ?? 0)
+                    glow.transform.scale = SIMD3(repeating: level > 0 ? 0.6 + 0.8 * level : 0.001)
+                    glow.components.set(OpacityComponent(opacity: level > 0 ? 0.25 + 0.45 * level : 0))
+                }
+            }
             for (index, _) in mesh.pins.enumerated() {
                 face.findEntity(named: "\(Self.pinPrefix)\(index)")?.transform.scale =
                     SIMD3(repeating: index == selectedPin ? 1.9 : 1)
@@ -146,6 +160,56 @@ struct Face3DView: View {
         return -limit(positive)...limit(negative)
     }
 
+    private static let modelName = "faceModel"
+    private static let heatPrefix = "heat-"
+    /// Glow size in mesh units (metres): about a cheek's worth.
+    private static let glowRadius: Float = 0.011
+
+    /// How far behind the nose tip still counts as the face's front (metres) — leaves out hair, ears and sides.
+    private static let frontDepth: Float = 0.06
+
+    /// Each zone's place relative to the nose tip, in face widths (x: viewer's right, y: up). Right and left are the
+    /// person's own sides. Measured on real scans; the front-most surface near each place is used.
+    private static func offset(_ zone: FaceZone) -> SIMD2<Float> {
+        switch zone {
+        case .nose: SIMD2(0, 0)
+        case .forehead: SIMD2(0, 0.62)
+        case .rightCheek: SIMD2(-0.3, 0.02)
+        case .leftCheek: SIMD2(0.3, 0.02)
+        case .rightJaw: SIMD2(-0.3, -0.36)
+        case .leftJaw: SIMD2(0.3, -0.36)
+        case .chin: SIMD2(0, -0.5)
+        }
+    }
+
+    /// Where each zone sits on the head, anchored on the nose tip (the front-most point).
+    static func heatAnchors(vertices: [SIMD3<Float>], indices: [UInt16]) -> [FaceZone: SIMD3<Float>] {
+        let all = Set(indices.map(Int.init)).filter { vertices.indices.contains($0) }.map { vertices[$0] }
+        guard let tip = all.max(by: { $0.z < $1.z }) else { return [:] }
+        let front = all.filter { $0.z > tip.z - frontDepth }
+        guard let minX = front.map(\.x).min(), let maxX = front.map(\.x).max() else { return [:] }
+        let width = maxX - minX
+        var anchors: [FaceZone: SIMD3<Float>] = [:]
+        for zone in FaceZone.allCases {
+            let target = SIMD2(tip.x, tip.y) + offset(zone) * width
+            let nearby = front.filter { simd_distance(SIMD2($0.x, $0.y), target) < width * 0.08 }
+            anchors[zone] = zone == .nose ? tip : (nearby.max { $0.z < $1.z }
+                ?? front.min { simd_distance(SIMD2($0.x, $0.y), target) < simd_distance(SIMD2($1.x, $1.y), target) })
+        }
+        return anchors
+    }
+
+    private static func addHeatGlows(to model: Entity, vertices: [SIMD3<Float>], indices: [UInt16]) {
+        for (zone, point) in heatAnchors(vertices: vertices, indices: indices) {
+            let glow = ModelEntity(mesh: .generateSphere(radius: glowRadius),
+                                   materials: [UnlitMaterial(color: UIColor(Color.ds.signal))])
+            glow.name = "\(heatPrefix)\(zone.rawValue)"
+            glow.position = point + SIMD3(0, 0, glowRadius * 0.4)
+            glow.components.set(OpacityComponent(opacity: 0))
+            model.addChild(glow)
+        }
+    }
+
     private static func pinName(from entity: Entity) -> String? {
         var current: Entity? = entity
         while let node = current {
@@ -157,7 +221,7 @@ struct Face3DView: View {
 
     private func makeFaceEntity() -> Entity? {
         Self.headEntity(vertices: mesh.vertices, textureCoordinates: mesh.textureCoordinates, indices: mesh.indices,
-                        textureData: mesh.textureData, pins: mesh.pins)
+                        textureData: mesh.textureData, pins: showsPins ? mesh.pins : [])
     }
 
     /// The scanned head as an entity, centred and fitted. Shared with the turntable export (which passes no pins).
@@ -176,6 +240,7 @@ struct Face3DView: View {
             material.color = .init(texture: .init(texture))
         }
         let face = ModelEntity(mesh: resource, materials: [material])
+        face.name = modelName
 
         for (index, pin) in pins.enumerated() where vertices.indices.contains(pin.vertexIndex) {
             let marker = ModelEntity(

@@ -123,8 +123,8 @@ with depth, no outlines, and moods.
 
 ## 5. Product features
 
-- [ ] **P1 Spot timeline** — tap a dot to follow that same spot across scans (appeared, fading, gone). · Pro
-- [ ] **P2 Zone heat map over time** — on the 3D head, scrubbable by date. · Pro
+- [~] **P1 Spot timeline** (Phase 8 shipped "this area over time"; states wait for steadier detection) — tap a dot to follow that same spot across scans (appeared, fading, gone). · Pro
+- [x] **P2 Zone heat map over time** (Phase 8) — on the 3D head, scrubbable by date. · Pro
 - [ ] **P3 Trigger journal** — sleep, stress, cycle, diet, new product; shows what coincided with flare-ups. · Free
   (log) / Pro (insights)
 - [ ] **P4 Cycle and sleep correlation via HealthKit** — on-device only (rule 4). · Pro

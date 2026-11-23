@@ -15,6 +15,7 @@ struct DeckView: View {
     @State private var picked: [ScanSession] = []
     @State private var comparePair: ComparePair?
     @State private var showsReel = false
+    @State private var showsZoneMap = false
     @State private var paywall: PaywallReason?
     @Environment(ProAccess.self) private var access: ProAccess?
 
@@ -48,6 +49,7 @@ struct DeckView: View {
             NavigationStack { CompareView(earlier: pair.earlier, later: pair.later) }
         }
         .sheet(isPresented: $showsReel) { VideoShareSheet(source: .reel(scans: scans)) }
+        .sheet(isPresented: $showsZoneMap) { ZoneMapView() }
         .paywallSheet($paywall)
     }
 
@@ -62,6 +64,21 @@ struct DeckView: View {
                 Text("\(scans.count)").font(.system(.title2, design: .rounded).weight(.heavy)).foregroundStyle(.secondary)
                     .contentTransition(.numericText(value: Double(scans.count)))
                 Spacer()
+                if !isPicking {
+                    Button {
+                        if (access?.policy ?? AccessPolicy(hasFullAccess: true)).allows(.zoneMap) {
+                            showsZoneMap = true
+                        } else {
+                            paywall = .zoneMap
+                        }
+                    } label: {
+                        Label("Zone map", systemImage: "circle.hexagongrid")
+                    }
+                    .labelStyle(.iconOnly)
+                    .font(.headline)
+                    .buttonStyle(.glass)
+                    .accessibilityIdentifier("deckZoneMap")
+                }
                 if scans.count >= 2, !isPicking {
                     Button { showsReel = true } label: {
                         Label("Glow-up reel", systemImage: "film")

@@ -295,8 +295,23 @@ nothing ships without it.
 
 ---
 
-## Phase 8 — Spot timeline and zone heat map  ☐
-**Ships:** P1, P2 · **Size:** large
+## Phase 8 — Spot timeline and zone heat map  ☑ (P1 reshaped after the real-scan replay)
+**Ships:** P1 (as "this area over time"), P2 · **Size:** large
+
+**Replay on the owner's real scans (2026-11-23, read-only copy of the phone's store):** 12 scans with detections,
+98 detections — only 2 on front photos, the rest on side photos. Every photo lined up by the eyes, but between scans
+minutes apart only 15 of 60 right-side spots were found again: the detector does not find every mark every time,
+and side photos at different turn angles do not register exactly (texture registration did not help). A timeline
+that says "appeared / gone" would therefore often be wrong. Decision, per this phase's risk rule:
+- [x] `SpotTracker` kept in SkinalyzeKit (10 tests) but **not shown in the app** until detection is steadier.
+- [x] **P1 as "This area over time"** (Pro): tap a spot → the same patch cut from every scan's eye-aligned photo of
+  that angle, with rings where something was marked. No appeared/gone claims; a note says detection is not perfect.
+- [x] **P2 Zone map** (Pro, Deck): spots marked per zone on the latest 3D head as soft glows, one scale across all
+  scans, scrubbable by date; front photo instead when there is no 3D head (iPhone Duo). Zones anchored from the nose
+  tip, checked on the owner's real head. `ZoneHeat` / `AreaCrop` tested.
+- [x] Fixed a crash found on the way: reading a scan deleted while these screens are open (e.g. removed via iCloud).
+
+**Still open:** a spot timeline with states needs steadier detection (or matching on the 3D head across scans).
 
 **Build**
 1. Matching the same spot across scans (kit, tested): detections registered into the fused head's coordinates or
