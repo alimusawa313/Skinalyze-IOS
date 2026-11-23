@@ -12,6 +12,7 @@ struct AppShell: View {
     @State private var engagement = EngagementModel()
     @State private var quests = QuestModel()
     @State private var school = SchoolModel()
+    @State private var challenges = ChallengeModel()
     /// Synced streaks and rewards; changes here come from the user's other devices (or a restore).
     @Query private var engagementRecords: [EngagementRecord]
     @Environment(\.scenePhase) private var scenePhase
@@ -54,10 +55,12 @@ struct AppShell: View {
             }
         }
         .sheet(isPresented: $appModel.isShowingProfile) { ProfileView() }
+        .sheet(item: $challenges.justFinished) { ChallengeFinishedView(challenge: $0) }
         .paywallSheet($paywall)
         .environment(engagement)
         .environment(quests)
         .environment(school)
+        .environment(challenges)
         .environment(\.pimpiOutfit, quests.ledger.worn)
         .onChange(of: scenePhase, initial: true) { _, phase in
             if phase == .active { prepareQuests() }
@@ -155,11 +158,13 @@ struct AppShell: View {
     /// Streaks and rewards through the user's own iCloud: merge, keep one copy, apply what changed.
     private func syncEngagement() {
         let sync = EngagementSync()
-        let local = sync.local(rewards: quests.ledger, bestRoutineStreak: quests.bestRoutineStreak, school: school.progress)
+        let local = sync.local(rewards: quests.ledger, bestRoutineStreak: quests.bestRoutineStreak, school: school.progress,
+                               challenges: challenges.book)
         guard let merged = sync.sync(local: local, context: modelContext) else { return }
         sync.applyStreaks(merged)
         quests.applySynced(merged)
         school.applySynced(merged.school)
+        challenges.applySynced(merged.challenges)
         engagement.reloadFromStore()
     }
 

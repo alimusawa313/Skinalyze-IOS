@@ -89,15 +89,15 @@ with depth, no outlines, and moods.
 - [~] **E10 Lesson path** — units on a path, so there is always something to do between scans. · Free + Pro
 
 ### Progress
-- [ ] **E11 Journey map** — levels as the user scans and learns. · Free
-- [ ] **E12 Weekly recap from Pimpi** — every Sunday. · Free
+- [x] **E11 Journey map** (Phase 9) — levels as the user scans and learns. · Free
+- [x] **E12 Weekly recap from Pimpi** (Phase 9) — every Sunday. · Free
 - [x] **E13 Badge shelf** — first 3D scan, 10 product checks, a month of sunscreen… · Free
-- [ ] **E14 Monthly recap** — short summary card. · Free
+- [x] **E14 Monthly recap** (Phase 9) — short summary card. · Free
 
 ### Social (no faces)
 - [ ] **E15 Friend streaks and friend quests** — share streak and points only. · Free
 - [ ] **E16 Weekly leagues** — ranked on consistency points, never on skin. · Free
-- [ ] **E17 30-day challenges** ("30 days of sunscreen") with a finisher card. · Free
+- [x] **E17 30-day challenges** (Phase 9) ("30 days of sunscreen") with a finisher card. · Free
 
 ---
 
@@ -110,7 +110,7 @@ with depth, no outlines, and moods.
 - [x] **G3 3D face turntable export** (Phase 4; free until the paywall) — looping video of the fused 3D head rotating. · Pro
 - [x] **G4 Product verdict share card** (Phase 3) — "Is it good for me?" result as a card; every check advertises the app. · Free
 - [x] **G5 Before/after slider export** (Phase 3: still image; slider video with Phase 4) — from the eye-aligned Compare. · Free (watermark) / Pro
-- [ ] **G6 Skin Wrapped** — yearly/quarterly recap: best streak, most-improved zone, product that coincided with the
+- [x] **G6 Skin Wrapped** (Phase 9) — yearly/quarterly recap: best streak, most-improved zone, product that coincided with the
   best month. · Free
 - [ ] **G7 Routine cards** — "my shelf" as a shareable image; others tap to check those products for their skin. · Free
 - [ ] **G8 Referral** — give a month of Pro, get a month. · —

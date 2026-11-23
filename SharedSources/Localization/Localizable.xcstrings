@@ -67,6 +67,32 @@
         }
       }
     },
+    "%@: all thirty days done. That's a real habit now." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: tiga puluh hari selesai. Sekarang itu sudah jadi kebiasaan."
+          }
+        }
+      }
+    },
+    "%@: day %lld of %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@: day %2$lld of %3$lld"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: hari %lld dari %lld"
+          }
+        }
+      }
+    },
     "%lld" : {
       "shouldTranslate" : false
     },
@@ -191,6 +217,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld persen foto sebelumnya"
+          }
+        }
+      }
+    },
+    "%lld points" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld poin"
+          }
+        }
+      }
+    },
+    "%lld points to the next stop" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld poin lagi ke pos berikutnya"
           }
         }
       }
@@ -336,6 +382,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "3. Data wajah"
+          }
+        }
+      }
+    },
+    "30 days of hands off" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30 hari tanpa pegang wajah"
+          }
+        }
+      }
+    },
+    "30 days of morning and evening" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30 hari pagi dan malam"
+          }
+        }
+      }
+    },
+    "30 days of sunscreen" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30 hari pakai sunscreen"
+          }
+        }
+      }
+    },
+    "30-day challenges" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tantangan 30 hari"
           }
         }
       }
@@ -566,6 +652,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Centang rutinitas sebentar agar rangkaianmu berlanjut."
+          }
+        }
+      }
+    },
+    "A quiet stretch, and that's okay. Let's start fresh together." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lagi sepi, dan itu nggak apa-apa. Yuk mulai lagi bareng."
           }
         }
       }
@@ -970,6 +1066,26 @@
         }
       }
     },
+    "Challenge finished %@" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tantangan selesai %@"
+          }
+        }
+      }
+    },
+    "Challenge finished!" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tantangan selesai!"
+          }
+        }
+      }
+    },
     "Changed" : {
       "localizations" : {
         "id" : {
@@ -1260,6 +1376,22 @@
         }
       }
     },
+    "Day %lld of %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Day %1$lld of %2$lld"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hari %lld dari %lld"
+          }
+        }
+      }
+    },
     "Daylight makes scans more consistent — face a window for best results." : {
       "localizations" : {
         "id" : {
@@ -1400,6 +1532,16 @@
         }
       }
     },
+    "Each evening, tap if you kept your hands off your face." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiap malam, ketuk kalau hari ini kamu nggak memegang wajah."
+          }
+        }
+      }
+    },
     "Earlier" : {
       "localizations" : {
         "id" : {
@@ -1446,6 +1588,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Semua pelajaran selesai!"
+          }
+        }
+      }
+    },
+    "Every quest, lesson and routine day moves Pimpi along. Nothing ever moves you back." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setiap misi, pelajaran, dan hari rutinitas membawa Pimpi maju. Tidak ada yang membuatmu mundur."
+          }
+        }
+      }
+    },
+    "Every single day! I'm so proud of you." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setiap hari! Aku bangga banget sama kamu."
           }
         }
       }
@@ -1600,6 +1762,16 @@
         }
       }
     },
+    "First step" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Langkah pertama"
+          }
+        }
+      }
+    },
     "Flared" : {
       "localizations" : {
         "id" : {
@@ -1730,6 +1902,16 @@
         }
       }
     },
+    "Getting started" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mulai jalan"
+          }
+        }
+      }
+    },
     "Glow-up reel" : {
       "localizations" : {
         "id" : {
@@ -1770,6 +1952,16 @@
         }
       }
     },
+    "Good habits" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kebiasaan baik"
+          }
+        }
+      }
+    },
     "Good match" : {
       "localizations" : {
         "id" : {
@@ -1786,6 +1978,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ekstrak teh hijau"
+          }
+        }
+      }
+    },
+    "Habit hero" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pahlawan kebiasaan"
           }
         }
       }
@@ -1890,6 +2092,16 @@
         }
       }
     },
+    "Highlights" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorotan"
+          }
+        }
+      }
+    },
     "Hold still" : {
       "localizations" : {
         "id" : {
@@ -1986,6 +2198,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hidrasi yang tidak terlalu berat."
+          }
+        }
+      }
+    },
+    "I kept my hands off today" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hari ini aku nggak pegang wajah"
           }
         }
       }
@@ -2138,6 +2360,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Jaga rangkaianmu malam ini"
+          }
+        }
+      }
+    },
+    "Label reader" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pembaca label"
           }
         }
       }
@@ -2368,6 +2600,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Membuat videomu…"
+          }
+        }
+      }
+    },
+    "Many things affect skin. These are patterns in your own scans, not advice." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Banyak hal yang memengaruhi kulit. Ini pola dari pindaianmu sendiri, bukan saran."
           }
         }
       }
@@ -2652,6 +2894,16 @@
         }
       }
     },
+    "Not reached yet" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belum tercapai"
+          }
+        }
+      }
+    },
     "Not won yet" : {
       "localizations" : {
         "id" : {
@@ -2748,6 +3000,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zona T berminyak, pipi lebih kering."
+          }
+        }
+      }
+    },
+    "On a roll" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lagi semangat"
+          }
+        }
+      }
+    },
+    "On your shelf then: %@. They coincided with it, which doesn't mean they caused it." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Di rakmu saat itu: %@. Waktunya kebetulan sama, bukan berarti itu penyebabnya."
           }
         }
       }
@@ -2962,6 +3234,16 @@
         }
       }
     },
+    "Pick one. Thirty days done finishes it; a missed day costs nothing." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih satu. Tiga puluh hari selesai berarti tuntas; hari yang terlewat tidak mengurangi apa pun."
+          }
+        }
+      }
+    },
     "Pick your %@" : {
       "localizations" : {
         "id" : {
@@ -3015,12 +3297,32 @@
         }
       }
     },
+    "Pimpi made you a recap" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pimpi membuatkanmu rangkuman"
+          }
+        }
+      }
+    },
     "Pimpi misses you" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pimpi kangen kamu"
+          }
+        }
+      }
+    },
+    "Pimpi's best friend" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sahabat Pimpi"
           }
         }
       }
@@ -3235,6 +3537,16 @@
         }
       }
     },
+    "Reached" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tercapai"
+          }
+        }
+      }
+    },
     "Read the privacy policy" : {
       "localizations" : {
         "id" : {
@@ -3271,6 +3583,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Siap dimulai"
+          }
+        }
+      }
+    },
+    "Recaps" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rangkuman"
           }
         }
       }
@@ -3381,6 +3703,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Perubahan rutinitas di antaranya"
+          }
+        }
+      }
+    },
+    "Routine regular" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rajin rutinitas"
           }
         }
       }
@@ -3781,6 +4113,16 @@
         }
       }
     },
+    "Share: %@" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bagikan: %@"
+          }
+        }
+      }
+    },
     "Shares your sticker's outline and numbers only." : {
       "localizations" : {
         "id" : {
@@ -3927,6 +4269,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kulit tampak lebih tenang dari pindaian terakhir."
+          }
+        }
+      }
+    },
+    "Skin scholar" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pelajar kulit"
           }
         }
       }
@@ -4201,6 +4553,26 @@
         }
       }
     },
+    "Starts this challenge" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memulai tantangan ini"
+          }
+        }
+      }
+    },
+    "Steady hands" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tangan tenang"
+          }
+        }
+      }
+    },
     "Step %lld of %lld" : {
       "localizations" : {
         "en" : {
@@ -4223,6 +4595,58 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Masih di sini dengan kaca pembesarku"
+          }
+        }
+      }
+    },
+    "Stop %lld · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Stop %1$lld · %2$@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pos %lld · %@"
+          }
+        }
+      }
+    },
+    "Stop %lld: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Stop %1$lld: %2$@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pos %lld: %@"
+          }
+        }
+      }
+    },
+    "Stop challenge" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hentikan tantangan"
+          }
+        }
+      }
+    },
+    "Stop this challenge?" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hentikan tantangan ini?"
           }
         }
       }
@@ -4293,6 +4717,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tabir surya"
+          }
+        }
+      }
+    },
+    "Sunscreen star" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bintang sunscreen"
           }
         }
       }
@@ -4417,6 +4851,16 @@
         }
       }
     },
+    "The days you've done so far will be cleared." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hari yang sudah kamu jalani akan dihapus."
+          }
+        }
+      }
+    },
     "The purchase didn't go through. You weren't charged." : {
       "localizations" : {
         "id" : {
@@ -4477,6 +4921,26 @@
         }
       }
     },
+    "Tick at least one step in the morning and one in the evening." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Centang minimal satu langkah di pagi hari dan satu di malam hari."
+          }
+        }
+      }
+    },
+    "Tick the sunscreen step in your morning routine." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Centang langkah sunscreen di rutinitas pagimu."
+          }
+        }
+      }
+    },
     "Time for a quick skin scan" : {
       "localizations" : {
         "id" : {
@@ -4503,6 +4967,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hari ini"
+          }
+        }
+      }
+    },
+    "Today counts!" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hari ini terhitung!"
           }
         }
       }
@@ -4717,6 +5191,16 @@
         }
       }
     },
+    "Warming up" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pemanasan"
+          }
+        }
+      }
+    },
     "We couldn't read these photos" : {
       "localizations" : {
         "id" : {
@@ -4867,12 +5351,52 @@
         }
       }
     },
+    "You are here" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu di sini"
+          }
+        }
+      }
+    },
     "You control all saved data. Delete scans in the app (Profile → Delete all scans) or from your iCloud settings at any time." : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kamu mengendalikan semua data tersimpan. Hapus pindaian di aplikasi (Profil → Hapus semua pindaian) atau dari pengaturan iCloud kapan saja."
+          }
+        }
+      }
+    },
+    "You kept checking in. Every little bit counts." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu terus hadir. Sekecil apa pun tetap berarti."
+          }
+        }
+      }
+    },
+    "You reached the end of the path!" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu sampai di ujung jalan!"
+          }
+        }
+      }
+    },
+    "You showed up most days. That's how habits stick." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu hadir hampir setiap hari. Begitulah kebiasaan terbentuk."
           }
         }
       }
@@ -4907,6 +5431,36 @@
         }
       }
     },
+    "Your %@" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kamu"
+          }
+        }
+      }
+    },
+    "Your %@ Wrapped" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wrapped %@ kamu"
+          }
+        }
+      }
+    },
+    "Your %@ had fewer spots marked later on than early in this stretch." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Area %@ kamu punya lebih sedikit tanda di akhir periode ini dibanding di awal."
+          }
+        }
+      }
+    },
     "Your %@ has been more active three scans in a row." : {
       "localizations" : {
         "id" : {
@@ -4937,6 +5491,26 @@
         }
       }
     },
+    "Your Skin Wrapped" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skin Wrapped kamu"
+          }
+        }
+      }
+    },
+    "Your calmest month was %@." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bulan paling tenangmu adalah %@."
+          }
+        }
+      }
+    },
     "Your calmest scan yet — whatever you're doing, it's showing." : {
       "localizations" : {
         "id" : {
@@ -4963,6 +5537,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pindaian pertamamu menjadi titik awal."
+          }
+        }
+      }
+    },
+    "Your journey" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perjalananmu"
           }
         }
       }
@@ -5093,6 +5677,16 @@
         }
       }
     },
+    "Your week" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minggumu"
+          }
+        }
+      }
+    },
     "Your whole history and Compare" : {
       "localizations" : {
         "id" : {
@@ -5109,6 +5703,66 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Peta area"
+          }
+        }
+      }
+    },
+    "days in a row at best" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "hari berturut-turut terbaik"
+          }
+        }
+      }
+    },
+    "glow points" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "poin glow"
+          }
+        }
+      }
+    },
+    "lessons learned" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "pelajaran selesai"
+          }
+        }
+      }
+    },
+    "quests done" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "misi selesai"
+          }
+        }
+      }
+    },
+    "routine days of %lld" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "hari rutinitas dari %lld"
+          }
+        }
+      }
+    },
+    "scans taken" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "pindaian diambil"
           }
         }
       }

@@ -12,15 +12,16 @@ public struct SyncedEngagement: Codable, Equatable, Sendable {
     public var rewards: RewardLedger
     public var bestRoutineStreak: Int
     public var school: SchoolProgress
+    public var challenges: ChallengeBook
     /// When this copy last changed. `distantPast` for a copy that has never been synced (a fresh install).
     public var updatedAt: Date
 
     public static let empty = SyncedEngagement(doneDays: [], freezes: FreezeLedger(available: 1), weekendOff: false,
                                                celebrated: [], rewards: .empty, bestRoutineStreak: 0, school: .empty,
-                                               updatedAt: .distantPast)
+                                               challenges: .empty, updatedAt: .distantPast)
 
     public init(doneDays: Set<DayStamp>, freezes: FreezeLedger, weekendOff: Bool, celebrated: Set<String>,
-                rewards: RewardLedger, bestRoutineStreak: Int, school: SchoolProgress = .empty, updatedAt: Date) {
+                rewards: RewardLedger, bestRoutineStreak: Int, school: SchoolProgress = .empty, challenges: ChallengeBook = .empty, updatedAt: Date) {
         self.doneDays = doneDays
         self.freezes = freezes
         self.weekendOff = weekendOff
@@ -28,11 +29,12 @@ public struct SyncedEngagement: Codable, Equatable, Sendable {
         self.rewards = rewards
         self.bestRoutineStreak = bestRoutineStreak
         self.school = school
+        self.challenges = challenges
         self.updatedAt = updatedAt
     }
 
     private enum CodingKeys: String, CodingKey {
-        case doneDays, freezes, weekendOff, celebrated, rewards, bestRoutineStreak, school, updatedAt
+        case doneDays, freezes, weekendOff, celebrated, rewards, bestRoutineStreak, school, challenges, updatedAt
     }
 
     /// Tolerant: copies synced before a field existed still load.
@@ -45,6 +47,7 @@ public struct SyncedEngagement: Codable, Equatable, Sendable {
         rewards = try c.decodeIfPresent(RewardLedger.self, forKey: .rewards) ?? .empty
         bestRoutineStreak = try c.decodeIfPresent(Int.self, forKey: .bestRoutineStreak) ?? 0
         school = try c.decodeIfPresent(SchoolProgress.self, forKey: .school) ?? .empty
+        challenges = try c.decodeIfPresent(ChallengeBook.self, forKey: .challenges) ?? .empty
         updatedAt = try c.decodeIfPresent(Date.self, forKey: .updatedAt) ?? .distantPast
     }
 
@@ -62,6 +65,7 @@ public struct SyncedEngagement: Codable, Equatable, Sendable {
                                 rewards: RewardLedger.merged(newer: newer.rewards, older: older.rewards),
                                 bestRoutineStreak: max(a.bestRoutineStreak, b.bestRoutineStreak),
                                 school: SchoolProgress.merged(a.school, b.school),
+                                challenges: ChallengeBook.merged(a.challenges, b.challenges),
                                 updatedAt: max(a.updatedAt, b.updatedAt))
     }
 

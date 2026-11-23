@@ -39,6 +39,19 @@ extension ShareCardSource {
     static func streak(days: Int) -> ShareCardSource {
         ShareCardSource(fileName: "skinalyze-streak", offersHideFace: false) { _ in .streak(days: days) }
     }
+
+    /// Effort numbers only — no photo, no skin result.
+    static func recap(period: RecapPeriod, recap: Recap) -> ShareCardSource {
+        let cheer = RecapEngine.cheer(for: recap)
+        let share = RecapShare(title: RecapCopy.title(period), dates: RecapCopy.dates(period), cheer: RecapCopy.cheer(cheer),
+                               mood: RecapCopy.mood(cheer), tiles: RecapTile.tiles(recap))
+        return ShareCardSource(fileName: "skinalyze-recap", offersHideFace: false) { _ in .recap(share) }
+    }
+
+    static func challenge(_ challenge: Challenge) -> ShareCardSource {
+        let share = ChallengeShare(kind: challenge.kind, finished: challenge.finished?.date(in: .current) ?? .now)
+        return ShareCardSource(fileName: "skinalyze-challenge", offersHideFace: false) { _ in .challenge(share) }
+    }
 }
 
 /// Preview, shape, "hide my face", then the system share sheet. The face choice is made fresh on every share and
@@ -187,6 +200,16 @@ struct ShareCardButton: View {
 enum ShareCardDump {
     static func run(into folder: String, scans: [ScanSession]) async {
         var sources: [(String, ShareCardSource, Bool)] = [("streak", .streak(days: 128), false)]
+        // A busy month: the most numbers a recap card has to fit.
+        let calendar = Calendar.current
+        let month = RecapEngine.previousMonth(now: .now, calendar: calendar)
+        let days = month.days(calendar: calendar)
+        let busy = ActivityHistory(routineDays: Set(days.dropLast(3)), scanDates: days.prefix(5).map { $0.date(in: calendar) },
+                                   quests: Dictionary(uniqueKeysWithValues: days.map { ($0.string, Set<QuestKind>([.routine, .lesson, .share])) }))
+        sources.append(("recap", .recap(period: month, recap: RecapEngine.recap(month, history: busy, calendar: calendar)), false))
+        let wrapped = RecapEngine.latestWrapped(now: .now, calendar: calendar)
+        sources.append(("wrapped", .recap(period: wrapped, recap: RecapEngine.recap(wrapped, history: busy, calendar: calendar)), false))
+        sources.append(("challenge", .challenge(Challenge(kind: .morningAndEvening, started: days[0], finished: days[29])), false))
         var videos: [(String, VideoShareSource, Bool)] = []
         if let latest = scans.first {
             sources.append(("skin", .skin(latest, streakDays: 12), false))

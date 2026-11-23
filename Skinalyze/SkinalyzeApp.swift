@@ -14,6 +14,9 @@ struct SkinalyzeApp: App {
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }
+        #if DEBUG
+        DemoData.seedActivityIfRequested()
+        #endif
     }
 
     var body: some Scene {

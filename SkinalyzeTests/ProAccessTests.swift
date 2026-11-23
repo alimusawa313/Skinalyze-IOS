@@ -202,6 +202,38 @@ struct EngagementSyncTests {
         let merged = try #require(other.sync(local: other.local(rewards: .empty, bestRoutineStreak: 0), context: ModelContext(shared)))
         #expect(merged.weekendOff)
     }
+
+    @Test("When the merged copy can't be applied here, syncing again leaves the record alone (no endless re-sync)")
+    func unappliedMergeDoesNotLoop() throws {
+        let shared = try container()
+        let otherPhone = freshDefaults()
+        EngagementStore(defaults: otherPhone).setDone(true, on: DayStamp(year: 2026, month: 11, day: 1))
+        let other = EngagementSync(defaults: otherPhone)
+        other.sync(local: other.local(rewards: .empty, bestRoutineStreak: 0), context: ModelContext(shared))
+
+        // This phone never applies what it gets back (as when launch arguments pin its stored values).
+        let sync = EngagementSync(defaults: freshDefaults())
+        let local = sync.local(rewards: .empty, bestRoutineStreak: 0, challenges: ChallengeBook(active: nil, finished: []))
+        sync.sync(local: local, context: ModelContext(shared))
+        let stamp = try #require(try ModelContext(shared).fetch(FetchDescriptor<EngagementRecord>()).first?.updatedAt)
+        for _ in 0..<3 {
+            sync.sync(local: sync.local(rewards: .empty, bestRoutineStreak: 0), context: ModelContext(shared))
+        }
+        #expect(try ModelContext(shared).fetch(FetchDescriptor<EngagementRecord>()).first?.updatedAt == stamp)
+    }
+
+    @Test("A running challenge comes back after a reinstall")
+    func challengesRestore() throws {
+        let shared = try container()
+        let start = DayStamp(year: 2026, month: 11, day: 10)
+        let book = ChallengeEngine.recording(.sunscreen, done: true,
+                                             in: ChallengeEngine.starting(.sunscreen, in: .empty, today: start), today: start)
+        let before = EngagementSync(defaults: freshDefaults())
+        before.sync(local: before.local(rewards: .empty, bestRoutineStreak: 0, challenges: book), context: ModelContext(shared))
+        let after = EngagementSync(defaults: freshDefaults())
+        let merged = try #require(after.sync(local: after.local(rewards: .empty, bestRoutineStreak: 0), context: ModelContext(shared)))
+        #expect(merged.challenges.active?.progress == 1)
+    }
 }
 
 /// The lessons shipped in the app are complete and well formed.

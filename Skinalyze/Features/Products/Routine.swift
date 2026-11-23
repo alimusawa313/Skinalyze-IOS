@@ -51,6 +51,7 @@ struct RoutineChecklist: View {
     @AppStorage("routineLog") private var logRaw = ""
     @Environment(EngagementModel.self) private var engagement
     @Environment(QuestModel.self) private var quests: QuestModel?
+    @Environment(ChallengeModel.self) private var challenges: ChallengeModel?
     @Environment(ProAccess.self) private var access: ProAccess?
     @AppStorage(UserProfile.Key.cleanserID) private var cleanser = 0
     @AppStorage(UserProfile.Key.tonerID) private var toner = 0
@@ -118,6 +119,7 @@ struct RoutineChecklist: View {
             engagement.routineChanged(anyStepDoneToday: anyStepDone)
             if anyStepDone { quests?.did(.routine, isPro: access?.policy.hasFullAccess ?? false) }
             quests?.noteRoutineStreak(engagement.routine.count)
+            challenges?.routineChanged(RoutineLog(raw: raw))
         }
     }
 }
@@ -154,6 +156,12 @@ struct RoutineLog: Equatable {
     /// Whether at least one step is checked on `date`.
     func hasAnyStep(on date: Date = .now) -> Bool {
         let prefix = Self.formatter.string(from: date) + ":"
+        return entries.contains { $0.hasPrefix(prefix) }
+    }
+
+    /// Whether at least one step of `part` ("morning" / "evening") is checked on `date`.
+    func hasAnyStep(part: String, on date: Date = .now) -> Bool {
+        let prefix = Self.formatter.string(from: date) + ":\(part)."
         return entries.contains { $0.hasPrefix(prefix) }
     }
 }

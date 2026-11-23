@@ -326,16 +326,35 @@ matches are not shown.
 
 ---
 
-## Phase 9 — Recaps, journey and social  ☐
-**Ships:** E11, E12, E14, E15, E16, E17, G6, G8 · **Size:** large (social needs a backend decision)
+## Phase 9 — Recaps, journey and social  ◐ (local parts shipped; social waits on a backend decision)
+**Ships:** E11, E12, E14, E17, G6 now · E15, E16, G8 later · **Size:** large (social needs a backend decision)
 
-- Weekly and monthly recap, Skin Wrapped, journey map: local, built on what Phases 1–8 already store.
-- Friend streaks, leagues, referral: need data to leave the device (streak and points only). **Decision needed
-  before any work:** CloudKit sharing/public database vs. a small backend. No photos, ever.
+**Shipped (2026-11-23), all on the phone:**
+- [x] **Recaps (E12, E14)** — `RecapEngine` (kit, tested): routine days, best run of days in a row, scans, lessons,
+  quests and glow points for any stretch of days. Effort only; Pimpi's line is never negative. Weeks run Monday to
+  Sunday in every region. The weekly recap is offered on the Shelf on Sunday (this week) and Monday (last week), last
+  month's in the first three days of a month. One banner at a time, only when something happened; opening or closing it
+  counts as seen. Every recap can also be opened any time from the journey screen.
+- [x] **Skin Wrapped (G6)** — the quarter that just ended (first week of Apr/Jul/Oct) or last year (first week of
+  January). Adds two good-news-only highlights from the user's own scans: the area with the biggest drop in marked
+  spots (first half vs second half, at least 2 scans each), and the calmest month (at least 2 months with 2 scans) with
+  the shelf products that were there for most of it, worded "coincided with … doesn't mean they caused it".
+- [x] **Journey map (E11)** — 12 stops on a winding path, reached with glow points + Skin School XP. Nothing moves
+  you back. Card on the Shelf; full map with challenges and recaps.
+- [x] **30-day challenges (E17)** — sunscreen (from the routine checklist), morning-and-evening (routine), hands off
+  (the user's own check-in). Thirty days done finishes it; misses cost nothing, no deadline; only today can be
+  ticked. Finisher sheet + shareable card. Challenges sync through the user's own iCloud (inside the existing
+  engagement record — no CloudKit schema change).
+- [x] Recap / Wrapped / challenge share cards (no photo, no skin numbers), all 3 shapes checked (`-shareCardDump`).
+- [x] Checked in the Simulator with `-demoActivity YES -recapToday yyyy-MM-dd`; UI tests (`JourneyUITests`) cover the
+  weekly recap, the year Wrapped with highlights, the journey + challenge swap, and AX5. EN + ID.
 
-**Needs from owner:** go/no-go on social once the local parts are live and there is usage data.
-
----
+**Still open:**
+- [ ] **E15 friend streaks, E16 leagues, G8 referral** — need data to leave the device (streak and points only).
+  **Decision needed from the owner:** CloudKit (sharing + public database, no server to run, Apple accounts only)
+  vs. a small backend. Recommendation: CloudKit public database for leagues and a CloudKit share for friend streaks;
+  referral through App Store offer codes (owner sets them up in App Store Connect). No photos, ever.
+- [ ] **Owner's phone:** open the Shelf on a Sunday to see the first weekly recap; start a challenge.
 
 ## Phase 10 — Product utilities (pick by demand)  ☐
 **Ships (candidates):** P3–P14, G7, G9, G10
@@ -361,5 +380,5 @@ when picked.
 | 6 Quests + rewards | E5–E8, E13, PI5, PI6 | 1, 5 (Pro sets) | — |
 | 7 Skin School | E9, E10 | 5 | topics + wording sign-off |
 | 8 Spot timeline + heat map | P1, P2 | 0 (confirmed 3D), 5 | scans over time |
-| 9 Recaps + social | E11–E17, G6, G8 | 1, 6 | backend decision, go/no-go |
+| 9 Recaps + social ◐ | E11–E17, G6, G8 | 1, 6 | backend decision, go/no-go |
 | 10 Utilities | P3–P14, G7, G9, G10 | varies | pick by demand |

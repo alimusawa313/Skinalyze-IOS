@@ -71,6 +71,35 @@ enum DemoData {
         }
     }
 
+    /// `-demoActivity YES`: ~10 weeks of routine days (every fifth day missed), quests on those days, sunscreen on
+    /// the shelf for the last 60 days, and a sunscreen challenge 12 days in — so recaps, Wrapped and the journey map
+    /// show realistic numbers. Runs before any model reads these stores.
+    static func seedActivityIfRequested(now: Date = .now) {
+        guard UserDefaults.standard.bool(forKey: "demoActivity") else { return }
+        let calendar = Calendar.current
+        let store = EngagementStore()
+        var ledger = RewardLedger.empty
+        for daysAgo in 0..<70 where daysAgo % 5 != 4 {
+            guard let date = calendar.date(byAdding: .day, value: -daysAgo, to: now) else { continue }
+            let day = DayStamp(date, calendar: calendar)
+            store.setDone(true, on: day)
+            let kinds: Set<QuestKind> = daysAgo % 3 == 0 ? [.routine, .lesson, .share] : [.routine, .lookBack]
+            ledger.completed[day.string] = kinds
+            ledger.points += kinds.reduce(0) { $0 + QuestEngine.points(for: $1) }
+        }
+        ledger.latestDay = DayStamp(now, calendar: calendar)
+        UserDefaults.standard.set(try? JSONEncoder().encode(ledger), forKey: "rewardLedger")
+        UserDefaults.standard.set(18, forKey: UserProfile.Key.sunscreenID)
+        RoutineHistory.started(18, at: calendar.date(byAdding: .day, value: -60, to: now) ?? now)
+        let start = DayStamp(calendar.date(byAdding: .day, value: -14, to: now) ?? now, calendar: calendar)
+        let done = (1...14).filter { $0 % 7 != 0 }.compactMap { calendar.date(byAdding: .day, value: -$0, to: now) }
+        let book = ChallengeBook(active: Challenge(kind: .sunscreen, started: start,
+                                                   doneDays: Set(done.map { DayStamp($0, calendar: calendar) })),
+                                 finished: [])
+        UserDefaults.standard.set(try? JSONEncoder().encode(book), forKey: "challengeBook")
+        UserDefaults.standard.removeObject(forKey: "seenRecaps")
+    }
+
     /// `-debugMeshDir <folder>`: load a real captured mesh (vertices.bin / indices.bin / uvs.bin / texture.bin, as
     /// stored by `FaceMeshRecord`) so the phone's renderer can be checked in the Simulator on real scan data.
     private static func realMesh() -> FaceMeshDraft? {

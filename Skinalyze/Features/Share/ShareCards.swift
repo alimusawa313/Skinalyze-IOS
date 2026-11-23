@@ -34,6 +34,8 @@ enum ShareCardContent: @unchecked Sendable { // Values and immutable images only
     case verdict(VerdictShare)
     case compare(CompareShare)
     case streak(days: Int)
+    case recap(RecapShare)
+    case challenge(ChallengeShare)
 }
 
 /// Fixed type and sizes for exports (cards and reel frames).
@@ -84,6 +86,8 @@ struct ShareCardView: View {
         case let .verdict(share): VerdictShareCard(share: share, format: format)
         case let .compare(share): CompareShareCard(share: share, format: format)
         case let .streak(days): StreakShareCard(days: days)
+        case let .recap(share): RecapShareCard(share: share, format: format)
+        case let .challenge(share): ChallengeShareCard(share: share)
         }
     }
 
@@ -96,7 +100,7 @@ struct ShareCardView: View {
     private var scheme: ColorScheme {
         switch content {
         case .skin, .verdict: .light
-        case .compare, .streak: .dark
+        case .compare, .streak, .recap, .challenge: .dark
         }
     }
 
@@ -104,7 +108,7 @@ struct ShareCardView: View {
         let colors: [Color] = switch content {
         case let .skin(share): [Color.ds.band(share.band), Color.ds.band(share.band).opacity(0.7)]
         case let .verdict(share): [share.result.verdict.shareTint, share.result.verdict.shareTint.opacity(0.78)]
-        case .compare, .streak: [Color.ds.surfaceRaised, Color.ds.canvas]
+        case .compare, .streak, .recap, .challenge: [Color.ds.surfaceRaised, Color.ds.canvas]
         }
         return ZStack {
             Color.ds.canvas

@@ -20,10 +20,10 @@ struct EngagementSync {
 
     /// This device's copy. A device that has never synced is dated `distantPast`, so it never overrides iCloud.
     func local(rewards: RewardLedger, bestRoutineStreak: Int, school: SchoolProgress = .empty,
-               now: Date = .now) -> SyncedEngagement {
+               challenges: ChallengeBook = .empty, now: Date = .now) -> SyncedEngagement {
         var copy = SyncedEngagement(doneDays: store.doneDays, freezes: store.ledger, weekendOff: store.weekendOff,
                                     celebrated: store.celebrated, rewards: rewards, bestRoutineStreak: bestRoutineStreak,
-                                    school: school, updatedAt: .distantPast)
+                                    school: school, challenges: challenges, updatedAt: .distantPast)
         guard let last = lastSynced else { return copy }
         var unchanged = copy
         unchanged.updatedAt = last.updatedAt
@@ -52,7 +52,11 @@ struct EngagementSync {
 
         // One record is enough: keep the newest, update it, remove copies made by other devices.
         if let keep = records.first {
-            if keep.payload != payload {
+            // Only the time changed: leave the record alone. Writing it would fire this sync again, so a value that
+            // can't be applied locally would otherwise loop forever.
+            var kept = keep.payload.flatMap { try? JSONDecoder().decode(SyncedEngagement.self, from: $0) }
+            kept?.updatedAt = merged.updatedAt
+            if keep.payload != payload, kept != merged {
                 keep.payload = payload
                 keep.updatedAt = merged.updatedAt
             }
