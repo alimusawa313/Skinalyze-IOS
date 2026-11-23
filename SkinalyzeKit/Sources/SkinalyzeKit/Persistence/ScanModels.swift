@@ -152,7 +152,9 @@ public final class StoredDetection {
 
 public enum SkinalyzeSchema {
     /// New models owned by SkinalyzeKit. The app adds the legacy `Result` model to its schema.
-    public static let models: [any PersistentModel.Type] = [ScanSession.self, ScanCapture.self, StoredDetection.self, FaceMeshRecord.self]
+    /// Additive only: `EngagementRecord` (synced streaks and rewards) was added after the first CloudKit release.
+    public static let models: [any PersistentModel.Type] = [ScanSession.self, ScanCapture.self, StoredDetection.self,
+                                                            FaceMeshRecord.self, EngagementRecord.self]
 
     /// SwiftData's pre-App-Group default store location. Pinned explicitly: once an App Group entitlement exists,
     /// SwiftData's *default* moves into the group container, which would make existing history disappear.

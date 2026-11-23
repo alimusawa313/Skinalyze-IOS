@@ -11,6 +11,8 @@ struct AppShell: View {
     @State private var isKeyboardVisible = false
     @State private var engagement = EngagementModel()
     @State private var quests = QuestModel()
+    /// Synced streaks and rewards; changes here come from the user's other devices (or a restore).
+    @Query private var engagementRecords: [EngagementRecord]
     @Environment(\.scenePhase) private var scenePhase
     @State private var paywall: PaywallReason?
     @Environment(ProAccess.self) private var access: ProAccess?
@@ -56,7 +58,9 @@ struct AppShell: View {
         .environment(\.pimpiOutfit, quests.ledger.worn)
         .onChange(of: scenePhase, initial: true) { _, phase in
             if phase == .active { prepareQuests() }
+            if phase == .active || phase == .background { syncEngagement() }
         }
+        .onChange(of: engagementRecords.map(\.updatedAt)) { syncEngagement() }
         #if DEBUG
         .fullScreenCover(isPresented: $showsPimpiGallery) { PimpiGallery() }
         .fullScreenCover(isPresented: $showsPimpiWidgetGallery) { PimpiWidgetGallery() }
@@ -135,6 +139,16 @@ struct AppShell: View {
         case .timeline: DeckView().accessibilityIdentifier("deckView")
         case .products, .search: ShelfView().accessibilityIdentifier("shelfView")
         }
+    }
+
+    /// Streaks and rewards through the user's own iCloud: merge, keep one copy, apply what changed.
+    private func syncEngagement() {
+        let sync = EngagementSync()
+        let local = sync.local(rewards: quests.ledger, bestRoutineStreak: quests.bestRoutineStreak)
+        guard let merged = sync.sync(local: local, context: modelContext) else { return }
+        sync.applyStreaks(merged)
+        quests.applySynced(merged)
+        engagement.reloadFromStore()
     }
 
     /// Today's quests come from what can actually be done today.

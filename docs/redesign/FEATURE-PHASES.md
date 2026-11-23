@@ -65,7 +65,8 @@ weekends-off and repair. Milestones (7 / 30 / 100 days; 4 / 12 / 26 / 52 weeks) 
 - [x] `Pimpi.swift` moved to the shared sources (widgets can use it in Phase 2). New strings in EN + ID.
 
 **Deferred (still open):**
-- [ ] **Synced storage.** Streak inputs (done-days, freeze ledger) live in on-device settings, like the routine log
+- [x] **Synced storage** (done 2026-11-23: `EngagementRecord` + `SyncedEngagement` merge, tested; CloudKit
+  production schema must be deployed before the App Store build — see Phase 6 notes). Streak inputs (done-days, freeze ledger) live in on-device settings, like the routine log
   they come from. They do not survive a reinstall and do not sync between devices. Moving them (and the routine
   log) to an additive SwiftData/CloudKit model is its own careful step because it changes the synced schema — do it
   before Phase 9 (social) at the latest.
@@ -126,7 +127,7 @@ weekly is the right scan rhythm.
 **Still open:**
 - [ ] **Owner's phone:** the Simulator cannot cut out a face, so the real sticker and its hidden outline were only
   seen as a rounded photo there — share one real scan both ways and check it. Add the Skin card widget.
-- [ ] Moving exports (tilt-shimmer card video, before/after slider video) come with Phase 4's video writer.
+- [x] Moving exports (2026-11-23): shimmer card video and before/after slider video, frames checked.
 
 **Build**
 1. One share-rendering pipeline: a SwiftUI card → image at fixed export sizes (story 9:16, square, 4:5).
@@ -163,7 +164,7 @@ clipped, large text sizes do not break the card); hide-face export verified to c
   real stickers were not seen in the reel); check export time; post one to TikTok / Reels.
 - [ ] Frames are drawn on the main thread with a pause between each (the encoder runs off it). Fast in the
   Simulator (2–5 s); if the phone stutters while making a video, move the drawing to Core Graphics.
-- [ ] A reel with 10+ real scans has only been covered by the timing tests, not viewed.
+- [x] A reel with 14 demo scans viewed frame by frame (12 s, every scan in order). Real scans still on the phone.
 - [ ] Turntable is free until Phase 5 puts it behind Pro; watermark stays on for everyone until then.
 
 **Build**
@@ -208,7 +209,8 @@ owner sets up the products in App Store Connect later.
 - [ ] App Store Connect: create the subscription group and the three products with these IDs:
   `com.Patani.Skinalyze.pro.annual` (7-day free trial), `.pro.monthly`, `.pro.weekly`; set prices.
 - [ ] Set `ProAccess.paywallLaunch` to the release date of the first build with the paywall.
-- [ ] A sandbox purchase on the phone. The share extension's product check is not limited yet.
+- [ ] A sandbox purchase on the phone.
+- [x] The share extension's product checks now count toward the same free allowance (App Group ledger).
 
 **Build**
 1. `Entitlements` in SkinalyzeKit: one tested place that answers "is this allowed?" — free limits as named
@@ -248,8 +250,11 @@ history and 3D as it is today).
 - [x] UI test walks quests → chest → wear → badges → wardrobe. EN + ID.
 
 **Still open:**
-- [ ] E8 monthly quest. Rewards are stored on the phone (like streaks); synced storage is still the deferred
-  Phase 1 item. Widgets show Pimpi without its outfit.
+- [x] E8 monthly quest (20 full quest days in a month → that month's badge).
+- [x] Streaks and rewards sync through the user's own iCloud and survive a reinstall (tested).
+- [x] Widgets show Pimpi's outfit.
+- [ ] **Owner, before the App Store build:** in CloudKit Console, deploy the development schema to production —
+  it now has a new record type `CD_EngagementRecord`. Until then, release builds cannot save it.
 - [ ] Owner's phone: do three quests in a day and open a real chest.
 
 **Build**

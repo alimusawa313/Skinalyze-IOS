@@ -27,7 +27,7 @@ enum DemoData {
         let store = ScanStore(modelContainer: container)
         // `-demoNewestDaysAgo 0`: the newest demo scan is from today, to test the daily scan limit.
         let newestDaysAgo = UserDefaults.standard.string(forKey: "demoNewestDaysAgo").flatMap(Int.init) ?? 1
-        let plan: [(daysAgo: Int, lesions: [(LesionType, FaceZone)])] = [
+        let basePlan: [(daysAgo: Int, lesions: [(LesionType, FaceZone)])] = [
             (35, [(.papule, .chin), (.papule, .chin), (.pustule, .chin), (.whitehead, .forehead), (.blackhead, .nose),
                   (.papule, .leftCheek), (.pustule, .rightJaw), (.darkSpot, .leftCheek)]),
             (28, [(.papule, .chin), (.pustule, .chin), (.whitehead, .forehead), (.blackhead, .nose), (.papule, .leftCheek),
@@ -37,6 +37,12 @@ enum DemoData {
             (7, [(.blackhead, .nose), (.whitehead, .forehead), (.darkSpot, .leftCheek)]),
             (newestDaysAgo, [(.blackhead, .nose), (.darkSpot, .leftCheek)]),
         ]
+        // `-demoScanCount N`: older weekly scans before the usual six (reels and history with many scans).
+        let extra = max(0, (UserDefaults.standard.string(forKey: "demoScanCount").flatMap(Int.init) ?? 0) - basePlan.count)
+        let older: [(daysAgo: Int, lesions: [(LesionType, FaceZone)])] = (0..<extra).reversed().map { step in
+            (42 + step * 7, Array(basePlan[step % 2].lesions.prefix(5 + step % 4)))
+        }
+        let plan = older + basePlan
         for (index, entry) in plan.enumerated() {
             let detections = entry.lesions.enumerated().map { offset, lesion in
                 DetectionDraft(type: lesion.0, confidence: 0.8, box: box(for: lesion.1, offset: offset),

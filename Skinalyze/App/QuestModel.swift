@@ -83,6 +83,12 @@ final class QuestModel {
         save(RewardEngine.wearing(outfit, ledger: ledger))
     }
 
+    /// Takes rewards merged from the user's other devices (or from before a reinstall).
+    func applySynced(_ merged: SyncedEngagement) {
+        save(merged.rewards)
+        noteRoutineStreak(merged.bestRoutineStreak)
+    }
+
     func noteRoutineStreak(_ days: Int) {
         guard days > bestRoutineStreak else { return }
         bestRoutineStreak = days

@@ -132,6 +132,15 @@ final class EngagementModel {
         recompute(now: date)
     }
 
+    /// Re-reads the store after synced streak data was merged in.
+    func reloadFromStore() {
+        if weekendOff != store.weekendOff {
+            weekendOff = store.weekendOff // recomputes
+        } else {
+            recompute()
+        }
+    }
+
     func repair(now: Date = .now) {
         guard canRepair else { return }
         store.ledger = StreakEngine.repairing(store.ledger, now: now, calendar: calendar)

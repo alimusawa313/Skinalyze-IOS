@@ -81,7 +81,7 @@ with depth, no outlines, and moods.
 - [x] **E5 Daily quests** — three small ones (check off routine, check a product, log sleep). · Free
 - [x] **E6 Glow points** — earned for effort only (rule 1). · Free (Pro: double points)
 - [x] **E7 Chests** — cosmetic rewards: sticker-card themes, holo styles, Pimpi outfits. · Free + Pro sets
-- [ ] **E8 Monthly quest** — limited badge. · Free
+- [x] **E8 Monthly quest** — limited badge. · Free
 
 ### Skin School
 - [ ] **E9 Lessons** — 60-second lessons ("What niacinamide does", "Why sunscreen indoors") + two-question quiz + XP.

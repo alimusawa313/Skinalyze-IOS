@@ -143,6 +143,67 @@ struct ProSubscriptionTests {
     }
 }
 
+/// Streaks and rewards survive a reinstall and reach the user's other devices through their iCloud.
+@MainActor
+@Suite("Engagement sync", .serialized)
+struct EngagementSyncTests {
+    private func container() throws -> ModelContainer {
+        let configuration = ModelConfiguration(schema: AppPersistence.schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none)
+        return try ModelContainer(for: AppPersistence.schema, configurations: configuration)
+    }
+
+    @Test("A reinstall (empty phone, same iCloud) gets its streak days, freezes, outfits and points back")
+    func reinstallRestores() throws {
+        let shared = try container()
+        let day = DayStamp(year: 2026, month: 11, day: 20)
+
+        // The phone before the reinstall.
+        let before = freshDefaults()
+        let oldStore = EngagementStore(defaults: before)
+        oldStore.setDone(true, on: day)
+        oldStore.weekendOff = true
+        var rewards = RewardLedger.empty
+        rewards.points = 90
+        rewards.unlocked = [.partyHat]
+        rewards.worn = .partyHat
+        let oldSync = EngagementSync(defaults: before)
+        oldSync.sync(local: oldSync.local(rewards: rewards, bestRoutineStreak: 8), context: ModelContext(shared))
+
+        // After the reinstall: nothing on the phone.
+        let after = freshDefaults()
+        let newSync = EngagementSync(defaults: after)
+        let fresh = newSync.local(rewards: .empty, bestRoutineStreak: 0)
+        let merged = try #require(newSync.sync(local: fresh, context: ModelContext(shared)))
+        newSync.applyStreaks(merged)
+        let restored = EngagementStore(defaults: after)
+        #expect(restored.doneDays == [day])
+        #expect(restored.weekendOff)
+        #expect(merged.rewards.points == 90)
+        #expect(merged.rewards.worn == .partyHat)
+        #expect(merged.bestRoutineStreak == 8)
+
+        // Syncing again with nothing new changes nothing, and only one synced copy is kept.
+        let again = newSync.local(rewards: merged.rewards, bestRoutineStreak: merged.bestRoutineStreak)
+        #expect(newSync.sync(local: again, context: ModelContext(shared)) == nil)
+        #expect(try ModelContext(shared).fetchCount(FetchDescriptor<EngagementRecord>()) == 1)
+    }
+
+    @Test("A change on this device is newer than the synced copy, so its settings win")
+    func localChangeWins() throws {
+        let shared = try container()
+        let defaults = freshDefaults()
+        let sync = EngagementSync(defaults: defaults)
+        sync.sync(local: sync.local(rewards: .empty, bestRoutineStreak: 0), context: ModelContext(shared))
+        EngagementStore(defaults: defaults).weekendOff = true
+        let changed = sync.local(rewards: .empty, bestRoutineStreak: 0)
+        #expect(changed.updatedAt > .distantPast)
+        sync.sync(local: changed, context: ModelContext(shared))
+        let other = EngagementSync(defaults: freshDefaults())
+        let merged = try #require(other.sync(local: other.local(rewards: .empty, bestRoutineStreak: 0), context: ModelContext(shared)))
+        #expect(merged.weekendOff)
+    }
+}
+
 /// The app and the share extension name the same plans.
 @Suite("Shared access")
 struct SharedAccessTests {
