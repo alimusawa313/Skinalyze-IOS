@@ -84,6 +84,48 @@
         }
       }
     },
+    "%@ – %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ – %2$@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ – %@"
+          }
+        }
+      }
+    },
+    "%@ – now" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ – sekarang"
+          }
+        }
+      }
+    },
+    "%@: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@: %2$@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: %@"
+          }
+        }
+      }
+    },
     "%@: a retinoid and an exfoliating acid together can be a lot for skin. Many people use them on different nights." : {
       "localizations" : {
         "id" : {
@@ -183,6 +225,22 @@
         }
       },
       "shouldTranslate" : false
+    },
+    "%lld / %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld / %2$lld"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld / %lld"
+          }
+        }
+      }
     },
     "%lld XP" : {
       "localizations" : {
@@ -364,6 +422,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld poin"
+          }
+        }
+      }
+    },
+    "%lld scans from %@ to %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld scans from %2$@ to %3$@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld pindaian dari %@ sampai %@"
           }
         }
       }
@@ -693,6 +767,16 @@
         }
       }
     },
+    "A few pages for a skin appointment: your trend, each area's count, photos from across your scans, the products you used and your journal. It stays on your iPhone until you share it." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beberapa halaman untuk janji temu kulit: tren, jumlah per area, foto dari pindaianmu, produk yang kamu pakai, dan jurnalmu. Tetap di iPhone-mu sampai kamu membagikannya."
+          }
+        }
+      }
+    },
     "A few spots are active. Small changes add up — keep tracking." : {
       "localizations" : {
         "id" : {
@@ -993,6 +1077,16 @@
         }
       }
     },
+    "Alcohol" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alkohol"
+          }
+        }
+      }
+    },
     "Already your friend." : {
       "localizations" : {
         "id" : {
@@ -1049,6 +1143,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ada perubahan di area uji hari ini? Kemerahan, gatal, atau bentol?"
+          }
+        }
+      }
+    },
+    "Apple Health" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Health"
+          }
+        }
+      }
+    },
+    "Area" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Area"
           }
         }
       }
@@ -1829,6 +1943,16 @@
         }
       }
     },
+    "Create the pack with Pro" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buat paket dengan Pro"
+          }
+        }
+      }
+    },
     "Creates a PDF of your last %lld scans — the trend, per-zone changes and the products you used. It stays on your phone until you share it." : {
       "localizations" : {
         "id" : {
@@ -1845,6 +1969,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mahkota"
+          }
+        }
+      }
+    },
+    "Dairy" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Susu"
           }
         }
       }
@@ -1931,6 +2065,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hapus pindaian"
+          }
+        }
+      }
+    },
+    "Dermatologist visit pack" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paket kunjungan dokter kulit"
           }
         }
       }
@@ -2465,6 +2609,16 @@
         }
       }
     },
+    "Fried food" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gorengan"
+          }
+        }
+      }
+    },
     "Friend added!" : {
       "localizations" : {
         "id" : {
@@ -2557,6 +2711,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Depan"
+          }
+        }
+      }
+    },
+    "Front photos from across the period, first to latest." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto depan sepanjang periode, dari yang pertama sampai terbaru."
           }
         }
       }
@@ -2961,6 +3125,16 @@
         }
       }
     },
+    "How was today?" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bagaimana hari ini?"
+          }
+        }
+      }
+    },
     "Hydrates and plumps." : {
       "localizations" : {
         "id" : {
@@ -3021,6 +3195,36 @@
         }
       }
     },
+    "Include Apple Health with Pro" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sertakan Apple Health dengan Pro"
+          }
+        }
+      }
+    },
+    "Include photos" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sertakan foto"
+          }
+        }
+      }
+    },
+    "Include sleep and period from Apple Health" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sertakan tidur dan menstruasi dari Apple Health"
+          }
+        }
+      }
+    },
     "Includes a free trial" : {
       "localizations" : {
         "id" : {
@@ -3047,6 +3251,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Indeks"
+          }
+        }
+      }
+    },
+    "Index %lld" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indeks %lld"
           }
         }
       }
@@ -3199,6 +3413,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Jenaka"
+          }
+        }
+      }
+    },
+    "Journal (days logged)" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jurnal (hari tercatat)"
+          }
+        }
+      }
+    },
+    "Keep checking in. Patterns can show after %lld more days." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terus isi ya. Pola bisa muncul setelah %lld hari lagi."
           }
         }
       }
@@ -3553,6 +3787,16 @@
         }
       }
     },
+    "Made with Skinalyze. Not a medical document: photos and counts of visible marks only, for discussion with a professional." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dibuat dengan Skinalyze. Bukan dokumen medis: hanya foto dan jumlah tanda yang terlihat, untuk didiskusikan dengan tenaga profesional."
+          }
+        }
+      }
+    },
     "Making your video…" : {
       "localizations" : {
         "id" : {
@@ -3773,6 +4017,16 @@
         }
       }
     },
+    "New product" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produk baru"
+          }
+        }
+      }
+    },
     "Next free scan at midnight" : {
       "localizations" : {
         "id" : {
@@ -3859,6 +4113,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Belum ada daftar kandungan untuk produk ini."
+          }
+        }
+      }
+    },
+    "No products recorded." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belum ada produk yang dicatat."
           }
         }
       }
@@ -3993,6 +4257,16 @@
         }
       }
     },
+    "Notes" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Catatan"
+          }
+        }
+      }
+    },
     "Nothing" : {
       "localizations" : {
         "id" : {
@@ -4039,6 +4313,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tidak ada di rak yang cocok dengan “%@”. Coba pindai labelnya."
+          }
+        }
+      }
+    },
+    "Nothing stands out yet. That's good to know too." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belum ada yang menonjol. Itu juga bagus untuk diketahui."
           }
         }
       }
@@ -4139,6 +4423,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Satu langkah rutinitas malam ini menjaga rangkaian %lld harimu."
+          }
+        }
+      }
+    },
+    "Only you see this. It stays on this iPhone." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hanya kamu yang melihat ini. Tetap di iPhone ini."
           }
         }
       }
@@ -4415,6 +4709,26 @@
         }
       }
     },
+    "Patterns" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pola"
+          }
+        }
+      }
+    },
+    "Patterns in your own scans, counting the three days before each one. They show what happened together, not what caused it. Many things affect skin." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pola dari pindaianmu sendiri, menghitung tiga hari sebelum setiap pindaian. Ini menunjukkan apa yang terjadi bersamaan, bukan penyebabnya. Banyak hal yang memengaruhi kulit."
+          }
+        }
+      }
+    },
     "Penguin" : {
       "localizations" : {
         "id" : {
@@ -4435,12 +4749,32 @@
         }
       }
     },
+    "Period" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menstruasi"
+          }
+        }
+      }
+    },
     "Photo analysis happens on your device; your data never leaves it during analysis. Saved scans and products are stored in your personal iCloud account via CloudKit, which Skinalyze cannot access." : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Analisis foto dilakukan di perangkatmu; datamu tidak pernah keluar selama analisis. Pindaian dan produk yang disimpan berada di akun iCloud pribadimu melalui CloudKit, yang tidak bisa diakses Skinalyze."
+          }
+        }
+      }
+    },
+    "Photos" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto"
           }
         }
       }
@@ -4758,6 +5092,16 @@
         }
       }
     },
+    "Products used" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produk yang dipakai"
+          }
+        }
+      }
+    },
     "Profile" : {
       "localizations" : {
         "id" : {
@@ -4844,6 +5188,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tercapai"
+          }
+        }
+      }
+    },
+    "Read on this iPhone when you open this screen. Skinalyze never stores Health data or sends it to iCloud." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dibaca di iPhone ini saat kamu membuka layar ini. Skinalyze tidak pernah menyimpan data Health atau mengirimnya ke iCloud."
           }
         }
       }
@@ -5364,6 +5718,48 @@
         }
       }
     },
+    "Scans" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindaian"
+          }
+        }
+      }
+    },
+    "Scans after \"%@\" days had fewer marked (typically %lld vs %lld)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Scans after \"%1$@\" days had fewer marked (typically %2$lld vs %3$lld)."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindaian setelah hari \"%@\" punya lebih sedikit tanda (biasanya %lld vs %lld)."
+          }
+        }
+      }
+    },
+    "Scans after \"%@\" days had more marked (typically %lld vs %lld)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Scans after \"%1$@\" days had more marked (typically %2$lld vs %3$lld)."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindaian setelah hari \"%@\" punya lebih banyak tanda (biasanya %lld vs %lld)."
+          }
+        }
+      }
+    },
     "Scans stay on this iPhone and in your own iCloud. %lld scans saved." : {
       "localizations" : {
         "id" : {
@@ -5794,6 +6190,16 @@
         }
       }
     },
+    "Skin tracking summary" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ringkasan pemantauan kulit"
+          }
+        }
+      }
+    },
     "Skin trend" : {
       "localizations" : {
         "id" : {
@@ -5934,6 +6340,16 @@
         }
       }
     },
+    "Slept badly" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurang tidur"
+          }
+        }
+      }
+    },
     "Slider video" : {
       "localizations" : {
         "id" : {
@@ -6040,6 +6456,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Perawatan jerawat"
+          }
+        }
+      }
+    },
+    "Spots marked per area" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanda per area"
           }
         }
       }
@@ -6342,6 +6768,16 @@
         }
       }
     },
+    "Stressed" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stres"
+          }
+        }
+      }
+    },
     "Strips oil, which can leave skin feeling tight." : {
       "localizations" : {
         "id" : {
@@ -6428,6 +6864,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ganti produk"
+          }
+        }
+      }
+    },
+    "Sweets" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manis-manis"
           }
         }
       }
@@ -6822,6 +7268,26 @@
         }
       }
     },
+    "Touched my face" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pegang wajah"
+          }
+        }
+      }
+    },
+    "Travel" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bepergian"
+          }
+        }
+      }
+    },
     "Try a little behind your ear or on your inner arm for %lld days before using it on your face." : {
       "localizations" : {
         "id" : {
@@ -6982,6 +7448,16 @@
         }
       }
     },
+    "Visit pack" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paket kunjungan"
+          }
+        }
+      }
+    },
     "Vitamin C" : {
       "localizations" : {
         "id" : {
@@ -7092,6 +7568,16 @@
         }
       }
     },
+    "What coincided" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yang terjadi bersamaan"
+          }
+        }
+      }
+    },
     "What helps" : {
       "localizations" : {
         "id" : {
@@ -7158,6 +7644,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Komedo putih"
+          }
+        }
+      }
+    },
+    "Workout" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Olahraga"
           }
         }
       }
@@ -7710,6 +8206,16 @@
     },
     "z" : {
       "shouldTranslate" : false
+    },
+    "–" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "–"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

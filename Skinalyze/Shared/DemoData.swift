@@ -98,6 +98,12 @@ enum DemoData {
                                  finished: [])
         UserDefaults.standard.set(try? JSONEncoder().encode(book), forKey: "challengeBook")
         UserDefaults.standard.removeObject(forKey: "seenRecaps")
+        // Journal: stressed around the older (busier) demo scans, workouts around the newer ones — so a pattern shows.
+        let journal = (0..<40).compactMap { daysAgo -> JournalEntry? in
+            guard let date = calendar.date(byAdding: .day, value: -daysAgo, to: now) else { return nil }
+            return JournalEntry(day: DayStamp(date, calendar: calendar), tags: daysAgo >= 18 ? [.stressed] : [.workout])
+        }
+        UserDefaults.standard.set(try? JSONEncoder().encode(journal), forKey: "journalEntries")
     }
 
     /// `-debugMeshDir <folder>`: load a real captured mesh (vertices.bin / indices.bin / uvs.bin / texture.bin, as

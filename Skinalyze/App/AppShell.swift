@@ -16,6 +16,7 @@ struct AppShell: View {
     @State private var social = SocialModel()
     @State private var shelfTools = ShelfToolsModel()
     @State private var routine = RoutineModel()
+    @State private var journal = JournalModel()
     /// Synced streaks and rewards; changes here come from the user's other devices (or a restore).
     @Query private var engagementRecords: [EngagementRecord]
     @Environment(\.scenePhase) private var scenePhase
@@ -69,6 +70,7 @@ struct AppShell: View {
         .environment(social)
         .environment(shelfTools)
         .environment(routine)
+        .environment(journal)
         .environment(\.pimpiOutfit, quests.ledger.worn)
         .onChange(of: scenePhase, initial: true) { _, phase in
             if phase == .active {

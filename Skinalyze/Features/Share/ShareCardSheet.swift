@@ -239,6 +239,13 @@ enum ShareCardDump {
         }
         let directory = URL(fileURLWithPath: folder, isDirectory: true)
         try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        // The dermatologist visit pack, oldest scan first.
+        let pack = await DermPackBuilder.content(scans: scans.reversed(), includePhotos: true, journal: JournalModel())
+        if let url = DermPackBuilder.render(pack) {
+            let target = directory.appendingPathComponent("visit-pack.pdf")
+            try? FileManager.default.removeItem(at: target)
+            try? FileManager.default.copyItem(at: url, to: target)
+        }
         for (name, source, hidesFace) in videos {
             guard let url = try? await source.make(hidesFace, true, { _ in }) else { continue }
             let target = directory.appendingPathComponent("\(name).mp4")

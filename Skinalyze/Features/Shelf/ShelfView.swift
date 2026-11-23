@@ -31,6 +31,7 @@ struct ShelfView: View {
                         tiles
                         ShareShelfButton()
                         RoutineChecklist()
+                        JournalCard()
                     } else {
                         resultList
                     }

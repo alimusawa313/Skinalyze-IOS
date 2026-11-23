@@ -52,7 +52,7 @@ struct ProfileView: View {
                     NavigationLink {
                         ExportView()
                     } label: {
-                        Label("Export for your dermatologist", systemImage: "doc.richtext")
+                        Label("Dermatologist visit pack", systemImage: "doc.richtext")
                     }
                 } header: {
                     Text("Privacy & data")
