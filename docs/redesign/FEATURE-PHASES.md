@@ -232,8 +232,25 @@ history and 3D as it is today).
 
 ---
 
-## Phase 6 — Quests, glow points, chests, badges, outfits  ☐
-**Ships:** E5, E6, E7, E8, E13, PI5, PI6 · **Size:** medium–large
+## Phase 6 — Quests, glow points, chests, badges, outfits  ☑
+**Ships:** E5, E6, E7, E13, PI5 (chest moment), PI6 · E8 (monthly quest) still open · **Size:** medium–large
+
+**Shipped (2026-11-23):**
+- [x] `QuestEngine` / `RewardEngine` / `BadgeEngine` in SkinalyzeKit (19 tests): three daily quests from five kinds
+  (routine step, today's scan, product check, share, look back), only ones possible today, fixed for the day;
+  points for effort only (Pro doubles); all three done → one chest; clock set back or returning from a future date
+  earns nothing.
+- [x] Chest moment (gift wiggles, opens, Pimpi tries the outfit on, "Wear it"); six outfits drawn in Pimpi's style
+  (party hat, beanie, flower, bow; crown and sunglasses are Pro-only chest prizes); when all are owned a chest gives
+  bonus points. The outfit shows on every Pimpi in the app.
+- [x] Badge shelf (first scan, first 3D scan, a week of routine, 10 product checks, first share, a week of quests).
+- [x] All of it on the Streaks sheet (tap Pimpi on the Mirror); a gift dot on Pimpi when a chest is waiting.
+- [x] UI test walks quests → chest → wear → badges → wardrobe. EN + ID.
+
+**Still open:**
+- [ ] E8 monthly quest. Rewards are stored on the phone (like streaks); synced storage is still the deferred
+  Phase 1 item. Widgets show Pimpi without its outfit.
+- [ ] Owner's phone: do three quests in a day and open a real chest.
 
 **Build**
 1. `QuestEngine` and points ledger in SkinalyzeKit, tested: three daily quests chosen from what the user can

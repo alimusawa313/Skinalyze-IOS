@@ -34,6 +34,7 @@ struct ScanResultView: View {
     @State private var sharedVideo: VideoShareSource?
     @State private var paywall: PaywallReason?
     @Environment(ProAccess.self) private var access: ProAccess?
+    @Environment(QuestModel.self) private var quests: QuestModel?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Query(sort: \ScanSession.createdAt, order: .reverse) private var allScans: [ScanSession]
     @AppStorage(UserProfile.Key.skinType) private var skinTypeRaw = ""
@@ -89,6 +90,10 @@ struct ScanResultView: View {
             }
         }
         .sensoryFeedback(Haptic.scrub, trigger: chapter)
+        .onAppear {
+            // Opening an earlier scan (not the one just taken) is looking back.
+            if !isFreshScan { quests?.did(.lookBack, isPro: policy.hasFullAccess) }
+        }
         .sheet(item: $sharedVideo) { VideoShareSheet(source: $0) }
         .paywallSheet($paywall)
         .sheet(item: $sharedCard) { ShareCardSheet(source: $0) }

@@ -42,6 +42,7 @@ struct VideoShareSheet: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(ProAccess.self) private var access: ProAccess?
+    @Environment(QuestModel.self) private var quests: QuestModel?
     @State private var hidesFace = false
     @State private var phase = Phase.working(0)
     @State private var player: AVQueuePlayer?
@@ -128,6 +129,7 @@ struct VideoShareSheet: View {
         let label = Label("Share", systemImage: "square.and.arrow.up").frame(maxWidth: .infinity)
         if case let .done(url) = phase {
             ShareLink(item: url) { label }
+                .simultaneousGesture(TapGesture().onEnded { quests?.did(.share, isPro: access?.policy.hasFullAccess ?? false) })
                 .buttonStyle(.dsPrimary)
                 .accessibilityIdentifier("videoShareButton")
         } else {

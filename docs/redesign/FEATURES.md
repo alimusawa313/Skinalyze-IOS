@@ -63,8 +63,8 @@ with depth, no outlines, and moods.
 - [x] **PI3 Pimpi widget** (Phase 2) — home and lock screen; shows Pimpi's current mood + streak. · Free
 - [x] **PI4 Notifications in Pimpi's voice** (Phase 2) — gentle escalation ("I've been waiting with my magnifying glass…");
   never about skin condition, never guilt about results. · Free
-- [ ] **PI5 Pimpi celebrations** — streak milestones, quest chests, first 3D scan. · Free
-- [ ] **PI6 Pimpi outfits and hats** — cosmetic rewards from chests; premium sets in Pro. · Free + Pro
+- [x] **PI5 Pimpi celebrations** — streak milestones, quest chests, first 3D scan. · Free
+- [x] **PI6 Pimpi outfits and hats** — cosmetic rewards from chests; premium sets in Pro. · Free + Pro
 - [ ] **PI7 More moods / poses as needed** (e.g. proud, waving, holding sunscreen). · —
 
 ---
@@ -78,9 +78,9 @@ with depth, no outlines, and moods.
 - [x] **E4 Milestones** (Phase 1; shareable card Phase 3) — 7 / 30 / 100 days with a Pimpi celebration and a shareable card. · Free
 
 ### Quests and rewards
-- [ ] **E5 Daily quests** — three small ones (check off routine, check a product, log sleep). · Free
-- [ ] **E6 Glow points** — earned for effort only (rule 1). · Free (Pro: double points)
-- [ ] **E7 Chests** — cosmetic rewards: sticker-card themes, holo styles, Pimpi outfits. · Free + Pro sets
+- [x] **E5 Daily quests** — three small ones (check off routine, check a product, log sleep). · Free
+- [x] **E6 Glow points** — earned for effort only (rule 1). · Free (Pro: double points)
+- [x] **E7 Chests** — cosmetic rewards: sticker-card themes, holo styles, Pimpi outfits. · Free + Pro sets
 - [ ] **E8 Monthly quest** — limited badge. · Free
 
 ### Skin School
@@ -91,7 +91,7 @@ with depth, no outlines, and moods.
 ### Progress
 - [ ] **E11 Journey map** — levels as the user scans and learns. · Free
 - [ ] **E12 Weekly recap from Pimpi** — every Sunday. · Free
-- [ ] **E13 Badge shelf** — first 3D scan, 10 product checks, a month of sunscreen… · Free
+- [x] **E13 Badge shelf** — first 3D scan, 10 product checks, a month of sunscreen… · Free
 - [ ] **E14 Monthly recap** — short summary card. · Free
 
 ### Social (no faces)

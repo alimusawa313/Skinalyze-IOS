@@ -8,6 +8,8 @@ struct CompareView: View {
     let later: ScanSession
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(QuestModel.self) private var quests: QuestModel?
+    @Environment(ProAccess.self) private var access: ProAccess?
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var angle: CaptureAngle = .front
     @State private var split: CGFloat = 0.5
@@ -33,6 +35,7 @@ struct CompareView: View {
             .frame(maxWidth: .infinity)
         }
         .dsCanvas()
+        .onAppear { quests?.did(.lookBack, isPro: access?.policy.hasFullAccess ?? false) }
         .task(id: angle) { await alignPhotos() }
         .navigationTitle("Compare")
         .toolbarTitleDisplayMode(.inline)

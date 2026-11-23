@@ -11,6 +11,8 @@ struct Pimpi: View {
     var mood: Mood = .happy
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    /// The outfit won from a chest, set once at the app's root.
+    @Environment(\.pimpiOutfit) private var outfit
 
     var body: some View {
         // Self-contained vector art: every part is placed relative to the mascot's own square (GeometryReader is the
@@ -25,6 +27,7 @@ struct Pimpi: View {
                 bump(unit)
                 face(unit)
                 extras(unit)
+                if let outfit { PimpiOutfitLayer(outfit: outfit, unit: unit) }
             }
             .frame(width: unit, height: unit)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -227,6 +230,117 @@ private struct PimpiBody: Shape {
     }
 }
 
+extension EnvironmentValues {
+    /// What Pimpi wears everywhere it appears (nil: nothing).
+    @Entry var pimpiOutfit: PimpiOutfit? = nil
+}
+
+/// Pimpi's accessories, in the same no-outline vector style. Placed on the mascot's own square.
+struct PimpiOutfitLayer: View {
+    let outfit: PimpiOutfit
+    let unit: CGFloat
+
+    var body: some View {
+        let u = unit
+        switch outfit {
+        case .partyHat:
+            ZStack {
+                PimpiTriangle()
+                    .fill(LinearGradient(colors: [Color.ds.signal, Color.ds.pimpiBodyDeep], startPoint: .top, endPoint: .bottom))
+                    .frame(width: u * 0.2, height: u * 0.24)
+                ForEach([0.35, 0.6, 0.82], id: \.self) { y in
+                    Circle().fill(Color.ds.pimpiCheek).frame(width: u * 0.028, height: u * 0.028)
+                        .offset(x: u * (y - 0.6) * 0.08, y: u * (y - 0.5) * 0.24)
+                }
+                Circle().fill(Color.ds.pimpiCheek).frame(width: u * 0.06, height: u * 0.06).offset(y: -u * 0.12)
+            }
+            .rotationEffect(.degrees(18))
+            .position(x: u * 0.62, y: u * 0.17)
+        case .beanie:
+            ZStack {
+                UnevenRoundedRectangle(topLeadingRadius: u * 0.3, bottomLeadingRadius: u * 0.02,
+                                       bottomTrailingRadius: u * 0.02, topTrailingRadius: u * 0.3)
+                    .fill(LinearGradient(colors: [Color.ds.positive.opacity(0.85), Color.ds.positive], startPoint: .top, endPoint: .bottom))
+                    .frame(width: u * 0.6, height: u * 0.17)
+                    .offset(y: -u * 0.02)
+                Capsule().fill(Color.ds.positive)
+                    .overlay { Capsule().fill(.black.opacity(0.12)) }
+                    .frame(width: u * 0.66, height: u * 0.07)
+                    .offset(y: u * 0.07)
+                Circle().fill(Color.ds.pimpiCheek).frame(width: u * 0.09, height: u * 0.09).offset(y: -u * 0.12)
+            }
+            .position(x: u * 0.5, y: u * 0.27)
+        case .flower:
+            ZStack {
+                ForEach(0..<5, id: \.self) { petal in
+                    Circle().fill(Color.ds.pimpiCheek).frame(width: u * 0.075, height: u * 0.075)
+                        .offset(y: -u * 0.045)
+                        .rotationEffect(.degrees(Double(petal) * 72))
+                }
+                Circle().fill(Color.ds.caution).frame(width: u * 0.055, height: u * 0.055)
+            }
+            .position(x: u * 0.72, y: u * 0.3)
+        case .bow:
+            ZStack {
+                Ellipse().fill(Color.ds.signal).frame(width: u * 0.12, height: u * 0.08).rotationEffect(.degrees(-22)).offset(x: -u * 0.06)
+                Ellipse().fill(Color.ds.signal).frame(width: u * 0.12, height: u * 0.08).rotationEffect(.degrees(22)).offset(x: u * 0.06)
+                Circle().fill(Color.ds.pimpiBodyDeep).frame(width: u * 0.05, height: u * 0.05)
+            }
+            .position(x: u * 0.68, y: u * 0.28)
+        case .crown:
+            ZStack {
+                PimpiCrown()
+                    .fill(LinearGradient(colors: [Color.ds.pimpiCheek, Color.ds.caution], startPoint: .top, endPoint: .bottom))
+                    .frame(width: u * 0.32, height: u * 0.18)
+                Circle().fill(Color.ds.signal).frame(width: u * 0.04, height: u * 0.04).offset(y: u * 0.04)
+            }
+            .position(x: u * 0.56, y: u * 0.16)
+        case .sunglasses:
+            ZStack {
+                ForEach([-0.14, 0.14], id: \.self) { x in
+                    RoundedRectangle(cornerRadius: u * 0.045, style: .continuous)
+                        .fill(Color.ds.pimpiEye.opacity(0.94))
+                        .overlay(alignment: .topLeading) {
+                            Capsule().fill(.white.opacity(0.55)).frame(width: u * 0.05, height: u * 0.018)
+                                .offset(x: u * 0.03, y: u * 0.025)
+                        }
+                        .frame(width: u * 0.19, height: u * 0.12)
+                        .offset(x: u * x)
+                }
+                Capsule().fill(Color.ds.pimpiEye).frame(width: u * 0.1, height: u * 0.022).offset(y: -u * 0.02)
+            }
+            .position(x: u * 0.5, y: u * 0.52)
+        }
+    }
+}
+
+private struct PimpiTriangle: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.move(to: CGPoint(x: rect.midX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
+        path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
+        path.closeSubpath()
+        return path
+    }
+}
+
+private struct PimpiCrown: Shape {
+    func path(in rect: CGRect) -> Path {
+        func point(_ x: CGFloat, _ y: CGFloat) -> CGPoint { CGPoint(x: rect.minX + rect.width * x, y: rect.minY + rect.height * y) }
+        var path = Path()
+        path.move(to: point(0, 1))
+        path.addLine(to: point(0, 0.25))
+        path.addLine(to: point(0.25, 0.6))
+        path.addLine(to: point(0.5, 0))
+        path.addLine(to: point(0.75, 0.6))
+        path.addLine(to: point(1, 0.25))
+        path.addLine(to: point(1, 1))
+        path.closeSubpath()
+        return path
+    }
+}
+
 /// A single curved line: a smile, or (flipped) a closed sleepy eye.
 private struct PimpiArc: Shape {
     let smiling: Bool
@@ -303,6 +417,7 @@ struct PimpiGallery: View {
                 ForEach(Pimpi.Mood.allCases, id: \.self) { mood in
                     VStack(spacing: 2) {
                         Pimpi(mood: mood).frame(height: 104)
+                            .environment(\.pimpiOutfit, PimpiOutfit.allCases[Pimpi.Mood.allCases.firstIndex(of: mood) ?? 0])
                         Text(mood.rawValue).font(.ds.caption.weight(.semibold)).foregroundStyle(Color.ds.inkSecondary)
                     }
                 }

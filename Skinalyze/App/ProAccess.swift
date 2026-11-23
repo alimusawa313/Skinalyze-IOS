@@ -181,11 +181,14 @@ struct ProductCheckLedger {
                                       alreadyChecked: checkedThisMonth, now: now, calendar: calendar)
     }
 
-    func record(_ productKey: String, now: Date = .now, calendar: Calendar = .current) {
+    /// Returns whether this was a new check this month.
+    @discardableResult
+    func record(_ productKey: String, now: Date = .now, calendar: Calendar = .current) -> Bool {
         var updated = entries
         if let earlier = updated[productKey],
-           calendar.isDate(Date(timeIntervalSince1970: earlier), equalTo: now, toGranularity: .month) { return }
+           calendar.isDate(Date(timeIntervalSince1970: earlier), equalTo: now, toGranularity: .month) { return false }
         updated[productKey] = now.timeIntervalSince1970
         defaults.set(updated, forKey: Self.key)
+        return true
     }
 }

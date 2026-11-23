@@ -5,6 +5,7 @@ import SkinalyzeKit
 /// Tap for the streak sheet. Pimpi's mood comes from the streaks (effort), never from skin results.
 struct PimpiStreakBadge: View {
     @Environment(EngagementModel.self) private var engagement
+    @Environment(QuestModel.self) private var quests: QuestModel?
     @State private var showsStreak = false
 
     var body: some View {
@@ -22,6 +23,17 @@ struct PimpiStreakBadge: View {
                             .background(Color.ds.signal, in: Capsule())
                             .contentTransition(.numericText(value: Double(engagement.routine.count)))
                             .offset(x: 6, y: -4)
+                    }
+                }
+                .overlay(alignment: .topLeading) {
+                    if (quests?.ledger.chestsWaiting ?? 0) > 0 {
+                        // A chest is waiting in the streak sheet.
+                        Image(systemName: "gift.fill")
+                            .font(.footnote.weight(.bold))
+                            .foregroundStyle(Color.ds.canvas)
+                            .padding(Spacing.xxs + 2)
+                            .background(Color.ds.positive, in: Circle())
+                            .offset(x: -4, y: -4)
                     }
                 }
                 .contentShape(Rectangle())
@@ -82,6 +94,7 @@ struct StreakSheet: View {
                         }
                         .buttonStyle(.dsPrimary)
                     }
+                    QuestCard()
                     VStack(spacing: Spacing.sm) {
                         row(icon: "faceid", title: "Scan streak", value: scanValue, detail: scanLine)
                         Divider()
@@ -99,6 +112,8 @@ struct StreakSheet: View {
                         .tint(Color.ds.signal)
                     }
                     .dsCard()
+                    WardrobeLink()
+                    BadgeShelf()
                 }
                 .padding(Spacing.lg)
             }

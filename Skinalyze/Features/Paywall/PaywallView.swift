@@ -296,6 +296,7 @@ struct ProductCheckGate<Content: View>: View {
     @ViewBuilder let content: Content
 
     @Environment(ProAccess.self) private var access: ProAccess?
+    @Environment(QuestModel.self) private var quests: QuestModel?
     @State private var paywall: PaywallReason?
 
     var body: some View {
@@ -310,7 +311,10 @@ struct ProductCheckGate<Content: View>: View {
             let policy = access?.policy ?? AccessPolicy(hasFullAccess: true)
             let ledger = ProductCheckLedger()
             let canCheck = ledger.canCheck(key, policy: policy)
-            if canCheck, !policy.hasFullAccess { ledger.record(key) }
+            if canCheck {
+                let isNew = ledger.record(key)
+                quests?.did(.productCheck, isPro: policy.hasFullAccess, counts: isNew)
+            }
             allowed = canCheck
         }
         .onChange(of: access?.policy.hasFullAccess) { _, full in

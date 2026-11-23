@@ -50,6 +50,8 @@ struct RoutineChecklist: View {
 
     @AppStorage("routineLog") private var logRaw = ""
     @Environment(EngagementModel.self) private var engagement
+    @Environment(QuestModel.self) private var quests: QuestModel?
+    @Environment(ProAccess.self) private var access: ProAccess?
     @AppStorage(UserProfile.Key.cleanserID) private var cleanser = 0
     @AppStorage(UserProfile.Key.tonerID) private var toner = 0
     @AppStorage(UserProfile.Key.moisturizerID) private var moisturizer = 0
@@ -112,7 +114,10 @@ struct RoutineChecklist: View {
         }
         .dsCard()
         .onChange(of: logRaw) { _, raw in
-            engagement.routineChanged(anyStepDoneToday: RoutineLog(raw: raw).hasAnyStep())
+            let anyStepDone = RoutineLog(raw: raw).hasAnyStep()
+            engagement.routineChanged(anyStepDoneToday: anyStepDone)
+            if anyStepDone { quests?.did(.routine, isPro: access?.policy.hasFullAccess ?? false) }
+            quests?.noteRoutineStreak(engagement.routine.count)
         }
     }
 }

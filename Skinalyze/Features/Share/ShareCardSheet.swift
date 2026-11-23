@@ -49,6 +49,7 @@ struct ShareCardSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(ProAccess.self) private var access: ProAccess?
+    @Environment(QuestModel.self) private var quests: QuestModel?
     @State private var format = ShareCardFormat.story
     @State private var hidesFace = false
     @State private var rendered: Rendered?
@@ -132,6 +133,7 @@ struct ShareCardSheet: View {
         let label = Label("Share", systemImage: "square.and.arrow.up").frame(maxWidth: .infinity)
         if let rendered {
             ShareLink(item: rendered.url, preview: SharePreview(Text(verbatim: "Skinalyze"), image: Image(uiImage: rendered.image))) { label }
+                .simultaneousGesture(TapGesture().onEnded { quests?.did(.share, isPro: access?.policy.hasFullAccess ?? false) })
                 .buttonStyle(.dsPrimary)
                 .accessibilityIdentifier("shareCardButton")
         } else {

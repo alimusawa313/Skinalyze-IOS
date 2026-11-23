@@ -91,6 +91,16 @@
         }
       }
     },
+    "%lld glow points" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld poin glow"
+          }
+        }
+      }
+    },
     "%lld of %lld" : {
       "localizations" : {
         "en" : {
@@ -103,6 +113,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$lld dari %2$lld"
+          }
+        }
+      }
+    },
+    "%lld of %lld outfits" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld of %2$lld outfits"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld dari %lld aksesori"
           }
         }
       }
@@ -192,6 +218,16 @@
         }
       }
     },
+    "+%lld" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld"
+          }
+        }
+      }
+    },
     "1 week" : {
       "localizations" : {
         "id" : {
@@ -208,6 +244,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "1. Skinalyze tidak mengumpulkan data"
+          }
+        }
+      }
+    },
+    "10 product checks" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 cek produk"
           }
         }
       }
@@ -332,6 +378,16 @@
         }
       }
     },
+    "A chest for finishing today's quests" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peti untuk misi hari ini yang selesai"
+          }
+        }
+      }
+    },
     "A common cause of irritation, especially for sensitive skin." : {
       "localizations" : {
         "id" : {
@@ -448,6 +504,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Centang rutinitas sebentar agar rangkaianmu berlanjut."
+          }
+        }
+      }
+    },
+    "A week of quests" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seminggu misi"
+          }
+        }
+      }
+    },
+    "A week of routine" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seminggu rutin"
           }
         }
       }
@@ -572,6 +648,16 @@
         }
       }
     },
+    "Badges" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lencana"
+          }
+        }
+      }
+    },
     "Balanced most days." : {
       "localizations" : {
         "id" : {
@@ -612,6 +698,16 @@
         }
       }
     },
+    "Beanie" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kupluk"
+          }
+        }
+      }
+    },
     "Before and after comparison" : {
       "localizations" : {
         "id" : {
@@ -628,6 +724,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Komedo hitam"
+          }
+        }
+      }
+    },
+    "Bow" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pita"
           }
         }
       }
@@ -822,6 +928,16 @@
         }
       }
     },
+    "Check a product" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cek sebuah produk"
+          }
+        }
+      }
+    },
     "Check ingredients" : {
       "localizations" : {
         "id" : {
@@ -838,6 +954,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cek produkku"
+          }
+        }
+      }
+    },
+    "Check off a routine step" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Centang satu langkah rutin"
           }
         }
       }
@@ -1032,6 +1158,16 @@
         }
       }
     },
+    "Crown" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mahkota"
+          }
+        }
+      }
+    },
     "Dark spots" : {
       "localizations" : {
         "id" : {
@@ -1192,6 +1328,16 @@
         }
       }
     },
+    "Earned" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Didapat"
+          }
+        }
+      }
+    },
     "Evening" : {
       "localizations" : {
         "id" : {
@@ -1302,12 +1448,62 @@
         }
       }
     },
+    "Finish all three for a chest." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selesaikan ketiganya untuk dapat peti."
+          }
+        }
+      }
+    },
+    "First 3D scan" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan 3D pertama"
+          }
+        }
+      }
+    },
+    "First scan" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan pertama"
+          }
+        }
+      }
+    },
+    "First share" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berbagi pertama"
+          }
+        }
+      }
+    },
     "Flared" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Meradang"
+          }
+        }
+      }
+    },
+    "Flower" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bunga"
           }
         }
       }
@@ -1984,6 +2180,16 @@
         }
       }
     },
+    "Look back at an earlier scan" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lihat lagi scan sebelumnya"
+          }
+        }
+      }
+    },
     "Look for" : {
       "localizations" : {
         "id" : {
@@ -2134,6 +2340,16 @@
         }
       }
     },
+    "New for Pimpi: %@" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baru untuk Pimpi: %@"
+          }
+        }
+      }
+    },
     "Next free scan at midnight" : {
       "localizations" : {
         "id" : {
@@ -2244,6 +2460,16 @@
         }
       }
     },
+    "Not earned yet" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belum didapat"
+          }
+        }
+      }
+    },
     "Not enough info" : {
       "localizations" : {
         "id" : {
@@ -2260,6 +2486,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nanti saja"
+          }
+        }
+      }
+    },
+    "Not won yet" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belum dimenangkan"
+          }
+        }
+      }
+    },
+    "Nothing" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanpa aksesori"
           }
         }
       }
@@ -2344,6 +2590,16 @@
         }
       }
     },
+    "Open" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka"
+          }
+        }
+      }
+    },
     "Open Settings" : {
       "localizations" : {
         "id" : {
@@ -2380,6 +2636,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pori terbuka yang terisi minyak dan sel kulit mati; warna gelapnya karena oksidasi, bukan kotoran."
+          }
+        }
+      }
+    },
+    "Open your chest" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka petimu"
           }
         }
       }
@@ -2450,6 +2716,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Paraben"
+          }
+        }
+      }
+    },
+    "Party hat" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Topi pesta"
           }
         }
       }
@@ -2527,6 +2803,16 @@
         }
       }
     },
+    "Pimpi has every outfit. +%lld glow points instead!" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pimpi sudah punya semua aksesori. Gantinya +%lld poin glow!"
+          }
+        }
+      }
+    },
     "Pimpi is keeping your streak warm" : {
       "localizations" : {
         "id" : {
@@ -2543,6 +2829,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pimpi kangen kamu"
+          }
+        }
+      }
+    },
+    "Pimpi's wardrobe" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lemari Pimpi"
           }
         }
       }
@@ -3223,6 +3519,16 @@
         }
       }
     },
+    "Share a card" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bagikan kartu"
+          }
+        }
+      }
+    },
     "Share a photo of the ingredient list for a better read." : {
       "localizations" : {
         "id" : {
@@ -3689,6 +3995,16 @@
         }
       }
     },
+    "Sunglasses" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kacamata hitam"
+          }
+        }
+      }
+    },
     "Sunscreen" : {
       "localizations" : {
         "id" : {
@@ -3755,6 +4071,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tetap ambil foto"
+          }
+        }
+      }
+    },
+    "Take today's scan" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ambil scan hari ini"
           }
         }
       }
@@ -3885,6 +4211,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Scan gratis hari ini sudah dipakai. Scan berikutnya terbuka tengah malam."
+          }
+        }
+      }
+    },
+    "Today's quests" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Misi hari ini"
           }
         }
       }
@@ -4059,6 +4395,16 @@
         }
       }
     },
+    "Wardrobe" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lemari"
+          }
+        }
+      }
+    },
     "We couldn't read these photos" : {
       "localizations" : {
         "id" : {
@@ -4085,6 +4431,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kami dapat memperbarui kebijakan ini; perubahan akan ditampilkan di pembaruan aplikasi."
+          }
+        }
+      }
+    },
+    "Wear it" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pakai"
+          }
+        }
+      }
+    },
+    "Wearing" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dipakai"
           }
         }
       }

@@ -10,6 +10,8 @@ struct AppShell: View {
     @State private var capture = ScanCaptureModel()
     @State private var isKeyboardVisible = false
     @State private var engagement = EngagementModel()
+    @State private var quests = QuestModel()
+    @Environment(\.scenePhase) private var scenePhase
     @State private var paywall: PaywallReason?
     @Environment(ProAccess.self) private var access: ProAccess?
     #if DEBUG
@@ -50,6 +52,11 @@ struct AppShell: View {
         .sheet(isPresented: $appModel.isShowingProfile) { ProfileView() }
         .paywallSheet($paywall)
         .environment(engagement)
+        .environment(quests)
+        .environment(\.pimpiOutfit, quests.ledger.worn)
+        .onChange(of: scenePhase, initial: true) { _, phase in
+            if phase == .active { prepareQuests() }
+        }
         #if DEBUG
         .fullScreenCover(isPresented: $showsPimpiGallery) { PimpiGallery() }
         .fullScreenCover(isPresented: $showsPimpiWidgetGallery) { PimpiWidgetGallery() }
@@ -59,6 +66,12 @@ struct AppShell: View {
         .onAppear {
             if let tab = UserDefaults.standard.string(forKey: "startTab"), let url = URL(string: "skinalyze://\(tab)") {
                 appModel.open(url)
+            }
+            // `-pimpiGalleryDump <file.png>`: every mood and outfit, light and dark, rendered to an image.
+            if let path = UserDefaults.standard.string(forKey: "pimpiGalleryDump") {
+                let renderer = ImageRenderer(content: PimpiGallery().frame(width: 402, height: 874))
+                renderer.scale = 2
+                try? renderer.uiImage?.pngData()?.write(to: URL(fileURLWithPath: path))
             }
             // `-shareCardDump <folder>`: export every share card in every shape for checking.
             if let folder = UserDefaults.standard.string(forKey: "shareCardDump") {
@@ -122,6 +135,18 @@ struct AppShell: View {
         case .timeline: DeckView().accessibilityIdentifier("deckView")
         case .products, .search: ShelfView().accessibilityIdentifier("shelfView")
         }
+    }
+
+    /// Today's quests come from what can actually be done today.
+    private func prepareQuests() {
+        let policy = access?.policy ?? AccessPolicy(hasFullAccess: true)
+        let descriptor = FetchDescriptor<ScanSession>(sortBy: [SortDescriptor(\.createdAt, order: .reverse)])
+        let dates = ((try? modelContext.fetch(descriptor)) ?? []).map(\.createdAt)
+        let scannedToday = dates.contains { Calendar.current.isDateInToday($0) }
+        let canScan = !scannedToday && policy.scanAllowance(savedScanDates: dates, now: .now, calendar: .current) == .allowed
+        quests.prepare(context: QuestContext(canScan: canScan, hasRoutine: true,
+                                             canCheckProduct: ProductCheckLedger().canCheck("quest-probe", policy: policy),
+                                             scanCount: dates.count))
     }
 
     /// Once, when the very first scan result is closed: what Pro adds. Never before a result has been seen.

@@ -13,7 +13,7 @@ final class VisualTourUITests: XCTestCase {
         formatter.calendar = Calendar(identifier: .gregorian)
         formatter.dateFormat = "yyyy-MM-dd"
         let days = (0..<5).map { formatter.string(from: Calendar.current.date(byAdding: .day, value: -$0, to: .now)!) }
-        app.launchArguments = ["-seedDemoData", "-routineDoneDays", days.joined(separator: ","), "-routineDoneDaysImported", "YES"]
+        app.launchArguments = ["-seedDemoData", "-resetDemoData", "YES", "-routineDoneDays", days.joined(separator: ","), "-routineDoneDaysImported", "YES"]
         addUIInterruptionMonitor(withDescription: "Camera permission") { alert in
             for title in ["Allow", "OK"] where alert.buttons[title].firstMatch.exists {
                 alert.buttons[title].firstMatch.tap()

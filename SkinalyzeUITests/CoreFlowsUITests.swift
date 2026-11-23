@@ -8,7 +8,8 @@ final class CoreFlowsUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         app = XCUIApplication()
-        app.launchArguments = ["-seedDemoData"]
+        // A fresh, complete set of demo scans for every test (an earlier test may have ended mid-seed).
+        app.launchArguments = ["-seedDemoData", "-resetDemoData", "YES"]
         // The Mirror asks for camera access on launch (system alert).
         addUIInterruptionMonitor(withDescription: "Camera permission") { alert in
             for title in ["Allow", "OK", "Don’t Allow"] where alert.buttons[title].firstMatch.exists {
@@ -95,13 +96,44 @@ final class CoreFlowsUITests: XCTestCase {
     /// Relaunches with extra arguments (a free account, or a scan already taken today).
     private func relaunch(_ extra: [String]) {
         app.terminate()
-        app.launchArguments = ["-seedDemoData"] + extra
+        app.launchArguments = ["-seedDemoData", "-resetDemoData", "YES"] + extra
         app.launch()
+    }
+
+    /// Pimpi's streak sheet shows today's quests; a chest opens into an outfit Pimpi can wear.
+    func testQuestsChestAndWardrobe() {
+        relaunch(["-questDebugChests", "1", "-proOverride", "free"])
+        let pimpi = app.buttons["pimpiStreak"]
+        XCTAssertTrue(pimpi.waitForExistence(timeout: 10))
+        for _ in 0..<3 where !app.staticTexts["Today's quests"].exists {
+            pimpi.tap()
+            _ = app.staticTexts["Today's quests"].waitForExistence(timeout: 3)
+        }
+        XCTAssertTrue(app.staticTexts["Today's quests"].exists)
+        attachScreenshot("Quests")
+        let open = app.buttons["openChest"]
+        XCTAssertTrue(open.waitForExistence(timeout: 5))
+        open.tap()
+        let chest = app.buttons["chestOpen"]
+        XCTAssertTrue(chest.waitForExistence(timeout: 5))
+        attachScreenshot("Chest · closed")
+        chest.tap()
+        let wear = app.buttons["chestWear"]
+        XCTAssertTrue(wear.waitForExistence(timeout: 5))
+        sleep(1)
+        attachScreenshot("Chest · opened")
+        wear.tap()
+        let wardrobe = app.buttons["wardrobeLink"]
+        for _ in 0..<4 where !wardrobe.isHittable { app.swipeUp() }
+        attachScreenshot("Badges")
+        wardrobe.tap()
+        XCTAssertTrue(app.navigationBars["Wardrobe"].waitForExistence(timeout: 5))
+        attachScreenshot("Wardrobe")
     }
 
     /// Free accounts: after today's saved scan, the shutter explains Pro and the camera stays on.
     func testSecondScanTodayOpensPaywall() {
-        relaunch(["-proOverride", "free", "-demoNewestDaysAgo", "0", "-resetDemoData", "YES"])
+        relaunch(["-proOverride", "free", "-demoNewestDaysAgo", "0"])
         let note = app.staticTexts["Next free scan at midnight"]
         XCTAssertTrue(note.waitForExistence(timeout: 15))
         let shutter = app.buttons["mirrorShutter"]

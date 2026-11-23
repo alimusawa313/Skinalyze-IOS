@@ -15,6 +15,7 @@ struct MirrorView: View {
     @AppStorage("routineLog") private var routineLogRaw = ""
     @Environment(EngagementModel.self) private var engagement
     @Environment(ProAccess.self) private var access: ProAccess?
+    @Environment(QuestModel.self) private var quests: QuestModel?
     @State private var paywall: PaywallReason?
     /// Owned by the shell so the camera survives dock paging, folding and rotation.
     let model: ScanCaptureModel
@@ -142,6 +143,7 @@ struct MirrorView: View {
 
     private func finishScan() {
         engagement.scanCompleted()
+        if model.savedSessionID != nil { quests?.did(.scan, isPro: access?.policy.hasFullAccess ?? false) }
         appModel.scanFinished(model.savedSessionID)
         model.returnToMirror()
         finishedBand = nil
