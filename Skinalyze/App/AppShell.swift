@@ -26,6 +26,7 @@ struct AppShell: View {
     #if DEBUG
     @State private var showsPimpiGallery = UserDefaults.standard.bool(forKey: "pimpiGallery")
     @State private var showsPimpiWidgetGallery = UserDefaults.standard.bool(forKey: "pimpiWidgetGallery")
+    @State private var showsPimpiMotionLab = UserDefaults.standard.bool(forKey: "pimpiMotionLab")
     @State private var showsZoneMapDebug = false
     #endif
 
@@ -86,6 +87,7 @@ struct AppShell: View {
         #if DEBUG
         .fullScreenCover(isPresented: $showsPimpiGallery) { PimpiGallery() }
         .fullScreenCover(isPresented: $showsPimpiWidgetGallery) { PimpiWidgetGallery() }
+        .fullScreenCover(isPresented: $showsPimpiMotionLab) { PimpiMotionLab() }
         .sheet(isPresented: $showsZoneMapDebug) { ZoneMapView() }
         #endif
         .onOpenURL { appModel.open($0) }

@@ -22,19 +22,31 @@ struct Pimpi: View {
             ZStack {
                 shadow(unit)
                 feet(unit)
-                arms(unit)
-                bodyShape(unit)
-                bump(unit)
-                face(unit)
+                // Everything above the feet breathes together, so the face, bump and outfit never drift off the body.
+                ZStack {
+                    arms(unit)
+                    bodyShape(unit)
+                    if !hidesBump { bump(unit) }
+                    face(unit)
+                    if let outfit { PimpiOutfitLayer(outfit: outfit, unit: unit) }
+                }
+                .frame(width: unit, height: unit)
+                .phaseAnimator(reduceMotion ? [1.0] : [1.0, 1.025]) { content, breath in
+                    content.scaleEffect(x: 2 - breath, y: breath, anchor: UnitPoint(x: 0.5, y: 0.87))
+                } animation: { _ in .easeInOut(duration: mood == .sleepy ? 2.4 : 1.6) }
                 extras(unit)
-                if let outfit { PimpiOutfitLayer(outfit: outfit, unit: unit) }
             }
             .frame(width: unit, height: unit)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .aspectRatio(1, contentMode: .fit)
+        // One drawing: when a screen animates Pimpi's size or position, all its parts move as a unit.
+        .geometryGroup()
         .accessibilityHidden(true)
     }
+
+    /// Hats that cover the top of the head hide the bump (it would poke through).
+    private var hidesBump: Bool { outfit == .beanie || outfit == .crown }
 
     // MARK: Parts (unit = side of the mascot's square)
 
@@ -58,9 +70,6 @@ struct Pimpi: View {
                     .offset(x: u * 0.2, y: u * 0.3)
             }
             .frame(width: u, height: u)
-            .phaseAnimator(reduceMotion ? [1.0] : [1.0, 1.025]) { content, breath in
-                content.scaleEffect(x: 2 - breath, y: breath, anchor: .bottom)
-            } animation: { _ in .easeInOut(duration: mood == .sleepy ? 2.4 : 1.6) }
     }
 
     /// The signature bump on the head — it wobbles, droops when sad.
@@ -72,10 +81,12 @@ struct Pimpi: View {
                 Circle().fill(.white.opacity(0.7)).frame(width: u * 0.035, height: u * 0.035).offset(x: u * 0.03, y: u * 0.025)
             }
             .frame(width: u * 0.15, height: u * 0.15)
-            .position(x: u * 0.43, y: u * (mood == .sad ? 0.235 : 0.2))
-            .phaseAnimator(reduceMotion ? [0.0] : [-5.0, 5.0]) { content, tilt in
-                content.rotationEffect(.degrees(tilt), anchor: .bottom)
+            // Rocks on its own base, where it meets the head (rotation before placement, so the pivot is the bump's
+            // bottom — not the bottom of Pimpi's whole square).
+            .phaseAnimator(reduceMotion ? [0.0] : [-8.0, 8.0]) { content, tilt in
+                content.rotationEffect(.degrees(tilt), anchor: UnitPoint(x: 0.5, y: 0.95))
             } animation: { _ in .easeInOut(duration: mood == .excited ? 0.45 : 1.3) }
+            .position(x: u * 0.43, y: u * (mood == .sad ? 0.235 : 0.2))
     }
 
     private func feet(_ u: CGFloat) -> some View {
@@ -192,7 +203,7 @@ struct Pimpi: View {
                 SleepZ()
                     .stroke(Color.ds.inkSecondary, style: StrokeStyle(lineWidth: side * 0.24, lineCap: .round, lineJoin: .round))
                     .frame(width: side, height: side)
-                    .position(x: u * (0.74 + 0.07 * CGFloat(index)), y: u * (0.26 - 0.08 * CGFloat(index)))
+                    .position(x: u * (0.79 + 0.075 * CGFloat(index)), y: u * (0.21 - 0.085 * CGFloat(index)))
             }
         case .excited:
             ForEach(Array([(0.12, 0.2, 0.09), (0.88, 0.17, 0.11), (0.8, 0.36, 0.06)].enumerated()), id: \.offset) { _, spark in
@@ -279,7 +290,8 @@ struct PimpiOutfitLayer: View {
                 }
                 Circle().fill(Color.ds.caution).frame(width: u * 0.055, height: u * 0.055)
             }
-            .position(x: u * 0.72, y: u * 0.3)
+            // Left of the head: the right side is where the curious magnifier and the sleepy z's go.
+            .position(x: u * 0.27, y: u * 0.33)
         case .bow:
             ZStack {
                 Ellipse().fill(Color.ds.signal).frame(width: u * 0.12, height: u * 0.08).rotationEffect(.degrees(-22)).offset(x: -u * 0.06)
@@ -294,7 +306,7 @@ struct PimpiOutfitLayer: View {
                     .frame(width: u * 0.32, height: u * 0.18)
                 Circle().fill(Color.ds.signal).frame(width: u * 0.04, height: u * 0.04).offset(y: u * 0.04)
             }
-            .position(x: u * 0.56, y: u * 0.16)
+            .position(x: u * 0.53, y: u * 0.19)
         case .sunglasses:
             ZStack {
                 ForEach([-0.14, 0.14], id: \.self) { x in
@@ -400,6 +412,49 @@ private struct SleepZ: Shape {
 }
 
 #if DEBUG
+/// `-pimpiMotionLab YES`: Pimpi in the situations the app animates it in — popping in with a bounce, resizing with a
+/// spring, changing mood, wearing each outfit — so a screen recording can be checked frame by frame.
+struct PimpiMotionLab: View {
+    @State private var shown = true
+    @State private var big = false
+    @State private var moodIndex = 0
+
+    var body: some View {
+        VStack(spacing: Spacing.md) {
+            HStack(spacing: Spacing.md) {
+                ZStack {
+                    if shown {
+                        Pimpi(mood: .excited).frame(width: 110, height: 110)
+                            .transition(.scale(scale: 0.3).combined(with: .opacity))
+                    }
+                }
+                .frame(width: 120, height: 120)
+                Pimpi(mood: .happy).frame(width: big ? 150 : 70, height: big ? 150 : 70)
+                    .frame(width: 150, height: 150)
+                Pimpi(mood: Pimpi.Mood.allCases[moodIndex]).frame(width: 110, height: 110)
+            }
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
+                ForEach(PimpiOutfit.allCases, id: \.self) { outfit in
+                    Pimpi(mood: .happy).frame(height: 110).environment(\.pimpiOutfit, outfit)
+                }
+            }
+        }
+        .padding(Spacing.md)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.ds.canvas)
+        .task {
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(1.5))
+                withAnimation(.spring(duration: 0.6, bounce: 0.5)) {
+                    shown.toggle()
+                    big.toggle()
+                    moodIndex = (moodIndex + 1) % Pimpi.Mood.allCases.count
+                }
+            }
+        }
+    }
+}
+
 /// `-pimpiGallery YES`: every mood on both canvases, for design review.
 struct PimpiGallery: View {
     var body: some View {
