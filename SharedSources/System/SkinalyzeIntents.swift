@@ -48,6 +48,41 @@ struct ShowTrendIntent: AppIntent {
     }
 }
 
+enum RoutinePartOption: String, AppEnum {
+    case morning, evening
+
+    static let typeDisplayRepresentation: TypeDisplayRepresentation = "Routine"
+    static let caseDisplayRepresentations: [RoutinePartOption: DisplayRepresentation] = [
+        .morning: "Morning", .evening: "Evening",
+    ]
+}
+
+/// "Check off my evening routine" — ticks every step of that routine for today (P14).
+struct LogRoutineIntent: AppIntent {
+    static let title: LocalizedStringResource = "Check off my routine"
+    static let description = IntentDescription("Ticks every step of your morning or evening routine for today.")
+
+    @Parameter(title: "Routine")
+    var part: RoutinePartOption
+
+    init() {}
+
+    init(part: RoutinePartOption) {
+        self.part = part
+    }
+
+    @MainActor
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        let routinePart: RoutinePart = part == .morning ? .morning : .evening
+        guard !RoutineToday.steps(for: routinePart).isEmpty else {
+            return .result(dialog: "Add products to your shelf in Skinalyze first.")
+        }
+        let ticked = RoutineToday.completeAll(routinePart)
+        WatchBridge.shared.push()
+        return .result(dialog: ticked > 0 ? "Done! Pimpi ticked off your routine." : "That routine was already done today.")
+    }
+}
+
 struct SkinalyzeShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(intent: StartScanIntent(), phrases: ["Start a skin scan in \(.applicationName)", "Scan my skin with \(.applicationName)"],
@@ -56,6 +91,9 @@ struct SkinalyzeShortcuts: AppShortcutsProvider {
                     shortTitle: "My skin trend", systemImageName: "chart.line.downtrend.xyaxis")
         AppShortcut(intent: CheckIngredientsIntent(), phrases: ["Check ingredients with \(.applicationName)"],
                     shortTitle: "Check ingredients", systemImageName: "drop")
+        AppShortcut(intent: LogRoutineIntent(), phrases: ["Check off my \(\.$part) routine in \(.applicationName)",
+                                                         "Log my \(\.$part) routine in \(.applicationName)"],
+                    shortTitle: "Check off routine", systemImageName: "checklist")
     }
 }
 #endif

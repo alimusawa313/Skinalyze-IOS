@@ -84,12 +84,42 @@
         }
       }
     },
+    "%@: a retinoid and an exfoliating acid together can be a lot for skin. Many people use them on different nights." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: retinoid dan asam eksfoliasi bersamaan bisa terlalu berat untuk kulit. Banyak orang memakainya di malam yang berbeda."
+          }
+        }
+      }
+    },
+    "%@: acids and retinoids make skin more sensitive to sun. Add a sunscreen to this morning routine." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: asam dan retinoid membuat kulit lebih sensitif terhadap matahari. Tambahkan sunscreen ke rutinitas pagi ini."
+          }
+        }
+      }
+    },
     "%@: all thirty days done. That's a real habit now." : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@: tiga puluh hari selesai. Sekarang itu sudah jadi kebiasaan."
+          }
+        }
+      }
+    },
+    "%@: benzoyl peroxide can make some retinoids less effective and adds dryness. Try them at different times." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: benzoyl peroxide bisa membuat sebagian retinoid kurang efektif dan menambah kering. Coba pakai di waktu berbeda."
           }
         }
       }
@@ -106,6 +136,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@: hari %lld dari %lld"
+          }
+        }
+      }
+    },
+    "%@: retinoids are usually an evening step, since sunlight breaks some of them down." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: retinoid biasanya dipakai malam hari, karena sinar matahari bisa menguraikan sebagiannya."
+          }
+        }
+      }
+    },
+    "%@: two exfoliating products in one routine can over-exfoliate. One is usually enough." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: dua produk eksfoliasi dalam satu rutinitas bisa berlebihan. Biasanya satu sudah cukup."
+          }
+        }
+      }
+    },
+    "%@: vitamin C with acids or benzoyl peroxide can sting. Try vitamin C in the morning and the others at night." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: vitamin C dengan asam atau benzoyl peroxide bisa terasa perih. Coba vitamin C di pagi hari dan yang lain di malam hari."
           }
         }
       }
@@ -308,6 +368,16 @@
         }
       }
     },
+    "%lld things to check in this routine" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld hal perlu dicek di rutinitas ini"
+          }
+        }
+      }
+    },
     "%lld weeks" : {
       "localizations" : {
         "id" : {
@@ -399,6 +469,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "+%lld XP"
+          }
+        }
+      }
+    },
+    "1 thing to check in this routine" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 hal perlu dicek di rutinitas ini"
           }
         }
       }
@@ -713,6 +793,16 @@
         }
       }
     },
+    "A minute for your skin. Pimpi's ready when you are." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semenit untuk kulitmu. Pimpi siap kapan pun kamu siap."
+          }
+        }
+      }
+    },
     "A new streak starts with one step." : {
       "localizations" : {
         "id" : {
@@ -783,6 +873,16 @@
         }
       }
     },
+    "AHA (glycolic, lactic acid)" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AHA (asam glikolat, laktat)"
+          }
+        }
+      }
+    },
     "AHAs" : {
       "localizations" : {
         "id" : {
@@ -798,7 +898,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aktif"
+            "value" : "Bahan aktif"
           }
         }
       }
@@ -813,12 +913,42 @@
         }
       }
     },
+    "Add a step" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambah langkah"
+          }
+        }
+      }
+    },
     "Add friends with a code, see each other's streaks, and climb a weekly league ranked only on quests and lessons." : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tambah teman dengan kode, lihat streak satu sama lain, dan naik di liga mingguan yang hanya dihitung dari misi dan pelajaran."
+          }
+        }
+      }
+    },
+    "Add products to your shelf in Skinalyze first." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambahkan produk ke rakmu di Skinalyze dulu."
+          }
+        }
+      }
+    },
+    "Add products to your shelf on your iPhone." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambahkan produk ke rakmu di iPhone."
           }
         }
       }
@@ -929,6 +1059,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Paling banyak satu per hari. Pimpi berhenti setelah tiga kali berturut-turut."
+          }
+        }
+      }
+    },
+    "Azelaic acid" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Asam azelat"
+          }
+        }
+      }
+    },
+    "BHA (salicylic acid)" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BHA (asam salisilat)"
           }
         }
       }
@@ -1055,6 +1205,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Perbandingan sebelum dan sesudah"
+          }
+        }
+      }
+    },
+    "Benzoyl peroxide" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benzoyl peroxide"
           }
         }
       }
@@ -1405,6 +1565,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Centang satu langkah rutinitas untuk memulai rangkaianmu."
+          }
+        }
+      }
+    },
+    "Check off my routine" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Centang rutinitasku"
+          }
+        }
+      }
+    },
+    "Check off routine" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Centang rutinitas"
           }
         }
       }
@@ -1825,6 +2005,16 @@
         }
       }
     },
+    "Done! Pimpi ticked off your routine." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beres! Pimpi sudah mencentang rutinitasmu."
+          }
+        }
+      }
+    },
     "Drag to turn · pinch to zoom · double-tap to reset" : {
       "localizations" : {
         "id" : {
@@ -1905,6 +2095,26 @@
         }
       }
     },
+    "Edit" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ubah"
+          }
+        }
+      }
+    },
+    "Edit routine" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ubah rutinitas"
+          }
+        }
+      }
+    },
     "Emerald league" : {
       "localizations" : {
         "id" : {
@@ -1921,6 +2131,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Malam"
+          }
+        }
+      }
+    },
+    "Evening routine time" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Waktunya rutinitas malam"
           }
         }
       }
@@ -1985,6 +2205,16 @@
         }
       }
     },
+    "Exfoliant" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksfoliator"
+          }
+        }
+      }
+    },
     "Export" : {
       "localizations" : {
         "id" : {
@@ -2001,6 +2231,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ekspor untuk dokter kulitmu"
+          }
+        }
+      }
+    },
+    "Extra steps" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Langkah tambahan"
+          }
+        }
+      }
+    },
+    "Eye cream" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Krim mata"
           }
         }
       }
@@ -2291,6 +2541,16 @@
         }
       }
     },
+    "From your shelf" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dari rakmu"
+          }
+        }
+      }
+    },
     "Front" : {
       "localizations" : {
         "id" : {
@@ -2307,6 +2567,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cicak"
+          }
+        }
+      }
+    },
+    "General information about common pairings, not medical advice." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informasi umum tentang kombinasi yang sering dipakai, bukan saran medis."
           }
         }
       }
@@ -2833,6 +3103,16 @@
         }
       }
     },
+    "Ingredients come from the catalog." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bahan diambil dari katalog."
+          }
+        }
+      }
+    },
     "Insight" : {
       "localizations" : {
         "id" : {
@@ -3303,6 +3583,16 @@
         }
       }
     },
+    "Mask" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masker"
+          }
+        }
+      }
+    },
     "Mellow" : {
       "localizations" : {
         "id" : {
@@ -3379,6 +3669,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pagi"
+          }
+        }
+      }
+    },
+    "Morning routine time" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Waktunya rutinitas pagi"
           }
         }
       }
@@ -3489,6 +3789,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Berikutnya: %@"
+          }
+        }
+      }
+    },
+    "Niacinamide" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niacinamide"
           }
         }
       }
@@ -3629,6 +3939,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Info belum cukup"
+          }
+        }
+      }
+    },
+    "Not in the list? Type its name and tick what's in it below." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada di daftar? Ketik namanya dan centang kandungannya di bawah."
           }
         }
       }
@@ -3839,6 +4159,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Buka Pengaturan"
+          }
+        }
+      }
+    },
+    "Open Skinalyze on your iPhone" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka Skinalyze di iPhone-mu"
           }
         }
       }
@@ -4378,12 +4708,32 @@
         }
       }
     },
+    "Product" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produk"
+          }
+        }
+      }
+    },
     "Product check" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cek produk"
+          }
+        }
+      }
+    },
+    "Product name" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nama produk"
           }
         }
       }
@@ -4568,6 +4918,16 @@
         }
       }
     },
+    "Reminders" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pengingat"
+          }
+        }
+      }
+    },
     "Reminders from Pimpi" : {
       "localizations" : {
         "id" : {
@@ -4644,6 +5004,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ulangi sudut mana pun, atau analisis sekarang."
+          }
+        }
+      }
+    },
+    "Retinoid (retinol, adapalene)" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retinoid (retinol, adapalene)"
           }
         }
       }
@@ -5090,6 +5460,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sensitivitas"
+          }
+        }
+      }
+    },
+    "Serum" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serum"
           }
         }
       }
@@ -5654,6 +6034,16 @@
         }
       }
     },
+    "Spot care" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perawatan jerawat"
+          }
+        }
+      }
+    },
     "Square" : {
       "localizations" : {
         "id" : {
@@ -5790,6 +6180,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tangan tenang"
+          }
+        }
+      }
+    },
+    "Step" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Langkah"
           }
         }
       }
@@ -6122,6 +6522,16 @@
         }
       }
     },
+    "That routine was already done today." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rutinitas itu sudah selesai hari ini."
+          }
+        }
+      }
+    },
     "That was your first scan. Pro lets you scan as often as you like." : {
       "localizations" : {
         "id" : {
@@ -6288,6 +6698,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Centang langkah sunscreen di rutinitas pagimu."
+          }
+        }
+      }
+    },
+    "Ticks every step of your morning or evening routine for today." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mencentang semua langkah rutinitas pagi atau malammu untuk hari ini."
+          }
+        }
+      }
+    },
+    "Time" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Waktu"
           }
         }
       }
@@ -6702,6 +7132,16 @@
         }
       }
     },
+    "What's in it" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kandungannya"
+          }
+        }
+      }
+    },
     "Where this comes from" : {
       "localizations" : {
         "id" : {
@@ -6718,6 +7158,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Komedo putih"
+          }
+        }
+      }
+    },
+    "Worth checking" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perlu dicek"
           }
         }
       }
@@ -7094,6 +7544,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rutinitasmu sudah punya asam eksfoliasi — jangan ditumpuk dengan retinoid ini di malam yang sama."
+          }
+        }
+      }
+    },
+    "Your routine shows here once your iPhone has sent today's steps." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rutinitasmu muncul di sini setelah iPhone mengirim langkah hari ini."
+          }
+        }
+      }
+    },
+    "Your shelf's cleanser, toner, moisturizer and sunscreen are always part of the routine." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cleanser, toner, pelembap, dan sunscreen di rakmu selalu jadi bagian rutinitas."
           }
         }
       }

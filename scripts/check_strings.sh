@@ -22,7 +22,7 @@ xcodebuild -project Skinalyze.xcodeproj -scheme Skinalyze \
 files=()
 while IFS= read -r file; do files+=("$file"); done < <(
   find "$DERIVED/Build/Intermediates.noindex" \
-    \( -path "*Skinalyze.build/*/Skinalyze.build*" -o -path "*SkinalyzeWidgets.build*" -o -path "*ProductCheckShare.build*" \
+    \( -path "*Skinalyze.build/*/Skinalyze.build*" -o -path "*SkinalyzeWidgets.build*" -o -path "*ProductCheckShare.build*" -o -path "*SkinalyzeWatch.build*" \
        -o -path "*SkinalyzeKit.build*" \) -name "*.stringsdata"
 )
 if (( ${#files[@]} == 0 )); then

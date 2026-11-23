@@ -17,6 +17,7 @@ struct SkinalyzeApp: App {
         #if DEBUG
         DemoData.seedActivityIfRequested()
         #endif
+        WatchBridge.shared.start()
     }
 
     var body: some Scene {

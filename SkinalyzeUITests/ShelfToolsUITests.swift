@@ -81,6 +81,32 @@ final class ShelfToolsUITests: XCTestCase {
         attachScreenshot("Shared shelf")
     }
 
+    /// P5: two typed-in steps that shouldn't share a night are flagged.
+    func testRoutineBuilderWarns() {
+        launch(["-routinePlan", ""])
+        let edit = app.buttons["editRoutine"]
+        scrollTo(edit)
+        edit.tap()
+        app.buttons["Evening"].firstMatch.tap()
+        for (name, active) in [("Night retinol", "Retinoid (retinol, adapalene)"), ("BHA liquid", "BHA (salicylic acid)")] {
+            let add = app.buttons["addRoutineStep"]
+            scrollTo(add)
+            add.tap()
+            let field = app.textFields["stepName"]
+            XCTAssertTrue(field.waitForExistence(timeout: 5))
+            field.tap()
+            field.typeText(name)
+            let toggle = app.switches[active]
+            scrollTo(toggle)
+            toggle.switches.firstMatch.exists ? toggle.switches.firstMatch.tap() : toggle.tap()
+            app.buttons["confirmAddStep"].tap()
+        }
+        app.swipeDown()
+        let warning = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "a retinoid and an exfoliating acid")).firstMatch
+        XCTAssertTrue(warning.waitForExistence(timeout: 5))
+        attachScreenshot("Routine builder · warning")
+    }
+
     private func attachScreenshot(_ name: String) {
         let attachment = XCTAttachment(screenshot: app.screenshot())
         attachment.name = name

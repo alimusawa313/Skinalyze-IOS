@@ -58,6 +58,8 @@ struct RoutineChecklist: View {
     @AppStorage(UserProfile.Key.moisturizerID) private var moisturizer = 0
     @AppStorage(UserProfile.Key.sunscreenID) private var sunscreen = 0
     @State private var part: Part = Calendar.current.component(.hour, from: .now) < 15 ? .morning : .evening
+    @Environment(RoutineModel.self) private var routine: RoutineModel?
+    @State private var showsBuilder = false
 
     private func productID(_ slot: ProductCatalog.Slot) -> Int {
         switch slot {
@@ -70,8 +72,31 @@ struct RoutineChecklist: View {
 
     private var log: RoutineLog { RoutineLog(raw: logRaw) }
 
+    /// One line in today's checklist: a shelf slot or an extra step from the routine builder.
+    private struct Line: Identifiable {
+        let id: String
+        let title: String
+        let label: String
+    }
+
+    /// Cleanser and toner, then the extra steps, then moisturizer and sunscreen.
+    private var lines: [Line] {
+        func slotLine(_ slot: ProductCatalog.Slot) -> Line? {
+            guard productID(slot) > 0 else { return nil }
+            return Line(id: slot.rawValue, title: ProductCatalog.shared.product(id: productID(slot))?.name ?? slot.title, label: slot.title)
+        }
+        let routinePart: RoutinePart = part == .morning ? .morning : .evening
+        let extras = (routine?.plan[routinePart] ?? []).map {
+            Line(id: $0.id, title: RoutineModel.title(of: $0), label: RoutineCopy.kind($0.kind))
+        }
+        let before = part.slots.filter { $0 == .cleanser || $0 == .toner }.compactMap(slotLine)
+        let after = part.slots.filter { $0 == .moisturizer || $0 == .sunscreen }.compactMap(slotLine)
+        return before + extras + after
+    }
+
     var body: some View {
-        let steps = part.slots.filter { productID($0) > 0 }
+        let steps = lines
+        let warnings = routine?.warnings(for: part == .morning ? .morning : .evening) ?? []
         VStack(alignment: .leading, spacing: Spacing.sm) {
             HStack {
                 SectionTitle("Today")
@@ -80,6 +105,11 @@ struct RoutineChecklist: View {
                     Label("\(engagement.routine.count)-day streak", systemImage: "flame.fill").font(.ds.label).foregroundStyle(Color.ds.signal)
                         .contentTransition(.numericText(value: Double(engagement.routine.count)))
                 }
+                Button("Edit") { showsBuilder = true }
+                    .font(.ds.label)
+                    .frame(minWidth: 44, minHeight: 44)
+                    .accessibilityLabel(Text("Edit routine"))
+                    .accessibilityIdentifier("editRoutine")
             }
             Picker("Routine", selection: $part) {
                 ForEach(Part.allCases) { Text($0.title).tag($0) }
@@ -88,22 +118,31 @@ struct RoutineChecklist: View {
             if steps.isEmpty {
                 Text("Add products to your shelf to build your routine.").font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
             }
-            ForEach(steps) { slot in
-                let done = log.isDone(part: part.rawValue, slot: slot.rawValue)
+            if !warnings.isEmpty {
+                Button { showsBuilder = true } label: {
+                    Label(warnings.count == 1 ? "1 thing to check in this routine" : "\(warnings.count) things to check in this routine",
+                          systemImage: "exclamationmark.triangle.fill")
+                        .font(.ds.footnote.weight(.semibold)).foregroundStyle(Color.ds.caution)
+                }
+                .buttonStyle(.plain)
+                .frame(minHeight: 44)
+            }
+            ForEach(steps) { line in
+                let done = log.isDone(part: part.rawValue, slot: line.id)
                 Button {
-                    logRaw = log.toggling(part: part.rawValue, slot: slot.rawValue).raw
+                    logRaw = log.toggling(part: part.rawValue, slot: line.id).raw
                 } label: {
                     HStack {
                         Image(systemName: done ? "checkmark.circle.fill" : "circle")
                             .foregroundStyle(done ? Color.ds.positive : Color.ds.inkTertiary)
                             .contentTransition(.symbolEffect(.replace))
                             .symbolEffect(.bounce, value: done)
-                        Text(ProductCatalog.shared.product(id: productID(slot))?.name ?? slot.title)
+                        Text(line.title)
                             .font(.ds.callout)
                             .foregroundStyle(done ? Color.ds.inkSecondary : Color.ds.ink)
                             .strikethrough(done, color: Color.ds.inkTertiary)
                         Spacer()
-                        Text(slot.title).font(.ds.caption).foregroundStyle(Color.ds.inkTertiary)
+                        Text(line.label).font(.ds.caption).foregroundStyle(Color.ds.inkTertiary)
                     }
                     .frame(minHeight: 44)
                     .contentShape(Rectangle())
@@ -114,12 +153,14 @@ struct RoutineChecklist: View {
             }
         }
         .dsCard()
+        .sheet(isPresented: $showsBuilder) { RoutineBuilderView() }
         .onChange(of: logRaw) { _, raw in
             let anyStepDone = RoutineLog(raw: raw).hasAnyStep()
             engagement.routineChanged(anyStepDoneToday: anyStepDone)
             if anyStepDone { quests?.did(.routine, isPro: access?.policy.hasFullAccess ?? false) }
             quests?.noteRoutineStreak(engagement.routine.count)
             challenges?.routineChanged(RoutineLog(raw: raw))
+            WatchBridge.shared.push()
         }
     }
 }

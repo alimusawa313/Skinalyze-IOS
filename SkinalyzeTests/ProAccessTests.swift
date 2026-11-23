@@ -6,7 +6,7 @@ import Testing
 import SkinalyzeKit
 @testable import Skinalyze
 
-private func freshDefaults() -> UserDefaults {
+func freshDefaults() -> UserDefaults {
     let name = "pro-tests-\(UUID().uuidString)"
     let defaults = UserDefaults(suiteName: name)!
     defaults.removePersistentDomain(forName: name)
