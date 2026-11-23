@@ -103,6 +103,7 @@ struct QuestCard: View {
                 .accessibilityElement(children: .combine)
                 .accessibilityValue(isDone ? Text("Done") : Text("Not done"))
             }
+            monthly
             if quests.ledger.chestsWaiting > 0 {
                 Button { showsChest = true } label: {
                     Label("Open your chest", systemImage: "gift.fill").frame(maxWidth: .infinity)
@@ -115,6 +116,23 @@ struct QuestCard: View {
         }
         .dsCard()
         .sheet(isPresented: $showsChest) { ChestSheet() }
+    }
+
+    /// The monthly quest: every daily quest done on 20 days this month earns the month's badge.
+    private var monthly: some View {
+        let parts = Calendar.current.dateComponents([.year, .month], from: .now)
+        let progress = RewardEngine.monthlyProgress(quests.ledger, year: parts.year ?? 0, month: parts.month ?? 1)
+        return VStack(alignment: .leading, spacing: Spacing.xxs) {
+            HStack {
+                Text("Monthly quest").font(.ds.footnote.weight(.semibold))
+                Spacer()
+                Text("\(progress.days) of \(progress.goal) days").font(.ds.footnote.monospacedDigit())
+                    .foregroundStyle(Color.ds.inkSecondary)
+            }
+            ProgressView(value: Double(min(progress.days, progress.goal)), total: Double(progress.goal))
+                .tint(Color.ds.signal)
+        }
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -263,6 +281,19 @@ struct BadgeShelf: View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
             Text("Badges").font(.ds.headline)
             LazyVGrid(columns: columns, spacing: Spacing.sm) {
+                ForEach(quests.ledger.monthlyBadges.sorted(), id: \.self) { month in
+                    VStack(spacing: Spacing.xxs) {
+                        Image(systemName: "calendar.badge.checkmark")
+                            .font(.title2)
+                            .foregroundStyle(Color.ds.signal)
+                            .frame(width: 52, height: 52)
+                            .background(Color.ds.signalSoft, in: Circle())
+                        if let date = DayStamp(string: month + "-01")?.date(in: .current) {
+                            Text(date, format: .dateTime.month(.wide).year()).font(.ds.caption).multilineTextAlignment(.center)
+                        }
+                    }
+                    .accessibilityElement(children: .combine)
+                }
                 ForEach(Badge.allCases, id: \.self) { badge in
                     let has = earned.contains(badge)
                     VStack(spacing: Spacing.xxs) {

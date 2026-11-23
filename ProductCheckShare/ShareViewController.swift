@@ -32,6 +32,8 @@ final class ShareCheckModel {
         case loading
         case needsProfile
         case result(title: String?, VerdictResult)
+        /// This month's free product checks are used (the same allowance as in the app).
+        case limitReached
     }
 
     var phase: Phase = .loading
@@ -44,6 +46,15 @@ final class ShareCheckModel {
         let (title, text) = await extract(from: items)
         let catalogIngredients = title.flatMap(ProductCatalog.shared.bestMatch(forTitle:))?.ingredients ?? ""
         let combined = [text, catalogIngredients].filter { !$0.isEmpty }.joined(separator: ", ")
+        // A product is identified by its page title, or else by what was read from it.
+        let key = "share-" + (title ?? combined).lowercased().trimmingCharacters(in: .whitespacesAndNewlines).prefix(120)
+        let policy = AccessPolicy(hasFullAccess: await SharedAccess.hasFullAccess())
+        let ledger = ProductCheckLedger()
+        guard ledger.canCheck(key, policy: policy) else {
+            phase = .limitReached
+            return
+        }
+        ledger.record(key)
         phase = .result(title: title, context.verdict(forIngredientText: combined))
     }
 
@@ -104,6 +115,15 @@ struct ShareCheckView: View {
                     case .needsProfile:
                         Text("Open Skinalyze once to set up your skin profile, then share again.")
                             .font(.ds.body)
+                    case .limitReached:
+                        VStack(alignment: .leading, spacing: Spacing.sm) {
+                            Label("Product check", systemImage: "lock.fill").font(.ds.headline)
+                            Text("You've used this month's \(FreeLimits.productChecksPerMonth) free product checks. Products you already checked stay open.")
+                                .font(.ds.callout).foregroundStyle(Color.ds.inkSecondary)
+                            Text("Open Skinalyze to see Skinalyze Pro.").font(.ds.callout)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .dsCard()
                     case let .result(title, result):
                         if let title { Text(title).font(.ds.titleSmall).lineLimit(2) }
                         ShareVerdict(result: result)

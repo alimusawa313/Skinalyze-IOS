@@ -199,6 +199,46 @@ struct QuestEngineTests {
         #expect(BadgeEngine.earned(facts) == [badge])
     }
 
+    // MARK: Monthly quest (E8)
+
+    /// Finishes every quest on `day`.
+    private func finishDay(_ day: DayStamp, _ ledger: RewardLedger) -> RewardLedger {
+        let quests: [QuestKind] = [.routine, .scan, .share]
+        return quests.reduce(ledger) { RewardEngine.record($1, day: day, todaysQuests: quests, ledger: $0, isPro: false).0 }
+    }
+
+    @Test("Only days with every quest done count toward the month")
+    func monthCountsFullDays() {
+        var ledger = finishDay(DayStamp(year: 2026, month: 11, day: 1), .empty)
+        let quests: [QuestKind] = [.routine, .scan, .share]
+        ledger = RewardEngine.record(.routine, day: DayStamp(year: 2026, month: 11, day: 2), todaysQuests: quests,
+                                     ledger: ledger, isPro: false).0
+        let progress = RewardEngine.monthlyProgress(ledger, year: 2026, month: 11)
+        #expect(progress.days == 1)
+        #expect(progress.goal == RewardEngine.monthlyGoalDays)
+    }
+
+    @Test("A day with fewer than three possible quests counts once all of its quests are done")
+    func shortDaysCount() {
+        let quests: [QuestKind] = [.share]
+        let ledger = RewardEngine.record(.share, day: DayStamp(year: 2026, month: 11, day: 5), todaysQuests: quests,
+                                         ledger: .empty, isPro: false).0
+        #expect(RewardEngine.monthlyProgress(ledger, year: 2026, month: 11).days == 1)
+        #expect(ledger.fullQuestDays == 1)
+    }
+
+    @Test("Reaching the goal earns that month's badge, once; other months start again")
+    func monthlyBadge() {
+        var ledger = RewardLedger.empty
+        for day in 1...RewardEngine.monthlyGoalDays {
+            ledger = finishDay(DayStamp(year: 2026, month: 11, day: day), ledger)
+        }
+        #expect(ledger.monthlyBadges == ["2026-11"])
+        ledger = finishDay(DayStamp(year: 2026, month: 11, day: 25), ledger)
+        #expect(ledger.monthlyBadges == ["2026-11"])
+        #expect(RewardEngine.monthlyProgress(ledger, year: 2026, month: 12).days == 0)
+    }
+
     @Test("Old ledgers without newer fields still load")
     func decodesTolerantly() throws {
         let ledger = try JSONDecoder().decode(RewardLedger.self, from: Data(#"{"points": 40}"#.utf8))

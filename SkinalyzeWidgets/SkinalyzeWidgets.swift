@@ -155,6 +155,7 @@ struct SkinCardWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "SkinCard", provider: SkinCardProvider()) { entry in
             SkinCardWidgetView(snapshot: entry.snapshot, mood: entry.mood)
+                .environment(\.pimpiOutfit, EngagementShared.loadOutfit())
                 .containerBackground(for: .widget) { SkinCardWidgetView.background(for: entry.snapshot) }
                 .widgetURL(URL(string: entry.snapshot.breakoutIndex == nil ? "skinalyze://scan" : "skinalyze://timeline"))
         }
@@ -204,6 +205,7 @@ struct PimpiWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "Pimpi", provider: PimpiProvider()) { entry in
             PimpiWidgetEntryView(entry: entry)
+                .environment(\.pimpiOutfit, EngagementShared.loadOutfit())
                 .containerBackground(Color.ds.canvas, for: .widget)
                 .widgetURL(URL(string: "skinalyze://today"))
         }

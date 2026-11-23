@@ -91,6 +91,7 @@ final class QuestModel {
 
     private func save(_ updated: RewardLedger) {
         guard updated != ledger else { return }
+        if updated.worn != ledger.worn { EngagementShared.publishOutfit(updated.worn) }
         ledger = updated
         defaults.set(try? JSONEncoder().encode(updated), forKey: Key.ledger)
     }

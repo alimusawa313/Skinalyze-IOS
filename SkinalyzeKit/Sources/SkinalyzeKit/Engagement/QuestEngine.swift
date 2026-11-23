@@ -97,6 +97,10 @@ public struct RewardLedger: Codable, Equatable, Sendable {
     public var latestDay: DayStamp?
     public var shares: Int
     public var productChecks: Int
+    /// Days ("yyyy-MM-dd") on which all of that day's quests were done.
+    public var fullDays: Set<String>
+    /// Months ("yyyy-MM") whose monthly quest was finished.
+    public var monthlyBadges: Set<String>
 
     public static let empty = RewardLedger(points: 0, completed: [:], chestsWaiting: 0, chestsOpened: 0, unlocked: [],
                                            worn: nil, latestDay: nil, shares: 0, productChecks: 0)
@@ -112,10 +116,13 @@ public struct RewardLedger: Codable, Equatable, Sendable {
         self.latestDay = latestDay
         self.shares = shares
         self.productChecks = productChecks
+        fullDays = []
+        monthlyBadges = []
     }
 
     private enum CodingKeys: String, CodingKey {
         case points, completed, chestsWaiting, chestsOpened, unlocked, worn, latestDay, shares, productChecks
+        case fullDays, monthlyBadges
     }
 
     public init(from decoder: Decoder) throws {
@@ -129,16 +136,25 @@ public struct RewardLedger: Codable, Equatable, Sendable {
         latestDay = try c.decodeIfPresent(DayStamp.self, forKey: .latestDay)
         shares = try c.decodeIfPresent(Int.self, forKey: .shares) ?? 0
         productChecks = try c.decodeIfPresent(Int.self, forKey: .productChecks) ?? 0
+        let completedDays = completed
+        fullDays = try c.decodeIfPresent(Set<String>.self, forKey: .fullDays)
+            ?? Set(completedDays.filter { $0.value.count >= QuestEngine.questsPerDay }.keys)
+        monthlyBadges = try c.decodeIfPresent(Set<String>.self, forKey: .monthlyBadges) ?? []
     }
 
     /// Days on which every quest was done.
-    public var fullQuestDays: Int {
-        completed.values.filter { $0.count >= QuestEngine.questsPerDay }.count
-    }
+    public var fullQuestDays: Int { fullDays.count }
 }
 
 public enum RewardEngine {
     public static let chestBonusPoints = 50
+    /// The monthly quest: every daily quest done on this many days of a calendar month.
+    public static let monthlyGoalDays = 20
+
+    public static func monthlyProgress(_ ledger: RewardLedger, year: Int, month: Int) -> (days: Int, goal: Int) {
+        let prefix = String(format: "%04d-%02d-", year, month)
+        return (ledger.fullDays.filter { $0.hasPrefix(prefix) }.count, monthlyGoalDays)
+    }
 
     public struct Award: Equatable, Sendable {
         public let kind: QuestKind
@@ -171,7 +187,13 @@ public enum RewardEngine {
         let points = QuestEngine.points(for: kind) * (isPro ? 2 : 1)
         updated.points += points
         let allDone = Set(todaysQuests).isSubset(of: done)
-        if allDone { updated.chestsWaiting += 1 }
+        if allDone {
+            updated.chestsWaiting += 1
+            updated.fullDays.insert(day.string)
+            if monthlyProgress(updated, year: day.year, month: day.month).days >= monthlyGoalDays {
+                updated.monthlyBadges.insert(String(format: "%04d-%02d", day.year, day.month))
+            }
+        }
         return (updated, Award(kind: kind, points: points, earnedChest: allDone))
     }
 

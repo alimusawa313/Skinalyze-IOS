@@ -31,7 +31,7 @@ public struct DayStamp: Hashable, Comparable, Codable, Sendable {
     }
 
     /// Noon of this day in `calendar` (noon keeps day arithmetic clear of daylight-saving edges).
-    func date(in calendar: Calendar) -> Date {
+    public func date(in calendar: Calendar) -> Date {
         calendar.date(from: DateComponents(year: year, month: month, day: day, hour: 12)) ?? .distantPast
     }
 

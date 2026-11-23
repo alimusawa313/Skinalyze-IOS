@@ -117,6 +117,22 @@
         }
       }
     },
+    "%lld of %lld days" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld of %2$lld days"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld dari %lld hari"
+          }
+        }
+      }
+    },
     "%lld of %lld outfits" : {
       "localizations" : {
         "en" : {
@@ -2280,6 +2296,16 @@
         }
       }
     },
+    "Monthly quest" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Misi bulanan"
+          }
+        }
+      }
+    },
     "Morning" : {
       "localizations" : {
         "id" : {
@@ -2626,6 +2652,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Buka Skinalyze sekali untuk menyiapkan profil kulitmu."
+          }
+        }
+      }
+    },
+    "Open Skinalyze to see Skinalyze Pro." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka Skinalyze untuk melihat Skinalyze Pro."
           }
         }
       }

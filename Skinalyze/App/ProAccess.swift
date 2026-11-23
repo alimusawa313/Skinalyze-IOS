@@ -70,7 +70,9 @@ final class ProAccess {
 
     /// Call once at launch, after any data migration (so existing scans are already in the store).
     func start(container: ModelContainer, seedsDemoData: Bool = false) async {
+        ProductCheckLedger.moveIntoAppGroup()
         resolveLegacyFromScans(container: container, seedsDemoData: seedsDemoData)
+        SharedAccess.isLegacy = isLegacy
         if updates == nil {
             updates = Task { [weak self] in
                 for await update in Transaction.updates {
@@ -156,39 +158,7 @@ final class ProAccess {
     private func markLegacy() {
         isLegacy = true
         defaults.set(true, forKey: Key.legacy)
+        SharedAccess.isLegacy = true
     }
 }
 
-/// Which products a free account has checked, and when, so re-opening a checked product never counts twice.
-struct ProductCheckLedger {
-    private static let key = "productCheckLedger"
-    private let defaults: UserDefaults
-
-    init(defaults: UserDefaults = .standard) {
-        self.defaults = defaults
-    }
-
-    private var entries: [String: Double] {
-        (defaults.dictionary(forKey: Self.key) as? [String: Double]) ?? [:]
-    }
-
-    /// Whether this product may be checked now; one checked earlier this month stays open.
-    func canCheck(_ productKey: String, policy: AccessPolicy, now: Date = .now, calendar: Calendar = .current) -> Bool {
-        let checkedThisMonth = entries[productKey].map {
-            calendar.isDate(Date(timeIntervalSince1970: $0), equalTo: now, toGranularity: .month)
-        } ?? false
-        return policy.canCheckProduct(checkDates: entries.values.map(Date.init(timeIntervalSince1970:)),
-                                      alreadyChecked: checkedThisMonth, now: now, calendar: calendar)
-    }
-
-    /// Returns whether this was a new check this month.
-    @discardableResult
-    func record(_ productKey: String, now: Date = .now, calendar: Calendar = .current) -> Bool {
-        var updated = entries
-        if let earlier = updated[productKey],
-           calendar.isDate(Date(timeIntervalSince1970: earlier), equalTo: now, toGranularity: .month) { return false }
-        updated[productKey] = now.timeIntervalSince1970
-        defaults.set(updated, forKey: Self.key)
-        return true
-    }
-}

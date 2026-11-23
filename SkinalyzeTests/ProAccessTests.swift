@@ -143,6 +143,31 @@ struct ProSubscriptionTests {
     }
 }
 
+/// The app and the share extension name the same plans.
+@Suite("Shared access")
+struct SharedAccessTests {
+    @Test("The app's plans and the extension's plans are the same set")
+    @MainActor
+    func sameProducts() {
+        #expect(Set(ProAccess.ProductID.all) == SharedAccess.proProductIDs)
+    }
+
+    @Test("Checks recorded before the App Group move are kept, once")
+    func movesIntoAppGroup() {
+        let old = UserDefaults(suiteName: "old-\(UUID().uuidString)")!
+        let new = UserDefaults(suiteName: "new-\(UUID().uuidString)")!
+        ProductCheckLedger(defaults: old).record("a")
+        ProductCheckLedger(defaults: new).record("b")
+        ProductCheckLedger.moveIntoAppGroup(from: old, to: new)
+        let ledger = ProductCheckLedger(defaults: new)
+        let free = AccessPolicy(hasFullAccess: false)
+        #expect(ledger.canCheck("c", policy: free))
+        ledger.record("c")
+        #expect(!ledger.canCheck("d", policy: free)) // a, b and c this month
+        #expect(old.dictionary(forKey: "productCheckLedger") == nil)
+    }
+}
+
 /// Existing users keep everything.
 @MainActor
 @Suite("Existing users", .serialized)
