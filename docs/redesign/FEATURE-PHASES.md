@@ -378,16 +378,41 @@ matches are not shown.
   (iCloud), used for app functionality, not tracking. Mention friends and leagues in the privacy policy.
 - [ ] **Owner's phone:** join, add a second device or a friend by code, check the league after Monday.
 
-## Phase 10 — Product utilities (pick by demand)  ☐
-**Ships (candidates):** P3–P14, G7, G9, G10
+## Phase 10 — Product utilities  ☑ (owner asked for all of them, 2026-11-23)
+**Ships:** P3–P14, G7, G9, G10
 
-Trigger journal and HealthKit correlation (P3, P4), routine builder (P5), patch-test timer (P6), expiry tracker
-(P7), barcode scan (P8 — needs a data source), dupe finder (P9), UV nudge (P10), dermatologist pack (P11),
-scan-quality coach (P12), vault (P13), Watch / Shortcuts (P14), routine cards (G7), creator kit (G9), marketplace
-share entry (G10). Ordered after launch by what users actually ask for; each gets its own short phase entry here
-when picked.
+**Shipped, in four batches (each committed locally):**
+- **A** — P6 patch test (14 days, daily "anything changed?", a change ends it with "stop using it; ask a pharmacist
+  or doctor if it doesn't settle"); P7 opened date + months-after-opening → "past its best" on the Shelf; P9 similar
+  formulas (Pro; leading ingredients + actives, same category — the catalog has no prices, so it never says
+  "cheaper"); G7 "My shelf" card with a QR code + `skinalyze://shelf?p=…` link that opens those products for the
+  reader's own skin; G10 TikTok Shop / Shopee / Tokopedia links and shared text matched to the catalog in the share
+  extension (nothing fetched); P12 lighting tip after a scan (brightness/warmth vs the user's usual, measured off
+  the main thread).
+- **B** — P5 routine builder: extra steps (catalog product or typed name + ticked actives), "worth checking"
+  pairings (retinoid + acid, retinoid + benzoyl peroxide, vitamin C + acid/BP, two exfoliants, retinoid in the morning,
+  acids without morning sunscreen), optional morning/evening reminders. P14 Siri / Shortcuts "check off my evening
+  routine" and an Apple Watch app (WatchConnectivity; ticks queue when the phone is away; wrong-day ticks ignored).
+- **C** — P3 trigger journal (11 tags, on this phone only) with "what coincided" patterns after four weeks
+  (three-day window, ≥3 scans each side, ≥20% and ≥2 points apart); P4 Apple Health sleep (<6 h) and period days
+  (Pro) read on demand and never stored; P11 dermatologist visit pack (Pro): summary + per-area table, six photos
+  across the period, products with dates, journal counts, notes — "not a medical document" on every page.
+- **D** — P13 private vault: hide a scan from Mirror, Deck, widgets, zone map and exports (additive `isHidden`
+  field); Hidden scans behind Face ID / Touch ID / passcode; "keep it secret" removes the Profile entry, then press
+  and hold the Deck title (VoiceOver: an action on the title). P8 barcode scan: link a barcode to a product once, or
+  — only on tap — look it up in Open Beauty Facts (sends the barcode number only; attribution shown). P10 UV nudge
+  from Apple Weather (opt-in, reduced-accuracy location, once a day, attribution shown). G9 creator kit: three reel
+  looks (classic, minimal, day counter), tips, and creator codes as App Store offer codes.
 
----
+**Owner setup:**
+- [ ] **CloudKit:** deploy the schema again — `ScanSession` gained `isHidden` (additive).
+- [ ] **WeatherKit:** Xcode enabled the capability on the App ID; also enable WeatherKit under *App Services* for
+  the App ID in the developer portal if the UV card says it couldn't get today's UV on the phone.
+- [ ] **HealthKit:** App Review needs the Health use explained (read-only sleep + period, never stored); add Health
+  to the App Privacy labels ("Health & Fitness", not linked, app functionality).
+- [ ] **Location:** add "Coarse location — app functionality, not linked" to the App Privacy labels.
+- [ ] **Apple Watch:** pair a watch and install from Xcode (the watch app ships inside the iPhone app).
+- [ ] **Creator codes:** create custom offer codes per creator in App Store Connect when needed.
 
 ## Order at a glance
 
@@ -403,4 +428,4 @@ when picked.
 | 7 Skin School | E9, E10 | 5 | topics + wording sign-off |
 | 8 Spot timeline + heat map | P1, P2 | 0 (confirmed 3D), 5 | scans over time |
 | 9 Recaps + social ☑ | E11–E17, G6, G8 | 1, 6 | backend decision, go/no-go |
-| 10 Utilities | P3–P14, G7, G9, G10 | varies | pick by demand |
+| 10 Utilities ☑ | P3–P14, G7, G9, G10 | varies | owner setup (see phase) |

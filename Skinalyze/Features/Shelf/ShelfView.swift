@@ -7,6 +7,7 @@ struct ShelfView: View {
     @State private var query = ""
     @FocusState private var isSearching: Bool
     @State private var showsLabelScanner = false
+    @State private var showsBarcode = false
     @State private var editingSlot: ProductCatalog.Slot?
     @ScaledMetric(relativeTo: .largeTitle) private var titleSize: CGFloat = 54
 
@@ -26,6 +27,7 @@ struct ShelfView: View {
                     if query.isEmpty {
                         RecapBanner()
                         ShelfToolsCard()
+                        UVCard()
                         JourneyCard()
                         SkinSchoolCard()
                         tiles
@@ -48,6 +50,7 @@ struct ShelfView: View {
             .navigationDestination(for: CatalogProduct.self) { ProductDetailView(product: $0) }
             .sheet(item: $editingSlot) { ProductPicker(slot: $0) }
             .sheet(isPresented: $showsLabelScanner) { LabelScannerView() }
+            .sheet(isPresented: $showsBarcode) { BarcodeScanView() }
         }
         .onAppear { if appModel.selectedTab == .search { isSearching = true } }
     }
@@ -77,6 +80,13 @@ struct ShelfView: View {
             .glassEffect(.regular.interactive(), in: Circle())
             .buttonStyle(.bouncy)
             .accessibilityLabel("Scan a label")
+            Button { showsBarcode = true } label: {
+                Image(systemName: "barcode.viewfinder").font(.title3.weight(.semibold)).frame(width: 56, height: 56)
+            }
+            .glassEffect(.regular.interactive(), in: Circle())
+            .buttonStyle(.bouncy)
+            .accessibilityLabel("Scan a barcode")
+            .accessibilityIdentifier("scanBarcode")
         }
         .dsAnimation(.bouncy, value: query.isEmpty)
     }

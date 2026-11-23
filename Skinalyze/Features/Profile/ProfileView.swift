@@ -49,6 +49,12 @@ struct ProfileView: View {
                         Label(AppLock.toggleTitle, systemImage: AppLock.symbolName)
                     }
                     ReminderSettingsRow()
+                    HiddenScansRow()
+                    NavigationLink {
+                        CreatorKitView()
+                    } label: {
+                        Label("Creator kit", systemImage: "video.badge.waveform")
+                    }
                     NavigationLink {
                         ExportView()
                     } label: {

@@ -37,7 +37,7 @@ struct ScanResultView: View {
     @Environment(ProAccess.self) private var access: ProAccess?
     @Environment(QuestModel.self) private var quests: QuestModel?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Query(sort: \ScanSession.createdAt, order: .reverse) private var allScans: [ScanSession]
+    @Query(filter: #Predicate<ScanSession> { !$0.isHidden }, sort: \ScanSession.createdAt, order: .reverse) private var allScans: [ScanSession]
     @Environment(ShelfToolsModel.self) private var tools: ShelfToolsModel?
     @State private var lightingTips: [LightingCoach.Tip] = []
     @AppStorage(UserProfile.Key.skinType) private var skinTypeRaw = ""
@@ -87,6 +87,9 @@ struct ScanResultView: View {
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .primaryAction) { shareControl }
+            if !isFreshScan {
+                ToolbarItem(placement: .topBarTrailing) { HideScanButton(session: session) }
+            }
             if isFreshScan {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }

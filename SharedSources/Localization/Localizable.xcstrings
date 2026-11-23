@@ -1,6 +1,16 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "\"Day 1 → Day 40\" — how long you've kept going." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"Hari 1 → Hari 40\" — sudah berapa lama kamu konsisten."
+          }
+        }
+      }
+    },
     "%@ %@" : {
       "comment" : "A generated public name: adjective then animal.",
       "localizations" : {
@@ -1157,6 +1167,16 @@
         }
       }
     },
+    "Apple Weather data sources" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sumber data Apple Weather"
+          }
+        }
+      }
+    },
     "Area" : {
       "localizations" : {
         "id" : {
@@ -1623,6 +1643,16 @@
         }
       }
     },
+    "Check" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cek"
+          }
+        }
+      }
+    },
     "Check a label" : {
       "localizations" : {
         "id" : {
@@ -1749,6 +1779,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dagu"
+          }
+        }
+      }
+    },
+    "Classic" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klasik"
           }
         }
       }
@@ -1903,6 +1943,16 @@
         }
       }
     },
+    "Couldn't get today's UV." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak bisa mendapatkan UV hari ini."
+          }
+        }
+      }
+    },
     "Couldn't make the image" : {
       "localizations" : {
         "id" : {
@@ -1923,12 +1973,32 @@
         }
       }
     },
+    "Couldn't reach Open Beauty Facts. Check your connection and try again." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak bisa terhubung ke Open Beauty Facts. Cek koneksimu dan coba lagi."
+          }
+        }
+      }
+    },
     "Couldn't reach iCloud. Pull down to try again." : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tidak bisa terhubung ke iCloud. Tarik ke bawah untuk mencoba lagi."
+          }
+        }
+      }
+    },
+    "Couldn't unlock. Try again." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak bisa membuka. Coba lagi."
           }
         }
       }
@@ -1963,6 +2033,36 @@
         }
       }
     },
+    "Creator codes" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kode kreator"
+          }
+        }
+      }
+    },
+    "Creator codes are App Store offer codes made for you by the Skinalyze team. Your followers type the code in the App Store or in Skinalyze, and every redemption is counted by Apple." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kode kreator adalah kode penawaran App Store yang dibuat tim Skinalyze untukmu. Pengikutmu mengetik kodenya di App Store atau di Skinalyze, dan setiap penukaran dihitung oleh Apple."
+          }
+        }
+      }
+    },
+    "Creator kit" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kit kreator"
+          }
+        }
+      }
+    },
     "Crown" : {
       "localizations" : {
         "id" : {
@@ -1979,6 +2079,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Susu"
+          }
+        }
+      }
+    },
+    "Dark and quiet — the face does the talking." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gelap dan tenang — biarkan wajah yang bicara."
           }
         }
       }
@@ -2003,6 +2113,16 @@
         }
       }
     },
+    "Day %lld" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hari %lld"
+          }
+        }
+      }
+    },
     "Day %lld of %lld" : {
       "localizations" : {
         "en" : {
@@ -2015,6 +2135,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hari %lld dari %lld"
+          }
+        }
+      }
+    },
+    "Day counter" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Penghitung hari"
           }
         }
       }
@@ -2309,6 +2439,16 @@
         }
       }
     },
+    "Every look can hide your face, like the normal reel." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setiap tampilan bisa menyembunyikan wajahmu, seperti reel biasa."
+          }
+        }
+      }
+    },
     "Every quest, lesson and routine day moves Pimpi along. Nothing ever moves you back." : {
       "localizations" : {
         "id" : {
@@ -2395,6 +2535,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Krim mata"
+          }
+        }
+      }
+    },
+    "Face ID" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID"
           }
         }
       }
@@ -3025,12 +3175,62 @@
         }
       }
     },
+    "Hidden scans" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindaian tersembunyi"
+          }
+        }
+      }
+    },
+    "Hide" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sembunyikan"
+          }
+        }
+      }
+    },
     "Hide my face" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sembunyikan wajah saya"
+          }
+        }
+      }
+    },
+    "Hide my face shares the outline and numbers only." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sembunyikan wajah hanya membagikan garis luar dan angka."
+          }
+        }
+      }
+    },
+    "Hide this scan" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sembunyikan pindaian ini"
+          }
+        }
+      }
+    },
+    "Hide this scan?" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sembunyikan pindaian ini?"
           }
         }
       }
@@ -3367,6 +3567,16 @@
         }
       }
     },
+    "It leaves the Mirror, Deck, widgets and exports. Find it again in Profile → Hidden scans, behind %@." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindaian ini hilang dari Mirror, Deck, widget, dan ekspor. Temukan lagi di Profil → Pindaian tersembunyi, dengan %@."
+          }
+        }
+      }
+    },
     "It's been %lld days since your last scan — a quick check keeps the trend honest." : {
       "localizations" : {
         "id" : {
@@ -3443,6 +3653,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Saling menyemangati"
+          }
+        }
+      }
+    },
+    "Keep hidden scans secret" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rahasiakan pindaian tersembunyi"
           }
         }
       }
@@ -3657,6 +3877,16 @@
         }
       }
     },
+    "Link it to a product" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hubungkan ke produk"
+          }
+        }
+      }
+    },
     "Live label scanning isn't available here. Paste the ingredient list instead." : {
       "localizations" : {
         "id" : {
@@ -3757,6 +3987,16 @@
         }
       }
     },
+    "Look it up online" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cari secara online"
+          }
+        }
+      }
+    },
     "Look straight at the camera" : {
       "localizations" : {
         "id" : {
@@ -3773,6 +4013,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sudah bagus"
+          }
+        }
+      }
+    },
+    "Low UV today." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UV rendah hari ini."
           }
         }
       }
@@ -3877,6 +4127,16 @@
         }
       }
     },
+    "Minimal" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimal"
+          }
+        }
+      }
+    },
     "Mirror" : {
       "localizations" : {
         "id" : {
@@ -3903,6 +4163,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Misi bulanan"
+          }
+        }
+      }
+    },
+    "Mood colours and your index counting down." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warna suasana dan indeksmu yang menghitung mundur."
+          }
+        }
+      }
+    },
+    "More" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lainnya"
           }
         }
       }
@@ -4107,12 +4387,32 @@
         }
       }
     },
+    "No hidden scans. Hide one from its result screen (••• → Hide this scan)." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada pindaian tersembunyi. Sembunyikan dari layar hasilnya (••• → Sembunyikan pindaian ini)."
+          }
+        }
+      }
+    },
     "No ingredient list for this product yet." : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Belum ada daftar kandungan untuk produk ini."
+          }
+        }
+      }
+    },
+    "No ingredient list there. Try a label scan." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada daftar bahan di sana. Coba pindai label."
           }
         }
       }
@@ -4447,6 +4747,36 @@
         }
       }
     },
+    "Open %@" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka %@"
+          }
+        }
+      }
+    },
+    "Open %@ in Skinalyze" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka %@ di Skinalyze"
+          }
+        }
+      }
+    },
+    "Open Beauty Facts doesn't have it either. Try a label scan for the ingredients." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Beauty Facts juga tidak punya. Coba pindai label untuk bahan-bahannya."
+          }
+        }
+      }
+    },
     "Open Settings" : {
       "localizations" : {
         "id" : {
@@ -4493,6 +4823,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Buka Skinalyze untuk melihat Skinalyze Pro."
+          }
+        }
+      }
+    },
+    "Open hidden scans" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka pindaian tersembunyi"
           }
         }
       }
@@ -4583,12 +4923,32 @@
         }
       }
     },
+    "Optic ID" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optic ID"
+          }
+        }
+      }
+    },
     "Optional — used only for greetings on this phone." : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Opsional — hanya dipakai untuk sapaan di ponsel ini."
+          }
+        }
+      }
+    },
+    "Or type the numbers" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atau ketik angkanya"
           }
         }
       }
@@ -4962,6 +5322,16 @@
         }
       }
     },
+    "Point the camera at the barcode on the pack." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arahkan kamera ke barcode di kemasan."
+          }
+        }
+      }
+    },
     "Post" : {
       "localizations" : {
         "id" : {
@@ -5062,12 +5432,32 @@
         }
       }
     },
+    "Product data from Open Beauty Facts (openbeautyfacts.org), shared under the Open Database License." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data produk dari Open Beauty Facts (openbeautyfacts.org), dibagikan dengan Open Database License."
+          }
+        }
+      }
+    },
     "Product name" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nama produk"
+          }
+        }
+      }
+    },
+    "Product or brand" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produk atau merek"
           }
         }
       }
@@ -5272,6 +5662,26 @@
         }
       }
     },
+    "Reel looks" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tampilan reel"
+          }
+        }
+      }
+    },
+    "Reels need at least two scans." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reel butuh minimal dua pindaian."
+          }
+        }
+      }
+    },
     "Reminders" : {
       "localizations" : {
         "id" : {
@@ -5318,6 +5728,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hapus teman ini?"
+          }
+        }
+      }
+    },
+    "Removes Hidden scans from Profile. To open it, press and hold the Deck title." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menghapus Pindaian tersembunyi dari Profil. Untuk membukanya, tekan dan tahan judul Deck."
           }
         }
       }
@@ -5532,12 +5952,32 @@
         }
       }
     },
+    "Scan a barcode" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindai barcode"
+          }
+        }
+      }
+    },
     "Scan a label" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pindai label"
+          }
+        }
+      }
+    },
+    "Scan another" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindai lagi"
           }
         }
       }
@@ -5604,6 +6044,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pindai dalam %lld hari ke depan agar tetap berlanjut."
+          }
+        }
+      }
+    },
+    "Scan in the same spot and light each time — the reel lines faces up by the eyes." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindai di tempat dan cahaya yang sama setiap kali — reel menyejajarkan wajah dari posisi mata."
           }
         }
       }
@@ -5850,6 +6300,16 @@
         }
       }
     },
+    "Sends only this barcode number to Open Beauty Facts, a free public product database." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hanya mengirim nomor barcode ini ke Open Beauty Facts, database produk publik gratis."
+          }
+        }
+      }
+    },
     "Sensitivity" : {
       "localizations" : {
         "id" : {
@@ -6010,12 +6470,32 @@
         }
       }
     },
+    "Show in Mirror and Deck" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tampilkan di Mirror dan Deck"
+          }
+        }
+      }
+    },
     "Show my skin trend" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tampilkan tren kulitku"
+          }
+        }
+      }
+    },
+    "Show today's UV and a sunscreen nudge" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tampilkan UV hari ini dan pengingat sunscreen"
           }
         }
       }
@@ -6256,6 +6736,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Skinalyze tidak menggunakan cookie atau teknologi pelacakan."
+          }
+        }
+      }
+    },
+    "Skinalyze doesn't know this barcode yet." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skinalyze belum mengenal barcode ini."
           }
         }
       }
@@ -6828,6 +7318,26 @@
         }
       }
     },
+    "Sunscreen time — it's the step that matters most today." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Waktunya sunscreen — ini langkah paling penting hari ini."
+          }
+        }
+      }
+    },
+    "Sunscreen's on. Top it up if you're outside for long." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sunscreen sudah dipakai. Pakai ulang kalau lama di luar."
+          }
+        }
+      }
+    },
     "Support firmness." : {
       "localizations" : {
         "id" : {
@@ -6914,6 +7424,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ambil scan hari ini"
+          }
+        }
+      }
+    },
+    "Talk about your routine and habits — skin changes for many reasons." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ceritakan rutinitas dan kebiasaanmu — kulit berubah karena banyak hal."
           }
         }
       }
@@ -7198,6 +7718,16 @@
         }
       }
     },
+    "Tips" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tips"
+          }
+        }
+      }
+    },
     "Today" : {
       "localizations" : {
         "id" : {
@@ -7268,6 +7798,16 @@
         }
       }
     },
+    "Touch ID" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touch ID"
+          }
+        }
+      }
+    },
     "Touched my face" : {
       "localizations" : {
         "id" : {
@@ -7314,6 +7854,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Toleh kiri"
+          }
+        }
+      }
+    },
+    "Turn off" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Matikan"
+          }
+        }
+      }
+    },
+    "Turn off UV" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Matikan UV"
           }
         }
       }
@@ -7378,6 +7938,32 @@
         }
       }
     },
+    "UV %lld today · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "UV %1$lld today · %2$@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UV %lld hari ini · %@"
+          }
+        }
+      }
+    },
+    "UV options" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilihan UV"
+          }
+        }
+      }
+    },
     "Understand my skin" : {
       "localizations" : {
         "id" : {
@@ -7404,6 +7990,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Buka kunci"
+          }
+        }
+      }
+    },
+    "Unlock with %@ to see them." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka dengan %@ untuk melihatnya."
           }
         }
       }
@@ -7634,6 +8230,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dari mana info ini"
+          }
+        }
+      }
+    },
+    "Which product is it?" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produk yang mana?"
           }
         }
       }
@@ -8144,6 +8750,16 @@
         }
       }
     },
+    "extreme" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ekstrem"
+          }
+        }
+      }
+    },
     "glow points" : {
       "localizations" : {
         "id" : {
@@ -8154,12 +8770,52 @@
         }
       }
     },
+    "high" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tinggi"
+          }
+        }
+      }
+    },
     "lessons learned" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "pelajaran selesai"
+          }
+        }
+      }
+    },
+    "low" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "rendah"
+          }
+        }
+      }
+    },
+    "moderate" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sedang"
+          }
+        }
+      }
+    },
+    "of tracking my skin" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "memantau kulitku"
           }
         }
       }
@@ -8194,12 +8850,32 @@
         }
       }
     },
+    "very high" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sangat tinggi"
+          }
+        }
+      }
+    },
     "vs. last scan" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "vs pindaian terakhir"
+          }
+        }
+      }
+    },
+    "your passcode" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kode sandimu"
           }
         }
       }

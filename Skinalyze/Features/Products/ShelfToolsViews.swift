@@ -251,3 +251,83 @@ struct ShelfToolsCard: View {
         }
     }
 }
+
+/// P10 on the Shelf: today's UV and a sunscreen nudge (off until turned on).
+struct UVCard: View {
+    @Environment(UVModel.self) private var uv
+    @AppStorage("routineLog") private var logRaw = ""
+    @Environment(\.colorScheme) private var scheme
+
+    var body: some View {
+        switch uv.state {
+        case .off:
+            Button { Task { await uv.setEnabled(true) } } label: {
+                Label("Show today's UV and a sunscreen nudge", systemImage: "sun.max")
+                    .font(.ds.footnote.weight(.semibold))
+                    .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(Color.ds.inkSecondary)
+            .accessibilityIdentifier("uvEnable")
+        case .loading:
+            ProgressView().frame(maxWidth: .infinity)
+        case .failed:
+            HStack {
+                Label("Couldn't get today's UV.", systemImage: "sun.max.trianglebadge.exclamationmark")
+                    .font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
+                Spacer()
+                Button("Turn off") { Task { await uv.setEnabled(false) } }.font(.ds.footnote)
+            }
+        case let .ready(index):
+            content(index)
+        }
+    }
+
+    @ViewBuilder private func content(_ index: Int) -> some View {
+        let sunscreenDone = RoutineLog(raw: logRaw).isDone(part: "morning", slot: ProductCatalog.Slot.sunscreen.rawValue)
+        VStack(alignment: .leading, spacing: Spacing.xs) {
+            HStack(alignment: .firstTextBaseline) {
+                Label("UV \(index) today · \(Self.levelName(UVAdvice.level(for: index)))", systemImage: "sun.max.fill")
+                    .font(.ds.headline)
+                    .foregroundStyle(UVAdvice.shouldNudge(index) ? Color.ds.caution : Color.ds.positive)
+                Spacer()
+                Menu {
+                    Button("Turn off UV", role: .destructive) { Task { await uv.setEnabled(false) } }
+                } label: {
+                    Image(systemName: "ellipsis").frame(width: 44, height: 44)
+                }
+                .accessibilityLabel(Text("UV options"))
+            }
+            if UVAdvice.shouldNudge(index) {
+                Text(sunscreenDone ? "Sunscreen's on. Top it up if you're outside for long."
+                     : "Sunscreen time — it's the step that matters most today.")
+                    .font(.ds.footnote)
+            } else {
+                Text("Low UV today.").font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
+            }
+            if let attribution = uv.attribution {
+                Link(destination: attribution.legalPageURL) {
+                    AsyncImage(url: scheme == .dark ? attribution.combinedMarkDarkURL : attribution.combinedMarkLightURL) { image in
+                        image.resizable().scaledToFit()
+                    } placeholder: {
+                        Text(verbatim: " Weather").font(.ds.caption)
+                    }
+                    .frame(height: 12)
+                }
+                .accessibilityLabel(Text("Apple Weather data sources"))
+            }
+        }
+        .dsCard()
+        .accessibilityIdentifier("uvCard")
+    }
+
+    static func levelName(_ level: UVAdvice.Level) -> String {
+        switch level {
+        case .low: String(localized: "low")
+        case .moderate: String(localized: "moderate")
+        case .high: String(localized: "high")
+        case .veryHigh: String(localized: "very high")
+        case .extreme: String(localized: "extreme")
+        }
+    }
+}

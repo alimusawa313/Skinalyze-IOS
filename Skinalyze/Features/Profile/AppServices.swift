@@ -27,6 +27,16 @@ enum AppLock {
         }
     }
 
+    /// "Face ID", "Touch ID" (iPhone Duo), "Optic ID" or "your passcode".
+    static var biometryName: String {
+        switch biometry {
+        case .faceID: String(localized: "Face ID")
+        case .touchID: String(localized: "Touch ID")
+        case .opticID: String(localized: "Optic ID")
+        default: String(localized: "your passcode")
+        }
+    }
+
     static var symbolName: String {
         switch biometry {
         case .faceID: "faceid"

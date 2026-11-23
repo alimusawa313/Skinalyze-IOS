@@ -112,10 +112,10 @@ with depth, no outlines, and moods.
 - [x] **G5 Before/after slider export** (Phase 3: still image; slider video with Phase 4) — from the eye-aligned Compare. · Free (watermark) / Pro
 - [x] **G6 Skin Wrapped** (Phase 9) — yearly/quarterly recap: best streak, most-improved zone, product that coincided with the
   best month. · Free
-- [ ] **G7 Routine cards** — "my shelf" as a shareable image; others tap to check those products for their skin. · Free
+- [x] **G7 Routine cards** — "my shelf" as a shareable image; others tap to check those products for their skin. · Free
 - [x] **G8 Referral** (Phase 9: invited friend gets a month via an App Store offer code; inviter gets thanks, not a month — needs a server) — give a month of Pro, get a month. · —
-- [ ] **G9 Creator kit** — reel templates + affiliate code. · —
-- [ ] **G10 Share-sheet entry from TikTok Shop / Shopee / Tokopedia product pages** — extends the existing share
+- [x] **G9 Creator kit** — reel templates + affiliate code. · —
+- [x] **G10 Share-sheet entry from TikTok Shop / Shopee / Tokopedia product pages** — extends the existing share
   extension. · Free
 - [x] **G11 Sticker-card widgets** (Phase 3: home screen, no photo) — home / lock screen widgets that look like the card. · Free
 
@@ -125,20 +125,20 @@ with depth, no outlines, and moods.
 
 - [~] **P1 Spot timeline** (Phase 8 shipped "this area over time"; states wait for steadier detection) — tap a dot to follow that same spot across scans (appeared, fading, gone). · Pro
 - [x] **P2 Zone heat map over time** (Phase 8) — on the 3D head, scrubbable by date. · Pro
-- [ ] **P3 Trigger journal** — sleep, stress, cycle, diet, new product; shows what coincided with flare-ups. · Free
+- [x] **P3 Trigger journal** — sleep, stress, cycle, diet, new product; shows what coincided with flare-ups. · Free
   (log) / Pro (insights)
-- [ ] **P4 Cycle and sleep correlation via HealthKit** — on-device only (rule 4). · Pro
-- [ ] **P5 Routine builder** — AM/PM steps, reminders, "don't mix these two actives" warning from the ingredient
+- [x] **P4 Cycle and sleep correlation via HealthKit** — on-device only (rule 4). · Pro
+- [x] **P5 Routine builder** — AM/PM steps, reminders, "don't mix these two actives" warning from the ingredient
   rules. · Free
-- [ ] **P6 Patch-test timer** — "day 3 of 14: anything changed?" for a new product. · Free
-- [ ] **P7 Product expiry tracker** — opened-on date and period-after-opening. · Free
-- [ ] **P8 Barcode scan** — needs a product-barcode data source. · Free
-- [ ] **P9 Dupe finder** — same key ingredients, cheaper. · Pro
-- [ ] **P10 UV and humidity nudge** — "UV 9 today: sunscreen". · Free
-- [ ] **P11 Dermatologist visit pack** — PDF with photos, trend, products used (extends the existing export). · Pro
-- [ ] **P12 Scan-quality coach** — more consistent lighting between scans. · Free
-- [ ] **P13 Private vault** — biometric lock exists; add hidden album and decoy mode. · Free
-- [ ] **P14 Apple Watch routine check-off; Siri and Shortcuts** (some intents already exist). · Free
+- [x] **P6 Patch-test timer** — "day 3 of 14: anything changed?" for a new product. · Free
+- [x] **P7 Product expiry tracker** — opened-on date and period-after-opening. · Free
+- [x] **P8 Barcode scan** — needs a product-barcode data source. · Free
+- [x] **P9 Dupe finder** — same key ingredients, cheaper. · Pro
+- [x] **P10 UV and humidity nudge** — "UV 9 today: sunscreen". · Free
+- [x] **P11 Dermatologist visit pack** — PDF with photos, trend, products used (extends the existing export). · Pro
+- [x] **P12 Scan-quality coach** — more consistent lighting between scans. · Free
+- [x] **P13 Private vault** — biometric lock exists; add hidden album and decoy mode. · Free
+- [x] **P14 Apple Watch routine check-off; Siri and Shortcuts** (some intents already exist). · Free
 
 ---
 

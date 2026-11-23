@@ -19,6 +19,9 @@ public final class ScanSession {
     public var darkSpotCount: Int = 0
     public var productIDs: [Int] = []
     public var notes: String = ""
+    /// P13 private vault: kept out of the Mirror, Deck, widgets and exports until shown again. Added with a default,
+    /// so the CloudKit schema change is additive.
+    public var isHidden: Bool = false
     /// `Result.id` this session was migrated from; `nil` for scans created by the new pipeline.
     public var legacyResultID: UUID?
 

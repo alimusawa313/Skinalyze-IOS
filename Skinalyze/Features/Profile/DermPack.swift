@@ -222,7 +222,7 @@ private struct DermProductsPage: View {
 
 /// The Profile screen's export: Pro, with a photos switch.
 struct ExportView: View {
-    @Query(sort: \ScanSession.createdAt) private var allScans: [ScanSession]
+    @Query(filter: #Predicate<ScanSession> { !$0.isHidden }, sort: \ScanSession.createdAt) private var allScans: [ScanSession]
     @Environment(ProAccess.self) private var access: ProAccess?
     @Environment(JournalModel.self) private var journal: JournalModel?
     @State private var includePhotos = true

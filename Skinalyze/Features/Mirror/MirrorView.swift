@@ -10,7 +10,7 @@ struct MirrorView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Query(sort: \ScanSession.createdAt, order: .reverse) private var scans: [ScanSession]
+    @Query(filter: #Predicate<ScanSession> { !$0.isHidden }, sort: \ScanSession.createdAt, order: .reverse) private var scans: [ScanSession]
     @AppStorage(UserProfile.Key.name) private var name = ""
     @AppStorage("routineLog") private var routineLogRaw = ""
     @Environment(EngagementModel.self) private var engagement

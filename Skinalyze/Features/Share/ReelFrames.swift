@@ -11,6 +11,26 @@ struct ReelScan: @unchecked Sendable { // Values and an immutable image only.
     let picture: UIImage?
 }
 
+/// G9 creator kit: the reel's look. Same frames and timing; only the dress changes.
+enum ReelTemplate: String, CaseIterable, Identifiable, Sendable {
+    /// Mood colours, big index (the original).
+    case classic
+    /// Dark, quiet, the face does the talking.
+    case minimal
+    /// "Day 1 → Day 34" — counts days since the first scan.
+    case dayCounter
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .classic: String(localized: "Classic")
+        case .minimal: String(localized: "Minimal")
+        case .dayCounter: String(localized: "Day counter")
+        }
+    }
+}
+
 /// A single frame of the glow-up reel. A still like every share card: the plan says what is on screen, this draws it.
 struct ReelFrameView: View {
     let scans: [ReelScan]
@@ -18,6 +38,7 @@ struct ReelFrameView: View {
     /// 0…1 through the whole reel.
     let progress: Double
     var showsWatermark = true
+    var template: ReelTemplate = .classic
 
     private static let format = ShareCardFormat.story
     private static let barHeight: CGFloat = 4
@@ -42,25 +63,44 @@ struct ReelFrameView: View {
                 if let next { picture(next).opacity(frame.blend) }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            VStack(alignment: .leading, spacing: 0) {
-                Text(ReelPlan.displayedValue(from: current.index, to: next?.index, blend: frame.blend), format: .number)
-                    .font(CardMetrics.numeral)
-                Text("Breakout index · \(BandCopy.title(labelled.band))").font(CardMetrics.body)
-            }
+            caption
             progressBar
             if showsWatermark { ShareWatermark() }
         }
         .padding(Spacing.lg)
         .frame(width: Self.format.pointSize.width, height: Self.format.pointSize.height)
-        .foregroundStyle(Color.ds.ink)
+        .foregroundStyle(template == .minimal ? Color.white : Color.ds.ink)
         .background {
-            ZStack {
-                backdrop(current.band)
-                if let next { backdrop(next.band).opacity(frame.blend) }
+            if template == .minimal {
+                Color.black
+            } else {
+                ZStack {
+                    backdrop(current.band)
+                    if let next { backdrop(next.band).opacity(frame.blend) }
+                }
             }
         }
         .dynamicTypeSize(.large)
-        .environment(\.colorScheme, .light)
+        .environment(\.colorScheme, template == .minimal ? .dark : .light)
+    }
+
+    @ViewBuilder private var caption: some View {
+        switch template {
+        case .classic:
+            VStack(alignment: .leading, spacing: 0) {
+                Text(ReelPlan.displayedValue(from: current.index, to: next?.index, blend: frame.blend), format: .number)
+                    .font(CardMetrics.numeral)
+                Text("Breakout index · \(BandCopy.title(labelled.band))").font(CardMetrics.body)
+            }
+        case .minimal:
+            Text(BandCopy.title(labelled.band)).font(CardMetrics.heading)
+        case .dayCounter:
+            let day = (Calendar.current.dateComponents([.day], from: scans[0].date, to: labelled.date).day ?? 0) + 1
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Day \(day)").font(CardMetrics.numeral)
+                Text("of tracking my skin").font(CardMetrics.body)
+            }
+        }
     }
 
     @ViewBuilder private func picture(_ scan: ReelScan) -> some View {

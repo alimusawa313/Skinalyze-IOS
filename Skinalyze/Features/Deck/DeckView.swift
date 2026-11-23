@@ -9,7 +9,9 @@ struct DeckView: View {
     @Environment(AppModel.self) private var appModel
     @Environment(\.modelContext) private var modelContext
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Query(sort: \ScanSession.createdAt, order: .reverse) private var scans: [ScanSession]
+    @Query(filter: #Predicate<ScanSession> { !$0.isHidden }, sort: \ScanSession.createdAt, order: .reverse) private var scans: [ScanSession]
+    @AppStorage(Vault.secretKey) private var vaultSecret = false
+    @State private var showsVault = false
     @State private var focusedID: PersistentIdentifier?
     @State private var isPicking = false
     @State private var picked: [ScanSession] = []
@@ -50,6 +52,7 @@ struct DeckView: View {
         }
         .sheet(isPresented: $showsReel) { VideoShareSheet(source: .reel(scans: scans)) }
         .sheet(isPresented: $showsZoneMap) { ZoneMapView() }
+        .sheet(isPresented: $showsVault) { NavigationStack { HiddenScansView() } }
         .paywallSheet($paywall)
     }
 
@@ -61,8 +64,18 @@ struct DeckView: View {
                 Text("Deck").font(.system(size: titleSize, weight: .heavy, design: .rounded))
                     .lineLimit(1).fixedSize()
                     .accessibilityAddTraits(.isHeader)
+                    // The private vault's secret way in (P13): press and hold the title.
+                    .contentShape(Rectangle())
+                    .simultaneousGesture(LongPressGesture(minimumDuration: 1.5).onEnded { _ in
+                        if vaultSecret { showsVault = true }
+                    })
+                    .accessibilityActions {
+                        if vaultSecret { Button("Open hidden scans") { showsVault = true } }
+                    }
+                    .accessibilityIdentifier("deckTitle")
                 Text("\(scans.count)").font(.system(.title2, design: .rounded).weight(.heavy)).foregroundStyle(.secondary)
                     .contentTransition(.numericText(value: Double(scans.count)))
+                    .accessibilityIdentifier("deckCount")
                 Spacer()
                 if !isPicking {
                     Button {

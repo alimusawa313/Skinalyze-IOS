@@ -16,12 +16,12 @@ struct VideoShareSource: Identifiable {
 extension VideoShareSource {
     /// Every scan oldest → newest as eye-aligned stickers.
     @MainActor
-    static func reel(scans: [ScanSession]) -> VideoShareSource {
+    static func reel(scans: [ScanSession], template: ReelTemplate = .classic) -> VideoShareSource {
         let inputs = ReelExporter.inputs(from: scans)
         return VideoShareSource(title: "Glow-up reel", offersHideFace: true) { hidesFace, showsWatermark, progress in
             let prepared = try await ReelExporter.prepare(inputs, hidesFace: hidesFace)
             return try await ReelExporter.export(prepared, name: hidesFace ? "skinalyze-reel-private" : "skinalyze-reel",
-                                                 showsWatermark: showsWatermark, progress: progress)
+                                                 showsWatermark: showsWatermark, template: template, progress: progress)
         }
     }
 
@@ -174,7 +174,9 @@ enum ReelDump {
         for (name, hidesFace) in [("reel", false), ("reel-hidden", true)] {
             let started = Date()
             guard let prepared = try? await ReelExporter.prepare(inputs, hidesFace: hidesFace),
-                  let url = try? await ReelExporter.export(prepared, name: "dump-\(name)", progress: { _ in }) else { continue }
+                  let url = try? await ReelExporter.export(prepared, name: "dump-\(name)",
+                                                          template: ReelTemplate(rawValue: UserDefaults.standard.string(forKey: "reelTemplate") ?? "") ?? .classic,
+                                                          progress: { _ in }) else { continue }
             let target = directory.appendingPathComponent("\(name).mp4")
             try? FileManager.default.removeItem(at: target)
             try? FileManager.default.copyItem(at: url, to: target)

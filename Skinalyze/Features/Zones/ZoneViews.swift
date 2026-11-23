@@ -20,7 +20,7 @@ struct AreaTimelineView: View {
     let follow: AreaFollow
 
     @Environment(\.dismiss) private var dismiss
-    @Query(sort: \ScanSession.createdAt) private var allScans: [ScanSession]
+    @Query(filter: #Predicate<ScanSession> { !$0.isHidden }, sort: \ScanSession.createdAt) private var allScans: [ScanSession]
     private var scans: [ScanSession] { allScans.filter { !$0.isDeleted && $0.modelContext != nil } }
     @State private var frames: [Frame] = []
     @State private var isLoading = true
@@ -136,7 +136,7 @@ struct AreaTimelineView: View {
 /// Spots marked per face zone, on the latest 3D head (or the front photo), scrubbable through every scan.
 struct ZoneMapView: View {
     @Environment(\.dismiss) private var dismiss
-    @Query(sort: \ScanSession.createdAt) private var allScans: [ScanSession]
+    @Query(filter: #Predicate<ScanSession> { !$0.isHidden }, sort: \ScanSession.createdAt) private var allScans: [ScanSession]
     /// A scan deleted while this is open (here, or on another device via iCloud) must never be read.
     private var scans: [ScanSession] { allScans.filter { !$0.isDeleted && $0.modelContext != nil } }
     @State private var position: Double = 0

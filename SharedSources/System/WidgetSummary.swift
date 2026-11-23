@@ -28,7 +28,9 @@ enum WidgetSummary {
 
     @MainActor
     static func refresh(from container: ModelContainer) async {
-        var descriptor = FetchDescriptor<ScanSession>(sortBy: [SortDescriptor(\.createdAt, order: .reverse)])
+        // Hidden scans (the private vault) never reach the home screen.
+        var descriptor = FetchDescriptor<ScanSession>(predicate: #Predicate { !$0.isHidden },
+                                                      sortBy: [SortDescriptor(\.createdAt, order: .reverse)])
         descriptor.fetchLimit = 8
         guard let scans = try? container.mainContext.fetch(descriptor) else { return }
         let latest = scans.first
