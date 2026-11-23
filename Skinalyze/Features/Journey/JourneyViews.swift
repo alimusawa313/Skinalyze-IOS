@@ -87,6 +87,7 @@ struct JourneyView: View {
                         .font(.ds.callout).foregroundStyle(Color.ds.inkSecondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     path(position)
+                    SocialEntryRow()
                     ChallengeSection()
                     recaps
                 }

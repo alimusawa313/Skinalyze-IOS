@@ -13,6 +13,7 @@ struct AppShell: View {
     @State private var quests = QuestModel()
     @State private var school = SchoolModel()
     @State private var challenges = ChallengeModel()
+    @State private var social = SocialModel()
     /// Synced streaks and rewards; changes here come from the user's other devices (or a restore).
     @Query private var engagementRecords: [EngagementRecord]
     @Environment(\.scenePhase) private var scenePhase
@@ -56,14 +57,19 @@ struct AppShell: View {
         }
         .sheet(isPresented: $appModel.isShowingProfile) { ProfileView() }
         .sheet(item: $challenges.justFinished) { ChallengeFinishedView(challenge: $0) }
+        .sheet(item: $appModel.pendingInvite) { InviteView(inviter: $0) }
         .paywallSheet($paywall)
         .environment(engagement)
         .environment(quests)
         .environment(school)
         .environment(challenges)
+        .environment(social)
         .environment(\.pimpiOutfit, quests.ledger.worn)
         .onChange(of: scenePhase, initial: true) { _, phase in
-            if phase == .active { prepareQuests() }
+            if phase == .active {
+                prepareQuests()
+                publishSocial()
+            }
             if phase == .active || phase == .background { syncEngagement() }
         }
         .onChange(of: engagementRecords.map(\.updatedAt)) { syncEngagement() }
@@ -159,13 +165,22 @@ struct AppShell: View {
     private func syncEngagement() {
         let sync = EngagementSync()
         let local = sync.local(rewards: quests.ledger, bestRoutineStreak: quests.bestRoutineStreak, school: school.progress,
-                               challenges: challenges.book)
+                               challenges: challenges.book, social: social.state)
         guard let merged = sync.sync(local: local, context: modelContext) else { return }
         sync.applyStreaks(merged)
         quests.applySynced(merged)
         school.applySynced(merged.school)
         challenges.applySynced(merged.challenges)
+        social.applySynced(merged.social)
         engagement.reloadFromStore()
+    }
+
+    /// Friends see today's streak and points: publish when the app comes to the front (only if the user opted in).
+    private func publishSocial() {
+        guard social.isSharing else { return }
+        let scans = (try? modelContext.fetch(FetchDescriptor<ScanSession>())) ?? []
+        let effort = SocialEffort.current(engagement: engagement, quests: quests, scans: scans)
+        Task { await social.refresh(effort: effort) }
     }
 
     /// Today's quests come from what can actually be done today.

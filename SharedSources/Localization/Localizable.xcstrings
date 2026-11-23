@@ -1,6 +1,23 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ %@" : {
+      "comment" : "A generated public name: adjective then animal.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@ %1$@"
+          }
+        }
+      }
+    },
     "%@ a month" : {
       "localizations" : {
         "id" : {
@@ -113,6 +130,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld XP"
+          }
+        }
+      }
+    },
+    "%lld days in a row together" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld hari berturut-turut bersama"
           }
         }
       }
@@ -247,6 +274,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld produk dalam rutinitasmu"
+          }
+        }
+      }
+    },
+    "%lld pts" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld poin"
           }
         }
       }
@@ -566,6 +603,26 @@
         }
       }
     },
+    "A friend invited you" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seorang teman mengundangmu"
+          }
+        }
+      }
+    },
+    "A friend who joins through your invite gets a free month of Pro." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teman yang bergabung lewat undanganmu dapat Pro gratis sebulan."
+          }
+        }
+      }
+    },
     "A harsh cleanser that strips natural oils." : {
       "localizations" : {
         "id" : {
@@ -706,6 +763,26 @@
         }
       }
     },
+    "Add" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambah"
+          }
+        }
+      }
+    },
+    "Add friends with a code, see each other's streaks, and climb a weekly league ranked only on quests and lessons." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambah teman dengan kode, lihat streak satu sama lain, dan naik di liga mingguan yang hanya dihitung dari misi dan pelajaran."
+          }
+        }
+      }
+    },
     "Add products to your shelf to build your routine." : {
       "localizations" : {
         "id" : {
@@ -732,6 +809,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pewangi tambahan"
+          }
+        }
+      }
+    },
+    "Added. They'll show up once they've joined." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ditambahkan. Mereka akan muncul setelah bergabung."
+          }
+        }
+      }
+    },
+    "Already your friend." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sudah jadi temanmu."
           }
         }
       }
@@ -806,6 +903,16 @@
         }
       }
     },
+    "Badger" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luak"
+          }
+        }
+      }
+    },
     "Badges" : {
       "localizations" : {
         "id" : {
@@ -856,12 +963,38 @@
         }
       }
     },
+    "Be my Skinalyze friend! My code is %@. Open the link on your iPhone: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Be my Skinalyze friend! My code is %1$@. Open the link on your iPhone: %2$@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jadi temanku di Skinalyze! Kodeku %@. Buka tautan ini di iPhone-mu: %@"
+          }
+        }
+      }
+    },
     "Beanie" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kupluk"
+          }
+        }
+      }
+    },
+    "Beaver" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berang-berang Kayu"
           }
         }
       }
@@ -886,12 +1019,32 @@
         }
       }
     },
+    "Bouncy" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lincah"
+          }
+        }
+      }
+    },
     "Bow" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pita"
+          }
+        }
+      }
+    },
+    "Brave" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berani"
           }
         }
       }
@@ -926,12 +1079,52 @@
         }
       }
     },
+    "Breezy" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sejuk"
+          }
+        }
+      }
+    },
+    "Bright" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerah"
+          }
+        }
+      }
+    },
     "Bring your face into the frame" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Posisikan wajah di dalam bingkai"
+          }
+        }
+      }
+    },
+    "Bronze league" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liga Perunggu"
+          }
+        }
+      }
+    },
+    "Bunny" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kelinci"
           }
         }
       }
@@ -1176,6 +1369,16 @@
         }
       }
     },
+    "Cheerful" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riang"
+          }
+        }
+      }
+    },
     "Chin" : {
       "localizations" : {
         "id" : {
@@ -1202,6 +1405,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hapus pencarian"
+          }
+        }
+      }
+    },
+    "Clever" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pintar"
           }
         }
       }
@@ -1306,6 +1519,16 @@
         }
       }
     },
+    "Cosy" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hangat"
+          }
+        }
+      }
+    },
     "Couldn't make the image" : {
       "localizations" : {
         "id" : {
@@ -1322,6 +1545,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Video tidak bisa dibuat"
+          }
+        }
+      }
+    },
+    "Couldn't reach iCloud. Pull down to try again." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak bisa terhubung ke iCloud. Tarik ke bawah untuk mencoba lagi."
           }
         }
       }
@@ -1452,12 +1685,32 @@
         }
       }
     },
+    "Diamond league" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liga Berlian"
+          }
+        }
+      }
+    },
     "Does it sting or redden with new products?" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apakah terasa perih atau memerah saat memakai produk baru?"
+          }
+        }
+      }
+    },
+    "Dolphin" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lumba-lumba"
           }
         }
       }
@@ -1532,6 +1785,16 @@
         }
       }
     },
+    "Duckling" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anak Bebek"
+          }
+        }
+      }
+    },
     "Each evening, tap if you kept your hands off your face." : {
       "localizations" : {
         "id" : {
@@ -1558,6 +1821,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Didapat"
+          }
+        }
+      }
+    },
+    "Emerald league" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liga Zamrud"
           }
         }
       }
@@ -1832,6 +2105,16 @@
         }
       }
     },
+    "Fox" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rubah"
+          }
+        }
+      }
+    },
     "Free keeps your newest %lld scans open. Pro opens them all." : {
       "localizations" : {
         "id" : {
@@ -1842,12 +2125,98 @@
         }
       }
     },
+    "Friend added!" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teman ditambahkan!"
+          }
+        }
+      }
+    },
+    "Friend quest done this week!" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Misi teman selesai minggu ini!"
+          }
+        }
+      }
+    },
+    "Friend quest: %lld of %lld points together" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Friend quest: %1$lld of %2$lld points together"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Misi teman: %lld dari %lld poin bersama"
+          }
+        }
+      }
+    },
+    "Friend's code" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kode teman"
+          }
+        }
+      }
+    },
+    "Friends" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teman"
+          }
+        }
+      }
+    },
+    "Friends and league" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teman dan liga"
+          }
+        }
+      }
+    },
+    "Friends you invited: %lld" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teman yang kamu undang: %lld"
+          }
+        }
+      }
+    },
     "Front" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Depan"
+          }
+        }
+      }
+    },
+    "Gecko" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cicak"
           }
         }
       }
@@ -1878,6 +2247,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dibuat %@. Bukan dokumen medis; hanya pemantauan perubahan yang terlihat."
+          }
+        }
+      }
+    },
+    "Gentle" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lembut"
           }
         }
       }
@@ -1942,6 +2321,16 @@
         }
       }
     },
+    "Gold league" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liga Emas"
+          }
+        }
+      }
+    },
     "Good for your skin type" : {
       "localizations" : {
         "id" : {
@@ -1992,6 +2381,26 @@
         }
       }
     },
+    "Hamster" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hamster"
+          }
+        }
+      }
+    },
+    "Happy" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gembira"
+          }
+        }
+      }
+    },
     "Has an ingredient many people use for active breakouts." : {
       "localizations" : {
         "id" : {
@@ -2008,6 +2417,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Punya minyak yang menyumbat pori, yang cenderung memperbanyak komedo hitam dan putih."
+          }
+        }
+      }
+    },
+    "Hedgehog" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Landak"
           }
         }
       }
@@ -2314,6 +2733,16 @@
         }
       }
     },
+    "Invite" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Undang"
+          }
+        }
+      }
+    },
     "Is it good for me?" : {
       "localizations" : {
         "id" : {
@@ -2344,6 +2773,56 @@
         }
       }
     },
+    "Join" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gabung"
+          }
+        }
+      }
+    },
+    "Join and add friend" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gabung dan tambah teman"
+          }
+        }
+      }
+    },
+    "Join to add them and keep each other going. Only a made-up name, your streak and quest points are shared." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gabung untuk menambahkan mereka dan saling menyemangati. Hanya nama samaran, streak, dan poin misimu yang dibagikan."
+          }
+        }
+      }
+    },
+    "Jolly" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jenaka"
+          }
+        }
+      }
+    },
+    "Keep each other going" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saling menyemangati"
+          }
+        }
+      }
+    },
     "Keep your head level" : {
       "localizations" : {
         "id" : {
@@ -2360,6 +2839,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Jaga rangkaianmu malam ini"
+          }
+        }
+      }
+    },
+    "Kind" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baik"
+          }
+        }
+      }
+    },
+    "Kitten" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anak Kucing"
+          }
+        }
+      }
+    },
+    "Koala" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koala"
           }
         }
       }
@@ -2424,6 +2933,16 @@
         }
       }
     },
+    "League" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liga"
+          }
+        }
+      }
+    },
     "Left cheek" : {
       "localizations" : {
         "id" : {
@@ -2440,6 +2959,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rahang kiri"
+          }
+        }
+      }
+    },
+    "Lemur" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lemur"
           }
         }
       }
@@ -2500,6 +3029,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pemindaian label langsung tidak tersedia di sini. Tempel daftar kandungannya saja."
+          }
+        }
+      }
+    },
+    "Llama" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Llama"
           }
         }
       }
@@ -2594,6 +3133,16 @@
         }
       }
     },
+    "Lucky" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mujur"
+          }
+        }
+      }
+    },
     "Making your video…" : {
       "localizations" : {
         "id" : {
@@ -2620,6 +3169,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bekas yang tertinggal setelah jerawat pulih atau akibat paparan matahari. Akan memudar seiring waktu."
+          }
+        }
+      }
+    },
+    "Mellow" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Santai"
+          }
+        }
+      }
+    },
+    "Merry" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ceria"
           }
         }
       }
@@ -2704,6 +3273,16 @@
         }
       }
     },
+    "Moving up" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naik liga"
+          }
+        }
+      }
+    },
     "My skin trend" : {
       "localizations" : {
         "id" : {
@@ -2730,6 +3309,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nama, merek, atau kandungan"
+          }
+        }
+      }
+    },
+    "Never shared: photos, scans, skin results or your real name." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak pernah dibagikan: foto, pindaian, hasil kulit, atau nama aslimu."
           }
         }
       }
@@ -2764,6 +3353,16 @@
         }
       }
     },
+    "Nimble" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesit"
+          }
+        }
+      }
+    },
     "No change" : {
       "localizations" : {
         "id" : {
@@ -2790,6 +3389,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tidak ada pembelian sebelumnya untuk Akun Apple ini."
+          }
+        }
+      }
+    },
+    "No friends yet. Share your code, or type a friend's." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belum ada teman. Bagikan kodemu, atau ketik kode teman."
           }
         }
       }
@@ -2974,6 +3583,16 @@
         }
       }
     },
+    "Off — only you see your progress" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mati — hanya kamu yang melihat progresmu"
+          }
+        }
+      }
+    },
     "Often used in oil-control routines." : {
       "localizations" : {
         "id" : {
@@ -3154,6 +3773,36 @@
         }
       }
     },
+    "Otter" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berang-berang"
+          }
+        }
+      }
+    },
+    "Owl" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Burung Hantu"
+          }
+        }
+      }
+    },
+    "Panda" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Panda"
+          }
+        }
+      }
+    },
     "Papules" : {
       "localizations" : {
         "id" : {
@@ -3180,6 +3829,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Topi pesta"
+          }
+        }
+      }
+    },
+    "Penguin" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Penguin"
           }
         }
       }
@@ -3377,6 +4036,16 @@
         }
       }
     },
+    "Plucky" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tangguh"
+          }
+        }
+      }
+    },
     "Post" : {
       "localizations" : {
         "id" : {
@@ -3507,6 +4176,16 @@
         }
       }
     },
+    "Puppy" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anak Anjing"
+          }
+        }
+      }
+    },
     "Pustules" : {
       "localizations" : {
         "id" : {
@@ -3527,12 +4206,32 @@
         }
       }
     },
+    "Quiet" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pendiam"
+          }
+        }
+      }
+    },
     "Raised spots with a white or yellow centre, often with redness around them." : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Titik menonjol dengan bagian tengah putih atau kuning, sering disertai kemerahan di sekitarnya."
+          }
+        }
+      }
+    },
+    "Ranked on quest points this week. The top %lld move up on Monday." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diurutkan dari poin misi minggu ini. %lld teratas naik liga hari Senin."
           }
         }
       }
@@ -3597,6 +4296,16 @@
         }
       }
     },
+    "Redeem free month" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tukarkan sebulan gratis"
+          }
+        }
+      }
+    },
     "Reel" : {
       "localizations" : {
         "id" : {
@@ -3613,6 +4322,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pengingat dari Pimpi"
+          }
+        }
+      }
+    },
+    "Remove" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hapus"
+          }
+        }
+      }
+    },
+    "Remove %@" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hapus %@"
+          }
+        }
+      }
+    },
+    "Remove this friend?" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hapus teman ini?"
           }
         }
       }
@@ -3683,6 +4422,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rahang kanan"
+          }
+        }
+      }
+    },
+    "Robin" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Robin"
           }
         }
       }
@@ -3983,6 +4732,16 @@
         }
       }
     },
+    "Seal" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anjing Laut"
+          }
+        }
+      }
+    },
     "Search" : {
       "localizations" : {
         "id" : {
@@ -4123,6 +4882,16 @@
         }
       }
     },
+    "Shared: a made-up name like \"Sunny Otter\", your routine streak, this week's quest points and Pimpi's outfit." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dibagikan: nama samaran seperti \"Berang-berang Cerah Ceria\", streak rutinitasmu, poin misi minggu ini, dan pakaian Pimpi."
+          }
+        }
+      }
+    },
     "Shares your sticker's outline and numbers only." : {
       "localizations" : {
         "id" : {
@@ -4159,6 +4928,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mengilap di siang hari, pori terlihat."
+          }
+        }
+      }
+    },
+    "Show" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tampilkan"
           }
         }
       }
@@ -4209,6 +4988,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Foto samping tidak sejajar setepat foto depan."
+          }
+        }
+      }
+    },
+    "Sign in to iCloud in Settings to join." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masuk ke iCloud di Pengaturan untuk bergabung."
+          }
+        }
+      }
+    },
+    "Sign in to iCloud in Settings to see friends and leagues." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masuk ke iCloud di Pengaturan untuk melihat teman dan liga."
+          }
+        }
+      }
+    },
+    "Silver league" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liga Perak"
           }
         }
       }
@@ -4269,6 +5078,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kulit tampak lebih tenang dari pindaian terakhir."
+          }
+        }
+      }
+    },
+    "Skin results never count — only showing up." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hasil kulit tidak pernah dihitung — hanya kehadiranmu."
           }
         }
       }
@@ -4433,6 +5252,16 @@
         }
       }
     },
+    "Sloth" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kukang"
+          }
+        }
+      }
+    },
     "Slowly turn your head." : {
       "localizations" : {
         "id" : {
@@ -4453,12 +5282,32 @@
         }
       }
     },
+    "Snug" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nyaman"
+          }
+        }
+      }
+    },
     "Sources" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sumber"
+          }
+        }
+      }
+    },
+    "Sparkly" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berkilau"
           }
         }
       }
@@ -4479,6 +5328,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Persegi"
+          }
+        }
+      }
+    },
+    "Squirrel" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tupai"
           }
         }
       }
@@ -4563,6 +5422,16 @@
         }
       }
     },
+    "Steady" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantap"
+          }
+        }
+      }
+    },
     "Steady hands" : {
       "localizations" : {
         "id" : {
@@ -4641,6 +5510,26 @@
         }
       }
     },
+    "Stop sharing" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berhenti berbagi"
+          }
+        }
+      }
+    },
+    "Stop sharing?" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berhenti berbagi?"
+          }
+        }
+      }
+    },
     "Stop this challenge?" : {
       "localizations" : {
         "id" : {
@@ -4657,6 +5546,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Berhenti memakai %@"
+          }
+        }
+      }
+    },
+    "Stored in Apple's iCloud for this app. Turn it off any time and your profile is deleted." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disimpan di iCloud Apple untuk aplikasi ini. Matikan kapan saja dan profilmu akan dihapus."
           }
         }
       }
@@ -4707,6 +5606,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kacamata hitam"
+          }
+        }
+      }
+    },
+    "Sunny" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerah Ceria"
           }
         }
       }
@@ -4771,6 +5680,16 @@
         }
       }
     },
+    "Swift" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cepat"
+          }
+        }
+      }
+    },
     "Take off the shelf" : {
       "localizations" : {
         "id" : {
@@ -4831,12 +5750,32 @@
         }
       }
     },
+    "That code doesn't look right — it's 6 letters and numbers." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kodenya sepertinya salah — terdiri dari 6 huruf dan angka."
+          }
+        }
+      }
+    },
     "That was your first scan. Pro lets you scan as often as you like." : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Itu scan pertamamu. Dengan Pro kamu bisa scan sesering yang kamu mau."
+          }
+        }
+      }
+    },
+    "That's your own code." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Itu kodemu sendiri."
           }
         }
       }
@@ -5101,6 +6040,16 @@
         }
       }
     },
+    "Turtle" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kura-kura"
+          }
+        }
+      }
+    },
     "Understand my skin" : {
       "localizations" : {
         "id" : {
@@ -5261,6 +6210,16 @@
         }
       }
     },
+    "Whale" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paus"
+          }
+        }
+      }
+    },
     "What changed" : {
       "localizations" : {
         "id" : {
@@ -5351,6 +6310,16 @@
         }
       }
     },
+    "You are %@" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu adalah %@"
+          }
+        }
+      }
+    },
     "You are here" : {
       "localizations" : {
         "id" : {
@@ -5381,6 +6350,16 @@
         }
       }
     },
+    "You moved up this week!" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu naik liga minggu ini!"
+          }
+        }
+      }
+    },
     "You reached the end of the path!" : {
       "localizations" : {
         "id" : {
@@ -5407,6 +6386,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kamu sudah di sini sebelum ada Pro, jadi semuanya tetap milikmu."
+          }
+        }
+      }
+    },
+    "You've reached the most friends you can add." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu sudah mencapai jumlah teman maksimal."
           }
         }
       }
@@ -5541,6 +6530,26 @@
         }
       }
     },
+    "Your friend code: %@" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kode temanmu: %@"
+          }
+        }
+      }
+    },
+    "Your gift: a free month of Pro. Enter the code %@." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hadiahmu: Pro gratis sebulan. Masukkan kode %@."
+          }
+        }
+      }
+    },
     "Your journey" : {
       "localizations" : {
         "id" : {
@@ -5613,6 +6622,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Privasimu yang utama. Ini menjelaskan cara datamu dikelola saat memakai Skinalyze."
+          }
+        }
+      }
+    },
+    "Your public profile is deleted. Friends can't see your streak until you join again." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profil publikmu dihapus. Teman tidak bisa melihat streak-mu sampai kamu bergabung lagi."
           }
         }
       }
@@ -5693,6 +6712,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seluruh riwayat dan Bandingkan"
+          }
+        }
+      }
+    },
+    "Zesty" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bersemangat"
           }
         }
       }

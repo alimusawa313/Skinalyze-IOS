@@ -326,7 +326,7 @@ matches are not shown.
 
 ---
 
-## Phase 9 — Recaps, journey and social  ◐ (local parts shipped; social waits on a backend decision)
+## Phase 9 — Recaps, journey and social  ☑ (owner setup open: CloudKit indexes, offer code)
 **Ships:** E11, E12, E14, E17, G6 now · E15, E16, G8 later · **Size:** large (social needs a backend decision)
 
 **Shipped (2026-11-23), all on the phone:**
@@ -349,12 +349,34 @@ matches are not shown.
 - [x] Checked in the Simulator with `-demoActivity YES -recapToday yyyy-MM-dd`; UI tests (`JourneyUITests`) cover the
   weekly recap, the year Wrapped with highlights, the journey + challenge swap, and AX5. EN + ID.
 
-**Still open:**
-- [ ] **E15 friend streaks, E16 leagues, G8 referral** — need data to leave the device (streak and points only).
-  **Decision needed from the owner:** CloudKit (sharing + public database, no server to run, Apple accounts only)
-  vs. a small backend. Recommendation: CloudKit public database for leagues and a CloudKit share for friend streaks;
-  referral through App Store offer codes (owner sets them up in App Store Connect). No photos, ever.
-- [ ] **Owner's phone:** open the Shelf on a Sunday to see the first weekly recap; start a challenge.
+**Social (2026-11-23) — owner decision: no server of our own, so the app's iCloud public database:**
+- [x] **Opt-in only.** The join page says what is shared before anything leaves the phone: a generated name
+  ("Sunny Otter", from fixed word lists, so no free text and nothing to moderate), the routine streak, this week's
+  quest points and Pimpi's outfit. Never photos, scans, skin results or a real name. "Stop sharing" deletes the
+  public profile. Identity, friends and tier sync through the user's own iCloud (inside the engagement record).
+- [x] **E15 friends:** add by 6-character code (no look-alike characters) or invite link `skinalyze://friend/<code>`.
+  Friend streak = days in a row you've both kept your routine; weekly friend quest = 400 points together.
+- [x] **E16 weekly leagues:** five tiers, ranked on this week's quest points only. Top 5 with points move up on
+  Monday; in a room of 10+ the bottom 3 move down; nobody leaves bronze. One room per tier for now
+  (`LeagueEngine.groupsPerTier`; raise it as the app grows). Points are reported by each phone (no server to check
+  them) — acceptable for effort points, noted as a risk.
+- [x] **G8 invites (changed from the backlog):** the invited friend gets a free month of Pro through an App Store
+  custom offer code (`Referral.offerCode`, placeholder `SKINFRIEND`); the inviter sees "Friends you invited". The
+  backlog's "get a month" for the inviter is not built: without a server the app can't grant it (promotional offers
+  need a server signature, and unlocking Pro outside StoreKit risks App Review 3.1.1).
+- [x] Logic tested in the kit (`SocialTests`); screens covered by `SocialUITests` on an in-memory service
+  (`-socialDemo YES`, the Simulator has no iCloud). EN + ID.
+
+**Owner setup before social works for real:**
+- [ ] **CloudKit Console** (container `iCloud.com.Patani.Skinalyze`, Development, then deploy to Production):
+  record type `SocialProfile` is created the first time a profile is published from a debug build. Then add indexes:
+  `recordName` QUERYABLE; `weekStart`, `tier`, `room`, `invitedBy` QUERYABLE; `weekPoints` SORTABLE. Without them
+  friends still load (fetched by record name) but the league and invite count stay empty.
+- [ ] **App Store Connect:** create the custom offer code (one free month of Pro) and put its name in
+  `Referral.offerCode`.
+- [ ] **App Privacy labels:** add "Other user content / gameplay-style data (streak, points)" linked to the user
+  (iCloud), used for app functionality, not tracking. Mention friends and leagues in the privacy policy.
+- [ ] **Owner's phone:** join, add a second device or a friend by code, check the league after Monday.
 
 ## Phase 10 — Product utilities (pick by demand)  ☐
 **Ships (candidates):** P3–P14, G7, G9, G10
@@ -380,5 +402,5 @@ when picked.
 | 6 Quests + rewards | E5–E8, E13, PI5, PI6 | 1, 5 (Pro sets) | — |
 | 7 Skin School | E9, E10 | 5 | topics + wording sign-off |
 | 8 Spot timeline + heat map | P1, P2 | 0 (confirmed 3D), 5 | scans over time |
-| 9 Recaps + social ◐ | E11–E17, G6, G8 | 1, 6 | backend decision, go/no-go |
+| 9 Recaps + social ☑ | E11–E17, G6, G8 | 1, 6 | backend decision, go/no-go |
 | 10 Utilities | P3–P14, G7, G9, G10 | varies | pick by demand |

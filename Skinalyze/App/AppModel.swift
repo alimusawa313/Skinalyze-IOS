@@ -1,3 +1,4 @@
+import SkinalyzeKit
 import Foundation
 import Observation
 import SwiftData
@@ -26,6 +27,8 @@ final class AppModel {
     var isScanning = false
     var presentedScan: PresentedScan?
     var isShowingProfile = false
+    /// Set by an invite link (`skinalyze://friend/<code>`).
+    var pendingInvite: FriendCode?
 
     func startScan() {
         selectedTab = .today
@@ -38,7 +41,8 @@ final class AppModel {
         presentedScan = id.map(PresentedScan.init(id:))
     }
 
-    /// Handles `skinalyze://scan`, `skinalyze://timeline`, `skinalyze://products`, `skinalyze://search`.
+    /// Handles `skinalyze://scan`, `skinalyze://timeline`, `skinalyze://products`, `skinalyze://search` and
+    /// `skinalyze://friend/<code>` (invites; an invalid code is ignored).
     func open(_ url: URL) {
         guard url.scheme == "skinalyze" else { return }
         switch url.host() {
@@ -46,6 +50,7 @@ final class AppModel {
         case "timeline": selectedTab = .timeline
         case "products": selectedTab = .products
         case "search": selectedTab = .search
+        case "friend": pendingInvite = url.pathComponents.dropFirst().first.flatMap { FriendCode($0) }
         default: selectedTab = .today
         }
     }

@@ -13,15 +13,16 @@ public struct SyncedEngagement: Codable, Equatable, Sendable {
     public var bestRoutineStreak: Int
     public var school: SchoolProgress
     public var challenges: ChallengeBook
+    public var social: SocialState
     /// When this copy last changed. `distantPast` for a copy that has never been synced (a fresh install).
     public var updatedAt: Date
 
     public static let empty = SyncedEngagement(doneDays: [], freezes: FreezeLedger(available: 1), weekendOff: false,
                                                celebrated: [], rewards: .empty, bestRoutineStreak: 0, school: .empty,
-                                               challenges: .empty, updatedAt: .distantPast)
+                                               challenges: .empty, social: .empty, updatedAt: .distantPast)
 
     public init(doneDays: Set<DayStamp>, freezes: FreezeLedger, weekendOff: Bool, celebrated: Set<String>,
-                rewards: RewardLedger, bestRoutineStreak: Int, school: SchoolProgress = .empty, challenges: ChallengeBook = .empty, updatedAt: Date) {
+                rewards: RewardLedger, bestRoutineStreak: Int, school: SchoolProgress = .empty, challenges: ChallengeBook = .empty, social: SocialState = .empty, updatedAt: Date) {
         self.doneDays = doneDays
         self.freezes = freezes
         self.weekendOff = weekendOff
@@ -30,11 +31,12 @@ public struct SyncedEngagement: Codable, Equatable, Sendable {
         self.bestRoutineStreak = bestRoutineStreak
         self.school = school
         self.challenges = challenges
+        self.social = social
         self.updatedAt = updatedAt
     }
 
     private enum CodingKeys: String, CodingKey {
-        case doneDays, freezes, weekendOff, celebrated, rewards, bestRoutineStreak, school, challenges, updatedAt
+        case doneDays, freezes, weekendOff, celebrated, rewards, bestRoutineStreak, school, challenges, social, updatedAt
     }
 
     /// Tolerant: copies synced before a field existed still load.
@@ -48,6 +50,7 @@ public struct SyncedEngagement: Codable, Equatable, Sendable {
         bestRoutineStreak = try c.decodeIfPresent(Int.self, forKey: .bestRoutineStreak) ?? 0
         school = try c.decodeIfPresent(SchoolProgress.self, forKey: .school) ?? .empty
         challenges = try c.decodeIfPresent(ChallengeBook.self, forKey: .challenges) ?? .empty
+        social = (try? c.decodeIfPresent(SocialState.self, forKey: .social)) ?? .empty
         updatedAt = try c.decodeIfPresent(Date.self, forKey: .updatedAt) ?? .distantPast
     }
 
@@ -66,6 +69,7 @@ public struct SyncedEngagement: Codable, Equatable, Sendable {
                                 bestRoutineStreak: max(a.bestRoutineStreak, b.bestRoutineStreak),
                                 school: SchoolProgress.merged(a.school, b.school),
                                 challenges: ChallengeBook.merged(a.challenges, b.challenges),
+                                social: SocialState.merged(newer: newer.social, older: older.social),
                                 updatedAt: max(a.updatedAt, b.updatedAt))
     }
 

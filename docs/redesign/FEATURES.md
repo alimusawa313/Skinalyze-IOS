@@ -95,8 +95,8 @@ with depth, no outlines, and moods.
 - [x] **E14 Monthly recap** (Phase 9) — short summary card. · Free
 
 ### Social (no faces)
-- [ ] **E15 Friend streaks and friend quests** — share streak and points only. · Free
-- [ ] **E16 Weekly leagues** — ranked on consistency points, never on skin. · Free
+- [x] **E15 Friend streaks and friend quests** (Phase 9, iCloud public database) — share streak and points only. · Free
+- [x] **E16 Weekly leagues** (Phase 9) — ranked on consistency points, never on skin. · Free
 - [x] **E17 30-day challenges** (Phase 9) ("30 days of sunscreen") with a finisher card. · Free
 
 ---
@@ -113,7 +113,7 @@ with depth, no outlines, and moods.
 - [x] **G6 Skin Wrapped** (Phase 9) — yearly/quarterly recap: best streak, most-improved zone, product that coincided with the
   best month. · Free
 - [ ] **G7 Routine cards** — "my shelf" as a shareable image; others tap to check those products for their skin. · Free
-- [ ] **G8 Referral** — give a month of Pro, get a month. · —
+- [x] **G8 Referral** (Phase 9: invited friend gets a month via an App Store offer code; inviter gets thanks, not a month — needs a server) — give a month of Pro, get a month. · —
 - [ ] **G9 Creator kit** — reel templates + affiliate code. · —
 - [ ] **G10 Share-sheet entry from TikTok Shop / Shopee / Tokopedia product pages** — extends the existing share
   extension. · Free
