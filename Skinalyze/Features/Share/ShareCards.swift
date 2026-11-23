@@ -62,6 +62,8 @@ struct ShareCardView: View {
     let content: ShareCardContent
     let format: ShareCardFormat
     var showsWatermark = true
+    /// Shimmer video only: where the holo sheen crosses the sticker (nil: no sheen).
+    var sheen: Double?
 
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
@@ -78,7 +80,7 @@ struct ShareCardView: View {
 
     @ViewBuilder private var card: some View {
         switch content {
-        case let .skin(share): SkinShareCard(share: share, format: format)
+        case let .skin(share): SkinShareCard(share: share, format: format, sheen: sheen)
         case let .verdict(share): VerdictShareCard(share: share, format: format)
         case let .compare(share): CompareShareCard(share: share, format: format)
         case let .streak(days): StreakShareCard(days: days)
@@ -158,6 +160,7 @@ private struct StreakChip: View {
 private struct SkinShareCard: View {
     let share: SkinShare
     let format: ShareCardFormat
+    var sheen: Double?
 
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
@@ -189,10 +192,18 @@ private struct SkinShareCard: View {
             ZStack {
                 Image(uiImage: art.backing).resizable().scaledToFit()
                 Image(uiImage: art.subject).resizable().scaledToFit()
+                if let sheen {
+                    SheenBand(position: sheen).mask { Image(uiImage: art.backing).resizable().scaledToFit() }
+                }
             }
             .shadow(color: .black.opacity(CardMetrics.shadowOpacity), radius: CardMetrics.shadowRadius, y: CardMetrics.shadowDrop)
         case let .silhouette(shape):
             Image(uiImage: shape).resizable().scaledToFit()
+                .overlay {
+                    if let sheen {
+                        SheenBand(position: sheen, overWhite: true).mask { Image(uiImage: shape).resizable().scaledToFit() }
+                    }
+                }
                 .shadow(color: .black.opacity(CardMetrics.shadowOpacity), radius: CardMetrics.shadowRadius, y: CardMetrics.shadowDrop)
         case .none:
             Pimpi(mood: .happy).frame(maxWidth: CardMetrics.pimpiMaxSide, maxHeight: CardMetrics.pimpiMaxSide)

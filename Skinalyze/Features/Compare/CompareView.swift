@@ -16,6 +16,8 @@ struct CompareView: View {
     /// Both photos re-rendered with the eyes on the same points, so the faces line up exactly.
     @State private var alignedEarlier: AlignedPhoto?
     @State private var alignedLater: AlignedPhoto?
+    @State private var sharedCard: ShareCardSource?
+    @State private var sharedVideo: VideoShareSource?
 
     var body: some View {
         ScrollView {
@@ -35,16 +37,29 @@ struct CompareView: View {
             .frame(maxWidth: .infinity)
         }
         .dsCanvas()
+        .sheet(item: $sharedCard) { ShareCardSheet(source: $0) }
+        .sheet(item: $sharedVideo) { VideoShareSheet(source: $0) }
         .onAppear { quests?.did(.lookBack, isPro: access?.policy.hasFullAccess ?? false) }
         .task(id: angle) { await alignPhotos() }
         .navigationTitle("Compare")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                ShareCardButton {
-                    guard let before = alignedEarlier?.image, let after = alignedLater?.image else { return nil }
-                    return .compare(earlier: earlier, later: later, earlierPhoto: before, laterPhoto: after)
+                Menu {
+                    Button("Picture", systemImage: "photo") {
+                        guard let before = alignedEarlier?.image, let after = alignedLater?.image else { return }
+                        sharedCard = .compare(earlier: earlier, later: later, earlierPhoto: before, laterPhoto: after)
+                    }
+                    Button("Slider video", systemImage: "slider.horizontal.below.rectangle") {
+                        guard let before = alignedEarlier?.image, let after = alignedLater?.image else { return }
+                        sharedVideo = .wipe(CompareShare(earlier: before, later: after, earlierDate: earlier.createdAt,
+                                                         laterDate: later.createdAt, earlierIndex: earlier.breakoutIndex,
+                                                         laterIndex: later.breakoutIndex))
+                    }
+                } label: {
+                    Label("Share", systemImage: "square.and.arrow.up")
                 }
+                .accessibilityIdentifier("compareShare")
                 .disabled(alignedEarlier == nil || alignedLater == nil)
             }
             ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }

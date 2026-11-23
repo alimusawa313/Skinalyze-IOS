@@ -107,11 +107,14 @@ struct ScanResultView: View {
     private var policy: AccessPolicy { access?.policy ?? AccessPolicy(hasFullAccess: true) }
 
     /// Scans with a 3D head offer the turntable video as well as the card; others share the card directly.
-    @ViewBuilder private var shareControl: some View {
-        let label = Label("Share", systemImage: "square.and.arrow.up")
-        if session.faceMesh != nil {
-            Menu {
-                Button("Skin card", systemImage: "rectangle.portrait") { shareCard() }
+    /// The skin card as a picture or a shimmering video, and the 3D turntable when there is a 3D head.
+    private var shareControl: some View {
+        Menu {
+            Button("Skin card", systemImage: "rectangle.portrait") { shareCard() }
+            Button("Shimmer video", systemImage: "sparkles.rectangle.stack") {
+                sharedVideo = .shimmer(session, streakDays: engagement?.routine.count ?? 0)
+            }
+            if session.faceMesh != nil {
                 Button("3D turntable", systemImage: "rotate.3d") {
                     if policy.allows(.turntableExport) {
                         sharedVideo = TurntableInput(session: session).map(VideoShareSource.turntable)
@@ -119,12 +122,11 @@ struct ScanResultView: View {
                         paywall = .turntable
                     }
                 }
-            } label: { label }
-            .accessibilityIdentifier("shareCard")
-        } else {
-            Button(action: shareCard) { label }
-                .accessibilityIdentifier("shareCard")
+            }
+        } label: {
+            Label("Share", systemImage: "square.and.arrow.up")
         }
+        .accessibilityIdentifier("shareCard")
     }
 
     private func shareCard() {

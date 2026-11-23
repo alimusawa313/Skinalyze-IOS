@@ -196,6 +196,26 @@ final class CoreFlowsUITests: XCTestCase {
         attachScreenshot("3D turntable")
     }
 
+    /// Compare can be shared as a before/after slider video.
+    func testSliderVideoIsMade() {
+        openDock("dock.deck")
+        XCTAssertTrue(app.buttons["Compare"].waitForExistence(timeout: 10))
+        app.buttons["Compare"].tap()
+        XCTAssertTrue(scanRows.element(boundBy: 0).waitForExistence(timeout: 10))
+        scanRows.element(boundBy: 0).tap()
+        scanRows.element(boundBy: 1).tap()
+        app.buttons["Compare these two"].tap()
+        let share = app.buttons["compareShare"]
+        XCTAssertTrue(share.waitForExistence(timeout: 10))
+        let enabled = NSPredicate(format: "isEnabled == true")
+        expectation(for: enabled, evaluatedWith: share)
+        waitForExpectations(timeout: 15)
+        share.tap()
+        app.buttons["Slider video"].tap()
+        XCTAssertTrue(app.buttons["videoShareButton"].waitForExistence(timeout: 60))
+        attachScreenshot("Slider video")
+    }
+
     func testCompareTwoScans() {
         openDock("dock.deck")
         XCTAssertTrue(app.buttons["Compare"].waitForExistence(timeout: 10))

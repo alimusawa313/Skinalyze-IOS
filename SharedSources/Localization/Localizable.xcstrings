@@ -2826,6 +2826,16 @@
         }
       }
     },
+    "Picture" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gambar"
+          }
+        }
+      }
+    },
     "Pimpi" : {
       "shouldTranslate" : false
     },
@@ -3605,6 +3615,16 @@
         }
       }
     },
+    "Shimmer video" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video berkilau"
+          }
+        }
+      }
+    },
     "Shiny by midday, visible pores." : {
       "localizations" : {
         "id" : {
@@ -3831,6 +3851,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lewati"
+          }
+        }
+      }
+    },
+    "Slider video" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video geser"
           }
         }
       }

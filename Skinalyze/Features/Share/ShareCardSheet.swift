@@ -187,6 +187,7 @@ struct ShareCardButton: View {
 enum ShareCardDump {
     static func run(into folder: String, scans: [ScanSession]) async {
         var sources: [(String, ShareCardSource, Bool)] = [("streak", .streak(days: 128), false)]
+        var videos: [(String, VideoShareSource, Bool)] = []
         if let latest = scans.first {
             sources.append(("skin", .skin(latest, streakDays: 12), false))
             sources.append(("skin-hidden", .skin(latest, streakDays: 12), true))
@@ -204,9 +205,22 @@ enum ShareCardDump {
             let first = await FaceAligner.shared.aligned(earlierImage, key: "dump-earlier")?.image ?? earlierImage
             let second = await FaceAligner.shared.aligned(laterImage, key: "dump-later")?.image ?? laterImage
             sources.append(("compare", .compare(earlier: earlier, later: later, earlierPhoto: first, laterPhoto: second), false))
+            videos.append(("before-after", .wipe(CompareShare(earlier: first, later: second, earlierDate: earlier.createdAt,
+                                                              laterDate: later.createdAt, earlierIndex: earlier.breakoutIndex,
+                                                              laterIndex: later.breakoutIndex)), false))
+        }
+        if let latest = scans.first {
+            videos.append(("shimmer", .shimmer(latest, streakDays: 12), false))
+            videos.append(("shimmer-hidden", .shimmer(latest, streakDays: 12), true))
         }
         let directory = URL(fileURLWithPath: folder, isDirectory: true)
         try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        for (name, source, hidesFace) in videos {
+            guard let url = try? await source.make(hidesFace, true, { _ in }) else { continue }
+            let target = directory.appendingPathComponent("\(name).mp4")
+            try? FileManager.default.removeItem(at: target)
+            try? FileManager.default.copyItem(at: url, to: target)
+        }
         for (name, source, hidesFace) in sources {
             guard let content = await source.content(hidesFace) else { continue }
             for format in ShareCardFormat.allCases {
