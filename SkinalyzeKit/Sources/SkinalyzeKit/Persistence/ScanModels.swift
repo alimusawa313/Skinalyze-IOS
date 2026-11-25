@@ -10,6 +10,9 @@ public final class ScanSession {
     public var createdAt: Date = Date.distantPast
     public var captureModeRaw: String = CaptureMode.camera2D.rawValue
     public var modelVersion: String = ""
+    /// How the detector's output was turned into counts (`DetectionPipeline.shippingVersion`). Optional, so the
+    /// CloudKit schema change is additive; `nil` on scans saved before versioning (ML-PLAN M1.7).
+    public var pipelineVersion: String?
     public var legacyScore: Int = 0
     public var blackheadCount: Int = 0
     public var whiteheadCount: Int = 0
@@ -58,6 +61,11 @@ public final class ScanSession {
 
     public var band: BreakoutBand { BreakoutBand.classify(index: breakoutIndex) }
 
+    /// Model + pipeline this scan was counted with; trends mark where it changes.
+    public var countingVersion: CountingVersion {
+        CountingVersion(modelVersion: modelVersion, pipelineVersion: pipelineVersion)
+    }
+
     /// `true` when detections carry face zones (scans from the new pipeline).
     public var hasZoneData: Bool { allDetections.contains { $0.zone != nil } }
 
@@ -80,6 +88,7 @@ public final class ScanSession {
         session.createdAt = draft.createdAt
         session.captureModeRaw = draft.captureMode.rawValue
         session.modelVersion = draft.modelVersion
+        session.pipelineVersion = draft.pipelineVersion
         session.legacyScore = draft.legacyScore
         session.blackheadCount = draft.counts[.blackhead]
         session.whiteheadCount = draft.counts[.whitehead]

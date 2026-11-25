@@ -5,16 +5,17 @@ import Vision
 import SkinalyzeKit
 
 /// Runs the acne model. Loads it **once** and works off the main actor (the old code reloaded the 31 MB model per
-/// photo and ran it synchronously on the main thread).
+/// photo and ran it synchronously on the main thread). Everything around the Core ML call lives in SkinalyzeKit's
+/// `DetectionPipeline`, which `Tools/DetectorBench` runs too (ML-PLAN M0.1).
 actor AcneDetector {
     static let shared = AcneDetector()
     static let modelVersion = "acneObj28200"
 
     enum DetectorError: Error {
         case modelUnavailable
-        case invalidImage
     }
 
+    private let pipeline = DetectionPipeline(configuration: .shipping)
     private var model: VNCoreMLModel?
 
     private func loadedModel() throws -> VNCoreMLModel {
@@ -28,41 +29,33 @@ actor AcneDetector {
         }
     }
 
-    /// Detects lesions in an upright image. Runs on a square face crop at native resolution (`.scaleFill` on a square
-    /// input means no distortion) and returns boxes in **full-image** normalized coordinates, filtered with a confidence
-    /// threshold and cross-class NMS.
+    /// Detects lesions in an upright image and returns boxes in **full-image** normalized coordinates.
     func detect(in image: CGImage, face: ImageRect?) throws -> [RawDetection] {
-        let imageSize = CGSize(width: image.width, height: image.height)
-        let cropRect = face.map { FaceCrop.squarePixelRect(face: $0, imageSize: imageSize) }
-            ?? CGRect(origin: .zero, size: imageSize)
-        guard let crop = image.cropping(to: cropRect.integral) else { throw DetectorError.invalidImage }
-
-        let request = VNCoreMLRequest(model: try loadedModel())
-        request.imageCropAndScaleOption = .scaleFill
-        try VNImageRequestHandler(cgImage: crop, orientation: .up).perform([request])
-        let observations = request.results as? [VNRecognizedObjectObservation] ?? []
-
-        let raw = observations.compactMap { observation -> RawDetection? in
-            guard let label = observation.labels.first, let type = LesionType(modelLabel: label.identifier) else {
-                return nil
-            }
-            return RawDetection(
-                type: type,
-                confidence: Double(label.confidence),
-                box: Self.toImageSpace(observation.boundingBox, crop: cropRect.integral, imageSize: imageSize)
-            )
+        let model = try loadedModel()
+        let mask = pipeline.configuration.masksLandmarks ? Self.skinMask(in: image, face: face) : nil
+        return try pipeline.detect(in: image, face: face, mask: mask) { tile in
+            try CoreMLDetections.run(model, on: tile)
         }
-        return DetectionFilter.filter(raw)
+    }
+
+    /// The mask is an accuracy aid: if Vision can't find landmarks, the scan still runs unmasked.
+    private static func skinMask(in image: CGImage, face: ImageRect?) -> SkinMask? {
+        guard let face else { return nil }
+        do {
+            return try VisionFaceAnalysis.landmarks(in: image, face: face)
+                .map { SkinMaskBuilder.mask(for: $0, face: face) }
+        } catch {
+            ScanAnalyzer.logger.error("Face landmarks failed: \(error.localizedDescription)")
+            return nil
+        }
     }
 
     /// Maps a crop-normalized Vision box (bottom-left origin) to full-image normalized coordinates.
     static func toImageSpace(_ box: CGRect, crop: CGRect, imageSize: CGSize) -> ImageRect {
-        let cropBottom = imageSize.height - crop.maxY // crop's bottom edge, measured from the image bottom
-        return ImageRect(
-            x: (crop.minX + box.minX * crop.width) / imageSize.width,
-            y: (cropBottom + box.minY * crop.height) / imageSize.height,
-            width: box.width * crop.width / imageSize.width,
-            height: box.height * crop.height / imageSize.height
+        ImageSpace.toImage(
+            ImageRect(x: box.minX, y: box.minY, width: box.width, height: box.height),
+            region: crop,
+            imageSize: imageSize
         )
     }
 }
@@ -116,6 +109,7 @@ enum ScanAnalyzer {
             createdAt: date,
             captureMode: .camera2D,
             modelVersion: AcneDetector.modelVersion,
+            pipelineVersion: DetectionPipeline.shippingVersion,
             counts: counts,
             legacyScore: LegacySeverityScale.score(for: counts),
             captures: captures.map { CaptureDraft(angle: $0.angle, imageData: $0.encoded) },
@@ -130,16 +124,11 @@ enum ScanAnalyzer {
     }
 
     static func faceBounds(in image: CGImage) -> ImageRect? {
-        let request = VNDetectFaceRectanglesRequest()
         do {
-            try VNImageRequestHandler(cgImage: image, orientation: .up).perform([request])
+            return try VisionFaceAnalysis.largestFace(in: image)
         } catch {
             logger.error("Face detection on capture failed: \(error.localizedDescription)")
             return nil
         }
-        guard let box = request.results?.max(by: { $0.boundingBox.width < $1.boundingBox.width })?.boundingBox else {
-            return nil
-        }
-        return ImageRect(x: box.minX, y: box.minY, width: box.width, height: box.height)
     }
 }

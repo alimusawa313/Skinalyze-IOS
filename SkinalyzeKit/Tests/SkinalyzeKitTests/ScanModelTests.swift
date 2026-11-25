@@ -101,6 +101,28 @@ struct ScanModelTests {
         #expect(session.detections(for: .front, types: [.darkSpot]).isEmpty)
         #expect(session.detections(for: .left, types: Set(LesionType.allCases)).count == 1)
     }
+
+    @Test("New scans store the pipeline version they were counted with (ML-PLAN M1.7)")
+    func pipelineVersionStored() throws {
+        let context = try makeContext()
+        let base = try draft()
+        let versioned = ScanDraft(
+            createdAt: base.createdAt, captureMode: base.captureMode, modelVersion: base.modelVersion,
+            pipelineVersion: "2d-2", counts: base.counts, legacyScore: base.legacyScore, captures: base.captures,
+            detections: base.detections, productIDs: base.productIDs, legacyResultID: nil
+        )
+        let session = ScanSession.insert(versioned, into: context)
+        #expect(session.pipelineVersion == "2d-2")
+        #expect(session.countingVersion == CountingVersion(modelVersion: "acneObj28200", pipelineVersion: "2d-2"))
+    }
+
+    @Test("Scans saved before versioning have no pipeline version and count as the first one")
+    func pipelineVersionDefault() throws {
+        let context = try makeContext()
+        let session = ScanSession.insert(try draft(), into: context)
+        #expect(session.pipelineVersion == nil)
+        #expect(session.countingVersion == CountingVersion(modelVersion: "acneObj28200", pipelineVersion: "2d-1"))
+    }
 }
 
 @Suite("Store location")
