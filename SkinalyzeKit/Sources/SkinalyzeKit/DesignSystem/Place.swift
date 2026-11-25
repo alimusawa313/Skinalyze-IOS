@@ -123,17 +123,19 @@ public struct ChunkyButtonStyle: ButtonStyle {
 
     public func makeBody(configuration: Configuration) -> some View {
         let pressed = configuration.isPressed
+        // Disabled: a flat light capsule with secondary ink, not a faded one, so the words stay readable (the label
+        // often says what to do first, e.g. "Press and hold to seal it").
+        let filled = kind == .filled && isEnabled
         configuration.label
             .font(.system(.headline, design: .rounded).weight(.heavy))
-            .foregroundStyle(kind == .filled ? Color.ds.canvas : Color.ds.ink)
+            .foregroundStyle(filled ? Color.ds.canvas : (isEnabled ? Color.ds.ink : Color.ds.inkSecondary))
             .multilineTextAlignment(.center)
             .padding(.horizontal, Spacing.lg)
             .frame(maxWidth: fullWidth ? .infinity : nil, minHeight: minHeight)
-            .background(Capsule().fill(kind == .filled ? Color.ds.ink : Color.ds.surface))
+            .background(Capsule().fill(filled ? Color.ds.ink : Color.ds.surface))
             .offset(y: pressed ? Chunk.depth : 0)
-            .background(Capsule().fill(kind == .filled ? Color.ds.inkEdge : ground.edge).offset(y: Chunk.depth))
+            .background(Capsule().fill(filled ? Color.ds.inkEdge : ground.edge).offset(y: isEnabled ? Chunk.depth : 0))
             .padding(.bottom, Chunk.depth)
-            .opacity(isEnabled ? 1 : 0.45)
             .animation(MotionToken.snappy.resolved(reduceMotion: reduceMotion).animation, value: pressed)
             .contentShape(Capsule())
             .sensoryFeedback(.impact(weight: .light), trigger: pressed) { _, isPressed in isPressed }

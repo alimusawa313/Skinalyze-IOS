@@ -29,6 +29,17 @@ final class TutorialUITests: XCTestCase {
         launch([])
         XCTAssertTrue(gotIt.waitForExistence(timeout: 8), "Home offers a coach mark")
         snap("C1 Home coach")
+        do {
+            try app.performAccessibilityAudit(for: [.contrast, .elementDetection, .hitRegion, .sufficientElementDescription]) { issue in
+                // Only the coach is judged here: everything behind the dim is the Home screen (audited elsewhere).
+                guard let label = issue.element?.label else { return true }
+                return !(label == "Got it" || label.contains("Show up each day"))
+            }
+        } catch {
+            // -902: the audit isn't available on this simulator runtime; anything else is a real failure.
+            let code = (error as NSError).code
+            if code != -902 { XCTFail("Accessibility audit of the coach mark failed: \(error)") }
+        }
         gotIt.tap()
         sleep(1)
         XCTAssertFalse(gotIt.exists)

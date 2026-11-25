@@ -363,7 +363,7 @@ private struct OnboardingShelf: View {
                                 Text(slot.title).font(.system(.headline, design: .rounded).weight(.heavy))
                                 Text(product.map { "\($0.brand) · \($0.name)" } ?? String(localized: "Add"))
                                     .font(.system(.footnote, design: .rounded).weight(.bold))
-                                    .foregroundStyle(.secondary)
+                                    .opacity(0.85) // softer than the title, still readable on white and on ink
                                     .lineLimit(2)
                             }
                             Spacer(minLength: 0)
@@ -465,7 +465,7 @@ struct SelectCard: View {
                 if let subtitle {
                     Text(subtitle)
                         .font(.system(.footnote, design: .rounded).weight(.bold))
-                        .foregroundStyle(.secondary)
+                        .opacity(0.85) // softer than the title, still readable on white and on ink
                 }
             }
             .multilineTextAlignment(.leading)

@@ -49,19 +49,21 @@ struct PimpiPathProgress: View {
 struct NameTag: View {
     let name: String
 
+    /// The tag grows with the text size, so its words never have to shrink.
+    @ScaledMetric(relativeTo: .caption2) private var width: CGFloat = 118
+    @ScaledMetric(relativeTo: .caption2) private var height: CGFloat = 64
+    @ScaledMetric(relativeTo: .caption2) private var band: CGFloat = 18
+
     private enum Metrics {
-        static let width: CGFloat = 118
-        static let height: CGFloat = 64
-        static let band: CGFloat = 18
         static let tilt: Double = -6
     }
 
     var body: some View {
         VStack(spacing: 0) {
             Text("HELLO")
-                .font(.system(size: 10, weight: .heavy, design: .rounded))
+                .font(.system(.caption2, design: .rounded).weight(.heavy))
                 .foregroundStyle(Color.ds.surface)
-                .frame(maxWidth: .infinity, minHeight: Metrics.band)
+                .frame(maxWidth: .infinity, minHeight: band)
                 .background(Color.ds.signal)
             Text(name.isEmpty ? " " : name)
                 .font(.ds.pimpiSmall)
@@ -72,7 +74,7 @@ struct NameTag: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .contentTransition(.interpolate)
         }
-        .frame(width: Metrics.width, height: Metrics.height)
+        .frame(width: width, height: height)
         .background(Color.ds.surface)
         .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
         .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Color.ds.edge).offset(y: Chunk.depthSmall))

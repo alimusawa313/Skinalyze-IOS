@@ -194,8 +194,16 @@ Duo closed, folded and unfolded, landscape, AX5, VoiceOver pass, Reduce Motion),
 - **O4 First week**
   - [x] "First week n/7" chip on Home (Home has no room for a card) opening the path; scarf reward and celebration
 - **O5 Polish and sign-off**
-  - [ ] Indonesian for every new string; copy lint; Duo pose matrix; AX5; VoiceOver; Reduce Motion
-  - [ ] Full recordings of the onboarding and first week, frame-checked; install on the owner's phone
+  - [x] Indonesian for every new string; copy lint (0); largest text sizes (XXXL, AX5); landscape; Reduce Motion run
+  - [x] Accessibility audit of every scene and the coach mark, light and dark (contrast, labels, hit areas, Dynamic
+        Type). Fixed on the way: disabled buttons were faded below contrast (now a flat light button, app-wide),
+        option subtitles, the name tag now grows with the text
+  - [x] iPhone Duo outer display (closed, portrait): every scene
+  - [ ] iPhone Duo unfolded and tabletop poses: the Simulator can't pose the Duo (`simctl` has no pose control) —
+        check on hardware, or with RocketSim's `rocketsim duo pose book|open`
+  - [x] Recordings of the onboarding frame-checked (wake and wave, backpack, promise lid, plan card); motion lab for
+        the poses and scarf; installed on the owner's phone
+  - [ ] The coached first scan on a real camera (the Simulator has none)
 
 ## 9. Decisions for the owner
 
