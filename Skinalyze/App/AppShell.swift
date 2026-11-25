@@ -38,9 +38,11 @@ struct AppShell: View {
         @Bindable var appModel = appModel
         let showsDock = !appModel.isScanning && !isKeyboardVisible
         ZStack(alignment: dockOnSide ? .trailing : .bottom) {
+            // Pages crossfade in place. No scaling: each page paints its own sky and hill edge to edge, and a page
+            // shrinking mid-switch would flash bare gaps at the top and bottom of the screen.
             page
                 .id(appModel.selectedTab == .search ? AppModel.Tab.products : appModel.selectedTab)
-                .transition(reduceMotion ? .opacity : .opacity.combined(with: .scale(scale: 0.97)))
+                .transition(.opacity)
                 .safeAreaPadding(.trailing, dockOnSide && showsDock ? MirrorDock.sideClearance : 0)
             if showsDock {
                 MirrorDock(selection: $appModel.selectedTab, isVertical: dockOnSide)
@@ -48,7 +50,9 @@ struct AppShell: View {
                     .transition(.move(edge: dockOnSide ? .trailing : .bottom).combined(with: .opacity))
             }
         }
-        .animation(MotionToken.bouncy.resolved(reduceMotion: reduceMotion).animation, value: appModel.selectedTab)
+        // The sky stays put behind every page, so nothing behind the app ever shows through during a switch.
+        .background(Color.ds.canvas.ignoresSafeArea())
+        .animation(MotionToken.smooth.resolved(reduceMotion: reduceMotion).animation, value: appModel.selectedTab)
         .animation(MotionToken.bouncy.resolved(reduceMotion: reduceMotion).animation, value: appModel.isScanning)
         .onChange(of: appModel.selectedTab) { _, tab in capture.setMirrorVisible(tab == .today) }
         // The dock steps aside while typing so it never covers search results.
@@ -263,6 +267,8 @@ struct MirrorDock: View {
         // Like the system tab bar: the bar stops growing at the largest standard size, and a long press shows each
         // item enlarged (Large Content Viewer) so it never covers the page at accessibility sizes.
         .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+        // The pill bounces between items; the page behind it only crossfades (the shell's smooth animation).
+        .animation(MotionToken.bouncy.resolved(reduceMotion: reduceMotion).animation, value: selection)
         .sensoryFeedback(.selection, trigger: selection)
     }
 
