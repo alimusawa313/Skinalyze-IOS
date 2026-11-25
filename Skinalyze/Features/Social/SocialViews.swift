@@ -27,25 +27,27 @@ struct SocialEntryRow: View {
     var body: some View {
         Button { showsSocial = true } label: {
             HStack(spacing: Spacing.sm) {
-                Image(systemName: "person.2.fill").font(.title3).foregroundStyle(Color.ds.signal).frame(width: 32)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Friends and league").font(.ds.callout.weight(.semibold)).foregroundStyle(Color.ds.ink)
+                Image(systemName: "person.2.fill").font(.title3.weight(.bold)).foregroundStyle(Color.ds.signal)
+                    .frame(minWidth: EffortMetrics.mark)
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: Spacing.xxs) {
+                    Text("Friends and league").font(.effortRow).foregroundStyle(Color.ds.ink)
                     Text(social.isSharing ? SocialCopy.tier(social.state.tier) : String(localized: "Off — only you see your progress"))
-                        .font(.ds.caption).foregroundStyle(Color.ds.inkSecondary)
+                        .font(.effortNote).foregroundStyle(Color.ds.inkSecondary)
                 }
+                .multilineTextAlignment(.leading)
                 Spacer(minLength: 0)
-                Image(systemName: "chevron.right").foregroundStyle(Color.ds.inkTertiary)
+                Image(systemName: "chevron.right").font(.effortRow).foregroundStyle(Color.ds.ink)
+                    .accessibilityHidden(true)
             }
-            .frame(minHeight: 44)
-            .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
-        .dsCard()
+        .buttonStyle(.effortRow)
         .accessibilityIdentifier("socialEntry")
         .sheet(isPresented: $showsSocial) { SocialView() }
     }
 }
 
+/// Friends and league: Pimpi and your made-up name on the sky; the picker, friends and ranks on the hill.
 struct SocialView: View {
     enum Page: Hashable { case friends, league }
 
@@ -56,6 +58,11 @@ struct SocialView: View {
     @Query(sort: \ScanSession.createdAt) private var allScans: [ScanSession]
     @State private var page = Page.friends
     @State private var confirmingStop = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private enum Metrics {
+        static let pimpi: CGFloat = 104
+    }
 
     private var effort: SocialModel.Effort {
         SocialEffort.current(engagement: engagement, quests: quests,
@@ -64,30 +71,39 @@ struct SocialView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: Spacing.lg) {
+            EffortScroll {
+                if social.isSharing {
+                    hero
+                } else {
+                    JoinHero()
+                }
+            } ground: {
+                VStack(alignment: .leading, spacing: Spacing.md) {
                     if social.isSharing {
-                        Picker("Show", selection: $page) {
-                            Text("Friends").tag(Page.friends)
-                            Text("League").tag(Page.league)
-                        }
-                        .pickerStyle(.segmented)
+                        PillPicker([(Page.friends, String(localized: "Friends")), (Page.league, String(localized: "League"))],
+                                   selection: $page)
                         statusLine
-                        switch page {
-                        case .friends: FriendsPage(effort: effort)
-                        case .league: LeaguePage()
+                        Group {
+                            switch page {
+                            case .friends: FriendsPage(effort: effort)
+                            case .league: LeaguePage()
+                            }
                         }
-                        Button("Stop sharing", role: .destructive) { confirmingStop = true }
-                            .font(.ds.footnote).frame(minHeight: 44)
+                        .id(page)
+                        .transition(reduceMotion ? .opacity : .push(from: page == .league ? .trailing : .leading))
+                        Button(role: .destructive) { confirmingStop = true } label: {
+                            Text("Stop sharing").underline()
+                        }
+                        .buttonStyle(.plain)
+                        .font(.effortNote)
+                        .foregroundStyle(Color.ds.ink)
+                        .frame(maxWidth: .infinity, minHeight: Chunk.iconButton)
                     } else {
                         JoinPage(effort: effort)
                     }
                 }
-                .padding(Spacing.lg)
-                .frame(maxWidth: 640)
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .dsCanvas()
             .navigationTitle("Friends and league")
             .toolbarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
@@ -101,19 +117,67 @@ struct SocialView: View {
         }
     }
 
+    /// Pimpi in its outfit, "You are Sunny Otter" and the friend code.
+    private var hero: some View {
+        PimpiRow(spacing: Spacing.sm) {
+            PokablePimpi(mood: .excited, size: Metrics.pimpi, cheer: social.friends.count)
+            if let code = social.state.code, let name = social.state.name {
+                VStack(alignment: .leading, spacing: Spacing.xs) {
+                    Text("You are \(Text(SocialCopy.name(name)).font(.ds.title).foregroundStyle(Color.ds.ink))")
+                        .font(.effortRow)
+                        .foregroundStyle(Color.ds.inkSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(verbatim: code.value)
+                        .font(.system(.headline, design: .monospaced).weight(.heavy))
+                        .tracking(1.5)
+                        .foregroundStyle(Color.ds.ink)
+                        .textSelection(.enabled)
+                        .padding(.horizontal, Spacing.sm)
+                        .padding(.vertical, Spacing.xxs)
+                        .dsSurface(radius: Radius.small)
+                        .accessibilityLabel(Text("Your friend code: \(code.value.map(String.init).joined(separator: " "))"))
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
     @ViewBuilder private var statusLine: some View {
         switch social.status {
         case .loading:
             ProgressView().frame(maxWidth: .infinity)
         case .noAccount:
             Label("Sign in to iCloud in Settings to see friends and leagues.", systemImage: "icloud.slash")
-                .font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
+                .font(.effortNote).foregroundStyle(Color.ds.ink)
         case .failed:
             Label("Couldn't reach iCloud. Pull down to try again.", systemImage: "exclamationmark.icloud")
-                .font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
+                .font(.effortNote).foregroundStyle(Color.ds.ink)
         case .idle, .ready:
             EmptyView()
         }
+    }
+}
+
+/// Before joining: Pimpi and what this is.
+private struct JoinHero: View {
+    private enum Metrics {
+        static let pimpi: CGFloat = 110
+    }
+
+    var body: some View {
+        VStack(spacing: Spacing.sm) {
+            PokablePimpi(mood: .excited, size: Metrics.pimpi)
+            Text("Keep each other going")
+                .font(.ds.display).foregroundStyle(Color.ds.ink)
+                .multilineTextAlignment(.center)
+                .accessibilityAddTraits(.isHeader)
+            Text("Add friends with a code, see each other's streaks, and climb a weekly league ranked only on quests and lessons.")
+                .font(.ds.callout.weight(.semibold)).foregroundStyle(Color.ds.inkSecondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity)
     }
 }
 
@@ -125,22 +189,18 @@ private struct JoinPage: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
-            Pimpi(mood: .excited).frame(width: 110, height: 110).frame(maxWidth: .infinity)
-            Text("Keep each other going").font(.ds.title)
-            Text("Add friends with a code, see each other's streaks, and climb a weekly league ranked only on quests and lessons.")
-                .font(.ds.callout).foregroundStyle(Color.ds.inkSecondary)
             VStack(alignment: .leading, spacing: Spacing.sm) {
-                Label("Shared: a made-up name like \"Sunny Otter\", your routine streak, this week's quest points and Pimpi's outfit.",
-                      systemImage: "checkmark.circle.fill")
-                Label("Never shared: photos, scans, skin results or your real name.", systemImage: "lock.fill")
-                Label("Stored in Apple's iCloud for this app. Turn it off any time and your profile is deleted.",
-                      systemImage: "icloud.fill")
+                point("Shared: a made-up name like \"Sunny Otter\", your routine streak, this week's quest points and Pimpi's outfit.",
+                      symbol: "checkmark.circle.fill", tint: Color.ds.positive)
+                point("Never shared: photos, scans, skin results or your real name.", symbol: "lock.fill", tint: Color.ds.signal)
+                point("Stored in Apple's iCloud for this app. Turn it off any time and your profile is deleted.",
+                      symbol: "icloud.fill", tint: Color.ds.signal)
             }
-            .font(.ds.footnote)
+            .frame(maxWidth: .infinity, alignment: .leading)
             .dsCard()
             if social.status == .noAccount {
                 Label("Sign in to iCloud in Settings to join.", systemImage: "icloud.slash")
-                    .font(.ds.footnote).foregroundStyle(Color.ds.caution)
+                    .font(.effortNote).foregroundStyle(Color.ds.ink)
             }
             Button {
                 joining = true
@@ -149,16 +209,21 @@ private struct JoinPage: View {
                     joining = false
                 }
             } label: {
-                Group {
-                    if joining { ProgressView() } else { Text("Join") }
-                }
-                .frame(maxWidth: .infinity, minHeight: 50)
+                if joining { ProgressView().tint(Color.ds.canvas) } else { Text("Join") }
             }
-            .buttonStyle(.borderedProminent)
-            .tint(Color.ds.signal)
+            .buttonStyle(.chunky)
             .disabled(joining)
             .accessibilityIdentifier("socialJoin")
         }
+    }
+
+    private func point(_ text: LocalizedStringKey, symbol: String, tint: Color) -> some View {
+        Label {
+            Text(text).foregroundStyle(Color.ds.ink).fixedSize(horizontal: false, vertical: true)
+        } icon: {
+            Image(systemName: symbol).foregroundStyle(tint)
+        }
+        .font(.ds.footnote.weight(.semibold))
     }
 }
 
@@ -167,51 +232,49 @@ private struct FriendsPage: View {
     @Environment(SocialModel.self) private var social
     @State private var codeText = ""
     @State private var addResult: LocalizedStringKey?
+    /// Bumped with every answer to "Add", so the answer pops in afresh.
+    @State private var answers = 0
     @State private var removing: SocialProfile?
 
+    private enum Metrics {
+        static let pimpi: CGFloat = 46
+    }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: Spacing.md) {
-            if let code = social.state.code, let name = social.state.name {
-                myCard(code: code, name: name)
-            }
-            addFriend
+        VStack(alignment: .leading, spacing: Spacing.sm) {
             if social.friends.isEmpty, social.status == .ready {
                 Text("No friends yet. Share your code, or type a friend's.")
-                    .font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
+                    .font(.effortNote).foregroundStyle(Color.ds.ink)
             }
-            ForEach(social.friends, id: \.code) { friend in friendRow(friend) }
+            ForEach(social.friends, id: \.code) { friend in
+                friendRow(friend).transition(.scale.combined(with: .opacity))
+            }
             if social.invitedCount > 0 {
                 Label("Friends you invited: \(social.invitedCount)", systemImage: "gift.fill")
-                    .font(.ds.callout.weight(.semibold)).foregroundStyle(Color.ds.positive)
+                    .font(.effortRow).foregroundStyle(Color.ds.ink)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .dsCard()
                     .accessibilityIdentifier("invitedCount")
             }
+            addFriend.padding(.top, Spacing.xs)
+            if let code = social.state.code {
+                ShareLink(item: SocialCopy.inviteLink(code), message: Text(SocialCopy.inviteMessage(code))) {
+                    Label("Invite", systemImage: "square.and.arrow.up")
+                }
+                .buttonStyle(.chunky)
+                .accessibilityIdentifier("socialInvite")
+                Text("A friend who joins through your invite gets a free month of Pro.")
+                    .font(.effortNote).foregroundStyle(Color.ds.ink)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+            }
         }
+        .dsAnimation(.bouncy, value: social.friends.map(\.code.value))
+        .sensoryFeedback(Haptic.success, trigger: social.friends.count) { old, new in new > old }
         .confirmationDialog("Remove this friend?", isPresented: Binding(get: { removing != nil }, set: { if !$0 { removing = nil } }),
                             titleVisibility: .visible, presenting: removing) { friend in
             Button("Remove", role: .destructive) { social.removeFriend(friend.code) }
         }
-    }
-
-    private func myCard(code: FriendCode, name: PublicName) -> some View {
-        VStack(alignment: .leading, spacing: Spacing.xs) {
-            Text("You are \(SocialCopy.name(name))").font(.ds.headline)
-            HStack {
-                Text(verbatim: code.value)
-                    .font(.system(.largeTitle, design: .monospaced).weight(.bold))
-                    .textSelection(.enabled)
-                    .accessibilityLabel(Text("Your friend code: \(code.value.map(String.init).joined(separator: " "))"))
-                Spacer(minLength: 0)
-                ShareLink(item: SocialCopy.inviteLink(code), message: Text(SocialCopy.inviteMessage(code))) {
-                    Label("Invite", systemImage: "square.and.arrow.up")
-                }
-                .buttonStyle(.bordered)
-                .accessibilityIdentifier("socialInvite")
-            }
-            Text("A friend who joins through your invite gets a free month of Pro.")
-                .font(.ds.caption).foregroundStyle(Color.ds.inkSecondary)
-        }
-        .dsCard()
     }
 
     private var addFriend: some View {
@@ -220,14 +283,16 @@ private struct FriendsPage: View {
                 TextField("Friend's code", text: $codeText)
                     .textInputAutocapitalization(.characters)
                     .autocorrectionDisabled()
-                    .font(.system(.body, design: .monospaced))
-                    .padding(Spacing.sm)
-                    .frame(minHeight: 44)
-                    .background(Color.ds.surfaceRaised, in: RoundedRectangle(cornerRadius: Radius.small, style: .continuous))
+                    .font(.system(.body, design: .monospaced).weight(.bold))
+                    .foregroundStyle(Color.ds.ink)
+                    .padding(.horizontal, Spacing.md)
+                    .frame(minHeight: Chunk.controlHeight)
+                    .dsSurface(radius: Chunk.controlHeight / 2)
                     .accessibilityIdentifier("friendCodeField")
                 Button("Add") {
                     guard let code = FriendCode(codeText) else {
                         addResult = "That code doesn't look right — it's 6 letters and numbers."
+                        answers += 1
                         return
                     }
                     Task {
@@ -239,14 +304,16 @@ private struct FriendsPage: View {
                         case .full: "You've reached the most friends you can add."
                         }
                         codeText = ""
+                        answers += 1
                     }
                 }
-                .buttonStyle(.borderedProminent).tint(Color.ds.signal)
-                .frame(minHeight: 44)
+                .buttonStyle(.chunky(.plain, fullWidth: false, minHeight: Chunk.controlHeight))
                 .accessibilityIdentifier("addFriend")
             }
             if let addResult {
-                Text(addResult).font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
+                Text(addResult).font(.effortNote).foregroundStyle(Color.ds.ink)
+                    .id(answers)
+                    .popIn()
             }
         }
     }
@@ -257,32 +324,37 @@ private struct FriendsPage: View {
         let quest = social.me.map { FriendEngine.questProgress($0, friend, today: today, calendar: social.calendar) }
         return VStack(alignment: .leading, spacing: Spacing.sm) {
             HStack(spacing: Spacing.sm) {
-                Pimpi(mood: .happy).frame(width: 48, height: 48)
+                Pimpi(mood: .happy).frame(width: Metrics.pimpi, height: Metrics.pimpi)
                     .environment(\.pimpiOutfit, friend.outfit.flatMap(PimpiOutfit.init(rawValue:)))
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(SocialCopy.name(friend.name)).font(.ds.headline)
+                VStack(alignment: .leading, spacing: Spacing.xxs) {
+                    Text(SocialCopy.name(friend.name)).font(.effortRow).foregroundStyle(Color.ds.ink)
                     Label("\(friend.liveStreak(today: today, calendar: social.calendar))-day streak", systemImage: "flame.fill")
-                        .font(.ds.footnote).foregroundStyle(Color.ds.signal)
+                        .font(.effortNote).foregroundStyle(Color.ds.inkSecondary)
+                    if together > 0 {
+                        Text("\(together) days in a row together").font(.effortNote).foregroundStyle(Color.ds.positive)
+                    }
                 }
                 Spacer(minLength: 0)
                 Button { removing = friend } label: {
-                    Image(systemName: "ellipsis").frame(width: 44, height: 44)
+                    Image(systemName: "ellipsis").font(.effortRow).foregroundStyle(Color.ds.ink)
+                        .frame(width: Chunk.iconButton, height: Chunk.iconButton)
+                        .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
                 .accessibilityLabel(Text("Remove \(SocialCopy.name(friend.name))"))
             }
-            if together > 0 {
-                Text("\(together) days in a row together").font(.ds.footnote.weight(.semibold)).foregroundStyle(Color.ds.positive)
-            }
             if let quest {
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: Spacing.xxs) {
                     Text(quest.done ? "Friend quest done this week!" : "Friend quest: \(quest.points) of \(FriendEngine.weeklyGoal) points together")
-                        .font(.ds.caption).foregroundStyle(Color.ds.inkSecondary)
-                    ProgressView(value: min(Double(quest.points) / Double(FriendEngine.weeklyGoal), 1))
-                        .tint(quest.done ? Color.ds.positive : Color.ds.signal)
+                        .font(.effortNote).foregroundStyle(Color.ds.inkSecondary)
+                    EffortBar(value: Double(quest.points) / Double(max(FriendEngine.weeklyGoal, 1)),
+                              tint: quest.done ? Color.ds.positive : Color.ds.signal)
                 }
             }
         }
-        .dsCard()
+        .padding(.horizontal, Spacing.md)
+        .padding(.vertical, Spacing.sm)
+        .dsSurface()
         .accessibilityElement(children: .contain)
     }
 }
@@ -290,46 +362,64 @@ private struct FriendsPage: View {
 private struct LeaguePage: View {
     @Environment(SocialModel.self) private var social
 
+    private enum Metrics {
+        static let place: CGFloat = 34
+        static let pimpi: CGFloat = 36
+    }
+
     var body: some View {
         let tier = social.state.tier
         VStack(alignment: .leading, spacing: Spacing.sm) {
             HStack(spacing: Spacing.sm) {
-                Image(systemName: SocialCopy.tierSymbol(tier)).font(.largeTitle).foregroundStyle(Color.ds.signal)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(SocialCopy.tier(tier)).font(.ds.title)
-                    Text("Ranked on quest points this week. The top \(LeagueEngine.promotions) move up on Monday.")
-                        .font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
+                Image(systemName: SocialCopy.tierSymbol(tier)).font(.ds.display).foregroundStyle(Color.ds.signal)
+                    .accessibilityHidden(true)
+                Text(SocialCopy.tier(tier)).font(.ds.title).foregroundStyle(Color.ds.ink)
+                    .accessibilityAddTraits(.isHeader)
             }
             if social.lastMove == .up {
                 Label("You moved up this week!", systemImage: "arrow.up.circle.fill")
-                    .font(.ds.callout.weight(.semibold)).foregroundStyle(Color.ds.positive)
+                    .font(.effortRow).foregroundStyle(Color.ds.positive)
             }
             ForEach(Array(social.league.enumerated()), id: \.element.code) { rank, player in
                 row(rank: rank, player: player, isMe: player.code == social.state.code)
+                    .popIn(delay: MotionToken.stagger(rank))
             }
-            Text("Skin results never count — only showing up.").font(.ds.caption).foregroundStyle(Color.ds.inkTertiary)
+            VStack(spacing: Spacing.xxs) {
+                Text("Ranked on quest points this week. The top \(LeagueEngine.promotions) move up on Monday.")
+                Text("Skin results never count — only showing up.")
+            }
+            .font(.effortNote).foregroundStyle(Color.ds.ink)
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity)
+            .padding(.top, Spacing.xs)
         }
     }
 
+    /// One place in the league. Your own row is the filled one.
     private func row(rank: Int, player: SocialProfile, isMe: Bool) -> some View {
-        HStack(spacing: Spacing.sm) {
-            Text(rank + 1, format: .number).font(.ds.headline.monospacedDigit()).frame(minWidth: 28)
-            Pimpi(mood: isMe ? .excited : .happy).frame(width: 36, height: 36)
+        let ink = isMe ? Color.ds.canvas : Color.ds.ink
+        return HStack(spacing: Spacing.sm) {
+            Text(rank + 1, format: .number)
+                .font(.effortRow.monospacedDigit())
+                .foregroundStyle(Color.ds.ink)
+                .frame(minWidth: Metrics.place, minHeight: Metrics.place)
+                .background(Circle().fill(isMe ? Color.ds.sun : Color.ds.surfaceRaised))
+            Pimpi(mood: isMe ? .excited : .happy).frame(width: Metrics.pimpi, height: Metrics.pimpi)
                 .environment(\.pimpiOutfit, player.outfit.flatMap(PimpiOutfit.init(rawValue:)))
             Text(isMe ? String(localized: "You") : SocialCopy.name(player.name))
-                .font(.ds.callout.weight(isMe ? .bold : .regular))
+                .font(.effortRow).foregroundStyle(ink)
             Spacer(minLength: 0)
-            Text("\(player.weekPoints) pts").font(.ds.callout.monospacedDigit())
+            Text("\(player.weekPoints) pts").font(.effortRow.monospacedDigit()).foregroundStyle(ink)
             if rank < LeagueEngine.promotions, player.weekPoints > 0 {
-                Image(systemName: "arrow.up").foregroundStyle(Color.ds.positive).accessibilityLabel(Text("Moving up"))
+                Image(systemName: "arrow.up").font(.effortRow).foregroundStyle(isMe ? Color.ds.canvas : Color.ds.positive)
+                    .accessibilityLabel(Text("Moving up"))
             }
         }
-        .padding(.vertical, Spacing.xxs)
         .padding(.horizontal, Spacing.sm)
-        .frame(minHeight: 44)
-        .background(isMe ? Color.ds.signal.opacity(0.12) : .clear, in: RoundedRectangle(cornerRadius: Radius.small, style: .continuous))
+        .padding(.vertical, Spacing.xs)
+        .frame(minHeight: Chunk.iconButton)
+        .dsSurface(radius: Radius.large, fill: isMe ? Color.ds.ink : Color.ds.surface)
         .accessibilityElement(children: .combine)
     }
 }
@@ -345,46 +435,67 @@ struct InviteView: View {
     @State private var added = false
     @State private var redeeming = false
 
+    private enum Metrics {
+        static let pimpi: CGFloat = 120
+    }
+
     var body: some View {
         let effort = SocialEffort.current(engagement: engagement, quests: quests,
                                           scans: allScans.filter { !$0.isDeleted && $0.modelContext != nil })
-        VStack(spacing: Spacing.lg) {
-            Pimpi(mood: .excited).frame(width: 120, height: 120)
-            Text("A friend invited you").font(.ds.title).multilineTextAlignment(.center)
-            Text("Join to add them and keep each other going. Only a made-up name, your streak and quest points are shared.")
-                .font(.ds.callout).foregroundStyle(Color.ds.inkSecondary).multilineTextAlignment(.center)
-            if added {
-                Label("Friend added!", systemImage: "checkmark.circle.fill").foregroundStyle(Color.ds.positive)
-            } else {
-                Button {
-                    Task {
-                        if !social.isSharing { await social.join(effort: effort, invitedBy: inviter) }
-                        if social.isSharing {
-                            await social.addFriend(inviter, effort: effort)
-                            added = true
-                        }
-                    }
-                } label: {
-                    Text("Join and add friend").frame(maxWidth: .infinity, minHeight: 50)
-                }
-                .buttonStyle(.borderedProminent).tint(Color.ds.signal)
-            }
-            if social.status == .noAccount {
-                Text("Sign in to iCloud in Settings to join.").font(.ds.footnote).foregroundStyle(Color.ds.caution)
-            }
-            VStack(spacing: Spacing.xs) {
-                Text("Your gift: a free month of Pro. Enter the code \(Referral.offerCode).")
-                    .font(.ds.footnote).multilineTextAlignment(.center)
+        EffortStage {
+            VStack(spacing: Spacing.md) {
+                Text("A friend invited you")
+                    .font(.ds.display).foregroundStyle(Color.ds.ink).multilineTextAlignment(.center)
+                    .accessibilityAddTraits(.isHeader)
+                Text("Join to add them and keep each other going. Only a made-up name, your streak and quest points are shared.")
+                    .font(.ds.callout.weight(.semibold)).foregroundStyle(Color.ds.inkSecondary)
+                    .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
-                    .textSelection(.enabled)
-                Button("Redeem free month") { redeeming = true }
-                    .frame(minHeight: 44)
+                PokablePimpi(mood: .excited, size: Metrics.pimpi, cheer: added ? 1 : 0)
             }
-            .dsCard()
-            Button("Not now") { dismiss() }.frame(minHeight: 44)
+        } ground: {
+            VStack(spacing: Spacing.md) {
+                if added {
+                    Label("Friend added!", systemImage: "checkmark.circle.fill")
+                        .font(.effortRow).foregroundStyle(Color.ds.ink)
+                        .symbolEffect(.bounce, value: added)
+                        .frame(minHeight: Chunk.controlHeight)
+                        .popIn()
+                } else {
+                    Button {
+                        Task {
+                            if !social.isSharing { await social.join(effort: effort, invitedBy: inviter) }
+                            if social.isSharing {
+                                await social.addFriend(inviter, effort: effort)
+                                added = true
+                            }
+                        }
+                    } label: {
+                        Text("Join and add friend")
+                    }
+                    .buttonStyle(.chunky)
+                }
+                if social.status == .noAccount {
+                    Text("Sign in to iCloud in Settings to join.").font(.effortNote).foregroundStyle(Color.ds.ink)
+                }
+                VStack(spacing: Spacing.xs) {
+                    Text("Your gift: a free month of Pro. Enter the code \(Referral.offerCode).")
+                        .font(.effortNote).foregroundStyle(Color.ds.ink)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .textSelection(.enabled)
+                    Button("Redeem free month") { redeeming = true }
+                        .buttonStyle(.chunkyPlain)
+                }
+                .frame(maxWidth: .infinity)
+                .dsCard()
+                Button { dismiss() } label: { Text("Not now").underline() }
+                    .buttonStyle(.plain)
+                    .font(.effortNote).foregroundStyle(Color.ds.ink)
+                    .frame(minHeight: Chunk.iconButton)
+            }
         }
-        .padding(Spacing.lg)
-        .frame(maxWidth: 520)
+        .sensoryFeedback(Haptic.success, trigger: added)
         .offerCodeRedemption(isPresented: $redeeming)
     }
 }

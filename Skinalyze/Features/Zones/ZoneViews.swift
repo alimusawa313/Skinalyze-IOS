@@ -15,7 +15,7 @@ struct AreaFollow: Identifiable {
 }
 
 /// The same patch of skin cut from every scan's eye-aligned photo of that angle, oldest to newest, with rings where
-/// a spot was marked.
+/// a spot was marked: a grid of white-edged tiles on the sky, the honest notes on the hill underneath.
 struct AreaTimelineView: View {
     let follow: AreaFollow
 
@@ -33,34 +33,44 @@ struct AreaTimelineView: View {
         let isTapped: Bool
     }
 
-    private static let tile: CGFloat = 220
+    private enum Metrics {
+        /// Tiles are at least this wide: two across on a phone, more on wider screens.
+        static let tileMinimum: CGFloat = 140
+        static let ring: CGFloat = 30
+        static let ringLine: CGFloat = 4
+        /// The white halo round each ring, so it reads on any skin tone.
+        static let ringHalo: CGFloat = 7
+        static let tappedLine: CGFloat = 4
+        static let loadingHeight: CGFloat = 220
+        static let lineGap: CGFloat = 2
+        static let maxWidth: CGFloat = 900
+    }
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: Spacing.md) {
+                VStack(alignment: .leading, spacing: Spacing.lg) {
                     Text("The same patch of skin in each scan, lined up by your eyes. Rings show where a spot was marked.")
-                        .font(.ds.callout).foregroundStyle(Color.ds.inkSecondary)
-                    if follow.angle != .front {
-                        Label("Side photos line up less exactly than the front.", systemImage: "info.circle")
-                            .font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
-                    }
+                        .font(.system(.callout, design: .rounded).weight(.bold))
+                        .foregroundStyle(Color.ds.inkSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
                     if isLoading {
-                        ProgressView().frame(maxWidth: .infinity, minHeight: Self.tile)
+                        ProgressView().frame(maxWidth: .infinity, minHeight: Metrics.loadingHeight)
                     } else {
-                        ScrollView(.horizontal) {
-                            LazyHStack(spacing: Spacing.sm) {
-                                ForEach(frames) { tile($0) }
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: Metrics.tileMinimum), spacing: Spacing.md)],
+                                  alignment: .leading, spacing: Spacing.lg) {
+                            ForEach(Array(frames.enumerated()), id: \.element.id) { offset, frame in
+                                tile(frame).popIn(delay: MotionToken.stagger(offset))
                             }
-                            .scrollTargetLayout()
                         }
-                        .scrollTargetBehavior(.viewAligned)
-                        .defaultScrollAnchor(.trailing)
                     }
-                    Text("Detection is not perfect: a mark can be missed in one scan and found in the next. Use your own eyes.")
-                        .font(.ds.footnote).foregroundStyle(Color.ds.inkTertiary)
+                    notes
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .scrollingHill()
                 }
                 .padding(Spacing.lg)
+                .frame(maxWidth: Metrics.maxWidth)
+                .frame(maxWidth: .infinity)
             }
             .dsCanvas()
             .navigationTitle("This area over time")
@@ -70,30 +80,51 @@ struct AreaTimelineView: View {
         .task { await load() }
     }
 
+    /// What the tiles can and can't tell you, in the normal type.
+    private var notes: some View {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            if follow.angle != .front {
+                Label("Side photos line up less exactly than the front.", systemImage: "info.circle")
+            }
+            Text("Detection is not perfect: a mark can be missed in one scan and found in the next. Use your own eyes.")
+        }
+        .font(.ds.footnote.weight(.semibold))
+        .foregroundStyle(Color.ds.ink)
+        .fixedSize(horizontal: false, vertical: true)
+    }
+
     private func tile(_ frame: Frame) -> some View {
-        VStack(alignment: .leading, spacing: Spacing.xxs) {
-            Image(uiImage: frame.image)
-                .resizable()
-                .scaledToFill()
-                .frame(width: Self.tile, height: Self.tile)
+        let shape = RoundedRectangle(cornerRadius: Radius.medium, style: .continuous)
+        return VStack(alignment: .leading, spacing: Spacing.xxs) {
+            Color.clear
+                .aspectRatio(1, contentMode: .fit)
+                .overlay {
+                    Image(uiImage: frame.image).resizable().scaledToFill()
+                }
                 .overlay {
                     GeometryReader { proxy in
                         ForEach(Array(frame.marks.enumerated()), id: \.offset) { _, mark in
-                            Circle().strokeBorder(.white, lineWidth: 2)
-                                .background(Circle().strokeBorder(Color.ds.signal, lineWidth: 4))
-                                .frame(width: 30, height: 30)
+                            Circle().strokeBorder(Color.ds.ink, lineWidth: Metrics.ringLine)
+                                .background(Circle().strokeBorder(Color.ds.surface, lineWidth: Metrics.ringHalo))
+                                .frame(width: Metrics.ring, height: Metrics.ring)
                                 .position(x: mark.x * proxy.size.width, y: mark.y * proxy.size.height)
                         }
                     }
                 }
-                .clipShape(RoundedRectangle(cornerRadius: Radius.medium, style: .continuous))
+                .clipShape(shape)
                 .overlay {
-                    RoundedRectangle(cornerRadius: Radius.medium, style: .continuous)
-                        .strokeBorder(frame.isTapped ? Color.ds.signal : .clear, lineWidth: 3)
+                    shape.strokeBorder(frame.isTapped ? Color.ds.signal : .clear, lineWidth: Metrics.tappedLine)
                 }
-            Text(frame.date, format: .dateTime.day().month().year()).font(.ds.footnote.weight(.semibold))
-            Text(frame.marks.isEmpty ? "Nothing marked here" : "\(frame.marks.count) marked here")
-                .font(.ds.caption).foregroundStyle(Color.ds.inkSecondary)
+                .dsSurface(radius: Radius.medium)
+            VStack(alignment: .leading, spacing: Metrics.lineGap) {
+                Text(frame.date, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated).year())
+                    .font(.system(.subheadline, design: .rounded).weight(.heavy))
+                    .foregroundStyle(Color.ds.ink)
+                Text(frame.marks.isEmpty ? "Nothing marked here" : "\(frame.marks.count) marked here")
+                    .font(.ds.footnote.weight(.semibold))
+                    .foregroundStyle(Color.ds.inkSecondary)
+            }
+            .padding(.horizontal, Spacing.xxs)
         }
         .accessibilityElement(children: .combine)
     }
@@ -133,7 +164,8 @@ struct AreaTimelineView: View {
     }
 }
 
-/// Spots marked per face zone, on the latest 3D head (or the front photo), scrubbable through every scan.
+/// Spots marked per face zone, on the latest 3D head (or the front photo), scrubbable through every scan: the face with
+/// the busier areas glowing on the sky, the scan-date slider and the zone bars on the hill.
 struct ZoneMapView: View {
     @Environment(\.dismiss) private var dismiss
     @Query(filter: #Predicate<ScanSession> { !$0.isHidden }, sort: \ScanSession.createdAt) private var allScans: [ScanSession]
@@ -141,6 +173,15 @@ struct ZoneMapView: View {
     private var scans: [ScanSession] { allScans.filter { !$0.isDeleted && $0.modelContext != nil } }
     @State private var position: Double = 0
     @State private var frontPhoto: UIImage?
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private enum Metrics {
+        static let stage: CGFloat = 380
+        static let photoMaxHeight: CGFloat = 420
+        /// The white sticker edge round the photo.
+        static let photoBorder: CGFloat = 6
+        static let maxWidth: CGFloat = 700
+    }
 
     private var levels: [[FaceZone: Double]] {
         ZoneHeat.levels(scans.map { scan in
@@ -159,14 +200,20 @@ struct ZoneMapView: View {
                         ContentUnavailableView("No scans yet", systemImage: "faceid")
                     } else {
                         stage
-                        scrubber
-                        zoneList
-                        Text("Shows how many spots were marked in each area, not what they are.")
-                            .font(.ds.footnote).foregroundStyle(Color.ds.inkTertiary)
+                        VStack(alignment: .leading, spacing: Spacing.lg) {
+                            scrubber
+                            zoneList
+                            Text("Shows how many spots were marked in each area, not what they are.")
+                                .font(.ds.footnote.weight(.semibold))
+                                .foregroundStyle(Color.ds.ink)
+                                .multilineTextAlignment(.center)
+                                .frame(maxWidth: .infinity)
+                        }
+                        .scrollingHill()
                     }
                 }
                 .padding(Spacing.lg)
-                .frame(maxWidth: 700)
+                .frame(maxWidth: Metrics.maxWidth)
                 .frame(maxWidth: .infinity)
             }
             .dsCanvas()
@@ -187,13 +234,16 @@ struct ZoneMapView: View {
         let heat = levels.indices.contains(selected) ? levels[selected] : [:]
         if let mesh = headScan?.faceMesh {
             Face3DView(mesh: mesh, heat: heat, showsPins: false)
-                .frame(height: 380)
+                .frame(height: Metrics.stage)
+                .face3DStage()
                 .accessibilityLabel(Text("Your 3D scan with the busier areas glowing"))
         } else if let frontPhoto {
             Image(uiImage: frontPhoto).resizable().scaledToFit()
                 .overlay { FlatHeat(heat: heat) }
                 .clipShape(RoundedRectangle(cornerRadius: Radius.medium, style: .continuous))
-                .frame(maxHeight: 420)
+                .padding(Metrics.photoBorder)
+                .dsSurface(radius: Radius.large)
+                .frame(maxHeight: Metrics.photoMaxHeight)
                 .frame(maxWidth: .infinity)
         }
     }
@@ -201,19 +251,24 @@ struct ZoneMapView: View {
     private var scrubber: some View {
         VStack(alignment: .leading, spacing: Spacing.xxs) {
             if scans.indices.contains(selected) {
-                Text(scans[selected].createdAt, format: .dateTime.weekday(.wide).day().month(.wide).year())
-                    .font(.ds.headline)
-                    .contentTransition(.numericText())
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .firstTextBaseline) {
+                        scanDateLabel
+                        Spacer(minLength: Spacing.sm)
+                        scanDate
+                    }
+                    VStack(alignment: .leading, spacing: Spacing.xxs) {
+                        scanDateLabel
+                        scanDate
+                    }
+                }
+                .accessibilityHidden(true) // the slider reads out the date
             }
             if scans.count > 1 {
                 Slider(value: $position, in: 0...Double(scans.count - 1), step: 1) {
                     Text("Scan date")
-                } minimumValueLabel: {
-                    Image(systemName: "clock.arrow.circlepath")
-                } maximumValueLabel: {
-                    Image(systemName: "clock")
                 }
-                .tint(Color.ds.signal)
+                .tint(Color.ds.ink)
                 .accessibilityValue(scans.indices.contains(selected)
                                     ? Text(scans[selected].createdAt, format: .dateTime.day().month().year()) : Text(verbatim: ""))
                 .sensoryFeedback(.selection, trigger: selected)
@@ -221,26 +276,28 @@ struct ZoneMapView: View {
         }
     }
 
+    private var scanDateLabel: some View {
+        Text("Scan date")
+            .font(.system(.subheadline, design: .rounded).weight(.heavy))
+            .foregroundStyle(Color.ds.ink)
+    }
+
+    private var scanDate: some View {
+        Text(scans[selected].createdAt, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated).year())
+            .font(.system(.headline, design: .rounded).weight(.heavy))
+            .foregroundStyle(Color.ds.ink)
+            .contentTransition(.numericText())
+    }
+
     private var zoneList: some View {
         let heat = levels.indices.contains(selected) ? levels[selected] : [:]
         return VStack(spacing: Spacing.sm) {
             ForEach(FaceZone.allCases, id: \.self) { zone in
-                HStack {
-                    Text(GuidanceCopy.zoneName(zone)).font(.ds.callout)
-                    Spacer()
-                    Capsule().fill(Color.ds.hairline)
-                        .frame(width: 120, height: 8)
-                        .overlay(alignment: .leading) {
-                            Capsule().fill(Color.ds.signal).frame(width: 120 * (heat[zone] ?? 0), height: 8)
-                        }
-                    Text(verbatim: scans.indices.contains(selected) ? "\(scans[selected].zoneIndex(zone))" : "0")
-                        .font(.ds.callout.monospacedDigit()).frame(width: 32, alignment: .trailing)
-                }
-                .accessibilityElement(children: .combine)
+                ZoneBar(zone: zone, count: scans.indices.contains(selected) ? scans[selected].zoneIndex(zone) : 0,
+                        fraction: heat[zone] ?? 0)
             }
         }
-        .dsCard()
-        .animation(.smooth, value: selected)
+        .animation(MotionToken.bouncy.resolved(reduceMotion: reduceMotion).animation, value: selected)
     }
 
     private func loadFrontPhoto() async {
@@ -251,27 +308,108 @@ struct ZoneMapView: View {
     }
 }
 
+// MARK: - Zone bar
+
+/// One face zone as a bar: its name, an ink bar as long as its share, and the count. The bar grows in once
+/// (Reduce Motion: shown at once). At the largest text sizes the name sits above the bar.
+struct ZoneBar: View {
+    let zone: FaceZone
+    let count: Int
+    /// 0…1: how long the bar is.
+    let fraction: Double
+    var delay: Double = 0
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var typeSize
+    @State private var grown = false
+    @ScaledMetric(relativeTo: .callout) private var nameWidth: CGFloat = 96
+    @ScaledMetric(relativeTo: .callout) private var countWidth: CGFloat = 24
+
+    private enum Metrics {
+        static let barHeight: CGFloat = 14
+        static let trackOpacity = 0.6
+    }
+
+    var body: some View {
+        Group {
+            if typeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: Spacing.xxs) {
+                    name
+                    HStack(spacing: Spacing.sm) { bar; number }
+                }
+            } else {
+                HStack(spacing: Spacing.sm) {
+                    name.frame(width: nameWidth, alignment: .leading)
+                    bar
+                    number
+                }
+            }
+        }
+        .foregroundStyle(Color.ds.ink)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(GuidanceCopy.zoneName(zone)))
+        .accessibilityValue(Text(count, format: .number))
+        .onAppear {
+            withAnimation(MotionToken.bouncy.resolved(reduceMotion: reduceMotion).animation.delay(reduceMotion ? 0 : delay)) {
+                grown = true
+            }
+        }
+    }
+
+    private var name: some View {
+        Text(GuidanceCopy.zoneName(zone))
+            .font(.system(.callout, design: .rounded).weight(.heavy))
+            .lineLimit(2)
+            .minimumScaleFactor(0.8)
+    }
+
+    private var number: some View {
+        Text(count, format: .number)
+            .font(.system(.headline, design: .rounded).weight(.heavy).monospacedDigit())
+            .frame(minWidth: countWidth, alignment: .trailing)
+    }
+
+    private var bar: some View {
+        Capsule()
+            .fill(Color.ds.surface.opacity(Metrics.trackOpacity))
+            .frame(height: Metrics.barHeight)
+            .overlay(alignment: .leading) {
+                GeometryReader { proxy in
+                    let share = min(max(fraction, 0), 1)
+                    Capsule()
+                        .fill(Color.ds.ink)
+                        .frame(width: share > 0 ? max(proxy.size.width * share, Metrics.barHeight) : 0)
+                        .scaleEffect(x: grown ? 1 : 0, anchor: .leading)
+                }
+            }
+    }
+}
+
 /// Glows at the zone anchors on a flat, eye-aligned front photo (no 3D head on this device, e.g. iPhone Duo).
 private struct FlatHeat: View {
     let heat: [FaceZone: Double]
 
     /// The aligned frame's face box (`FaceAlignment.faceWidthRatio` wide, centred).
     private static let faceShare = 0.56
+    private static let faceAspect = 1.3
+    private static let glow: CGFloat = 100
+    private static let smallestGlow = 0.4
+    private static let faintestGlow = 0.3
 
     var body: some View {
         GeometryReader { proxy in
             let faceWidth = proxy.size.width * Self.faceShare
-            let faceHeight = faceWidth * 1.3
+            let faceHeight = faceWidth * Self.faceAspect
             let origin = CGPoint(x: (proxy.size.width - faceWidth) / 2, y: proxy.size.height * 0.5 - faceHeight / 2)
             ForEach(FaceZone.allCases, id: \.self) { zone in
                 let level = heat[zone] ?? 0
                 let anchor = ZoneHeat.anchor(zone)
                 Circle()
                     .fill(RadialGradient(colors: [Color.ds.signal.opacity(0.8), .clear], center: .center,
-                                         startRadius: 0, endRadius: 50))
-                    .frame(width: 100, height: 100)
-                    .scaleEffect(0.4 + level)
-                    .opacity(level > 0 ? 0.3 + 0.7 * level : 0)
+                                         startRadius: 0, endRadius: Self.glow / 2))
+                    .frame(width: Self.glow, height: Self.glow)
+                    .scaleEffect(Self.smallestGlow + level)
+                    .opacity(level > 0 ? Self.faintestGlow + (1 - Self.faintestGlow) * level : 0)
                     .position(x: origin.x + anchor.x * faceWidth, y: origin.y + anchor.y * faceHeight)
                     .blendMode(.plusLighter)
                     .animation(.smooth, value: level)

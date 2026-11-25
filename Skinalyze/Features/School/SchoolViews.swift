@@ -1,22 +1,24 @@
 import SwiftUI
 import SkinalyzeKit
 
-// Skin School: a card on the Shelf, the lesson path, and the lesson player (cards → two questions → result).
+// Skin School: a card on the Shelf, the lesson list, and the lesson player (cards → two questions → result).
 
 /// On the Shelf: Pimpi, the XP so far and the next lesson.
 struct SkinSchoolCard: View {
     @Environment(SchoolModel.self) private var school
     @State private var showsPath = false
 
-    private static let pimpiSide: CGFloat = 64
+    private enum Metrics {
+        static let pimpi: CGFloat = 56
+    }
 
     var body: some View {
         if !school.visibleLessons.isEmpty {
             Button { showsPath = true } label: {
-                HStack(spacing: Spacing.md) {
-                    Pimpi(mood: .curious).frame(width: Self.pimpiSide, height: Self.pimpiSide)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Skin School").font(.ds.headline).foregroundStyle(Color.ds.ink)
+                PimpiRow(spacing: Spacing.sm) {
+                    Pimpi(mood: .curious).frame(width: Metrics.pimpi, height: Metrics.pimpi)
+                    VStack(alignment: .leading, spacing: Spacing.xxs) {
+                        Text("Skin School").font(.effortRow).foregroundStyle(Color.ds.ink)
                         Group {
                             if let next = school.nextLesson {
                                 Text("Next: \(school.text(next.title))")
@@ -24,22 +26,24 @@ struct SkinSchoolCard: View {
                                 Text("Every lesson done!")
                             }
                         }
-                        .font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
-                        Text("\(school.progress.xp) XP").font(.ds.label).foregroundStyle(Color.ds.signal)
+                        .font(.effortNote).foregroundStyle(Color.ds.inkSecondary)
+                        EffortTag(text: Text("\(school.progress.xp) XP"), quiet: true)
                     }
+                    .multilineTextAlignment(.leading)
                     Spacer(minLength: 0)
-                    Image(systemName: "chevron.right").foregroundStyle(Color.ds.inkTertiary)
+                    Image(systemName: "chevron.right").font(.effortRow).foregroundStyle(Color.ds.ink)
+                        .accessibilityHidden(true)
                 }
-                .dsCard()
             }
-            .buttonStyle(.bouncy(0.96))
+            .buttonStyle(.effortRow)
             .accessibilityIdentifier("skinSchoolCard")
             .fullScreenCover(isPresented: $showsPath) { LessonPathView() }
         }
     }
 }
 
-/// Units with their lessons as stepping stones; finished ones are ticked, the next one bounces.
+/// Units with their lessons as rows: finished ones are ticked, the next one is the filled row with a bouncing star,
+/// the ones after it (and the Pro ones) are locked. The first unit sits on the sky, later ones on the hill.
 struct LessonPathView: View {
     @Environment(SchoolModel.self) private var school
     @Environment(ProAccess.self) private var access: ProAccess?
@@ -47,45 +51,47 @@ struct LessonPathView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var playing: Lesson?
     @State private var paywall: PaywallReason?
-    @State private var bounce = false
 
-    private static let node: CGFloat = 76
-    /// Sideways steps for the winding path, as shares of the node size.
-    private static let swing: [CGFloat] = [0, 0.9, 1.2, 0.9, 0, -0.9, -1.2, -0.9]
+    private enum Metrics {
+        static let pimpi: CGFloat = 104
+        static let openMark: CGFloat = 44
+        /// The open lesson's star bounces, then rests this long.
+        static let starRest: Double = 0.6
+    }
 
     private var hasFullAccess: Bool { access?.policy.hasFullAccess ?? true }
 
+    /// The units that have something to show, with only their visible lessons.
+    private var units: [(id: String, title: String, lessons: [Lesson])] {
+        school.course.units.compactMap { unit in
+            let lessons = unit.lessons.filter { lesson in school.visibleLessons.contains { $0.id == lesson.id } }
+            return lessons.isEmpty ? nil : (school.text(unit.title), school.text(unit.title), lessons)
+        }
+    }
+
     var body: some View {
+        let units = units
         NavigationStack {
-            ScrollView {
-                VStack(spacing: Spacing.lg) {
-                    ForEach(school.course.units) { unit in
-                        let lessons = unit.lessons.filter { lesson in school.visibleLessons.contains { $0.id == lesson.id } }
-                        if !lessons.isEmpty {
-                            Text(school.text(unit.title)).font(.ds.title)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .accessibilityAddTraits(.isHeader)
-                            ForEach(Array(lessons.enumerated()), id: \.element.id) { index, lesson in
-                                stone(lesson)
-                                    .offset(x: Self.swing[index % Self.swing.count] * Self.node * 0.8)
-                            }
-                        }
-                    }
+            EffortScroll {
+                VStack(alignment: .leading, spacing: Spacing.lg) {
+                    header
+                    ForEach(units.prefix(1), id: \.id) { unitView($0.title, lessons: $0.lessons) }
                 }
-                .padding(Spacing.lg)
-                .frame(maxWidth: 600)
-                .frame(maxWidth: .infinity)
+            } ground: {
+                VStack(alignment: .leading, spacing: Spacing.xl) {
+                    ForEach(units.dropFirst(), id: \.id) { unitView($0.title, lessons: $0.lessons) }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .dsCanvas()
             .navigationTitle("Skin School")
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     HStack(spacing: Spacing.xxs) {
-                        Image(systemName: "graduationcap.fill")
-                        Text("\(school.progress.xp) XP")
+                        Image(systemName: "graduationcap.fill").foregroundStyle(Color.ds.signal)
+                        Text("\(school.progress.xp) XP").foregroundStyle(Color.ds.ink)
                     }
-                    .font(.ds.headline).foregroundStyle(Color.ds.signal)
+                    .font(.effortRow)
                     .accessibilityElement(children: .combine)
                 }
                 ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
@@ -93,11 +99,50 @@ struct LessonPathView: View {
         }
         .fullScreenCover(item: $playing) { LessonPlayerView(lesson: $0) }
         .paywallSheet($paywall)
-        .onAppear { bounce = true }
     }
 
-    private func stone(_ lesson: Lesson) -> some View {
+    // MARK: Header
+
+    private var header: some View {
+        PimpiRow(spacing: Spacing.sm) {
+            VStack(alignment: .leading, spacing: Spacing.xxs) {
+                Text("Skin School")
+                    .font(.ds.display).foregroundStyle(Color.ds.ink)
+                    .accessibilityAddTraits(.isHeader)
+                Group {
+                    if let next = school.nextLesson {
+                        Text("Next: \(school.text(next.title))")
+                    } else {
+                        Text("Every lesson done!")
+                    }
+                }
+                .font(.effortRow).foregroundStyle(Color.ds.inkSecondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            PokablePimpi(mood: .curious, size: Metrics.pimpi, cheer: school.progress.xp)
+        }
+    }
+
+    // MARK: Units
+
+    private func unitView(_ title: String, lessons: [Lesson]) -> some View {
+        let needsPro = lessons.contains { school.state(of: $0, hasFullAccess: hasFullAccess) == .needsPro }
+        return VStack(alignment: .leading, spacing: Spacing.sm) {
+            HStack(spacing: Spacing.xs) {
+                Text(title).font(.ds.titleSmall).foregroundStyle(Color.ds.ink)
+                    .accessibilityAddTraits(.isHeader)
+                if needsPro { EffortTag(text: Text(verbatim: "Pro")) }
+            }
+            .padding(.horizontal, Spacing.xxs)
+            ForEach(Array(lessons.enumerated()), id: \.element.id) { index, lesson in
+                row(lesson, number: index + 1)
+            }
+        }
+    }
+
+    private func row(_ lesson: Lesson, number: Int) -> some View {
         let state = school.state(of: lesson, hasFullAccess: hasFullAccess)
+        let isOpen = state == .open
         return Button {
             switch state {
             case .open, .done: playing = lesson
@@ -105,49 +150,60 @@ struct LessonPathView: View {
             case .locked, .hidden: break
             }
         } label: {
-            VStack(spacing: Spacing.xxs) {
-                ZStack {
-                    Circle().fill(fill(state))
-                        .shadow(color: .black.opacity(0.12), radius: 6, y: 4)
-                    Image(systemName: symbol(state)).font(.title.weight(.bold)).foregroundStyle(.white)
+            HStack(spacing: Spacing.sm) {
+                mark(state, number: number)
+                VStack(alignment: .leading, spacing: Spacing.xxs) {
+                    Text(school.text(lesson.title))
+                        .font(.effortRow)
+                        .foregroundStyle(isOpen ? Color.ds.canvas : Color.ds.ink)
+                        .multilineTextAlignment(.leading)
+                    if !lesson.reviewed || state == .needsPro {
+                        HStack(spacing: Spacing.xs) {
+                            if state == .needsPro { EffortTag(text: Text(verbatim: "Pro")) }
+                            if !lesson.reviewed {
+                                Text(verbatim: "Draft").font(.ds.label).foregroundStyle(isOpen ? Color.ds.sun : Color.ds.caution)
+                            }
+                        }
+                    }
                 }
-                .frame(width: Self.node, height: Self.node)
-                .scaleEffect(state == .open && bounce && !reduceMotion ? 1.06 : 1)
-                .animation(state == .open && !reduceMotion ? .easeInOut(duration: 0.8).repeatForever(autoreverses: true) : nil,
-                           value: bounce)
-                Text(school.text(lesson.title)).font(.ds.footnote.weight(.semibold))
-                    .foregroundStyle(state == .locked ? Color.ds.inkTertiary : Color.ds.ink)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: Self.node * 2)
-                if !lesson.reviewed {
-                    Text(verbatim: "Draft").font(.ds.label).foregroundStyle(Color.ds.caution)
-                }
-                if state == .needsPro {
-                    Text(verbatim: "Pro").font(.ds.label).foregroundStyle(Color.ds.signal)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                if isOpen {
+                    Image(systemName: "chevron.right").font(.effortRow).foregroundStyle(Color.ds.canvas)
+                        .accessibilityHidden(true)
                 }
             }
         }
-        .buttonStyle(.bouncy(0.92))
+        .buttonStyle(EffortRowButtonStyle(filled: isOpen, dimsWhenDisabled: false))
         .disabled(state == .locked)
         .accessibilityLabel(Text(school.text(lesson.title)))
         .accessibilityValue(stateLabel(state))
         .accessibilityIdentifier("lesson.\(lesson.id)")
     }
 
-    private func fill(_ state: SkinSchoolEngine.LessonState) -> Color {
+    /// Done: a green check. Open: a star that bounces. Locked: the lesson's number in a ring. Pro: a lock.
+    @ViewBuilder private func mark(_ state: SkinSchoolEngine.LessonState, number: Int) -> some View {
         switch state {
-        case .done: .ds.positive
-        case .open: .ds.signal
-        case .needsPro: .ds.caution
-        case .locked, .hidden: .ds.inkTertiary
-        }
-    }
-
-    private func symbol(_ state: SkinSchoolEngine.LessonState) -> String {
-        switch state {
-        case .done: "checkmark"
-        case .open: "star.fill"
-        case .needsPro, .locked, .hidden: "lock.fill"
+        case .done:
+            EffortMark(done: true) { EmptyView() }
+        case .open:
+            ZStack {
+                Circle().fill(Color.ds.sun)
+                Image(systemName: "star.fill")
+                    .font(.system(.headline, design: .rounded).weight(.heavy))
+                    .foregroundStyle(Color.ds.pimpiEye)
+                    .symbolEffect(.bounce.up, options: .repeat(.periodic(delay: Metrics.starRest)), isActive: !reduceMotion)
+            }
+            .frame(width: Metrics.openMark, height: Metrics.openMark)
+            .accessibilityHidden(true)
+        case .needsPro:
+            Image(systemName: "lock.fill")
+                .font(.system(.footnote, design: .rounded).weight(.heavy))
+                .foregroundStyle(Color.ds.inkSecondary)
+                .frame(width: EffortMetrics.mark, height: EffortMetrics.mark)
+                .background(Circle().fill(Color.ds.surfaceRaised))
+                .accessibilityHidden(true)
+        case .locked, .hidden:
+            EffortMark(done: false) { Text(number, format: .number) }
         }
     }
 
@@ -161,7 +217,7 @@ struct LessonPathView: View {
     }
 }
 
-/// One lesson: its cards, then two questions, then the result with XP and the sources.
+/// One lesson: its cards, then two questions, then the result with XP and the sources. Pimpi reacts to each answer.
 struct LessonPlayerView: View {
     let lesson: Lesson
 
@@ -175,87 +231,164 @@ struct LessonPlayerView: View {
     @State private var picked: Int?
     @State private var gainedXP = 0
 
+    private enum Metrics {
+        static let pimpi: CGFloat = 130
+        static let segment: CGFloat = 8
+        static let segmentGap: CGFloat = 6
+        static let markHidden: CGFloat = 0.4
+        /// The result arrives in beats: title, then the score and XP, then the sources.
+        static let pillsBeat = 4
+        static let sourcesBeat = 8
+    }
+
     private var cardCount: Int { lesson.cards.count }
     private var totalSteps: Int { cardCount + lesson.quiz.count }
     private var isResult: Bool { step >= totalSteps }
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: Spacing.lg) {
-                ProgressView(value: Double(min(step, totalSteps)), total: Double(totalSteps))
-                    .tint(Color.ds.signal)
+            VStack(spacing: 0) {
+                topBar
                 ScrollView {
-                    Group {
-                        if isResult {
-                            result
-                        } else if step < cardCount {
-                            card(lesson.cards[step])
-                        } else {
-                            question(lesson.quiz[step - cardCount])
+                    VStack(spacing: Spacing.md) {
+                        // Hops on a right answer and at the finish; a wrong one only makes it curious.
+                        PokablePimpi(mood: mood, size: Metrics.pimpi, cheer: cheer)
+                            .dsAnimation(.bouncy, value: mood)
+                        Group {
+                            if isResult {
+                                result
+                            } else if step < cardCount {
+                                card(lesson.cards[step])
+                            } else {
+                                question(lesson.quiz[step - cardCount])
+                            }
                         }
+                        .id(step)
+                        .transition(reduceMotion ? .opacity : .asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity),
+                                                                         removal: .move(edge: .leading).combined(with: .opacity)))
                     }
-                    .id(step)
-                    .transition(reduceMotion ? .opacity : .asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity),
-                                                                     removal: .move(edge: .leading).combined(with: .opacity)))
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, Spacing.lg)
+                    .padding(.bottom, Spacing.lg)
+                    .frame(maxWidth: EffortMetrics.readable)
+                    .frame(maxWidth: .infinity)
                 }
+                .scrollBounceBehavior(.basedOnSize)
+            }
+            .background(Color.ds.canvas.ignoresSafeArea())
+            .safeAreaInset(edge: .bottom, spacing: 0) {
                 footer
+                    .padding(.horizontal, Spacing.lg)
+                    .padding(.top, Spacing.lg)
+                    .padding(.bottom, Spacing.xs)
+                    .frame(maxWidth: EffortMetrics.readable)
+                    .frame(maxWidth: .infinity)
+                    .background(alignment: .top) { EffortHill() }
+                    .onHill()
             }
-            .padding(Spacing.lg)
-            .frame(maxWidth: 640)
-            .frame(maxWidth: .infinity)
-            .dsCanvas()
             .navigationTitle(school.text(lesson.title))
-            .toolbarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Close", systemImage: "xmark") { dismiss() }
-                }
-            }
+            .toolbar(.hidden, for: .navigationBar)
         }
         .sensoryFeedback(Haptic.success, trigger: isResult)
     }
 
+    // MARK: Top bar
+
+    private var topBar: some View {
+        HStack(spacing: Spacing.sm) {
+            Button("Close", systemImage: "xmark") { dismiss() }
+                .labelStyle(.iconOnly)
+                .buttonStyle(.chunkyIcon)
+            HStack(spacing: Metrics.segmentGap) {
+                ForEach(0..<max(totalSteps, 1), id: \.self) { index in
+                    Capsule()
+                        .fill(index < step ? Color.ds.positive : Color.ds.surface)
+                        .frame(height: Metrics.segment)
+                }
+            }
+            .dsAnimation(.smooth, value: step)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text("Step \(min(step + 1, totalSteps)) of \(totalSteps)"))
+        }
+        .padding(.horizontal, Spacing.lg)
+        .padding(.top, Spacing.sm)
+        .padding(.bottom, Spacing.xs)
+        .frame(maxWidth: EffortMetrics.readable)
+        .frame(maxWidth: .infinity)
+    }
+
+    /// Changes on a right answer and when the lesson is done.
+    private var cheer: Int {
+        if isResult { return -1 }
+        return mood == .excited ? step : 0
+    }
+
+    /// Curious while reading, cheering a right answer and the finish; a wrong answer only makes it curious again.
+    private var mood: MascotMood {
+        if isResult { return .excited }
+        guard step >= cardCount, let picked else { return .curious }
+        return picked == lesson.quiz[step - cardCount].answer ? .excited : .curious
+    }
+
+    // MARK: Steps
+
     private func card(_ text: LocalizedText) -> some View {
-        VStack(alignment: .leading, spacing: Spacing.lg) {
-            Pimpi(mood: .curious).frame(width: 96, height: 96)
-            Text(school.text(text)).font(.ds.title)
+        VStack(spacing: Spacing.md) {
+            Text(school.text(lesson.title))
+                .font(.ds.display)
+                .foregroundStyle(Color.ds.ink)
+                .multilineTextAlignment(.center)
+                .accessibilityAddTraits(.isHeader)
+            Text(school.text(text))
+                .font(.system(.title3, design: .rounded).weight(.bold))
+                .foregroundStyle(Color.ds.ink)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .dsCard(padding: Spacing.lg)
         }
         .accessibilityElement(children: .combine)
     }
 
     private func question(_ question: QuizQuestion) -> some View {
-        VStack(alignment: .leading, spacing: Spacing.md) {
-            Text(school.text(question.question)).font(.ds.title)
+        VStack(spacing: Spacing.sm) {
+            Text(school.text(question.question))
+                .font(.ds.title)
+                .foregroundStyle(Color.ds.ink)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.bottom, Spacing.xxs)
             ForEach(Array(question.options.enumerated()), id: \.offset) { index, option in
+                let outcome = outcome(index, question)
                 Button {
                     guard picked == nil else { return }
-                    picked = index // only the border and tick animate; the text never moves
+                    picked = index // only the colour and the mark change; the text never moves
                 } label: {
-                    HStack {
-                        Text(school.text(option)).font(.ds.callout).foregroundStyle(Color.ds.ink)
+                    HStack(spacing: Spacing.sm) {
+                        Text(school.text(option))
+                            .font(.effortRow)
                             .multilineTextAlignment(.leading)
-                        Spacer(minLength: Spacing.xs)
-                        if picked != nil, index == question.answer {
-                            Image(systemName: "checkmark.circle.fill").foregroundStyle(Color.ds.positive)
-                        } else if picked == index {
-                            Image(systemName: "xmark.circle.fill").foregroundStyle(Color.ds.signal)
-                        }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        // Always there, hidden until answered, so the answer's text never reflows.
+                        Image(systemName: outcome.symbol ?? "checkmark")
+                            .font(.system(.title3, design: .rounded).weight(.heavy))
+                            .opacity(outcome.symbol == nil ? 0 : 1)
+                            .scaleEffect(outcome.symbol == nil && !reduceMotion ? Metrics.markHidden : 1)
+                            .symbolEffect(.bounce, value: picked)
+                            .accessibilityHidden(true)
                     }
-                    .padding(Spacing.md)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color.ds.surface, in: RoundedRectangle(cornerRadius: Radius.medium, style: .continuous))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: Radius.medium, style: .continuous)
-                            .strokeBorder(border(index, question), lineWidth: 2)
-                            .animation(reduceMotion ? nil : .bouncy, value: picked)
-                    }
+                    .foregroundStyle(outcome.fill == nil ? Color.ds.ink : Color.ds.canvas)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(EffortRowButtonStyle(fill: outcome.fill, dimsWhenDisabled: false))
+                .dsAnimation(.bouncy, value: picked)
+                .accessibilityValue(outcome.label)
                 .accessibilityIdentifier("quizOption.\(index)")
             }
             if picked != nil {
-                Text(school.text(question.explain)).font(.ds.callout).foregroundStyle(Color.ds.inkSecondary)
+                Text(school.text(question.explain))
+                    .font(.ds.callout.weight(.bold))
+                    .foregroundStyle(Color.ds.ink)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, Spacing.xxs)
                     .transition(.opacity)
             }
         }
@@ -265,33 +398,59 @@ struct LessonPlayerView: View {
         }
     }
 
-    private func border(_ index: Int, _ question: QuizQuestion) -> Color {
-        guard let picked else { return Color.ds.hairline }
-        if index == question.answer { return Color.ds.positive }
-        return index == picked ? Color.ds.signal : Color.ds.hairline
+    /// After answering: the right answer turns green with a ✓, a wrong pick turns red with a ✕.
+    private func outcome(_ index: Int, _ question: QuizQuestion) -> (fill: Color?, symbol: String?, label: Text) {
+        guard let picked else { return (nil, nil, Text(verbatim: "")) }
+        if index == question.answer { return (Color.ds.positive, "checkmark", Text("Right")) }
+        if index == picked { return (Color.ds.signal, "xmark", Text("Not quite")) }
+        return (nil, nil, Text(verbatim: ""))
     }
 
     private var result: some View {
         let correct = SkinSchoolEngine.correctAnswers(answers, quiz: lesson.quiz)
-        return VStack(alignment: .leading, spacing: Spacing.md) {
-            Pimpi(mood: .excited).frame(width: 120, height: 120).frame(maxWidth: .infinity)
-            Text("Lesson done!").font(.ds.display).frame(maxWidth: .infinity)
-            Text("\(correct) of \(lesson.quiz.count) right").font(.ds.headline).frame(maxWidth: .infinity)
-            if gainedXP > 0 {
-                Text("+\(gainedXP) XP").font(.ds.title).foregroundStyle(Color.ds.signal).frame(maxWidth: .infinity)
+        return VStack(spacing: Spacing.md) {
+            Text("Lesson done!").font(.ds.display).foregroundStyle(Color.ds.ink).multilineTextAlignment(.center)
+                .popIn()
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: Spacing.sm) { resultPills(correct: correct) }
+                VStack(spacing: Spacing.sm) { resultPills(correct: correct) }
             }
+            .popIn(delay: MotionToken.stagger(Metrics.pillsBeat))
             VStack(alignment: .leading, spacing: Spacing.xs) {
-                Text("Sources").font(.ds.headline)
+                Text("Sources").font(.effortRow).foregroundStyle(Color.ds.ink).accessibilityAddTraits(.isHeader)
                 ForEach(lesson.sources, id: \.url) { source in
                     if let url = URL(string: source.url) {
                         Link(destination: url) {
-                            Label(source.title, systemImage: "link").font(.ds.footnote)
+                            Label(source.title, systemImage: "link")
+                                .font(.effortNote)
+                                .foregroundStyle(Color.ds.ink)
+                                .underline()
+                                .multilineTextAlignment(.leading)
+                                .frame(maxWidth: .infinity, minHeight: Chunk.iconButton, alignment: .leading)
                         }
                     }
                 }
-                Text("General information, not medical advice.").font(.ds.caption).foregroundStyle(Color.ds.inkTertiary)
+                Text("General information, not medical advice.").font(.effortNote).foregroundStyle(Color.ds.inkSecondary)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .dsCard()
+            .popIn(delay: MotionToken.stagger(Metrics.sourcesBeat))
+        }
+    }
+
+    @ViewBuilder private func resultPills(correct: Int) -> some View {
+        Text("\(correct) of \(lesson.quiz.count) right")
+            .font(.effortRow).foregroundStyle(Color.ds.ink)
+            .padding(.horizontal, Spacing.md)
+            .frame(minHeight: Chunk.iconButton)
+            .dsSurface(radius: Chunk.iconButton / 2)
+        if gainedXP > 0 {
+            Text("+\(gainedXP) XP")
+                .font(.effortRow).foregroundStyle(Color.ds.canvas)
+                .contentTransition(.numericText(value: Double(gainedXP)))
+                .padding(.horizontal, Spacing.md)
+                .frame(minHeight: Chunk.iconButton)
+                .dsSurface(radius: Chunk.iconButton / 2, fill: Color.ds.ink)
         }
     }
 
@@ -300,9 +459,9 @@ struct LessonPlayerView: View {
         return Button {
             advance()
         } label: {
-            Text(isResult ? "Done" : "Continue").frame(maxWidth: .infinity)
+            Text(isResult ? "Done" : "Continue")
         }
-        .buttonStyle(.dsPrimary)
+        .buttonStyle(.chunky)
         .disabled(inQuiz && picked == nil)
         .accessibilityIdentifier("lessonContinue")
     }

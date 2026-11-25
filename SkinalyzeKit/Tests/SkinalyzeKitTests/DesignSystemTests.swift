@@ -50,6 +50,15 @@ struct DesignTokenTests {
         #expect(Palette.edge.dark.relativeLuminance < Palette.surface.dark.relativeLuminance)
     }
 
+    @Test("Status colours are used as text (verdicts, notes): 4.5:1 on every ground, light and dark",
+          arguments: [Palette.signal, Palette.positive, Palette.caution])
+    func statusTextContrast(token: ColorToken) {
+        for ground in [Palette.canvas, Palette.surface, Palette.surfaceRaised, Palette.hill] {
+            #expect(token.light.contrastRatio(with: ground.light) >= 4.5, "\(token.name) light on \(ground.name)")
+            #expect(token.dark.contrastRatio(with: ground.dark) >= 4.5, "\(token.name) dark on \(ground.name)")
+        }
+    }
+
     @Test("Accent and status colours meet 3:1 for non-text UI on the canvas",
           arguments: [Palette.signal, Palette.positive, Palette.caution])
     func uiContrast(token: ColorToken) {

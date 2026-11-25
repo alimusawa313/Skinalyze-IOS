@@ -57,16 +57,34 @@ struct RoutineChecklist: View {
     @AppStorage(UserProfile.Key.tonerID) private var toner = 0
     @AppStorage(UserProfile.Key.moisturizerID) private var moisturizer = 0
     @AppStorage(UserProfile.Key.sunscreenID) private var sunscreen = 0
-    @State private var part: Part
+    @State private var ownPart: Part
+    /// Set when a Morning/Evening picker elsewhere on the page drives this list (the Shelf's, above the plank).
+    private let sharedPart: Binding<Part>?
     @Environment(RoutineModel.self) private var routine: RoutineModel?
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var showsBuilder = false
 
     /// Opens on the given part of the day, or on the one that fits the time (evening from 15:00).
     init(initialPart: Part? = nil) {
-        _part = State(initialValue: initialPart ?? (Calendar.current.component(.hour, from: .now) < Self.eveningFromHour ? .morning : .evening))
+        _ownPart = State(initialValue: initialPart ?? Self.partNow)
+        sharedPart = nil
+    }
+
+    /// Follows a picker the page already shows, so this list doesn't repeat it.
+    init(part: Binding<Part>) {
+        _ownPart = State(initialValue: part.wrappedValue)
+        sharedPart = part
+    }
+
+    /// The part of the day that fits the time (evening from 15:00).
+    static var partNow: Part {
+        Calendar.current.component(.hour, from: .now) < eveningFromHour ? .morning : .evening
     }
 
     private static let eveningFromHour = 15
+
+    private var part: Part { sharedPart?.wrappedValue ?? ownPart }
+    private var partBinding: Binding<Part> { sharedPart ?? $ownPart }
 
     private func productID(_ slot: ProductCatalog.Slot) -> Int {
         switch slot {
@@ -105,61 +123,74 @@ struct RoutineChecklist: View {
         let steps = lines
         let warnings = routine?.warnings(for: part == .morning ? .morning : .evening) ?? []
         VStack(alignment: .leading, spacing: Spacing.sm) {
-            HStack {
+            HStack(spacing: Spacing.sm) {
                 SectionTitle("Today")
-                Spacer()
+                if sharedPart != nil {
+                    Text(part.title)
+                        .font(.ds.titleSmall)
+                        .foregroundStyle(Color.ds.inkSecondary)
+                        .contentTransition(.opacity)
+                }
                 if engagement.routine.count > 0 {
-                    Label("\(engagement.routine.count)-day streak", systemImage: "flame.fill").font(.ds.label).foregroundStyle(Color.ds.signal)
+                    Label("\(engagement.routine.count)-day streak", systemImage: "flame.fill")
+                        .font(.system(.footnote, design: .rounded).weight(.heavy))
+                        .foregroundStyle(Color.ds.ink)
+                        .labelStyle(StreakLabelStyle())
                         .contentTransition(.numericText(value: Double(engagement.routine.count)))
                 }
+                Spacer(minLength: 0)
                 Button("Edit") { showsBuilder = true }
-                    .font(.ds.label)
-                    .frame(minWidth: 44, minHeight: 44)
+                    .buttonStyle(.chunky(.plain, fullWidth: false))
                     .accessibilityLabel(Text("Edit routine"))
                     .accessibilityIdentifier("editRoutine")
             }
-            Picker("Routine", selection: $part) {
-                ForEach(Part.allCases) { Text($0.title).tag($0) }
+            if sharedPart == nil {
+                PillPicker(Part.allCases.map { (value: $0, title: $0.title) }, selection: partBinding)
             }
-            .pickerStyle(.segmented)
             if steps.isEmpty {
-                Text("Add products to your shelf to build your routine.").font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
+                Text("Add products to your shelf to build your routine.")
+                    .font(.system(.callout, design: .rounded).weight(.bold))
+                    .foregroundStyle(Color.ds.ink)
             }
             if !warnings.isEmpty {
                 Button { showsBuilder = true } label: {
                     Label(warnings.count == 1 ? "1 thing to check in this routine" : "\(warnings.count) things to check in this routine",
                           systemImage: "exclamationmark.triangle.fill")
-                        .font(.ds.footnote.weight(.semibold)).foregroundStyle(Color.ds.caution)
+                        .font(.system(.callout, design: .rounded).weight(.heavy))
+                        .labelStyle(TintedIconLabelStyle(tint: Color.ds.caution))
                 }
-                .buttonStyle(.plain)
-                .frame(minHeight: 44)
+                .buttonStyle(.shelfRow)
             }
             ForEach(steps) { line in
                 let done = log.isDone(part: part.rawValue, slot: line.id)
                 Button {
                     logRaw = log.toggling(part: part.rawValue, slot: line.id).raw
                 } label: {
-                    HStack {
+                    HStack(spacing: Spacing.sm) {
                         Image(systemName: done ? "checkmark.circle.fill" : "circle")
-                            .foregroundStyle(done ? Color.ds.positive : Color.ds.inkTertiary)
+                            .font(.title2.weight(.bold))
+                            .foregroundStyle(done ? Color.ds.positive : Color.ds.hairline)
                             .contentTransition(.symbolEffect(.replace))
                             .symbolEffect(.bounce, value: done)
                         Text(line.title)
-                            .font(.ds.callout)
+                            .font(.system(.callout, design: .rounded).weight(.heavy))
                             .foregroundStyle(done ? Color.ds.inkSecondary : Color.ds.ink)
-                            .strikethrough(done, color: Color.ds.inkTertiary)
-                        Spacer()
-                        Text(line.label).font(.ds.caption).foregroundStyle(Color.ds.inkTertiary)
+                            .strikethrough(done, color: Color.ds.inkSecondary)
+                            .multilineTextAlignment(.leading)
+                        Spacer(minLength: Spacing.xs)
+                        Text(line.label)
+                            .font(.ds.caption.weight(.semibold))
+                            .foregroundStyle(Color.ds.inkSecondary)
                     }
-                    .frame(minHeight: 44)
-                    .contentShape(Rectangle())
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.shelfRow)
                 .sensoryFeedback(Haptic.toggle, trigger: done)
                 .accessibilityValue(done ? Text("Done") : Text("Not done"))
+                .transition(.scale(scale: 0.9).combined(with: .opacity))
             }
         }
-        .dsCard()
+        .dsAnimation(.bouncy, value: part)
+        .dsAnimation(.bouncy, value: logRaw)
         .sheet(isPresented: $showsBuilder) { RoutineBuilderView() }
         .onChange(of: logRaw) { _, raw in
             let anyStepDone = RoutineLog(raw: raw).hasAnyStep()
@@ -168,6 +199,31 @@ struct RoutineChecklist: View {
             quests?.noteRoutineStreak(engagement.routine.count)
             challenges?.routineChanged(RoutineLog(raw: raw))
             WatchBridge.shared.push()
+        }
+    }
+}
+
+/// The streak as a small white pill with a flame.
+private struct StreakLabelStyle: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: Spacing.xxs) {
+            configuration.icon.foregroundStyle(Color.ds.signal)
+            configuration.title
+        }
+        .padding(.horizontal, Spacing.sm)
+        .padding(.vertical, Spacing.xxs)
+        .dsSurface(radius: Radius.small)
+    }
+}
+
+/// A label whose icon carries a colour and whose words stay in ink.
+struct TintedIconLabelStyle: LabelStyle {
+    let tint: Color
+
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: Spacing.xs) {
+            configuration.icon.foregroundStyle(tint)
+            configuration.title.foregroundStyle(Color.ds.ink).multilineTextAlignment(.leading)
         }
     }
 }

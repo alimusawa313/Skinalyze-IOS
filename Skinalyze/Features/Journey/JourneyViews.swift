@@ -31,38 +31,46 @@ struct JourneyCard: View {
     @Environment(ChallengeModel.self) private var challenges
     @State private var showsJourney = false
 
+    private enum Metrics {
+        static let pimpi: CGFloat = 56
+    }
+
     var body: some View {
         let position = Journey.position(xp: Journey.xp(points: quests.ledger.points, schoolXP: school.progress.xp))
         Button { showsJourney = true } label: {
             VStack(alignment: .leading, spacing: Spacing.sm) {
-                PimpiRow {
-                    Pimpi(mood: .happy).frame(width: 56, height: 56)
-                    VStack(alignment: .leading, spacing: 2) {
+                PimpiRow(spacing: Spacing.sm) {
+                    Pimpi(mood: .happy).frame(width: Metrics.pimpi, height: Metrics.pimpi)
+                    VStack(alignment: .leading, spacing: Spacing.xxs) {
                         Text("Stop \(position.stop) · \(JourneyCopy.stopName(position.stop))")
-                            .font(.ds.headline).foregroundStyle(Color.ds.ink)
-                        if let toNext = position.toNext {
-                            Text("\(toNext) points to the next stop").font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
-                        } else {
-                            Text("You reached the end of the path!").font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
+                            .font(.effortRow).foregroundStyle(Color.ds.ink)
+                        Group {
+                            if let toNext = position.toNext {
+                                Text("\(toNext) points to the next stop")
+                            } else {
+                                Text("You reached the end of the path!")
+                            }
                         }
+                        .font(.effortNote).foregroundStyle(Color.ds.inkSecondary)
                     }
+                    .multilineTextAlignment(.leading)
                     Spacer(minLength: 0)
-                    Image(systemName: "chevron.right").foregroundStyle(Color.ds.inkTertiary)
+                    Image(systemName: "chevron.right").font(.effortRow).foregroundStyle(Color.ds.ink)
+                        .accessibilityHidden(true)
                 }
-                ProgressView(value: position.progress).tint(Color.ds.signal)
+                EffortBar(value: position.progress)
                 if let active = challenges.book.active {
                     Label {
                         Text("\(ChallengeCopy.title(active.kind)): day \(active.progress) of \(ChallengeEngine.goalDays)")
                     } icon: {
-                        Image(systemName: ChallengeCopy.symbol(active.kind))
+                        Image(systemName: ChallengeCopy.symbol(active.kind)).foregroundStyle(Color.ds.signal)
                     }
-                    .font(.ds.footnote.weight(.semibold)).foregroundStyle(Color.ds.signal)
+                    .font(.effortNote).foregroundStyle(Color.ds.ink)
+                    .multilineTextAlignment(.leading)
                 }
             }
-            .dsCard()
-            .contentShape(Rectangle())
         }
-        .buttonStyle(.bouncy(0.96))
+        .buttonStyle(.effortRow)
         .accessibilityIdentifier("journeyCard")
         .fullScreenCover(isPresented: $showsJourney) { JourneyView() }
     }
@@ -73,37 +81,60 @@ struct JourneyView: View {
     @Environment(SchoolModel.self) private var school
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var opened: RecapPeriod?
 
-    private static let node: CGFloat = 60
-    private static let swing: [CGFloat] = [0, 0.9, 1.3, 0.9, 0, -0.9, -1.3, -0.9]
+    private enum Metrics {
+        static let node: CGFloat = 64
+        static let nodeBorder: CGFloat = 5
+        static let trail: CGFloat = 18
+        static let pimpi: CGFloat = 96
+        /// How far Pimpi's feet sink into the stop it stands on.
+        static let pimpiSink: CGFloat = 8
+        static let hop: CGFloat = 8
+        static let hopSeconds: Double = 0.75
+        /// Where each stop sits across the width: the path winds left, middle, right, middle.
+        static let lanes: [CGFloat] = [0.2, 0.5, 0.8, 0.5]
+        /// At the largest text sizes the path runs straight down the leading side, so names keep the width.
+        static let straightLane: CGFloat = 0.12
+    }
 
     var body: some View {
         let position = Journey.position(xp: Journey.xp(points: quests.ledger.points, schoolXP: school.progress.xp))
         NavigationStack {
-            ScrollView {
-                VStack(spacing: Spacing.xl) {
-                    Text("Every quest, lesson and routine day moves Pimpi along. Nothing ever moves you back.")
-                        .font(.ds.callout).foregroundStyle(Color.ds.inkSecondary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+            EffortScroll {
+                VStack(alignment: .leading, spacing: Spacing.lg) {
+                    VStack(alignment: .leading, spacing: Spacing.xs) {
+                        Text("Your journey")
+                            .font(.ds.display).foregroundStyle(Color.ds.ink)
+                            .accessibilityAddTraits(.isHeader)
+                        Text("Every quest, lesson and routine day moves Pimpi along. Nothing ever moves you back.")
+                            .font(.ds.callout.weight(.semibold)).foregroundStyle(Color.ds.inkSecondary)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     path(position)
+                }
+            } ground: {
+                VStack(alignment: .leading, spacing: Spacing.lg) {
                     SocialEntryRow()
                     ChallengeSection()
                     recaps
                 }
-                .padding(Spacing.lg)
-                .frame(maxWidth: 640)
-                .frame(maxWidth: .infinity)
             }
             .defaultScrollAnchor(.top)
-            .dsCanvas()
             .navigationTitle("Your journey")
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Label("\(position.xp) points", systemImage: "sparkles")
-                        .labelStyle(.titleAndIcon)
-                        .font(.ds.headline).foregroundStyle(Color.ds.signal)
+                    Label {
+                        Text("\(position.xp) points").foregroundStyle(Color.ds.ink)
+                            .contentTransition(.numericText(value: Double(position.xp)))
+                            .dsAnimation(.bouncy, value: position.xp)
+                    } icon: {
+                        Image(systemName: "sparkles").foregroundStyle(Color.ds.signal)
+                    }
+                    .labelStyle(.titleAndIcon)
+                    .font(.effortRow)
                 }
                 ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
             }
@@ -111,50 +142,95 @@ struct JourneyView: View {
         .sheet(item: $opened) { RecapView(period: $0) }
     }
 
+    // MARK: The path
+
     private func path(_ position: Journey.Position) -> some View {
-        VStack(spacing: Spacing.md) {
+        VStack(spacing: Spacing.lg) {
             ForEach(1...Journey.stops, id: \.self) { stop in
                 stopView(stop, position: position)
-                    .offset(x: Self.swing[(stop - 1) % Self.swing.count] * Self.node)
             }
         }
         .frame(maxWidth: .infinity)
+        .backgroundPreferenceValue(StopCentres.self) { centres in
+            GeometryReader { proxy in
+                let points = (1...Journey.stops).compactMap { stop in centres[stop].map { proxy[$0] } }
+                let style = StrokeStyle(lineWidth: Metrics.trail, lineCap: .round, lineJoin: .round)
+                ZStack {
+                    Trail(points: points).stroke(Color.ds.surface, style: style)
+                    Trail(points: Array(points.prefix(position.stop))).stroke(Color.ds.positive, style: style)
+                }
+            }
+            .accessibilityHidden(true)
+        }
     }
 
     private func stopView(_ stop: Int, position: Journey.Position) -> some View {
         let reached = stop <= position.stop
         let isHere = stop == position.stop
-        return VStack(spacing: Spacing.xxs) {
-            ZStack {
-                Circle().fill(reached ? Color.ds.positive : Color.ds.hairline)
-                    .shadow(color: .black.opacity(reached ? 0.12 : 0), radius: 6, y: 4)
+        let straight = typeSize.isAccessibilitySize
+        let lane = straight ? Metrics.straightLane : Metrics.lanes[(stop - 1) % Metrics.lanes.count]
+        let nameLeads = lane > Metrics.lanes[1]
+        return StopLayout(lane: lane, nameLeads: nameLeads, spacing: Spacing.sm) {
+            node(stop, reached: reached, isHere: isHere)
+            VStack(alignment: nameLeads ? .trailing : .leading, spacing: Spacing.xxs) {
                 if isHere {
-                    Pimpi(mood: .excited).padding(6)
+                    Text("Stop \(stop) · \(JourneyCopy.stopName(stop))")
+                    Group {
+                        if let toNext = position.toNext {
+                            Text("\(toNext) points to the next stop")
+                        } else {
+                            Text("You reached the end of the path!")
+                        }
+                    }
+                    .font(.effortNote).foregroundStyle(Color.ds.inkSecondary)
                 } else {
-                    Image(systemName: reached ? "checkmark" : "lock.fill")
-                        .font(.title2.weight(.bold)).foregroundStyle(reached ? .white : Color.ds.inkTertiary)
+                    Text(JourneyCopy.stopName(stop))
                 }
             }
-            .frame(width: isHere ? Self.node * 1.4 : Self.node, height: isHere ? Self.node * 1.4 : Self.node)
-            .overlay {
-                if isHere, position.toNext != nil {
-                    Circle().trim(from: 0, to: position.progress)
-                        .stroke(Color.ds.signal, style: StrokeStyle(lineWidth: 5, lineCap: .round))
-                        .rotationEffect(.degrees(-90))
-                        .padding(-6)
-                        .animation(reduceMotion ? nil : .smooth, value: position.progress)
-                }
-            }
-            Text(JourneyCopy.stopName(stop)).font(.ds.footnote.weight(isHere ? .bold : .semibold))
-                .foregroundStyle(reached ? Color.ds.ink : Color.ds.inkTertiary)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: Self.node * 2.4)
+            .font(.effortRow)
+            .foregroundStyle(reached ? Color.ds.ink : Color.ds.inkSecondary)
+            .multilineTextAlignment(nameLeads ? .trailing : .leading)
         }
+        // Room above the stop for Pimpi to stand on it without covering the stop before.
+        .padding(.top, isHere ? Metrics.pimpi - Metrics.pimpiSink - Metrics.node / 2 - Spacing.lg : 0)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Stop \(stop): \(JourneyCopy.stopName(stop))"))
         .accessibilityValue(isHere ? Text("You are here") : reached ? Text("Reached") : Text("Not reached yet"))
         .accessibilityIdentifier("journeyStop.\(stop)")
     }
+
+    /// A round stop: a green check once passed, Pimpi hopping on the one you're at, a lock on the ones ahead.
+    private func node(_ stop: Int, reached: Bool, isHere: Bool) -> some View {
+        let fill = isHere ? Color.ds.pimpiBody : reached ? Color.ds.positive : Color.ds.surfaceRaised
+        return Circle().fill(fill)
+            .overlay {
+                if !isHere {
+                    Image(systemName: reached ? "checkmark" : "lock.fill")
+                        .font(.system(.title3, design: .rounded).weight(.heavy))
+                        .foregroundStyle(reached ? Color.ds.canvas : Color.ds.inkTertiary)
+                }
+            }
+            .padding(Metrics.nodeBorder)
+            .background(Circle().fill(Color.ds.surface))
+            .frame(width: Metrics.node, height: Metrics.node)
+            .anchorPreference(key: StopCentres.self, value: .center) { [stop: $0] }
+            .background(Circle().fill(isHere ? Color.ds.pimpiEdge : Color.ds.edge).offset(y: Chunk.depth))
+            .overlay(alignment: .bottom) {
+                if isHere {
+                    PokablePimpi(mood: .excited, size: Metrics.pimpi)
+                        .keyframeAnimator(initialValue: CGFloat(0), repeating: !reduceMotion) { pimpi, lift in
+                            pimpi.offset(y: Metrics.pimpiSink - Metrics.node / 2 - (reduceMotion ? 0 : lift))
+                        } keyframes: { _ in
+                            KeyframeTrack {
+                                CubicKeyframe(Metrics.hop, duration: Metrics.hopSeconds)
+                                CubicKeyframe(0, duration: Metrics.hopSeconds)
+                            }
+                        }
+                }
+            }
+    }
+
+    // MARK: Recaps
 
     private var recaps: some View {
         let calendar = Calendar.current
@@ -178,19 +254,82 @@ struct JourneyView: View {
     private func recapRow(_ period: RecapPeriod, symbol: String) -> some View {
         Button { opened = period } label: {
             HStack(spacing: Spacing.sm) {
-                Image(systemName: symbol).foregroundStyle(Color.ds.signal).frame(width: 28)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(RecapCopy.title(period)).font(.ds.callout.weight(.semibold)).foregroundStyle(Color.ds.ink)
-                    Text(RecapCopy.dates(period)).font(.ds.caption).foregroundStyle(Color.ds.inkSecondary)
+                Image(systemName: symbol).font(.title3.weight(.bold)).foregroundStyle(Color.ds.signal)
+                    .frame(minWidth: EffortMetrics.mark)
+                VStack(alignment: .leading, spacing: Spacing.xxs) {
+                    Text(RecapCopy.title(period)).font(.effortRow).foregroundStyle(Color.ds.ink)
+                    Text(RecapCopy.dates(period)).font(.effortNote).foregroundStyle(Color.ds.inkSecondary)
                 }
+                .multilineTextAlignment(.leading)
                 Spacer(minLength: 0)
-                Image(systemName: "chevron.right").foregroundStyle(Color.ds.inkTertiary)
+                Image(systemName: "chevron.right").font(.effortRow).foregroundStyle(Color.ds.ink)
+                    .accessibilityHidden(true)
             }
-            .frame(minHeight: 44)
-            .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
-        .dsCard()
+        .buttonStyle(.effortRow)
         .accessibilityIdentifier("recap.\(period.kind.rawValue)")
+    }
+}
+
+/// Where each stop's centre is, so the trail can be drawn through them.
+private struct StopCentres: PreferenceKey {
+    static let defaultValue: [Int: Anchor<CGPoint>] = [:]
+
+    static func reduce(value: inout [Int: Anchor<CGPoint>], nextValue: () -> [Int: Anchor<CGPoint>]) {
+        value.merge(nextValue()) { _, new in new }
+    }
+}
+
+/// The trail: straight legs from stop to stop.
+private struct Trail: Shape {
+    let points: [CGPoint]
+
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        guard let first = points.first else { return path }
+        path.move(to: first)
+        points.dropFirst().forEach { path.addLine(to: $0) }
+        return path
+    }
+}
+
+/// One stop of the path: the stop itself sits at `lane` (a share of the width) and its name takes the room beside
+/// it, on the leading side when `nameLeads`. The first subview is the stop, the second its name.
+private struct StopLayout: Layout {
+    let lane: CGFloat
+    let nameLeads: Bool
+    let spacing: CGFloat
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        guard subviews.count == 2 else { return .zero }
+        let stop = subviews[0].sizeThatFits(.unspecified)
+        guard let width = proposal.width, width.isFinite else {
+            let name = subviews[1].sizeThatFits(.unspecified)
+            return CGSize(width: stop.width + spacing + name.width, height: max(stop.height, name.height))
+        }
+        let name = subviews[1].sizeThatFits(ProposedViewSize(width: nameWidth(in: width, stop: stop), height: nil))
+        return CGSize(width: width, height: max(stop.height, name.height))
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        guard subviews.count == 2 else { return }
+        let stop = subviews[0].sizeThatFits(.unspecified)
+        let centre = bounds.minX + centreX(in: bounds.width, stop: stop)
+        subviews[0].place(at: CGPoint(x: centre, y: bounds.midY), anchor: .center, proposal: ProposedViewSize(stop))
+        let room = ProposedViewSize(width: nameWidth(in: bounds.width, stop: stop), height: nil)
+        if nameLeads {
+            subviews[1].place(at: CGPoint(x: centre - stop.width / 2 - spacing, y: bounds.midY), anchor: .trailing, proposal: room)
+        } else {
+            subviews[1].place(at: CGPoint(x: centre + stop.width / 2 + spacing, y: bounds.midY), anchor: .leading, proposal: room)
+        }
+    }
+
+    private func centreX(in width: CGFloat, stop: CGSize) -> CGFloat {
+        min(max(width * lane, stop.width / 2), max(width - stop.width / 2, stop.width / 2))
+    }
+
+    private func nameWidth(in width: CGFloat, stop: CGSize) -> CGFloat {
+        let centre = centreX(in: width, stop: stop)
+        return max((nameLeads ? centre : width - centre) - stop.width / 2 - spacing, 0)
     }
 }

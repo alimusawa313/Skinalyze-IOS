@@ -2,8 +2,8 @@ import SwiftData
 import SwiftUI
 import SkinalyzeKit
 
-/// One scan, as a card that opens into three swipeable chapters — What changed · What we noticed · What helps.
-/// Your 3D scan (or photo) is the hero; saved results are never re-analyzed.
+/// One scan: the breakout index and your 3D scan (or photo) on the sky, and on the hill Pimpi with three swipeable
+/// chapters — What changed · What we noticed · What helps. Saved results are never re-analyzed.
 struct ScanResultView: View {
     let session: ScanSession
     var isFreshScan = false
@@ -49,7 +49,59 @@ struct ScanResultView: View {
     @State private var swipeForward = true
     @State private var shownIndex = 0
     @State private var shows3D: Bool
-    @ScaledMetric(relativeTo: .largeTitle) private var indexSize: CGFloat = 88
+    @State private var facing = Face3DView.Facing.front
+    @State private var stickerArt: StickerArt?
+    @State private var stickerSlapped = false
+    /// Times Pimpi was poked (a new line each time).
+    @State private var pokes = 0
+    /// Pimpi hops whenever you poke it or do something on the screen (switch chapter, flip the 3D view).
+    @State private var hops = 0
+    @Namespace private var chapterPill
+    @ScaledMetric(relativeTo: .largeTitle) private var indexSize: CGFloat = 104
+
+    private enum Metrics {
+        static let pimpi: CGFloat = 96
+        static let pimpiSmall: CGFloat = 76
+        /// Room for Pimpi's handwritten line beside the index.
+        static let cheerWidth: CGFloat = 110
+        static let handwritingTilt: Double = -6
+        /// How far the hill rises behind the last thing on the sky.
+        static let hillOverlap: CGFloat = 50
+        /// The white sticker edge around the photo.
+        static let photoBorder: CGFloat = 6
+        static let sticker: CGFloat = 132
+        static let stickerBorder: CGFloat = 7
+        static let stickerTilt: Double = -5
+        /// Where the sticker starts before it slaps on.
+        static let slapScale: CGFloat = 1.9
+        static let slapTilt: Double = -22
+        static let pillHeight: CGFloat = 34
+        static let pillTint: Double = 0.18
+        static let zoneDot: CGFloat = 10
+        static let glyphBadge: CGFloat = 40
+        static let tabSpacing: CGFloat = 2
+        static let tabPressedScale: CGFloat = 0.94
+        static let swipeDistance: CGFloat = 30
+        static let indexDelay = 0.2
+        static let indexMinimumScale: CGFloat = 0.5
+        static let heroEntryScale: CGFloat = 0.85
+        static let minimumStreak = 2
+        static let pimpiPressedScale: CGFloat = 0.9
+        /// Pimpi's hop: squashed, stretched, settled.
+        static let hopSquash: CGFloat = 0.86
+        static let hopStretch: CGFloat = 1.08
+        static let hopSquashSeconds = 0.08
+        static let hopStretchSeconds = 0.18
+        static let hopSettleSeconds = 0.32
+    }
+
+    /// What Pimpi says when poked: showing up and small habits, never how the skin looks. (Home's lines.)
+    private static let quips: [(text: LocalizedStringResource, mood: MascotMood)] = [
+        ("You showed up. That already counts.", .excited),
+        ("Sunscreen first. Feelings later.", .happy),
+        ("Wash the pillowcase. That's the whole tip.", .happy),
+        ("I'm resting my eyes. You go ahead.", .sleepy),
+    ]
 
     init(session: ScanSession, isFreshScan: Bool = false) {
         self.session = session
@@ -81,8 +133,9 @@ struct ScanResultView: View {
                 disclaimer
             }
             .clipped()
+            .scrollingHill(overlap: Metrics.hillOverlap)
         }
-        .background(MoodBackdrop(band: session.band))
+        .background(Color.ds.canvas.ignoresSafeArea())
         .navigationTitle(Text(session.createdAt, format: .dateTime.day().month().year()))
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
@@ -97,6 +150,7 @@ struct ScanResultView: View {
             }
         }
         .sensoryFeedback(Haptic.scrub, trigger: chapter)
+        .onChange(of: shows3D) { _, _ in hops += 1 }
         .task {
             guard isFreshScan, let tools else { return }
             let earlier = allScans.filter { !$0.isDeleted && $0.modelContext != nil && $0.createdAt < session.createdAt }.reversed()
@@ -146,29 +200,134 @@ struct ScanResultView: View {
         sharedCard = .skin(session, streakDays: engagement?.routine.count ?? 0)
     }
 
+    // MARK: Pimpi
+
+    /// Beside the index: Pimpi celebrating that you showed up, the line in its handwriting underneath.
+    private var cheeringPimpi: some View {
+        VStack(spacing: Spacing.xxs) {
+            pokablePimpi(size: Metrics.pimpiSmall, mood: pokeMood ?? .excited)
+            effortLine
+                .font(.ds.pimpiSmall)
+                .foregroundStyle(Color.ds.ink)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .rotationEffect(.degrees(Metrics.handwritingTilt))
+                .contentTransition(.opacity)
+                .animation(motion, value: pokes)
+        }
+        .frame(maxWidth: Metrics.cheerWidth)
+    }
+
+    /// Under the 3D head: Pimpi with a line about where you are looking — or, while turning is locked, about showing up.
+    private var coach: some View {
+        HStack(alignment: .center, spacing: Spacing.xs) {
+            pokablePimpi(size: Metrics.pimpi, mood: pokeMood ?? (isTurning3D ? .curious : .excited))
+            SpeechBubble(isTurning3D && pokes == 0 ? Text(facing.line) : effortLine, tail: .leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .contentTransition(.opacity)
+                .animation(motion, value: facing)
+                .animation(motion, value: pokes)
+        }
+        .sensoryFeedback(Haptic.scrub, trigger: facing)
+        .onChange(of: facing) { _, _ in
+            pokes = 0 // turning the head brings Pimpi back to where you are looking
+            hops += 1
+        }
+    }
+
+    /// Pimpi as a button: poke it for another line. It squashes and hops on every poke and whenever you do something
+    /// here (Reduce Motion: it stays still and only the line changes).
+    private func pokablePimpi(size: CGFloat, mood: MascotMood) -> some View {
+        Button {
+            pokes += 1
+            hops += 1
+        } label: {
+            Pimpi(mood: mood)
+                .frame(width: size, height: size)
+                .keyframeAnimator(initialValue: CGFloat(1), trigger: hops) { content, squash in
+                    content.scaleEffect(x: 2 - squash, y: squash, anchor: .bottom)
+                } keyframes: { _ in
+                    if reduceMotion {
+                        LinearKeyframe(1, duration: 0.01)
+                    } else {
+                        CubicKeyframe(Metrics.hopSquash, duration: Metrics.hopSquashSeconds)
+                        SpringKeyframe(Metrics.hopStretch, duration: Metrics.hopStretchSeconds, spring: .snappy)
+                        SpringKeyframe(1, duration: Metrics.hopSettleSeconds, spring: .bouncy)
+                    }
+                }
+        }
+        .buttonStyle(.bouncy(Metrics.pimpiPressedScale))
+        .sensoryFeedback(Haptic.toggle, trigger: pokes)
+        .accessibilityLabel(Text("Pimpi"))
+        .accessibilityHint(Text("Says something else"))
+    }
+
+    /// Only while the head can actually be turned does Pimpi talk about turning it.
+    private var isTurning3D: Bool { session.faceMesh != nil && policy.allows(.turn3D) }
+
+    private var streakDays: Int { engagement?.routine.count ?? 0 }
+
+    private var pokeMood: MascotMood? {
+        pokes == 0 ? nil : Self.quips[(pokes - 1) % Self.quips.count].mood
+    }
+
+    /// Effort only: never the band, the index or how the skin looks.
+    private var effortLine: Text {
+        if pokes > 0 { return Text(Self.quips[(pokes - 1) % Self.quips.count].text) }
+        if streakDays >= Metrics.minimumStreak { return Text("\(streakDays) days in a row!") }
+        return Text("You showed up. That already counts.")
+    }
+
     // MARK: Chapters
 
+    /// The three chapters in one white capsule. Full titles where they fit, the short ones where they don't, and a
+    /// column at the largest text sizes. The full title is always the accessibility label.
     private var chapterTabs: some View {
-        HStack(spacing: Spacing.xxs) {
-            ForEach(Chapter.allCases) { item in
-                Button { go(to: item) } label: {
-                    Text(item.tab)
-                        .font(.system(.headline, design: .rounded).weight(.heavy))
-                        .lineLimit(1)
-                        .padding(.horizontal, Spacing.sm)
-                        .frame(maxWidth: .infinity, minHeight: 44)
-                        .foregroundStyle(chapter == item ? Color.ds.canvas : Color.ds.ink)
-                        .background { if chapter == item { Capsule().fill(Color.ds.ink) } }
-                        .contentShape(Capsule())
-                }
-                .buttonStyle(.bouncy(0.94))
-                .accessibilityLabel(Text(item.title))
-                .accessibilityAddTraits(chapter == item ? .isSelected : [])
-            }
+        ViewThatFits(in: .horizontal) {
+            chapterRow(full: true)
+            chapterRow(full: false)
+            chapterColumn
+        }
+        .animation(motion, value: chapter)
+    }
+
+    private func chapterRow(full: Bool) -> some View {
+        HStack(spacing: Metrics.tabSpacing) {
+            ForEach(Chapter.allCases) { chapterButton($0, title: full ? $0.title : $0.tab) }
         }
         .padding(Spacing.xxs)
-        .glassEffect(.regular, in: Capsule())
-        .animation(motion, value: chapter)
+        .dsSurface(radius: Chunk.controlHeight / 2)
+    }
+
+    private var chapterColumn: some View {
+        VStack(spacing: Metrics.tabSpacing) {
+            ForEach(Chapter.allCases) { chapterButton($0, title: $0.title, wraps: true) }
+        }
+        .padding(Spacing.xxs)
+        .dsSurface(radius: Radius.medium)
+    }
+
+    private func chapterButton(_ item: Chapter, title: LocalizedStringKey, wraps: Bool = false) -> some View {
+        let selected = chapter == item
+        let shape = RoundedRectangle(cornerRadius: wraps ? Radius.medium - Spacing.xxs : Chunk.iconButton / 2, style: .continuous)
+        return Button { go(to: item) } label: {
+            Text(title)
+                .font(.system(.footnote, design: .rounded).weight(.heavy))
+                .lineLimit(wraps ? nil : 1)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: !wraps, vertical: true)
+                .padding(.horizontal, Spacing.xs)
+                .padding(.vertical, wraps ? Spacing.xs : 0)
+                .frame(maxWidth: .infinity, minHeight: Chunk.iconButton)
+                .foregroundStyle(selected ? Color.ds.canvas : Color.ds.ink)
+                .background {
+                    if selected { shape.fill(Color.ds.ink).matchedGeometryEffect(id: "chapter", in: chapterPill) }
+                }
+                .contentShape(shape)
+        }
+        .buttonStyle(.bouncy(Metrics.tabPressedScale))
+        .accessibilityLabel(Text(item.title))
+        .accessibilityAddTraits(selected ? .isSelected : [])
     }
 
     @ViewBuilder private var chapterContent: some View {
@@ -180,7 +339,7 @@ struct ScanResultView: View {
     }
 
     private var chapterSwipe: some Gesture {
-        DragGesture(minimumDistance: 30)
+        DragGesture(minimumDistance: Metrics.swipeDistance)
             .onEnded { value in
                 guard abs(value.translation.width) > abs(value.translation.height) else { return }
                 let step = value.translation.width < 0 ? 1 : -1
@@ -192,47 +351,199 @@ struct ScanResultView: View {
         guard next != chapter else { return }
         swipeForward = next.rawValue > chapter.rawValue
         withAnimation(motion) { chapter = next }
+        hops += 1
     }
 
-    // MARK: Hero (3D scan or photo)
+    // MARK: Hero (sticker and index, then the 3D scan or photo)
 
     private var heroSection: some View {
-        VStack(spacing: Spacing.sm) {
-            if session.faceMesh != nil {
-                Toggle(isOn: $shows3D.animation(motion)) { Label("3D view", systemImage: "cube.transparent") }
-                    .toggleStyle(.button)
-                    .buttonStyle(.glass)
+        VStack(alignment: .leading, spacing: Spacing.md) {
+            header
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: Spacing.sm) {
+                    deltaPill
+                    Spacer(minLength: 0)
+                    toggle3D
+                }
+                VStack(alignment: .leading, spacing: Spacing.sm) {
+                    deltaPill
+                    toggle3D
+                }
             }
             if shows3D, let mesh = session.faceMesh {
-                Face3DView(mesh: mesh, canTurn: policy.allows(.turn3D), onLockedTurn: { paywall = .turn3D })
-                    .transition(.scale(scale: 0.85).combined(with: .opacity))
-                Text("Drag to turn · pinch to zoom · double-tap to reset")
-                    .font(.ds.caption).foregroundStyle(.secondary)
+                VStack(spacing: Spacing.sm) {
+                    Face3DView(mesh: mesh, canTurn: policy.allows(.turn3D), onLockedTurn: { paywall = .turn3D },
+                               onFacing: { facing = $0 })
+                        .face3DStage()
+                    Text("Drag to turn · pinch to zoom · double-tap to reset")
+                        .font(.ds.footnote.weight(.semibold))
+                        .foregroundStyle(Color.ds.inkSecondary)
+                        .multilineTextAlignment(.center)
+                    coach.padding(.top, Spacing.xs)
+                    zoneChips
+                }
+                .transition(.scale(scale: Metrics.heroEntryScale).combined(with: .opacity))
             } else {
-                Picker("Angle", selection: $angle.animation(motion)) {
-                    ForEach(availableAngles, id: \.self) { Text(GuidanceCopy.title(for: $0)).tag($0) }
+                if availableAngles.count > 1 {
+                    PillPicker(availableAngles.map { (value: $0, title: GuidanceCopy.title(for: $0)) }, selection: $angle)
+                        .accessibilityElement(children: .contain)
+                        .accessibilityLabel("Angle")
                 }
-                .pickerStyle(.segmented)
-                if let image = session.uiImage(at: availableAngles.firstIndex(of: angle) ?? 0) {
-                    ScanPhotoView(image: image, detections: session.detections(for: angle, types: visibleTypes),
-                                  onFollow: { detection in
-                                      if policy.allows(.areaHistory) {
-                                          areaFollow = AreaFollow(sessionID: session.id, angle: angle,
-                                                                  centre: CGPoint(x: detection.box.center.x, y: detection.box.center.y))
-                                      } else {
-                                          paywall = .areaHistory
-                                      }
-                                  })
-                        .clipShape(RoundedRectangle(cornerRadius: Radius.large, style: .continuous))
-                        .id(angle)
-                        .transition(.opacity)
-                }
+                photo
             }
             if session.captureMode == .legacy {
                 Label("Saved with an earlier version — counts are shown as recorded.", systemImage: "clock.arrow.circlepath")
                     .font(.ds.footnote)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.ds.inkSecondary)
             }
+        }
+        .zIndex(1) // Pimpi and the photo stand in front of the hill that rises behind them
+    }
+
+    /// Your sticker slapped on beside the big index; Pimpi cheering at the side. Stacks when the text is too big.
+    private var header: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(alignment: .center, spacing: Spacing.md) {
+                sticker
+                indexBlock
+                Spacer(minLength: 0)
+                if !shows3D { cheeringPimpi }
+            }
+            VStack(alignment: .leading, spacing: Spacing.md) {
+                HStack(alignment: .center, spacing: Spacing.md) {
+                    sticker
+                    Spacer(minLength: 0)
+                    if !shows3D { cheeringPimpi }
+                }
+                indexBlock
+            }
+        }
+    }
+
+    /// The die-cut sticker made from this scan (the photo in a white ring until it is ready), slapped on at a tilt.
+    private var sticker: some View {
+        Group {
+            if let stickerArt {
+                StickerLayers(art: stickerArt, tilts: false)
+            } else if let image = session.uiImage(at: 0) {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: Metrics.sticker - Metrics.stickerBorder * 2, height: Metrics.sticker - Metrics.stickerBorder * 2)
+                    .clipShape(Circle())
+                    .padding(Metrics.stickerBorder)
+                    .background(Circle().fill(Color.ds.surface))
+            } else {
+                Circle().fill(Color.ds.band(session.band))
+                    .padding(Metrics.stickerBorder)
+                    .background(Circle().fill(Color.ds.surface))
+            }
+        }
+        .frame(width: Metrics.sticker, height: Metrics.sticker)
+        .scaleEffect(stickerSlapped || reduceMotion ? 1 : Metrics.slapScale)
+        .rotationEffect(.degrees(stickerSlapped || reduceMotion ? Metrics.stickerTilt : Metrics.slapTilt))
+        .opacity(stickerSlapped ? 1 : 0)
+        .task(id: session.id) {
+            let art = await PortraitCutout.shared.art(for: session.id, photo: session.sortedCaptures.first?.imageData)
+            withAnimation(motion) { stickerArt = art }
+        }
+        .onAppear {
+            withAnimation(MotionToken.expressive.resolved(reduceMotion: reduceMotion).animation) { stickerSlapped = true }
+        }
+        .sensoryFeedback(.impact(weight: .medium), trigger: stickerSlapped) { _, slapped in slapped }
+        .accessibilityHidden(true)
+    }
+
+    /// The breakout index, huge, with its band and its name.
+    private var indexBlock: some View {
+        VStack(alignment: .leading, spacing: Spacing.xs) {
+            Text(shownIndex, format: .number)
+                .font(.system(size: indexSize, weight: .heavy, design: .rounded).monospacedDigit())
+                .foregroundStyle(Color.ds.ink)
+                .contentTransition(.numericText(value: Double(shownIndex)))
+                .lineLimit(1)
+                .minimumScaleFactor(Metrics.indexMinimumScale)
+                .onAppear { withAnimation(motion.delay(Metrics.indexDelay)) { shownIndex = session.breakoutIndex } }
+                .sensoryFeedback(Haptic.capture, trigger: shownIndex)
+            BandPill(session.band)
+            Text("Breakout index").font(.ds.footnote.weight(.heavy)).foregroundStyle(Color.ds.inkSecondary)
+        }
+        .fixedSize(horizontal: true, vertical: false)
+        .accessibilityElement(children: .combine)
+    }
+
+    /// How the index moved since the scan before: glyph, number and words, never colour alone.
+    @ViewBuilder private var deltaPill: some View {
+        if let previous {
+            let delta = session.breakoutIndex - previous.breakoutIndex
+            let tint = delta == 0 ? Color.ds.inkSecondary : (delta < 0 ? Color.ds.positive : Color.ds.caution)
+            HStack(spacing: Spacing.xxs) {
+                Image(systemName: delta == 0 ? "equal" : (delta < 0 ? "arrow.down" : "arrow.up"))
+                    .foregroundStyle(tint)
+                if delta != 0 { Text(abs(delta), format: .number).monospacedDigit() }
+                Text("vs. last scan")
+            }
+            .font(.system(.subheadline, design: .rounded).weight(.heavy))
+            .foregroundStyle(Color.ds.ink)
+            .padding(.horizontal, Spacing.sm)
+            .frame(minHeight: Metrics.pillHeight)
+            .background(Capsule().fill(tint.opacity(Metrics.pillTint)))
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(delta == 0
+                ? Text("No change") + Text(verbatim: ", ") + Text("vs. last scan")
+                : Text("\(abs(delta)) \(delta < 0 ? "fewer" : "more")") + Text(verbatim: " ") + Text("vs. last scan"))
+        }
+    }
+
+    /// Scans with a 3D head switch between it and the photos: ink-filled while the head is showing.
+    @ViewBuilder private var toggle3D: some View {
+        if session.faceMesh != nil {
+            Toggle(isOn: $shows3D.animation(motion)) { Label("3D view", systemImage: "cube.transparent") }
+                .toggleStyle(.button)
+                .buttonStyle(.chunky(shows3D ? .filled : .plain, fullWidth: false))
+        }
+    }
+
+    /// The zones where something was marked, as resting pills under the head.
+    @ViewBuilder private var zoneChips: some View {
+        let zones = FaceZone.allCases.filter { session.zoneIndex($0) > 0 }
+        if session.hasZoneData, !zones.isEmpty {
+            WrapLayout(spacing: Spacing.xs) {
+                ForEach(zones, id: \.self) { zone in
+                    HStack(spacing: Spacing.xs) {
+                        Circle().fill(Color.ds.signal).frame(width: Metrics.zoneDot, height: Metrics.zoneDot)
+                        Text(GuidanceCopy.zoneName(zone)) + Text(verbatim: " ") + Text(session.zoneIndex(zone), format: .number)
+                    }
+                    .font(.system(.subheadline, design: .rounded).weight(.heavy))
+                    .foregroundStyle(Color.ds.ink)
+                    .padding(.horizontal, Spacing.sm)
+                    .frame(minHeight: Metrics.pillHeight)
+                    .background(Capsule().fill(Color.ds.surface))
+                    .background(Capsule().fill(Color.ds.edge).offset(y: Chunk.depthSmall))
+                    .padding(.bottom, Chunk.depthSmall)
+                    .accessibilityElement(children: .combine)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    /// The photo as a sticker: a white edge all round, pins on top.
+    @ViewBuilder private var photo: some View {
+        if let image = session.uiImage(at: availableAngles.firstIndex(of: angle) ?? 0) {
+            ScanPhotoView(image: image, detections: session.detections(for: angle, types: visibleTypes),
+                          onFollow: { detection in
+                              if policy.allows(.areaHistory) {
+                                  areaFollow = AreaFollow(sessionID: session.id, angle: angle,
+                                                          centre: CGPoint(x: detection.box.center.x, y: detection.box.center.y))
+                              } else {
+                                  paywall = .areaHistory
+                              }
+                          })
+                .padding(Metrics.photoBorder)
+                .dsSurface(radius: Radius.large)
+                .id(angle)
+                .transition(.opacity)
         }
     }
 
@@ -244,28 +555,11 @@ struct ScanResultView: View {
     // MARK: What changed
 
     private var changedChapter: some View {
-        VStack(alignment: .leading, spacing: Spacing.lg) {
-            HStack(alignment: .lastTextBaseline, spacing: Spacing.sm) {
-                Text(shownIndex, format: .number)
-                    .font(.system(size: indexSize, weight: .heavy, design: .rounded).monospacedDigit())
-                    .contentTransition(.numericText(value: Double(shownIndex)))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.5)
-                    .onAppear { withAnimation(motion.delay(0.2)) { shownIndex = session.breakoutIndex } }
-                VStack(alignment: .leading, spacing: Spacing.xxs) {
-                    BandPill(session.band)
-                    Text("Breakout index").font(.ds.caption).foregroundStyle(.secondary)
-                }
-                Spacer()
-                if let previous {
-                    VStack(alignment: .trailing, spacing: Spacing.xxs) {
-                        DeltaBadge(delta: session.breakoutIndex - previous.breakoutIndex)
-                        Text("vs. last scan").font(.ds.caption).foregroundStyle(.secondary)
-                    }
-                }
-            }
-            .accessibilityElement(children: .combine)
-            Text(BandCopy.summary(session.band)).font(.ds.title)
+        VStack(alignment: .leading, spacing: Spacing.md) {
+            Text(BandCopy.summary(session.band))
+                .font(.ds.titleSmall)
+                .foregroundStyle(Color.ds.ink)
+                .fixedSize(horizontal: false, vertical: true)
             if session.hasZoneData { zoneBars }
         }
     }
@@ -275,20 +569,8 @@ struct ScanResultView: View {
         return VStack(alignment: .leading, spacing: Spacing.sm) {
             ForEach(Array(FaceZone.allCases.enumerated()), id: \.element) { offset, zone in
                 let value = session.zoneIndex(zone)
-                HStack(spacing: Spacing.sm) {
-                    Text(GuidanceCopy.zoneName(zone)).font(.ds.callout.weight(.semibold)).frame(minWidth: 96, alignment: .leading)
-                    GeometryReader { proxy in
-                        Capsule().fill(Color.ds.ink.opacity(0.1))
-                            .overlay(alignment: .leading) {
-                                Capsule().fill(Color.ds.band(BreakoutBand.classify(index: value)))
-                                    .frame(width: proxy.size.width * CGFloat(value) / CGFloat(maxIndex))
-                            }
-                    }
-                    .frame(height: 12)
-                    Text(value, format: .number).font(.ds.callout.monospacedDigit()).frame(minWidth: 28, alignment: .trailing)
-                }
-                .accessibilityElement(children: .combine)
-                .popIn(delay: MotionToken.stagger(offset) * 2)
+                ZoneBar(zone: zone, count: value, fraction: Double(value) / Double(maxIndex),
+                        delay: MotionToken.stagger(offset) * 2)
             }
         }
     }
@@ -309,29 +591,53 @@ struct ScanResultView: View {
             }
             .scrollIndicators(.hidden)
             ForEach(Array(LesionType.allCases.filter { session.counts[$0] > 0 }.enumerated()), id: \.element) { offset, type in
-                DisclosureGroup(isExpanded: Binding(
-                    get: { expandedType == type },
-                    set: { open in withAnimation(motion) { expandedType = open ? type : nil } }
-                )) {
-                    Text(LesionGlyph.explanation(for: type))
-                        .font(.ds.footnote).foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                } label: {
-                    HStack {
-                        Image(systemName: LesionGlyph.symbolName(for: type)).foregroundStyle(Color.ds.signal)
-                        Text(LesionGlyph.displayName(for: type)).font(.ds.headline)
-                        Spacer()
-                        Text(session.counts[type], format: .number)
-                            .font(.system(.title, design: .rounded).weight(.heavy).monospacedDigit())
-                    }
-                }
-                .tint(.secondary)
-                .popIn(delay: MotionToken.stagger(offset) * 2)
+                noticedRow(type)
+                    .popIn(delay: MotionToken.stagger(offset) * 2)
             }
             if session.counts.total == 0 {
-                Text("Nothing stood out in this scan.").font(.ds.title)
+                Text("Nothing stood out in this scan.").font(.ds.titleSmall).foregroundStyle(Color.ds.ink)
             }
         }
+    }
+
+    /// One kind of spot and how many: press it for what it is.
+    private func noticedRow(_ type: LesionType) -> some View {
+        let expanded = expandedType == type
+        return Button {
+            withAnimation(motion) { expandedType = expanded ? nil : type }
+        } label: {
+            VStack(alignment: .leading, spacing: Spacing.xs) {
+                HStack(spacing: Spacing.sm) {
+                    Image(systemName: LesionGlyph.symbolName(for: type))
+                        .foregroundStyle(Color.ds.signal)
+                        .frame(width: Metrics.glyphBadge, height: Metrics.glyphBadge)
+                        .background(Circle().fill(Color.ds.surfaceRaised))
+                    Text(LesionGlyph.displayName(for: type))
+                        .font(.system(.headline, design: .rounded).weight(.heavy))
+                        .multilineTextAlignment(.leading)
+                    Spacer(minLength: Spacing.xs)
+                    Text(session.counts[type], format: .number)
+                        .font(.system(.title, design: .rounded).weight(.heavy).monospacedDigit())
+                    Image(systemName: "chevron.down")
+                        .font(.footnote.weight(.heavy))
+                        .rotationEffect(.degrees(expanded ? 180 : 0))
+                        .accessibilityHidden(true)
+                }
+                if expanded {
+                    Text(LesionGlyph.explanation(for: type))
+                        .font(.ds.footnote)
+                        .foregroundStyle(Color.ds.inkSecondary)
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .transition(.opacity)
+                }
+            }
+            .foregroundStyle(Color.ds.ink)
+            .padding(.horizontal, Spacing.md)
+            .padding(.vertical, Spacing.sm)
+        }
+        .buttonStyle(PressableRowStyle())
     }
 
     // MARK: What helps
@@ -340,34 +646,137 @@ struct ScanResultView: View {
         let skinType = SkinType(stored: skinTypeRaw)
         let guidance = SkinTypeGuidance.for(skinType)
         let products = session.productIDs.compactMap(ProductCatalog.shared.product(id:))
-        return VStack(alignment: .leading, spacing: Spacing.md) {
-            Text("For \(skinType.title.lowercased()) skin").font(.ds.title).accessibilityAddTraits(.isHeader)
-            Text("Look for").font(.ds.label).foregroundStyle(Color.ds.positive)
+        return VStack(alignment: .leading, spacing: Spacing.sm) {
+            Text("For \(skinType.title.lowercased()) skin")
+                .font(.ds.titleSmall).foregroundStyle(Color.ds.ink).accessibilityAddTraits(.isHeader)
+            HelpsTag(title: "Look for", systemImage: "checkmark.circle.fill", tint: Color.ds.positive)
             ForEach(guidance.lookFor) { IngredientRow(note: $0) }
-            Text("Go easy on").font(.ds.label).foregroundStyle(Color.ds.caution)
+            HelpsTag(title: "Go easy on", systemImage: "minus.circle.fill", tint: Color.ds.caution)
+                .padding(.top, Spacing.xs)
             ForEach(guidance.avoid) { IngredientRow(note: $0) }
             if !products.isEmpty {
-                Text("Using at the time").font(.ds.label).foregroundStyle(.secondary)
+                HelpsTag(title: "Using at the time", systemImage: "clock.fill", tint: Color.ds.inkSecondary)
+                    .padding(.top, Spacing.xs)
                 ForEach(products) { product in
                     Label {
                         VStack(alignment: .leading) {
-                            Text(product.name).font(.ds.callout)
-                            Text(product.brand).font(.ds.caption).foregroundStyle(.secondary)
+                            Text(product.name).font(.ds.callout.weight(.semibold)).foregroundStyle(Color.ds.ink)
+                            Text(product.brand).font(.ds.caption).foregroundStyle(Color.ds.inkSecondary)
                         }
                     } icon: {
-                        Image(systemName: product.slot?.systemImage ?? "drop")
+                        Image(systemName: product.slot?.systemImage ?? "drop").foregroundStyle(Color.ds.ink)
                     }
+                    .helpsRow()
                 }
             }
-            Button("Where this comes from") { showsSources = true }
-                .font(.subheadline.weight(.semibold))
+            Button { showsSources = true } label: {
+                Text("Where this comes from")
+                    .font(.system(.subheadline, design: .rounded).weight(.heavy))
+                    .underline()
+                    .foregroundStyle(Color.ds.ink)
+                    .frame(minHeight: Chunk.iconButton)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
         }
     }
 
     private var disclaimer: some View {
         Text("Skinalyze tracks visible changes. It isn't a medical device and doesn't diagnose. If something is painful or persistent, see a dermatologist.")
-            .font(.ds.footnote)
-            .foregroundStyle(.tertiary)
+            .font(.ds.footnote.weight(.semibold))
+            .foregroundStyle(Color.ds.ink)
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: .infinity)
+    }
+}
+
+// MARK: - The hill under a scrolling screen
+
+/// Puts scrolling content on the hill: the crest sits just above the content and the ground runs past the screen's
+/// sides and bottom, so pulling the page never shows sky underneath. `overlap` lifts the crest (behind Pimpi's feet).
+private struct ScrollingHill: ViewModifier {
+    let overlap: CGFloat
+
+    private enum Metrics {
+        static let rise: CGFloat = 56
+        /// Room for the crest's curve before the first line of content.
+        static let crestRoom = Spacing.lg
+        /// Past the content's own padding and the safe area, to the screen's edges.
+        static let sideBleed: CGFloat = 120
+        /// Below the last line, further than a page can be pulled.
+        static let depth: CGFloat = 1200
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .padding(.top, Metrics.crestRoom)
+            .onHill()
+            .background(alignment: .top) {
+                HillShape(crest: 0, rise: Metrics.rise)
+                    .fill(Color.ds.hill)
+                    .padding(.horizontal, -Metrics.sideBleed)
+                    .padding(.top, -overlap)
+                    .padding(.bottom, -Metrics.depth)
+                    .accessibilityHidden(true)
+            }
+    }
+}
+
+extension View {
+    /// Sits this content on the hill inside a scroll view (see `ScrollingHill`).
+    func scrollingHill(overlap: CGFloat = 0) -> some View {
+        modifier(ScrollingHill(overlap: overlap))
+    }
+}
+
+// MARK: - Pieces
+
+/// A row you press: the white panel sinks onto its hard edge. (The design system has this for capsules only.)
+private struct PressableRowStyle: ButtonStyle {
+    @Environment(\.dsGround) private var ground
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    func makeBody(configuration: Configuration) -> some View {
+        let pressed = configuration.isPressed
+        let shape = RoundedRectangle(cornerRadius: Radius.medium, style: .continuous)
+        configuration.label
+            .background(shape.fill(Color.ds.surface))
+            .offset(y: pressed ? Chunk.depth : 0)
+            .background(shape.fill(ground == .hill ? Color.ds.edgeOnHill : Color.ds.edge).offset(y: Chunk.depth))
+            .padding(.bottom, Chunk.depth)
+            .animation(MotionToken.snappy.resolved(reduceMotion: reduceMotion).animation, value: pressed)
+            .contentShape(shape)
+            .sensoryFeedback(.impact(weight: .light), trigger: pressed) { _, isPressed in isPressed }
+    }
+}
+
+/// "Look for" / "Go easy on": a glyph and a word, never colour alone.
+private struct HelpsTag: View {
+    let title: LocalizedStringKey
+    let systemImage: String
+    let tint: Color
+
+    var body: some View {
+        Label {
+            Text(title).foregroundStyle(Color.ds.ink)
+        } icon: {
+            Image(systemName: systemImage).foregroundStyle(tint)
+        }
+        .font(.system(.footnote, design: .rounded).weight(.heavy))
+        .padding(.horizontal, Spacing.sm)
+        .padding(.vertical, Spacing.xxs)
+        .background(Capsule().fill(Color.ds.surface))
+        .accessibilityAddTraits(.isHeader)
+    }
+}
+
+private extension View {
+    /// A resting white row on the hill.
+    func helpsRow() -> some View {
+        padding(.horizontal, Spacing.md)
+            .padding(.vertical, Spacing.sm)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .dsSurface(radius: Radius.medium)
     }
 }
 
@@ -386,11 +795,16 @@ struct SectionTitle: View {
 private struct IngredientRow: View {
     let note: IngredientNote
 
+    private enum Metrics {
+        static let lineGap: CGFloat = 2
+    }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(note.name).font(.ds.callout.weight(.semibold))
+        VStack(alignment: .leading, spacing: Metrics.lineGap) {
+            Text(note.name).font(.system(.callout, design: .rounded).weight(.heavy)).foregroundStyle(Color.ds.ink)
             Text(note.note).font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
         }
+        .helpsRow()
         .accessibilityElement(children: .combine)
     }
 }
@@ -405,7 +819,9 @@ struct SourcesView: View {
                 Section {
                     Text("Ingredient suggestions are general information from these sources, not medical advice.")
                         .font(.ds.footnote)
+                        .foregroundStyle(Color.ds.ink)
                 }
+                .listRowBackground(Color.ds.surface)
                 Section("Sources") {
                     ForEach(SkinTypeGuidance.for(skinType).sources) { source in
                         if let url = URL(string: source.url) {
@@ -413,7 +829,11 @@ struct SourcesView: View {
                         }
                     }
                 }
+                .listRowBackground(Color.ds.surface)
             }
+            .scrollContentBackground(.hidden)
+            .tint(Color.ds.signal)
+            .dsCanvas()
             .navigationTitle("Sources")
             .toolbar { Button("Done") { dismiss() } }
         }
@@ -429,7 +849,7 @@ struct LightingTipCard: View {
             Label("Tip for next time", systemImage: "lightbulb.fill").font(.ds.footnote.weight(.semibold))
                 .foregroundStyle(Color.ds.caution)
             ForEach(tips, id: \.self) { tip in
-                Text(Self.text(tip)).font(.ds.footnote).fixedSize(horizontal: false, vertical: true)
+                Text(Self.text(tip)).font(.ds.footnote).foregroundStyle(Color.ds.ink).fixedSize(horizontal: false, vertical: true)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

@@ -26,9 +26,14 @@ struct RecapTile: Hashable {
 struct RecapBanner: View {
     @Environment(QuestModel.self) private var quests
     @Query(sort: \ScanSession.createdAt) private var scans: [ScanSession]
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var opened: RecapPeriod?
     /// Bumped when a recap is opened or dismissed, so the banner re-reads what was seen.
     @State private var seenChanges = 0
+
+    private enum Metrics {
+        static let pimpi: CGFloat = 56
+    }
 
     private var due: RecapPeriod? {
         _ = seenChanges
@@ -38,30 +43,29 @@ struct RecapBanner: View {
     var body: some View {
         Group {
             if let due {
-                HStack(spacing: Spacing.sm) {
+                HStack(alignment: .center, spacing: Spacing.sm) {
                     Button { opened = due } label: {
-                        PimpiRow {
-                            Pimpi(mood: .excited).frame(width: 56, height: 56)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(RecapCopy.title(due)).font(.ds.headline).foregroundStyle(Color.ds.ink)
-                                Text("Pimpi made you a recap").font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
+                        PimpiRow(spacing: Spacing.sm) {
+                            Pimpi(mood: .excited).frame(width: Metrics.pimpi, height: Metrics.pimpi)
+                            VStack(alignment: .leading, spacing: Spacing.xxs) {
+                                Text(RecapCopy.title(due)).font(.effortRow).foregroundStyle(Color.ds.ink)
+                                Text("Pimpi made you a recap").font(.effortNote).foregroundStyle(Color.ds.inkSecondary)
                             }
+                            .multilineTextAlignment(.leading)
                             Spacer(minLength: 0)
                         }
-                        .contentShape(Rectangle())
                     }
-                    .buttonStyle(.bouncy(0.96))
+                    .buttonStyle(EffortRowButtonStyle(filled: false))
                     .accessibilityIdentifier("recapBanner")
                     Button {
                         RecapData.markSeen(due)
-                        withAnimation(.smooth) { seenChanges += 1 }
+                        withDSAnimation(.smooth, reduceMotion: reduceMotion) { seenChanges += 1 }
                     } label: {
-                        Image(systemName: "xmark").font(.ds.footnote.weight(.bold)).foregroundStyle(Color.ds.inkTertiary)
-                            .frame(width: 44, height: 44)
+                        Image(systemName: "xmark").font(.effortNote)
                     }
+                    .buttonStyle(.chunkyIcon)
                     .accessibilityLabel(Text("Not now"))
                 }
-                .dsCard()
                 .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
@@ -69,7 +73,8 @@ struct RecapBanner: View {
     }
 }
 
-/// A recap: Pimpi's line, the numbers, and (for Wrapped) the highlights. Shareable as a card without any photo.
+/// A recap: Pimpi's line on the sky, the numbers (and, for Wrapped, the highlights) on the hill. Shareable as a card
+/// without any photo.
 struct RecapView: View {
     let period: RecapPeriod
 
@@ -79,6 +84,11 @@ struct RecapView: View {
     @Query(sort: \ScanSession.createdAt) private var allScans: [ScanSession]
     private var scans: [ScanSession] { allScans.filter { !$0.isDeleted && $0.modelContext != nil } }
 
+    private enum Metrics {
+        static let pimpi: CGFloat = 104
+        static let tile: CGFloat = 150
+    }
+
     private var recap: Recap {
         RecapEngine.recap(period, history: RecapData.history(scans: scans, quests: quests), calendar: .current)
     }
@@ -87,31 +97,22 @@ struct RecapView: View {
         let recap = recap
         let cheer = RecapEngine.cheer(for: recap)
         NavigationStack {
-            ScrollView {
+            EffortScroll {
+                header(cheer: cheer)
+            } ground: {
                 VStack(alignment: .leading, spacing: Spacing.lg) {
-                    header(cheer: cheer)
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: typeSize.isAccessibilitySize ? 600 : 150), spacing: Spacing.sm)],
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: typeSize.isAccessibilitySize ? EffortMetrics.readable : Metrics.tile),
+                                                 spacing: Spacing.sm, alignment: .top)],
                               spacing: Spacing.sm) {
-                        ForEach(RecapTile.tiles(recap), id: \.self) { tile in
-                            VStack(alignment: .leading, spacing: Spacing.xxs) {
-                                Image(systemName: tile.symbol).foregroundStyle(Color.ds.signal)
-                                Text(tile.value, format: .number).font(.ds.title.monospacedDigit())
-                                Text(tile.label).font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
-                            }
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .dsCard()
-                            .accessibilityElement(children: .combine)
+                        ForEach(Array(RecapTile.tiles(recap).enumerated()), id: \.element) { index, item in
+                            tile(item).popIn(delay: MotionToken.stagger(index))
                         }
                     }
                     if RecapCopy.isWrapped(period) {
                         WrappedHighlightsView(period: period, scans: scans)
                     }
                 }
-                .padding(Spacing.lg)
-                .frame(maxWidth: 700)
-                .frame(maxWidth: .infinity)
             }
-            .dsCanvas()
             .navigationTitle(RecapCopy.title(period))
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
@@ -124,15 +125,35 @@ struct RecapView: View {
         .onAppear { RecapData.markSeen(period) }
     }
 
+    /// Pimpi and its line, with the dates above.
     private func header(cheer: RecapCheer) -> some View {
-        PimpiRow {
-            Pimpi(mood: RecapCopy.mood(cheer)).frame(width: 88, height: 88)
-            VStack(alignment: .leading, spacing: Spacing.xxs) {
-                Text(RecapCopy.dates(period)).font(.ds.label).foregroundStyle(Color.ds.inkSecondary)
-                Text(RecapCopy.cheer(cheer)).font(.ds.headline)
-                    .fixedSize(horizontal: false, vertical: true)
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            Text(RecapCopy.dates(period))
+                .font(.system(.footnote, design: .rounded).weight(.heavy))
+                .textCase(.uppercase)
+                .tracking(1.5)
+                .foregroundStyle(Color.ds.inkSecondary)
+            PimpiRow(spacing: Spacing.xs) {
+                PokablePimpi(mood: RecapCopy.mood(cheer), size: Metrics.pimpi)
+                SpeechBubble(Text(RecapCopy.cheer(cheer)), tail: typeSize.isAccessibilitySize ? .up : .leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .combine)
+    }
+
+    private func tile(_ tile: RecapTile) -> some View {
+        VStack(alignment: .leading, spacing: Spacing.xxs) {
+            Image(systemName: tile.symbol).font(.title3.weight(.bold)).foregroundStyle(Color.ds.signal)
+            Text(tile.value, format: .number)
+                .font(.system(.largeTitle, design: .rounded).weight(.heavy).monospacedDigit())
+                .foregroundStyle(Color.ds.ink)
+            Text(tile.label).font(.effortNote).foregroundStyle(Color.ds.inkSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .dsCard()
         .accessibilityElement(children: .combine)
     }
 }
@@ -162,7 +183,9 @@ private struct WrappedHighlightsView: View {
                     }
                 }
                 Text("Many things affect skin. These are patterns in your own scans, not advice.")
-                    .font(.ds.footnote).foregroundStyle(Color.ds.inkTertiary)
+                    .font(.effortNote).foregroundStyle(Color.ds.ink)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, Spacing.xxs)
             }
             .accessibilityIdentifier("wrappedHighlights")
         }
@@ -171,7 +194,7 @@ private struct WrappedHighlightsView: View {
     private func highlight(symbol: String, _ text: Text) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: Spacing.sm) {
             Image(systemName: symbol).foregroundStyle(Color.ds.positive).accessibilityHidden(true)
-            text.font(.ds.callout).fixedSize(horizontal: false, vertical: true)
+            text.font(.ds.callout.weight(.semibold)).foregroundStyle(Color.ds.ink).fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
         }
         .dsCard()

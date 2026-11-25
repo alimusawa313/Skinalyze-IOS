@@ -16,24 +16,26 @@ struct ChallengeSection: View {
                 running(active)
             } else {
                 Text("Pick one. Thirty days done finishes it; a missed day costs nothing.")
-                    .font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
+                    .font(.effortNote).foregroundStyle(Color.ds.ink)
+                    .fixedSize(horizontal: false, vertical: true)
                 ForEach(ChallengeKind.allCases, id: \.self) { kind in
-                    Button { withAnimation(.smooth) { challenges.start(kind) } } label: {
+                    Button { withDSAnimation(.smooth, reduceMotion: reduceMotion) { challenges.start(kind) } } label: {
                         HStack(spacing: Spacing.sm) {
-                            Image(systemName: ChallengeCopy.symbol(kind)).font(.title3).foregroundStyle(Color.ds.signal)
-                                .frame(width: 32)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(ChallengeCopy.title(kind)).font(.ds.callout.weight(.semibold)).foregroundStyle(Color.ds.ink)
-                                Text(ChallengeCopy.detail(kind)).font(.ds.caption).foregroundStyle(Color.ds.inkSecondary)
+                            Image(systemName: ChallengeCopy.symbol(kind)).font(.title3.weight(.bold)).foregroundStyle(Color.ds.signal)
+                                .frame(minWidth: EffortMetrics.mark)
+                                .accessibilityHidden(true)
+                            VStack(alignment: .leading, spacing: Spacing.xxs) {
+                                Text(ChallengeCopy.title(kind)).font(.effortRow).foregroundStyle(Color.ds.ink)
+                                Text(ChallengeCopy.detail(kind)).font(.effortNote).foregroundStyle(Color.ds.inkSecondary)
                                     .fixedSize(horizontal: false, vertical: true)
                             }
+                            .multilineTextAlignment(.leading)
                             Spacer(minLength: 0)
-                            Image(systemName: "plus.circle.fill").font(.title2).foregroundStyle(Color.ds.signal)
+                            Image(systemName: "plus").font(.effortRow).foregroundStyle(Color.ds.ink)
+                                .accessibilityHidden(true)
                         }
-                        .contentShape(Rectangle())
                     }
-                    .buttonStyle(.bouncy(0.96))
-                    .dsCard()
+                    .buttonStyle(.effortRow)
                     .accessibilityHint(Text("Starts this challenge"))
                     .accessibilityIdentifier("challenge.start.\(kind.rawValue)")
                 }
@@ -41,21 +43,22 @@ struct ChallengeSection: View {
             ForEach(challenges.book.finished.reversed(), id: \.id) { done in
                 Button { sharing = .challenge(done) } label: {
                     HStack(spacing: Spacing.sm) {
-                        Image(systemName: "medal.fill").foregroundStyle(Color.ds.positive)
-                        Text(ChallengeCopy.title(done.kind)).font(.ds.callout).foregroundStyle(Color.ds.ink)
+                        EffortMark(done: true) { EmptyView() }
+                        Text(ChallengeCopy.title(done.kind)).font(.effortRow).foregroundStyle(Color.ds.ink)
+                            .multilineTextAlignment(.leading)
                         Spacer(minLength: 0)
-                        Image(systemName: "square.and.arrow.up").foregroundStyle(Color.ds.inkSecondary)
+                        Image(systemName: "square.and.arrow.up").font(.effortRow).foregroundStyle(Color.ds.ink)
                     }
-                    .frame(minHeight: 44)
-                    .contentShape(Rectangle())
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.effortRow)
                 .accessibilityLabel(Text("Share: \(ChallengeCopy.title(done.kind))"))
             }
         }
         .sheet(item: $sharing) { ShareCardSheet(source: $0) }
         .confirmationDialog("Stop this challenge?", isPresented: $confirmingStop, titleVisibility: .visible) {
-            Button("Stop challenge", role: .destructive) { withAnimation(.smooth) { challenges.stop() } }
+            Button("Stop challenge", role: .destructive) {
+                withDSAnimation(.smooth, reduceMotion: reduceMotion) { challenges.stop() }
+            }
         } message: {
             Text("The days you've done so far will be cleared.")
         }
@@ -63,46 +66,55 @@ struct ChallengeSection: View {
 
     private func running(_ active: Challenge) -> some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
-            HStack(spacing: Spacing.md) {
-                ZStack {
-                    Circle().stroke(Color.ds.hairline, lineWidth: 8)
-                    Circle().trim(from: 0, to: Double(active.progress) / Double(ChallengeEngine.goalDays))
-                        .stroke(Color.ds.signal, style: StrokeStyle(lineWidth: 8, lineCap: .round))
-                        .rotationEffect(.degrees(-90))
-                        .animation(reduceMotion ? nil : .smooth, value: active.progress)
-                    Image(systemName: ChallengeCopy.symbol(active.kind)).font(.title2).foregroundStyle(Color.ds.signal)
+            VStack(alignment: .leading, spacing: Spacing.xs) {
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .firstTextBaseline) { runningTitle(active); Spacer(minLength: Spacing.xs); runningDay(active) }
+                    VStack(alignment: .leading, spacing: Spacing.xxs) { runningTitle(active); runningDay(active) }
                 }
-                .frame(width: 72, height: 72)
-                .accessibilityHidden(true)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(ChallengeCopy.title(active.kind)).font(.ds.headline)
-                    Text("Day \(active.progress) of \(ChallengeEngine.goalDays)")
-                        .font(.ds.callout.monospacedDigit()).foregroundStyle(Color.ds.signal)
-                        .contentTransition(.numericText(value: Double(active.progress)))
-                    Text(ChallengeCopy.detail(active.kind)).font(.ds.caption).foregroundStyle(Color.ds.inkSecondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                .accessibilityElement(children: .combine)
+                EffortBar(value: Double(active.progress) / Double(max(ChallengeEngine.goalDays, 1)))
+                Text(ChallengeCopy.detail(active.kind)).font(.effortNote).foregroundStyle(Color.ds.inkSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
+            .accessibilityElement(children: .combine)
             if active.kind == .handsOff {
-                Button { challenges.toggleHandsOff() } label: {
+                Button { withDSAnimation(.bouncy, reduceMotion: reduceMotion) { challenges.toggleHandsOff() } } label: {
                     Label(challenges.isDoneToday ? "Done for today" : "I kept my hands off today",
                           systemImage: challenges.isDoneToday ? "checkmark.circle.fill" : "hand.raised")
-                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .contentTransition(.symbolEffect(.replace))
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(challenges.isDoneToday ? Color.ds.positive : Color.ds.signal)
+                .buttonStyle(challenges.isDoneToday ? .chunkyPlain : .chunky)
                 .sensoryFeedback(Haptic.toggle, trigger: challenges.isDoneToday)
                 .accessibilityIdentifier("challenge.handsOff")
             } else if challenges.isDoneToday {
                 Label("Today counts!", systemImage: "checkmark.circle.fill")
-                    .font(.ds.footnote.weight(.semibold)).foregroundStyle(Color.ds.positive)
+                    .font(.effortNote).foregroundStyle(Color.ds.positive)
             }
             Button("Stop challenge", role: .destructive) { confirmingStop = true }
-                .font(.ds.footnote)
-                .frame(minHeight: 44)
+                .buttonStyle(.plain)
+                .font(.effortNote)
+                .foregroundStyle(Color.ds.inkSecondary)
+                .underline()
+                .frame(minHeight: Chunk.iconButton)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .dsCard()
+    }
+}
+
+extension ChallengeSection {
+    private func runningTitle(_ active: Challenge) -> some View {
+        Label {
+            Text(ChallengeCopy.title(active.kind))
+        } icon: {
+            Image(systemName: ChallengeCopy.symbol(active.kind)).foregroundStyle(Color.ds.signal)
+        }
+        .font(.ds.titleSmall).foregroundStyle(Color.ds.ink)
+    }
+
+    private func runningDay(_ active: Challenge) -> some View {
+        Text("Day \(active.progress) of \(ChallengeEngine.goalDays)")
+            .font(.effortRow.monospacedDigit()).foregroundStyle(Color.ds.ink)
+            .contentTransition(.numericText(value: Double(active.progress)))
     }
 }
 
@@ -113,23 +125,34 @@ struct ChallengeFinishedView: View {
     @State private var sharing: ShareCardSource?
     @State private var celebrated = false
 
+    private enum Metrics {
+        static let pimpi: CGFloat = 200
+    }
+
     var body: some View {
-        VStack(spacing: Spacing.lg) {
-            Spacer(minLength: 0)
-            Pimpi(mood: .excited).frame(maxWidth: 200, maxHeight: 200)
-            Text("Challenge finished!").font(.ds.title).multilineTextAlignment(.center)
-            Text("\(ChallengeCopy.title(challenge.kind)): all thirty days done. That's a real habit now.")
-                .font(.ds.callout).foregroundStyle(Color.ds.inkSecondary).multilineTextAlignment(.center)
-            Spacer(minLength: 0)
-            Button { sharing = .challenge(challenge) } label: {
-                Label("Share", systemImage: "square.and.arrow.up").frame(maxWidth: .infinity, minHeight: 50)
+        EffortStage {
+            VStack(spacing: Spacing.md) {
+                Text("Challenge finished!")
+                    .font(.ds.display).foregroundStyle(Color.ds.ink).multilineTextAlignment(.center)
+                    .accessibilityAddTraits(.isHeader)
+                Text("\(ChallengeCopy.title(challenge.kind)): all thirty days done. That's a real habit now.")
+                    .font(.ds.callout.weight(.semibold)).foregroundStyle(Color.ds.inkSecondary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                PokablePimpi(mood: .excited, size: Metrics.pimpi, cheer: celebrated ? 1 : 0)
             }
-            .buttonStyle(.borderedProminent).tint(Color.ds.signal)
-            Button("Done") { dismiss() }.frame(minHeight: 44)
+        } ground: {
+            VStack(spacing: Spacing.sm) {
+                Button { sharing = .challenge(challenge) } label: {
+                    Label("Share", systemImage: "square.and.arrow.up")
+                }
+                .buttonStyle(.chunky)
+                Button { dismiss() } label: { Text("Done").underline() }
+                    .buttonStyle(.plain)
+                    .font(.effortNote).foregroundStyle(Color.ds.ink)
+                    .frame(minHeight: Chunk.iconButton)
+            }
         }
-        .padding(Spacing.lg)
-        .frame(maxWidth: 520)
-        .dsCanvas()
         .sensoryFeedback(.success, trigger: celebrated)
         .onAppear { celebrated = true }
         .sheet(item: $sharing) { ShareCardSheet(source: $0) }

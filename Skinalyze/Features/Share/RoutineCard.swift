@@ -105,29 +105,61 @@ struct SharedShelfView: View {
     let productIDs: [Int]
     @Environment(\.dismiss) private var dismiss
 
+    private enum Metrics {
+        static let pimpi: CGFloat = 96
+        /// Where the hill starts, as a share of the screen height.
+        static let crest: CGFloat = 0.3
+    }
+
+    private var products: [CatalogProduct] {
+        productIDs.compactMap { ProductCatalog.shared.product(id: $0) }
+    }
+
     var body: some View {
         NavigationStack {
-            List {
-                Section {
-                    ForEach(productIDs.compactMap { ProductCatalog.shared.product(id: $0) }) { product in
-                        NavigationLink(value: product) {
-                            HStack(spacing: Spacing.sm) {
-                                ProductThumbnail(product: product)
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(product.name).font(.ds.callout).lineLimit(2)
-                                    Text(product.brand).font(.ds.caption).foregroundStyle(Color.ds.inkSecondary)
+            ScrollView {
+                VStack(spacing: Spacing.lg) {
+                    HStack(spacing: Spacing.sm) {
+                        PokablePimpi(mood: .curious, size: Metrics.pimpi)
+                        SpeechBubble(Text("Tap a product to see if it suits your skin."), tail: .leading)
+                    }
+                    VStack(spacing: Spacing.sm) {
+                        ForEach(Array(products.enumerated()), id: \.element.productID) { index, product in
+                            NavigationLink(value: product) {
+                                HStack(spacing: Spacing.sm) {
+                                    ProductThumbnail(product: product)
+                                    VStack(alignment: .leading, spacing: Spacing.xxs) {
+                                        Text(product.name)
+                                            .font(.system(.callout, design: .rounded).weight(.heavy))
+                                            .foregroundStyle(Color.ds.ink)
+                                            .lineLimit(2)
+                                        Text(product.brand).font(.ds.caption.weight(.semibold)).foregroundStyle(Color.ds.inkSecondary)
+                                    }
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    Image(systemName: "chevron.right").font(.footnote.weight(.heavy)).foregroundStyle(Color.ds.ink)
                                 }
+                                .padding(Spacing.md)
+                                .dsSurface(radius: Radius.medium)
                             }
+                            .buttonStyle(.bouncy(0.97))
+                            .popIn(delay: MotionToken.stagger(index))
                         }
                     }
-                } footer: {
-                    Text("Tap a product to see if it suits your skin.")
+                    .onHill()
                 }
+                .padding(Spacing.md)
+                .frame(maxWidth: 640)
+                .frame(maxWidth: .infinity)
             }
+            .dsHill(crest: Metrics.crest)
             .navigationTitle("A friend's shelf")
             .toolbarTitleDisplayMode(.inline)
             .navigationDestination(for: CatalogProduct.self) { ProductDetailView(product: $0) }
-            .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
         }
     }
 }

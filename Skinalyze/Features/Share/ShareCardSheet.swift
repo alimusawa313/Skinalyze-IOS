@@ -55,7 +55,8 @@ extension ShareCardSource {
 }
 
 /// Preview, shape, "hide my face", then the system share sheet. The face choice is made fresh on every share and
-/// the Share button only ever hands over the picture currently shown.
+/// the Share button only ever hands over the picture currently shown. The card sits on the sky with a white edge;
+/// the choices and the Share button stand on the hill.
 struct ShareCardSheet: View {
     let source: ShareCardSource
 
@@ -66,7 +67,10 @@ struct ShareCardSheet: View {
     @State private var format = ShareCardFormat.story
     @State private var hidesFace = false
     @State private var rendered: Rendered?
+    /// The picture shown last, kept (blurred, never shareable) while the next one is made.
+    @State private var lastImage: UIImage?
     @State private var failed = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private struct Rendered {
         let image: UIImage
@@ -80,92 +84,123 @@ struct ShareCardSheet: View {
 
     var body: some View {
         NavigationStack {
-            // Landscape (and iPhone Duo closed, landscape): preview beside the controls instead of above them.
-            let layout = verticalSizeClass == .compact
-                ? AnyLayout(HStackLayout(spacing: Spacing.lg))
-                : AnyLayout(VStackLayout(spacing: Spacing.md))
-            layout {
-                preview.frame(maxWidth: .infinity, maxHeight: .infinity)
-                controls.frame(maxWidth: 520)
+            Group {
+                // Landscape (and iPhone Duo closed, landscape): the card beside the controls instead of above them.
+                if verticalSizeClass == .compact {
+                    HStack(spacing: Spacing.lg) {
+                        preview.frame(maxWidth: .infinity, maxHeight: .infinity)
+                        ScrollView { controls.padding(.vertical, Spacing.md) }
+                            .scrollBounceBehavior(.basedOnSize)
+                            .frame(maxWidth: ShareSheetMetrics.controlsWidth)
+                    }
+                    .padding(.horizontal, Spacing.lg)
+                    .dsHill(crest: ShareSheetMetrics.wideCrest, rise: ShareSheetMetrics.hillRise)
+                } else {
+                    VStack(spacing: 0) {
+                        preview
+                            .padding(Spacing.lg)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        controls.shareSheetHill()
+                    }
+                    .background(Color.ds.canvas.ignoresSafeArea())
+                }
             }
-            .padding(Spacing.md)
-            .dsCanvas()
             .navigationTitle("Share")
             .toolbarTitleDisplayMode(.inline)
             .toolbar { Button("Done") { dismiss() } }
         }
         .task(id: RenderKey(format: format, hidesFace: hidesFace)) { await render() }
+        .sensoryFeedback(Haptic.toggle, trigger: hidesFace)
+        .sensoryFeedback(Haptic.success, trigger: rendered?.url) { _, url in url != nil }
     }
 
+    /// The card itself, with a white edge and a slight tilt, like a sticker laid down. Changing the shape springs the
+    /// card to its new proportions; while the new picture is made the last one stays, blurred, and the new one fades
+    /// in over it (so hiding the face melts the sticker into its outline). Only the finished picture can be shared.
     @ViewBuilder private var preview: some View {
-        if let rendered {
-            Image(uiImage: rendered.image)
-                .resizable()
-                .scaledToFit()
-                .clipShape(RoundedRectangle(cornerRadius: Radius.medium, style: .continuous))
-                .shadow(color: .black.opacity(0.18), radius: Spacing.md, y: Spacing.xs)
-                .accessibilityLabel(hidesFace ? Text("Preview of your card with your face hidden") : Text("Preview of your card"))
-                .accessibilityIdentifier("shareCardPreview")
-        } else if failed {
+        if failed {
             ContentUnavailableView("Couldn't make the image", systemImage: "photo.badge.exclamationmark",
                                    description: Text("Close this and try again."))
         } else {
-            ProgressView()
+            let size = format.pointSize
+            Color.clear
+                .aspectRatio(size.width / size.height, contentMode: .fit)
+                .overlay {
+                    if let rendered {
+                        Image(uiImage: rendered.image)
+                            .resizable()
+                            .scaledToFill()
+                            .accessibilityLabel(hidesFace ? Text("Preview of your card with your face hidden") : Text("Preview of your card"))
+                            .accessibilityIdentifier("shareCardPreview")
+                            .transition(.opacity)
+                    } else {
+                        ZStack {
+                            Color.ds.surfaceRaised
+                            if let lastImage {
+                                Image(uiImage: lastImage)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .blur(radius: reduceMotion ? 0 : ShareSheetMetrics.pendingBlur)
+                                    .opacity(ShareSheetMetrics.pendingOpacity)
+                                    .accessibilityHidden(true)
+                            }
+                            ProgressView().tint(Color.ds.ink)
+                        }
+                        .transition(.opacity)
+                    }
+                }
+                .clipShape(RoundedRectangle(cornerRadius: Radius.small, style: .continuous))
+                .padding(ShareSheetMetrics.cardBorder)
+                .dsSurface(radius: Radius.medium)
+                .rotationEffect(.degrees(ShareSheetMetrics.cardTilt))
+                .padding(Spacing.xs)
+                .animation(MotionToken.bouncy.resolved(reduceMotion: reduceMotion).animation, value: format)
+                .animation(MotionToken.snappy.resolved(reduceMotion: reduceMotion).animation, value: rendered?.url)
         }
     }
 
     private var controls: some View {
         VStack(spacing: Spacing.md) {
-            Picker("Shape", selection: $format) {
-                ForEach(ShareCardFormat.allCases) { Text(title(for: $0)).tag($0) }
-            }
-            .pickerStyle(.segmented)
+            PillPicker(ShareCardFormat.allCases.map { (value: $0, title: title(for: $0)) }, selection: $format)
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel("Shape")
             if source.offersHideFace {
-                Toggle(isOn: $hidesFace) {
-                    Label {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Hide my face")
-                            Text("Shares your sticker's outline and numbers only.")
-                                .font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
-                        }
-                    } icon: {
-                        Image(systemName: "eye.slash")
-                    }
-                }
-                .tint(Color.ds.signal)
-                .accessibilityIdentifier("shareHideFace")
+                HideFaceRow(isOn: $hidesFace, identifier: "shareHideFace")
             }
-            shareButton
             Text("Skinalyze uploads nothing. The image goes only where you send it.")
-                .font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
+                .font(.ds.footnote.weight(.semibold))
+                .foregroundStyle(Color.ds.ink)
                 .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+            shareButton
         }
     }
 
     @ViewBuilder private var shareButton: some View {
-        let label = Label("Share", systemImage: "square.and.arrow.up").frame(maxWidth: .infinity)
+        let label = Label("Share", systemImage: "square.and.arrow.up")
         if let rendered {
             ShareLink(item: rendered.url, preview: SharePreview(Text(verbatim: "Skinalyze"), image: Image(uiImage: rendered.image))) { label }
                 .simultaneousGesture(TapGesture().onEnded { quests?.did(.share, isPro: access?.policy.hasFullAccess ?? false) })
-                .buttonStyle(.dsPrimary)
+                .buttonStyle(.chunky)
                 .accessibilityIdentifier("shareCardButton")
         } else {
             Button {} label: { label }
-                .buttonStyle(.dsPrimary)
+                .buttonStyle(.chunky)
                 .disabled(true)
         }
     }
 
-    private func title(for format: ShareCardFormat) -> LocalizedStringKey {
+    private func title(for format: ShareCardFormat) -> String {
         switch format {
-        case .story: "Story"
-        case .portrait: "Post"
-        case .square: "Square"
+        case .story: String(localized: "Story")
+        case .portrait: String(localized: "Post")
+        case .square: String(localized: "Square")
         }
     }
 
     private func render() async {
-        // Nothing stale may be shared: the old picture goes before the new one is made.
+        // Nothing stale may be shared: the old picture goes before the new one is made (it stays on screen, blurred).
+        if let image = rendered?.image { lastImage = image }
         rendered = nil
         failed = false
         let content = await source.content(hidesFace)
@@ -177,6 +212,65 @@ struct ShareCardSheet: View {
             return
         }
         rendered = Rendered(image: image, url: url)
+    }
+}
+
+// MARK: - Shared pieces of the share sheets
+
+enum ShareSheetMetrics {
+    static let controlsWidth: CGFloat = 520
+    static let hillRise: CGFloat = 40
+    /// Where the hill starts behind a landscape share sheet, as a fraction of its height.
+    static let wideCrest: CGFloat = 0.8
+    /// The white edge round the card preview.
+    static let cardBorder: CGFloat = 8
+    static let cardTilt: Double = -3
+    static let pendingBlur: CGFloat = 12
+    static let pendingOpacity = 0.6
+    static let lineGap: CGFloat = 2
+}
+
+/// "Hide my face" on a white row with the hard edge; the switch turns green when the face is hidden.
+struct HideFaceRow: View {
+    @Binding var isOn: Bool
+    /// The UI tests find the switch by this.
+    let identifier: String
+
+    var body: some View {
+        Toggle(isOn: $isOn) {
+            VStack(alignment: .leading, spacing: ShareSheetMetrics.lineGap) {
+                Text("Hide my face")
+                    .font(.system(.headline, design: .rounded).weight(.heavy))
+                    .foregroundStyle(Color.ds.ink)
+                Text("Shares your sticker's outline and numbers only.")
+                    .font(.ds.footnote.weight(.semibold))
+                    .foregroundStyle(Color.ds.inkSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .tint(Color.ds.positive)
+        .accessibilityIdentifier(identifier)
+        .padding(.horizontal, Spacing.md)
+        .padding(.vertical, Spacing.sm)
+        .dsSurface(radius: Radius.large)
+    }
+}
+
+extension View {
+    /// Stands a share sheet's controls on the hill (portrait): the crest just above them, the ground to the bottom.
+    func shareSheetHill() -> some View {
+        padding(.horizontal, Spacing.lg)
+            .padding(.top, Spacing.xl + Spacing.xxs)
+            .padding(.bottom, Spacing.md)
+            .frame(maxWidth: ShareSheetMetrics.controlsWidth)
+            .frame(maxWidth: .infinity)
+            .onHill()
+            .background(alignment: .top) {
+                HillShape(crest: 0, rise: ShareSheetMetrics.hillRise)
+                    .fill(Color.ds.hill)
+                    .ignoresSafeArea(edges: [.bottom, .horizontal])
+                    .accessibilityHidden(true)
+            }
     }
 }
 

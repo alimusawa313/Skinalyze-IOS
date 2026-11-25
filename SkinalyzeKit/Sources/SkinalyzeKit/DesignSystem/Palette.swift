@@ -77,9 +77,9 @@ public enum Palette {
     public static let inkSecondary = ColorToken("inkSecondary", light: 0x6A4E5C, dark: 0xD6CFE6)
     public static let inkTertiary = ColorToken("inkTertiary", light: 0x8C7480, dark: 0x9A93B5)
     public static let hairline = ColorToken("hairline", light: 0xF1D9C6, dark: 0x45447F)
-    public static let signal = ColorToken("signal", light: 0xE0496A, dark: 0xFF8A94)
-    public static let positive = ColorToken("positive", light: 0x1F8A5B, dark: 0x4CD49A)
-    public static let caution = ColorToken("caution", light: 0xB06A00, dark: 0xF2A93B)
+    public static let signal = ColorToken("signal", light: 0xA62845, dark: 0xFFA0A8)
+    public static let positive = ColorToken("positive", light: 0x136640, dark: 0x5BDCA5)
+    public static let caution = ColorToken("caution", light: 0x7A4800, dark: 0xF2A93B)
 
     /// The hill Pimpi stands on, and the one behind it.
     public static let hill = ColorToken("hill", light: 0xFFC9C4, dark: 0x4A3B7A)
@@ -97,6 +97,11 @@ public enum Palette {
     public static let pimpiHighlight = ColorToken("pimpiHighlight", light: 0xFFB4BA, dark: 0xFFBFC4)
     public static let pimpiEye = ColorToken("pimpiEye", light: 0x23224F, dark: 0x23224F)
     public static let pimpiCheek = ColorToken("pimpiCheek", light: 0xFFF3E4, dark: 0xFFF3E4)
+    /// Pimpi's outfits and sparkles: fixed, bright colours that belong to the mascot's art, not to the status
+    /// colours (those are tuned for text contrast and may change).
+    public static let outfitRed = ColorToken("outfitRed", light: 0xE5484D, dark: 0xFF6B6F)
+    public static let outfitGreen = ColorToken("outfitGreen", light: 0x1F8A5B, dark: 0x4CD49A)
+    public static let outfitGold = ColorToken("outfitGold", light: 0xF2A93B, dark: 0xF2A93B)
     /// The hard edge under a Pimpi-pink button (the scan button).
     public static let pimpiEdge = ColorToken("pimpiEdge", light: 0xC2405A, dark: 0xB8445C)
 
@@ -137,6 +142,9 @@ public extension Color {
         public static var pimpiEye: Color { Palette.pimpiEye.color }
         public static var pimpiCheek: Color { Palette.pimpiCheek.color }
         public static var pimpiEdge: Color { Palette.pimpiEdge.color }
+        public static var outfitRed: Color { Palette.outfitRed.color }
+        public static var outfitGreen: Color { Palette.outfitGreen.color }
+        public static var outfitGold: Color { Palette.outfitGold.color }
 
         public static func band(_ band: BreakoutBand) -> Color {
             Palette.bandRamp[BreakoutBand.allCases.firstIndex(of: band) ?? 0].color

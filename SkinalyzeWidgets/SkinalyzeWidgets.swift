@@ -74,27 +74,69 @@ struct SkinTrendView: View {
                 Text(daysLine).font(.caption2)
             }
         default:
-            HStack(alignment: .top, spacing: 12) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(entry.snapshot.breakoutIndex.map(String.init) ?? "–")
-                        .font(.ds.numeral)
-                        .foregroundStyle(Color.ds.ink)
-                        .contentTransition(.numericText())
+            HStack(spacing: Spacing.sm) {
+                VStack(alignment: .leading, spacing: Spacing.xxs) {
+                    Text("Skin")
+                        .font(.system(.caption, design: .rounded).weight(.heavy))
+                        .textCase(.uppercase)
+                        .tracking(Metrics.labelTracking)
+                        .foregroundStyle(Color.ds.inkSecondary)
+                    HStack(alignment: .firstTextBaseline, spacing: Spacing.xs) {
+                        Text(entry.snapshot.breakoutIndex.map(String.init) ?? "–")
+                            .font(.ds.numeral)
+                            .foregroundStyle(Color.ds.ink)
+                            .lineLimit(1)
+                            .minimumScaleFactor(Metrics.numeralScale)
+                            .contentTransition(.numericText())
+                        if family == .systemMedium, let delta = entry.snapshot.delta { DeltaBadge(delta: delta) }
+                    }
                     if let band { BandPill(band) }
                     Spacer(minLength: 0)
-                    Text(daysLine).font(.caption2).foregroundStyle(Color.ds.inkSecondary)
+                    Text(daysLine)
+                        .font(.system(.caption, design: .rounded).weight(.heavy))
+                        .foregroundStyle(Color.ds.ink)
                 }
                 if family == .systemMedium, entry.snapshot.trend.count >= 2 {
-                    Chart(Array(entry.snapshot.trend.enumerated()), id: \.offset) { point in
-                        LineMark(x: .value("Scan", point.offset), y: .value("Index", point.element))
-                            .interpolationMethod(.monotone)
-                            .foregroundStyle(Color.ds.signal)
-                    }
-                    .chartXAxis(.hidden)
-                    .chartYAxis(.hidden)
+                    trendChart
                 }
             }
         }
+    }
+
+    private enum Metrics {
+        static let labelTracking: CGFloat = 1.2
+        static let numeralScale: CGFloat = 0.5
+        static let line: CGFloat = 4
+        static let point: CGFloat = 14
+        static let pointRing: CGFloat = 3
+    }
+
+    /// The trend as a hill: pink area, a heavy ink line, the latest scan as a dot in its band's colour.
+    private var trendChart: some View {
+        let points = Array(entry.snapshot.trend.enumerated())
+        return Chart {
+            ForEach(points, id: \.offset) { point in
+                AreaMark(x: .value("Scan", point.offset), y: .value("Index", point.element))
+                    .interpolationMethod(.monotone)
+                    .foregroundStyle(Color.ds.hill)
+                LineMark(x: .value("Scan", point.offset), y: .value("Index", point.element))
+                    .interpolationMethod(.monotone)
+                    .foregroundStyle(Color.ds.ink)
+                    .lineStyle(StrokeStyle(lineWidth: Metrics.line, lineCap: .round, lineJoin: .round))
+            }
+            if let last = points.last {
+                PointMark(x: .value("Scan", last.offset), y: .value("Index", last.element))
+                    .symbol {
+                        Circle()
+                            .fill(band.map { Color.ds.band($0) } ?? Color.ds.surface)
+                            .overlay(Circle().strokeBorder(Color.ds.ink, lineWidth: Metrics.pointRing))
+                            .frame(width: Metrics.point, height: Metrics.point)
+                    }
+            }
+        }
+        .chartXAxis(.hidden)
+        .chartYAxis(.hidden)
+        .accessibilityHidden(true)
     }
 
     private var summaryLine: String {
@@ -206,7 +248,7 @@ struct PimpiWidget: Widget {
         StaticConfiguration(kind: "Pimpi", provider: PimpiProvider()) { entry in
             PimpiWidgetEntryView(entry: entry)
                 .environment(\.pimpiOutfit, EngagementShared.loadOutfit())
-                .containerBackground(Color.ds.canvas, for: .widget)
+                .containerBackground(for: .widget) { PimpiWidgetView.background }
                 .widgetURL(URL(string: "skinalyze://today"))
         }
         .configurationDisplayName("Pimpi")

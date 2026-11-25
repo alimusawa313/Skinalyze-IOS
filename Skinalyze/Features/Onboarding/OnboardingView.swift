@@ -1,7 +1,8 @@
 import SwiftUI
 import SkinalyzeKit
 
-/// Short, paged onboarding (replaces the fake chat). Progress + Back on every step; optional steps can be skipped.
+/// Short, paged onboarding in Pimpi's place: Pimpi hosts each step from the sky, the question and its options sit under
+/// it, and the one button waits on the hill. Progress + Back on every step; optional steps can be skipped.
 struct OnboardingView: View {
     enum Step: Int, CaseIterable {
         case welcome, goals, skinType, sensitivity, name, privacy
@@ -14,31 +15,71 @@ struct OnboardingView: View {
     @AppStorage(UserProfile.Key.goals) private var goalsRaw = ""
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var step: Step = .welcome
     @State private var goals: Set<UserProfile.Goal> = []
     @State private var showsPrivacyPolicy = false
+    /// Counts the user's picks, so Pimpi hops for each one.
+    @State private var cheers = 0
+
+    private enum Metrics {
+        static let pimpi: CGFloat = 150
+        static let pimpiCompact: CGFloat = 110
+        static let segmentHeight: CGFloat = 8
+        static let segmentGap: CGFloat = 6
+        static let contentWidth: CGFloat = 560
+        static let hillRise: CGFloat = 40
+        /// How far the hill reaches above the button.
+        static let hillAbove: CGFloat = 36
+        /// Where the hill starts on short and wide screens, as a fraction of the height.
+        static let wideCrest: CGFloat = 0.72
+    }
 
     var body: some View {
-        VStack(spacing: 0) {
-            header
-            AdaptivePair(.split) {
-                illustration
-            } secondary: {
-                ScrollView {
-                    content
-                        .padding(.horizontal, Spacing.lg)
-                        .padding(.vertical, Spacing.md)
-                        .id(step)
-                        .transition(.asymmetric(
-                            insertion: .move(edge: .trailing).combined(with: .opacity),
-                            removal: .move(edge: .leading).combined(with: .opacity)
-                        ))
+        Group {
+            if horizontalSizeClass == .regular {
+                VStack(spacing: 0) {
+                    header
+                    AdaptivePair(.split) {
+                        host(size: Metrics.pimpi).frame(maxHeight: .infinity)
+                    } secondary: {
+                        VStack(spacing: 0) {
+                            scrollingContent
+                            footer.onHill()
+                        }
+                    }
                 }
-                .scrollBounceBehavior(.basedOnSize)
+                .dsHill(crest: Metrics.wideCrest, showsFarHill: true)
+            } else if verticalSizeClass == .compact {
+                // A phone on its side, the iPhone Duo's outer display in landscape: Pimpi on the left.
+                VStack(spacing: 0) {
+                    header
+                    HStack(spacing: Spacing.lg) {
+                        host(size: Metrics.pimpiCompact)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                        VStack(spacing: 0) {
+                            scrollingContent
+                            footer.onHill()
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                }
+                .dsHill(crest: Metrics.wideCrest, showsFarHill: true)
+            } else {
+                VStack(spacing: 0) {
+                    header
+                    host(size: Metrics.pimpi)
+                    scrollingContent
+                    footer
+                        .padding(.top, Metrics.hillAbove)
+                        .background(alignment: .top) { hill }
+                        .onHill()
+                }
+                .background(Color.ds.canvas.ignoresSafeArea())
             }
-            footer
         }
-        .background(LivingBackground(band: .calm))
         .sheet(isPresented: $showsPrivacyPolicy) { PrivacyPolicyView() }
         .sensoryFeedback(Haptic.scrub, trigger: step)
     }
@@ -47,48 +88,105 @@ struct OnboardingView: View {
 
     private var header: some View {
         HStack(spacing: Spacing.sm) {
-            if step != .welcome {
-                Button { go(-1) } label: {
-                    Image(systemName: "chevron.left").font(.headline).frame(width: 44, height: 44)
+            Group {
+                if step != .welcome {
+                    Button { go(-1) } label: {
+                        Image(systemName: "chevron.left")
+                    }
+                    .buttonStyle(.chunkyIcon)
+                    .accessibilityLabel("Back")
+                } else {
+                    Color.clear.accessibilityHidden(true)
                 }
-                .accessibilityLabel("Back")
             }
-            ProgressView(value: Double(step.rawValue), total: Double(Step.allCases.count - 1))
-                .tint(Color.ds.signal)
-                .accessibilityLabel("Step \(step.rawValue + 1) of \(Step.allCases.count)")
+            .frame(width: Chunk.iconButton, height: Chunk.iconButton + Chunk.depthSmall)
+            progress
+            Text("Step \(step.rawValue + 1) of \(Step.allCases.count)")
+                .font(.system(.footnote, design: .rounded).weight(.heavy))
+                .foregroundStyle(Color.ds.ink)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+                .accessibilityHidden(true)
         }
-        .frame(minHeight: 44)
         .padding(.horizontal, Spacing.lg)
+        .padding(.top, Spacing.xs)
     }
 
-    private var illustration: some View {
-        TimelineView(.animation(paused: reduceMotion)) { context in
-            let t = reduceMotion ? 0.6 : (sin(context.date.timeIntervalSinceReferenceDate * 0.8) + 1) / 2
-            ZStack {
-                FaceRing(frontProgress: t, rightProgress: t * 0.9, leftProgress: t * 0.7)
-                    .frame(width: 220, height: 220)
-                Image(systemName: "faceid")
-                    .font(.system(size: 72, weight: .light))
-                    .foregroundStyle(Color.ds.ink)
+    /// One segment per step; the ones you've reached are ink.
+    private var progress: some View {
+        HStack(spacing: Metrics.segmentGap) {
+            ForEach(Step.allCases, id: \.self) { item in
+                Capsule()
+                    .fill(item.rawValue <= step.rawValue ? Color.ds.ink : Color.ds.edge)
+                    .frame(height: Metrics.segmentHeight)
+                    .popOnChange(item == step)
             }
         }
-        .frame(maxWidth: .infinity, minHeight: 200, maxHeight: 280)
-        .accessibilityHidden(true)
+        .dsAnimation(.bouncy, value: step)
+        .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Step \(step.rawValue + 1) of \(Step.allCases.count)")
+    }
+
+    /// Pimpi hosts every step, with a mood (and on two steps an outfit) that fits the question.
+    private func host(size: CGFloat) -> some View {
+        PokablePimpi(mood: mood, size: size, cheer: cheers + step.rawValue)
+            .environment(\.pimpiOutfit, outfit)
+            .frame(maxWidth: .infinity)
+            .padding(.top, Spacing.xs)
+    }
+
+    private var mood: MascotMood {
+        switch step {
+        case .welcome: .excited
+        case .goals: .curious
+        case .skinType, .name, .privacy: .happy
+        case .sensitivity: .worried
+        }
+    }
+
+    private var outfit: PimpiOutfit? {
+        switch step {
+        case .name: .partyHat
+        case .privacy: .sunglasses
+        default: nil
+        }
+    }
+
+    private var scrollingContent: some View {
+        ScrollView {
+            content
+                .padding(.horizontal, Spacing.lg)
+                .padding(.vertical, Spacing.md)
+                .frame(maxWidth: Metrics.contentWidth)
+                .frame(maxWidth: .infinity)
+                .id(step)
+                .transition(.asymmetric(
+                    insertion: .move(edge: .trailing).combined(with: .opacity),
+                    removal: .move(edge: .leading).combined(with: .opacity)
+                ))
+        }
+        .scrollBounceBehavior(.basedOnSize)
+    }
+
+    /// The hill the button stands on, carried on past the bottom edge.
+    private var hill: some View {
+        HillShape(crest: 0, rise: Metrics.hillRise)
+            .fill(Color.ds.hill)
+            .ignoresSafeArea(edges: [.bottom, .horizontal])
+            .accessibilityHidden(true)
     }
 
     private var footer: some View {
-        VStack(spacing: Spacing.xs) {
-            Button(primaryTitle, action: advance)
-                .buttonStyle(.dsPrimary)
-                .disabled(!canContinue)
-            if step == .name {
-                Button("Skip") { go(1) }
-                    .font(.subheadline)
-                    .foregroundStyle(Color.ds.inkSecondary)
-            }
+        Button(action: advance) {
+            Text(primaryTitle).contentTransition(.interpolate)
         }
+        .buttonStyle(.chunky)
+        .disabled(!canContinue)
+        .frame(maxWidth: Metrics.contentWidth)
         .padding(.horizontal, Spacing.lg)
         .padding(.bottom, Spacing.md)
+        .frame(maxWidth: .infinity)
     }
 
     // MARK: - Steps
@@ -99,56 +197,76 @@ struct OnboardingView: View {
             StepText(title: "See how your skin is changing",
                      message: "A one-minute scan, private to your phone. Track breakouts by face zone and see which products actually help.")
         case .goals:
-            VStack(alignment: .leading, spacing: Spacing.md) {
+            VStack(spacing: Spacing.md) {
                 StepText(title: "What would you like to focus on?", message: "Pick any — you can change this later.")
-                ForEach(UserProfile.Goal.allCases) { goal in
-                    SelectCard(title: goal.title, subtitle: nil, systemImage: goal.systemImage,
-                               isSelected: goals.contains(goal)) {
-                        goals.formSymmetricDifference([goal])
+                LazyVGrid(columns: goalColumns, spacing: Spacing.sm) {
+                    ForEach(UserProfile.Goal.allCases) { goal in
+                        SelectCard(title: goal.title, subtitle: nil, systemImage: goal.systemImage,
+                                   isSelected: goals.contains(goal), isTile: true) {
+                            goals.formSymmetricDifference([goal])
+                            cheers += 1
+                        }
                     }
                 }
             }
         case .skinType:
-            VStack(alignment: .leading, spacing: Spacing.md) {
+            VStack(spacing: Spacing.md) {
                 StepText(title: "How does your skin usually feel?", message: "This shapes ingredient suggestions.")
-                ForEach(SkinType.allCases, id: \.self) { type in
-                    SelectCard(title: type.title, subtitle: type.blurb, systemImage: nil,
-                               isSelected: !skinTypeRaw.isEmpty && SkinType(stored: skinTypeRaw) == type) {
-                        skinTypeRaw = type.rawValue.capitalized
+                VStack(spacing: Spacing.sm) {
+                    ForEach(SkinType.allCases, id: \.self) { type in
+                        SelectCard(title: type.title, subtitle: type.blurb, systemImage: nil,
+                                   isSelected: !skinTypeRaw.isEmpty && SkinType(stored: skinTypeRaw) == type) {
+                            skinTypeRaw = type.rawValue.capitalized
+                            cheers += 1
+                        }
                     }
                 }
             }
         case .sensitivity:
-            VStack(alignment: .leading, spacing: Spacing.md) {
+            VStack(spacing: Spacing.md) {
                 StepText(title: "How sensitive is your skin?", message: "Does it sting or redden with new products?")
-                ForEach(UserProfile.Sensitivity.allCases) { level in
-                    SelectCard(title: level.title, subtitle: nil, systemImage: nil, isSelected: sensitivityRaw == level.rawValue) {
-                        sensitivityRaw = level.rawValue
+                VStack(spacing: Spacing.sm) {
+                    ForEach(UserProfile.Sensitivity.allCases) { level in
+                        SelectCard(title: level.title, subtitle: nil, systemImage: nil,
+                                   isSelected: sensitivityRaw == level.rawValue) {
+                            sensitivityRaw = level.rawValue
+                            cheers += 1
+                        }
                     }
                 }
             }
         case .name:
-            VStack(alignment: .leading, spacing: Spacing.md) {
+            VStack(spacing: Spacing.md) {
                 StepText(title: "What should we call you?", message: "Optional — used only for greetings on this phone.")
                 TextField("Your name", text: $name)
                     .textContentType(.givenName)
                     .submitLabel(.continue)
                     .onSubmit(advance)
-                    .padding(Spacing.md)
-                    .background(Color.ds.surface, in: RoundedRectangle(cornerRadius: Radius.small))
-                    .overlay(RoundedRectangle(cornerRadius: Radius.small).strokeBorder(Color.ds.hairline))
+                    .font(.system(.title3, design: .rounded).weight(.heavy))
+                    .foregroundStyle(Color.ds.ink)
+                    .placeSurfaceRow()
+                Button("Skip") { go(1) }
+                    .buttonStyle(PlaceTextButtonStyle())
             }
         case .privacy:
-            VStack(alignment: .leading, spacing: Spacing.md) {
+            VStack(spacing: Spacing.md) {
                 StepText(title: "Private by design",
                          message: "Photos are analysed on this iPhone. Saved scans stay on your device and your own iCloud — never on our servers.")
                 Label("Skinalyze tracks visible changes. It isn't a medical device and doesn't diagnose.", systemImage: "info.circle")
-                    .font(.ds.footnote)
-                    .foregroundStyle(Color.ds.inkSecondary)
+                    .font(.ds.footnote.weight(.semibold))
+                    .foregroundStyle(Color.ds.ink)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .dsCard()
                 Button("Read the privacy policy") { showsPrivacyPolicy = true }
-                    .font(.subheadline.weight(.semibold))
+                    .buttonStyle(PlaceTextButtonStyle())
             }
         }
+    }
+
+    /// Two tiles a row; one per row at the largest text sizes so the words never squeeze.
+    private var goalColumns: [GridItem] {
+        let count = dynamicTypeSize.isAccessibilitySize ? 1 : 2
+        return Array(repeating: GridItem(.flexible(), spacing: Spacing.sm, alignment: .top), count: count)
     }
 
     // MARK: - Logic
@@ -191,54 +309,81 @@ private struct StepText: View {
     let message: LocalizedStringKey
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Spacing.xs) {
-            Text(title).font(.ds.display).foregroundStyle(Color.ds.ink)
-            Text(message).font(.ds.body).foregroundStyle(Color.ds.inkSecondary)
+        VStack(spacing: Spacing.xs) {
+            Text(title)
+                .font(.ds.display)
+                .foregroundStyle(Color.ds.ink)
+            Text(message)
+                .font(.ds.body.weight(.semibold))
+                .foregroundStyle(Color.ds.inkSecondary)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .multilineTextAlignment(.center)
+        .frame(maxWidth: .infinity)
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isHeader)
     }
 }
 
-/// Large tappable option card used in onboarding.
+/// A pressable option: a white row (or a square-ish tile) that turns ink-filled when chosen.
 struct SelectCard: View {
     let title: String
     let subtitle: String?
     let systemImage: String?
     let isSelected: Bool
+    var isTile = false
     let action: () -> Void
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private enum Metrics {
+        static let tileHeight: CGFloat = 76
+    }
+
     var body: some View {
-        Button(action: action) {
-            HStack(spacing: Spacing.sm) {
-                if let systemImage {
-                    Image(systemName: systemImage)
-                        .font(.title3)
-                        .foregroundStyle(isSelected ? Color.ds.signal : Color.ds.inkSecondary)
-                        .frame(width: 28)
-                }
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(title).font(.ds.headline).foregroundStyle(Color.ds.ink)
-                    if let subtitle {
-                        Text(subtitle).font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
-                    }
-                }
-                Spacer(minLength: 0)
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .font(.title3)
-                    .foregroundStyle(isSelected ? Color.ds.signal : Color.ds.hairline)
-                    .contentTransition(.symbolEffect(.replace))
+        Button {
+            withDSAnimation(.bouncy, reduceMotion: reduceMotion, action)
+        } label: {
+            Group {
+                if isTile { tile } else { row }
             }
-            .padding(Spacing.md)
-            .background(isSelected ? Color.ds.signalSoft : Color.ds.surface,
-                        in: RoundedRectangle(cornerRadius: Radius.medium, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: Radius.medium, style: .continuous)
-                .strokeBorder(isSelected ? Color.ds.signal.opacity(0.5) : Color.ds.hairline))
-            .dsAnimation(.snappy, value: isSelected)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(ChunkyRowStyle(look: isSelected ? .chosen : .plain))
+        .popOnChange(isSelected)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
         .sensoryFeedback(Haptic.toggle, trigger: isSelected)
+    }
+
+    private var tile: some View {
+        VStack(spacing: Spacing.xxs) {
+            if let systemImage {
+                Image(systemName: systemImage).font(.title3.weight(.bold)).accessibilityHidden(true)
+            }
+            Text(title)
+                .font(.system(.callout, design: .rounded).weight(.heavy))
+                .multilineTextAlignment(.center)
+        }
+        .padding(.horizontal, Spacing.sm)
+        .padding(.vertical, Spacing.sm)
+        .frame(maxWidth: .infinity, minHeight: Metrics.tileHeight)
+    }
+
+    private var row: some View {
+        HStack(spacing: Spacing.sm) {
+            if let systemImage {
+                Image(systemName: systemImage).font(.title3.weight(.bold)).accessibilityHidden(true)
+            }
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title).font(.system(.headline, design: .rounded).weight(.heavy))
+                if let subtitle {
+                    Text(subtitle)
+                        .font(.system(.footnote, design: .rounded).weight(.bold))
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .multilineTextAlignment(.leading)
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, Spacing.lg)
+        .padding(.vertical, Spacing.sm)
     }
 }

@@ -39,6 +39,15 @@ struct HomePlace: View {
         static let signWidth: CGFloat = 76
         static let signPost = CGSize(width: 7, height: 30)
         static let signTilt: Double = 5
+        /// How high Pimpi hops when today's three are done.
+        static let cheerHop: CGFloat = 18
+        static let signSway: Double = 3
+    }
+
+    /// Pimpi's squash and stretch when poked.
+    private struct Squish {
+        var x: CGFloat = 1
+        var y: CGFloat = 1
     }
 
     var body: some View {
@@ -68,7 +77,7 @@ struct HomePlace: View {
             }
             .padding(.horizontal, Spacing.lg)
             .padding(.top, Spacing.sm)
-            SpeechBubble(line)
+            bubble
                 .padding(.horizontal, Spacing.xl)
                 .padding(.top, Spacing.md)
             pimpi(size: Metrics.pimpi)
@@ -91,7 +100,7 @@ struct HomePlace: View {
     private var wide: some View {
         HStack(spacing: Spacing.lg) {
             VStack(spacing: Spacing.xs) {
-                SpeechBubble(line)
+                bubble
                 pimpi(size: Metrics.pimpiCompact)
             }
             .frame(maxWidth: .infinity)
@@ -136,12 +145,41 @@ struct HomePlace: View {
             pokes += 1
         } label: {
             Pimpi(mood: mood).frame(maxWidth: size, maxHeight: size)
+                .keyframeAnimator(initialValue: Squish(), trigger: pokes) { content, squish in
+                    content.scaleEffect(x: reduceMotion ? 1 : squish.x, y: reduceMotion ? 1 : squish.y, anchor: .bottom)
+                } keyframes: { _ in
+                    KeyframeTrack(\.x) {
+                        SpringKeyframe(1.14, duration: 0.12, spring: .snappy)
+                        SpringKeyframe(0.94, duration: 0.18, spring: .snappy)
+                        SpringKeyframe(1, duration: 0.4, spring: .bouncy(extraBounce: 0.2))
+                    }
+                    KeyframeTrack(\.y) {
+                        SpringKeyframe(0.84, duration: 0.12, spring: .snappy)
+                        SpringKeyframe(1.08, duration: 0.18, spring: .snappy)
+                        SpringKeyframe(1, duration: 0.4, spring: .bouncy(extraBounce: 0.2))
+                    }
+                }
+                .phaseAnimator(reduceMotion ? [0.0] : [0.0, -Metrics.cheerHop, 0.0], trigger: doneCount == 3) { content, hop in
+                    content.offset(y: hop)
+                } animation: { _ in .spring(duration: 0.3, bounce: 0.5) }
         }
         .buttonStyle(.bouncy(0.9))
+        .sensoryFeedback(.impact(weight: .light), trigger: pokes)
         .accessibilityLabel(Text("Pimpi"))
         .accessibilityHint(Text("Says something else"))
         .accessibilityIdentifier("homePimpi")
     }
+
+    /// Pimpi's bubble. A new line pops in each time it changes.
+    private var bubble: some View {
+        SpeechBubble(line)
+            .id(lineKey)
+            .transition(reduceMotion ? .opacity : .scale(scale: 0.85, anchor: .bottom).combined(with: .opacity))
+            .animation(MotionToken.bouncy.resolved(reduceMotion: reduceMotion).animation, value: lineKey)
+    }
+
+    /// Changes whenever Pimpi says something new.
+    private var lineKey: String { "\(pokes)-\(doneCount == 3)-\(latest == nil)" }
 
     /// Effort only: the streak decides Pimpi's mood, and finishing today's three things makes it cheer.
     private var mood: MascotMood {
@@ -214,6 +252,9 @@ struct HomePlace: View {
                         .frame(width: Metrics.signPost.width, height: Metrics.signPost.height)
                 }
                 .rotationEffect(.degrees(Metrics.signTilt), anchor: .bottom)
+                .phaseAnimator(reduceMotion ? [0.0] : [0.0, Metrics.signSway]) { content, sway in
+                    content.rotationEffect(.degrees(sway), anchor: .bottom)
+                } animation: { _ in .easeInOut(duration: 2) }
             }
             .buttonStyle(.bouncy(0.92))
             .latestScanAccessibility(latest)
@@ -267,6 +308,8 @@ struct HomePlace: View {
             }
             scanNote
         }
+        .animation(MotionToken.bouncy.resolved(reduceMotion: reduceMotion).animation, value: doneCount)
+        .sensoryFeedback(Haptic.success, trigger: doneCount) { old, new in new == 3 && old < 3 }
     }
 
     private func routineToken(_ part: RoutineChecklist.Part, symbol: String) -> some View {
@@ -310,7 +353,8 @@ struct HomePlace: View {
                 .symbolRenderingMode(.palette)
                 .foregroundStyle(Color.ds.canvas, Color.ds.positive)
                 .background(Circle().fill(Color.ds.hill).padding(-2))
-                .transition(.scale.combined(with: .opacity))
+                .transition(reduceMotion ? .opacity : .scale(scale: 0.2).combined(with: .opacity))
+                .symbolEffect(.bounce, value: done)
                 .accessibilityHidden(true)
         }
     }

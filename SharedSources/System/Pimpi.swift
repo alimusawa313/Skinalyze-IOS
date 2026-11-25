@@ -209,7 +209,7 @@ struct Pimpi: View {
             ForEach(Array([(0.12, 0.2, 0.09), (0.88, 0.17, 0.11), (0.8, 0.36, 0.06)].enumerated()), id: \.offset) { _, spark in
                 Image(systemName: "sparkle")
                     .font(.system(size: u * spark.2, weight: .bold))
-                    .foregroundStyle(Color.ds.caution)
+                    .foregroundStyle(Color.ds.outfitGold)
                     .symbolEffect(.pulse, isActive: !reduceMotion)
                     .position(x: u * spark.0, y: u * spark.1)
             }
@@ -257,7 +257,7 @@ struct PimpiOutfitLayer: View {
         case .partyHat:
             ZStack {
                 PimpiTriangle()
-                    .fill(LinearGradient(colors: [Color.ds.signal, Color.ds.pimpiBodyDeep], startPoint: .top, endPoint: .bottom))
+                    .fill(LinearGradient(colors: [Color.ds.outfitRed, Color.ds.pimpiBodyDeep], startPoint: .top, endPoint: .bottom))
                     .frame(width: u * 0.2, height: u * 0.24)
                 ForEach([0.35, 0.6, 0.82], id: \.self) { y in
                     Circle().fill(Color.ds.pimpiCheek).frame(width: u * 0.028, height: u * 0.028)
@@ -271,10 +271,10 @@ struct PimpiOutfitLayer: View {
             ZStack {
                 UnevenRoundedRectangle(topLeadingRadius: u * 0.3, bottomLeadingRadius: u * 0.02,
                                        bottomTrailingRadius: u * 0.02, topTrailingRadius: u * 0.3)
-                    .fill(LinearGradient(colors: [Color.ds.positive.opacity(0.85), Color.ds.positive], startPoint: .top, endPoint: .bottom))
+                    .fill(LinearGradient(colors: [Color.ds.outfitGreen.opacity(0.85), Color.ds.outfitGreen], startPoint: .top, endPoint: .bottom))
                     .frame(width: u * 0.6, height: u * 0.17)
                     .offset(y: -u * 0.02)
-                Capsule().fill(Color.ds.positive)
+                Capsule().fill(Color.ds.outfitGreen)
                     .overlay { Capsule().fill(.black.opacity(0.12)) }
                     .frame(width: u * 0.66, height: u * 0.07)
                     .offset(y: u * 0.07)
@@ -288,23 +288,23 @@ struct PimpiOutfitLayer: View {
                         .offset(y: -u * 0.045)
                         .rotationEffect(.degrees(Double(petal) * 72))
                 }
-                Circle().fill(Color.ds.caution).frame(width: u * 0.055, height: u * 0.055)
+                Circle().fill(Color.ds.outfitGold).frame(width: u * 0.055, height: u * 0.055)
             }
             // Left of the head: the right side is where the curious magnifier and the sleepy z's go.
             .position(x: u * 0.27, y: u * 0.33)
         case .bow:
             ZStack {
-                Ellipse().fill(Color.ds.signal).frame(width: u * 0.12, height: u * 0.08).rotationEffect(.degrees(-22)).offset(x: -u * 0.06)
-                Ellipse().fill(Color.ds.signal).frame(width: u * 0.12, height: u * 0.08).rotationEffect(.degrees(22)).offset(x: u * 0.06)
+                Ellipse().fill(Color.ds.outfitRed).frame(width: u * 0.12, height: u * 0.08).rotationEffect(.degrees(-22)).offset(x: -u * 0.06)
+                Ellipse().fill(Color.ds.outfitRed).frame(width: u * 0.12, height: u * 0.08).rotationEffect(.degrees(22)).offset(x: u * 0.06)
                 Circle().fill(Color.ds.pimpiBodyDeep).frame(width: u * 0.05, height: u * 0.05)
             }
             .position(x: u * 0.68, y: u * 0.28)
         case .crown:
             ZStack {
                 PimpiCrown()
-                    .fill(LinearGradient(colors: [Color.ds.pimpiCheek, Color.ds.caution], startPoint: .top, endPoint: .bottom))
+                    .fill(LinearGradient(colors: [Color.ds.pimpiCheek, Color.ds.outfitGold], startPoint: .top, endPoint: .bottom))
                     .frame(width: u * 0.32, height: u * 0.18)
-                Circle().fill(Color.ds.signal).frame(width: u * 0.04, height: u * 0.04).offset(y: u * 0.04)
+                Circle().fill(Color.ds.outfitRed).frame(width: u * 0.04, height: u * 0.04).offset(y: u * 0.04)
             }
             .position(x: u * 0.53, y: u * 0.19)
         case .sunglasses:

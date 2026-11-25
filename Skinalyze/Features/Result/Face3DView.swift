@@ -14,6 +14,46 @@ struct Face3DView: View {
     /// Zone map: each zone glows by its share (0…1). Nil: no glows.
     var heat: [FaceZone: Double]?
     var showsPins = true
+    /// Which side of the head is turned towards the viewer, reported as it changes (Pimpi says where you are looking).
+    var onFacing: (Facing) -> Void = { _ in }
+
+    /// Which part of the face is turned towards the viewer. Right and left are the person's own sides.
+    enum Facing: Equatable {
+        case front, leftCheek, rightCheek
+
+        /// Past this turn (radians) a cheek counts as the side being looked at.
+        private static let sideTurn: Float = 14 * .pi / 180
+
+        /// A positive turn brings the person's right cheek (the viewer's left) round to the front.
+        init(yaw: Float) {
+            if yaw > Self.sideTurn {
+                self = .rightCheek
+            } else if yaw < -Self.sideTurn {
+                self = .leftCheek
+            } else {
+                self = .front
+            }
+        }
+
+        /// What Pimpi says while you turn the head: where you are looking, never how it looks.
+        var line: LocalizedStringResource {
+            switch self {
+            case .front: "Looking at the front. Keep turning."
+            case .leftCheek: "Looking at your left cheek. Keep turning."
+            case .rightCheek: "Looking at your right cheek. Keep turning."
+            }
+        }
+    }
+
+    private enum Metrics {
+        static let minHeight: CGFloat = 340
+        static let closeGlyph: CGFloat = 32
+        static let pinCardWidth: CGFloat = 320
+        static let selectedPinScale: Float = 1.9
+        static let pinCardEntryScale: CGFloat = 0.8
+        static let minZoom: Float = 0.7
+        static let maxZoom: Float = 2.2
+    }
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var yaw: Float = Face3DView.debugStartYaw
@@ -71,14 +111,15 @@ struct Face3DView: View {
             }
             for (index, _) in mesh.pins.enumerated() {
                 face.findEntity(named: "\(Self.pinPrefix)\(index)")?.transform.scale =
-                    SIMD3(repeating: index == selectedPin ? 1.9 : 1)
+                    SIMD3(repeating: index == selectedPin ? Metrics.selectedPinScale : 1)
             }
         }
         .gesture(
             DragGesture(minimumDistance: 4)
                 .onChanged { value in
                     guard canTurn else {
-                        if dragStart == nil {
+                        // Only a sideways drag is an attempt to turn; an up/down swipe is someone scrolling the page.
+                        if dragStart == nil, abs(value.translation.width) > abs(value.translation.height) {
                             dragStart = (yaw, pitch)
                             onLockedTurn()
                         }
@@ -93,7 +134,9 @@ struct Face3DView: View {
                 }
                 .onEnded { _ in dragStart = nil }
         )
-        .simultaneousGesture(MagnifyGesture().onChanged { scale = min(max(Float($0.magnification), 0.7), 2.2) })
+        .simultaneousGesture(MagnifyGesture().onChanged {
+            scale = min(max(Float($0.magnification), Metrics.minZoom), Metrics.maxZoom)
+        })
         .simultaneousGesture(
             SpatialTapGesture().targetedToAnyEntity().onEnded { value in
                 guard let name = Self.pinName(from: value.entity),
@@ -113,24 +156,28 @@ struct Face3DView: View {
         }
         .overlay(alignment: .bottom) { pinCard }
         .sensoryFeedback(.selection, trigger: selectedPin)
-        .frame(minHeight: 340)
+        .frame(minHeight: Metrics.minHeight)
+        .onChange(of: Facing(yaw: yaw), initial: true) { _, facing in onFacing(facing) }
         .accessibilityHidden(true)
     }
 
+    /// The tapped pin: a white panel with the hard edge, a round close button beside what the spot is.
     @ViewBuilder private var pinCard: some View {
         if let selectedPin, mesh.pins.indices.contains(selectedPin) {
-            HStack(alignment: .top) {
+            HStack(alignment: .top, spacing: 0) {
                 SpotDetail(type: mesh.pins[selectedPin].type, zone: nil)
                 Button { self.selectedPin = nil } label: {
-                    Image(systemName: "xmark").font(.footnote.weight(.bold)).frame(width: 32, height: 32)
+                    Image(systemName: "xmark").font(.footnote.weight(.heavy))
                 }
-                .buttonStyle(.glass)
+                .buttonStyle(.chunkyIcon)
                 .accessibilityLabel("Close")
                 .padding(Spacing.xs)
             }
-            .glassEffect(.regular, in: RoundedRectangle(cornerRadius: Radius.medium, style: .continuous))
+            .foregroundStyle(Color.ds.ink)
+            .frame(maxWidth: Metrics.pinCardWidth)
+            .dsSurface(radius: Radius.medium)
             .padding(Spacing.sm)
-            .transition(.scale(scale: 0.8, anchor: .bottom).combined(with: .opacity))
+            .transition(.scale(scale: Metrics.pinCardEntryScale, anchor: .bottom).combined(with: .opacity))
         }
     }
 
@@ -271,5 +318,28 @@ struct Face3DView: View {
         let pivot = Entity()
         pivot.addChild(fit)
         return pivot
+    }
+}
+
+// MARK: - Stage
+
+/// The dark rounded stage the 3D head stands on (the 3D viewer stays dark by design, in the day palette too): the
+/// dusk sky with its hard bottom edge. Everything on it, the tapped pin's panel included, uses the dusk palette.
+private struct Face3DStage: ViewModifier {
+    func body(content: Content) -> some View {
+        let shape = RoundedRectangle(cornerRadius: Radius.large, style: .continuous)
+        content
+            .clipShape(shape)
+            .background(shape.fill(Color.ds.canvas))
+            .background(shape.fill(Color.ds.edge).offset(y: Chunk.depth))
+            .padding(.bottom, Chunk.depth)
+            .environment(\.colorScheme, .dark)
+    }
+}
+
+extension View {
+    /// Puts a `Face3DView` on its dark stage (see `Face3DStage`).
+    func face3DStage() -> some View {
+        modifier(Face3DStage())
     }
 }

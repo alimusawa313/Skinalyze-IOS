@@ -32,4 +32,22 @@ Pimpi is on most screens, small, reacting to what you do.
 
 `HillShape`, `HillBackdrop`, `.dsHill()`, `.onHill()`, `ChunkyButtonStyle`, `ChunkyIconButtonStyle`, `.dsSurface()`,
 `SpeechBubble`, `PillPicker`, `Chunk`. Mascot: `Pimpi(mood:)` (SharedSources/System/Pimpi.swift), outfit from the
-`pimpiOutfit` environment value.
+`pimpiOutfit` environment value; its outfits use their own `outfitRed/Green/Gold` tokens, never the status colours.
+
+**Pimpi on a screen is always `PokablePimpi`** (Skinalyze/Shared/PokablePimpi.swift): a poke squashes it, makes it hop
+and gives a light tap; pass `cheer:` to make it hop when the user does something (effort only), or `onPoke:` when the
+screen decides what a poke changes. Don't write another one.
+
+## Interaction (owner requirement, 2026-11-25: "all should be interactive")
+
+Every screen reacts to touch: pressables sink, Pimpi is pokable and reacts to what you just did, selections slide,
+checkmarks bounce, numbers roll (`.contentTransition(.numericText)`), new content pops in (`.popIn()`), each screen's
+moment (chest, verdict, sticker, lesson done) is a small keyframe animation, haptics through `Haptic`. Every animation
+has a Reduce Motion fallback. A static restyle is not done.
+
+## Behaviour changes that came with the redesign
+
+- Home does not run the camera; it opens when a scan starts and stops when you leave the scan.
+- Tapping a filled shelf slot shows its verdict beside Pimpi (it counts as a product check); the name opens the page.
+- On a free account only a sideways drag on the 3D head asks for Pro (a vertical swipe scrolls the page).
+- The status colours (signal, positive, caution) are darker in light mode so they read as text on the hill (tested).

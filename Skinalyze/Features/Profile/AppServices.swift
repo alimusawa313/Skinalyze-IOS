@@ -60,6 +60,12 @@ enum AppLock {
 /// Covers the app (and its app-switcher snapshot) until the user authenticates.
 struct AppLockGate: ViewModifier {
     @AppStorage(AppLock.enabledKey) private var enabled = false
+
+    private enum Metrics {
+        static let pimpi: CGFloat = 120
+        static let buttonWidth: CGFloat = 280
+    }
+
     @Environment(\.scenePhase) private var scenePhase
     @State private var isLocked = true
 
@@ -70,10 +76,15 @@ struct AppLockGate: ViewModifier {
                     ZStack {
                         Color.ds.canvas.ignoresSafeArea()
                         VStack(spacing: Spacing.md) {
-                            Image(systemName: AppLock.symbolName).font(.largeTitle).foregroundStyle(Color.ds.signal)
-                            Text("Skinalyze is locked").font(.ds.title)
-                            Button("Unlock") { Task { await unlock() } }.buttonStyle(.dsPrimary).frame(maxWidth: 280)
+                            Pimpi(mood: .sleepy).frame(width: Metrics.pimpi, height: Metrics.pimpi)
+                            Label("Skinalyze is locked", systemImage: AppLock.symbolName)
+                                .font(PlaceType.sectionTitle)
+                                .foregroundStyle(Color.ds.ink)
+                            Button("Unlock") { Task { await unlock() } }
+                                .buttonStyle(.chunky)
+                                .frame(maxWidth: Metrics.buttonWidth)
                         }
+                        .padding(Spacing.lg)
                     }
                     .transition(.opacity)
                 }
@@ -175,16 +186,15 @@ struct ReminderSettingsRow: View {
 
     var body: some View {
         Toggle(isOn: $enabled) {
-            Label {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Reminders from Pimpi")
-                    Text("At most one a day. Pimpi stops after three in a row.")
-                        .font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
-                }
-            } icon: {
-                Image(systemName: "bell")
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Reminders from Pimpi").font(PlaceType.rowTitle).foregroundStyle(Color.ds.ink)
+                Text("At most one a day. Pimpi stops after three in a row.")
+                    .font(.ds.footnote.weight(.semibold)).foregroundStyle(Color.ds.inkSecondary)
             }
         }
+        .tint(Color.ds.positive)
+        .placeSurfaceRow()
+        .sensoryFeedback(Haptic.toggle, trigger: enabled)
         .onChange(of: enabled) { _, isOn in
             if isOn {
                 Task { if await !PimpiReminders.enable() { enabled = false } }

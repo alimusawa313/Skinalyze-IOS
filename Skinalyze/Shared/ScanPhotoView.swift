@@ -16,6 +16,12 @@ struct ScanPhotoView: View {
     @State private var revealed = false
     @State private var selectedID: UUID?
 
+    private enum Metrics {
+        static let pinTarget: CGFloat = 44
+        static let pinPressedScale: CGFloat = 0.8
+        static let hiddenPinScale: CGFloat = 0.2
+    }
+
     var body: some View {
         Image(uiImage: image)
             .resizable()
@@ -40,11 +46,11 @@ struct ScanPhotoView: View {
             selectedID = detection.id
         } label: {
             Pin(type: detection.lesionType, isSelected: isSelected)
-                .frame(width: 44, height: 44)
+                .frame(width: Metrics.pinTarget, height: Metrics.pinTarget)
                 .contentShape(Circle())
         }
-        .buttonStyle(.bouncy(0.8))
-        .scaleEffect(revealed ? 1 : 0.2)
+        .buttonStyle(.bouncy(Metrics.pinPressedScale))
+        .scaleEffect(revealed ? 1 : Metrics.hiddenPinScale)
         .opacity(revealed ? 1 : 0)
         .animation(MotionToken.expressive.resolved(reduceMotion: reduceMotion).animation
             .delay(reduceMotion ? 0 : MotionToken.stagger(index)), value: revealed)
@@ -76,18 +82,29 @@ struct ScanPhotoView: View {
             : Text("Scan photo with \(detections.count) spots marked.")
     }
 
+    /// A white dot with the spot's colour inside and a navy rim, so it reads on any skin tone without a shadow.
     private struct Pin: View {
         let type: LesionType?
         let isSelected: Bool
 
+        @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+        private enum Metrics {
+            static let outer: CGFloat = 18
+            static let rim: CGFloat = 1.5
+            static let inner: CGFloat = 10
+            static let selectedScale: CGFloat = 1.6
+        }
+
         var body: some View {
             ZStack {
-                Circle().fill(.white).frame(width: 16, height: 16)
-                Circle().fill(type?.isMark == true ? Color.ds.caution : Color.ds.signal).frame(width: 10, height: 10)
+                Circle().fill(Color.ds.surface).frame(width: Metrics.outer, height: Metrics.outer)
+                Circle().strokeBorder(Color.ds.ink, lineWidth: Metrics.rim).frame(width: Metrics.outer, height: Metrics.outer)
+                Circle().fill(type?.isMark == true ? Color.ds.caution : Color.ds.signal)
+                    .frame(width: Metrics.inner, height: Metrics.inner)
             }
-            .scaleEffect(isSelected ? 1.6 : 1)
-            .shadow(color: .black.opacity(0.3), radius: isSelected ? 4 : 1.5, y: 0.5)
-            .animation(.spring(duration: 0.35, bounce: 0.5), value: isSelected)
+            .scaleEffect(isSelected ? Metrics.selectedScale : 1)
+            .animation(MotionToken.expressive.resolved(reduceMotion: reduceMotion).animation, value: isSelected)
         }
     }
 }
@@ -97,6 +114,10 @@ struct SpotDetail: View {
     let type: LesionType?
     let zone: FaceZone?
     var follow: (() -> Void)?
+
+    private enum Metrics {
+        static let width: CGFloat = 260
+    }
 
     static func label(type: LesionType?, zone: FaceZone?) -> String {
         let name = type.map(LesionGlyph.displayName(for:)) ?? String(localized: "Spot")
@@ -112,26 +133,30 @@ struct SpotDetail: View {
                     .symbolEffect(.bounce, options: .nonRepeating)
                 Text(type.map(LesionGlyph.displayName(for:)) ?? String(localized: "Spot"))
                     .font(.system(.headline, design: .rounded).weight(.heavy))
+                    .foregroundStyle(Color.ds.ink)
             }
             if let zone {
                 Label(GuidanceCopy.zoneName(zone), systemImage: "face.smiling")
                     .font(.ds.footnote.weight(.semibold))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.ds.inkSecondary)
             }
             if let type {
                 Text(LesionGlyph.explanation(for: type))
                     .font(.ds.footnote)
+                    .foregroundStyle(Color.ds.ink)
                     .fixedSize(horizontal: false, vertical: true)
             }
             if let follow {
                 Button(action: follow) {
                     Label("See this area over time", systemImage: "clock.arrow.circlepath")
-                        .font(.ds.footnote.weight(.semibold))
+                        .font(.system(.footnote, design: .rounded).weight(.heavy))
                 }
+                .buttonStyle(.chunky(.plain, fullWidth: false))
+                .padding(.top, Spacing.xxs)
                 .accessibilityIdentifier("followArea")
             }
         }
         .padding(Spacing.md)
-        .frame(width: 260, alignment: .leading)
+        .frame(maxWidth: Metrics.width, alignment: .leading)
     }
 }

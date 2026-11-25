@@ -3,10 +3,18 @@ import SwiftData
 import SwiftUI
 import SkinalyzeKit
 
-/// Breakout index over time. Drag to scrub — each scan ticks with a selection haptic.
+/// Breakout index over time: a thin ink line with each scan as a band-coloured dot. Drag to scrub — each scan ticks
+/// with a selection haptic.
 struct TrendChart: View {
     let scans: [ScanSession]
     @State private var selectedDate: Date?
+
+    private enum Metrics {
+        static let line: CGFloat = 3
+        static let dot: CGFloat = 10
+        static let dotSelected: CGFloat = 18
+        static let dotRing: CGFloat = 2.5
+    }
 
     private var points: [ScanSession] { scans.sorted { $0.createdAt < $1.createdAt } }
 
@@ -20,7 +28,7 @@ struct TrendChart: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
             HStack(alignment: .firstTextBaseline) {
-                Text("Breakout index").font(.ds.headline)
+                Text("Breakout index").font(.system(.headline, design: .rounded).weight(.heavy))
                 Spacer()
                 if let selected {
                     Text("\(selected.breakoutIndex) · \(selected.createdAt.formatted(.dateTime.day().month()))")
@@ -31,16 +39,23 @@ struct TrendChart: View {
             Chart(points) { scan in
                 LineMark(x: .value("Date", scan.createdAt), y: .value("Index", scan.breakoutIndex))
                     .interpolationMethod(.monotone)
-                    .foregroundStyle(Color.ds.signal)
+                    .lineStyle(StrokeStyle(lineWidth: Metrics.line, lineCap: .round, lineJoin: .round))
+                    .foregroundStyle(Color.ds.ink)
                 PointMark(x: .value("Date", scan.createdAt), y: .value("Index", scan.breakoutIndex))
-                    .foregroundStyle(Color.ds.band(scan.band))
-                    .symbolSize(scan == selected ? 140 : 60)
+                    .symbol {
+                        let side = scan == selected ? Metrics.dotSelected : Metrics.dot
+                        Circle()
+                            .fill(Color.ds.band(scan.band))
+                            .stroke(Color.ds.ink, lineWidth: Metrics.dotRing)
+                            .frame(width: side, height: side)
+                    }
             }
             .chartXSelection(value: $selectedDate)
             .chartYAxis { AxisMarks(position: .leading) }
             .accessibilityLabel("Breakout index over time")
             .sensoryFeedback(Haptic.scrub, trigger: selected?.id)
         }
+        .foregroundStyle(Color.ds.ink)
         .padding(.vertical, Spacing.xs)
     }
 }

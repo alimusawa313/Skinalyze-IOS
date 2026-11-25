@@ -220,7 +220,8 @@ private struct DermProductsPage: View {
     }
 }
 
-/// The Profile screen's export: Pro, with a photos switch.
+/// The Profile screen's export: Pro, with a photos switch. A stack of paper with Pimpi beside it on the sky; the switch
+/// and the one button on the hill.
 struct ExportView: View {
     @Query(filter: #Predicate<ScanSession> { !$0.isHidden }, sort: \ScanSession.createdAt) private var allScans: [ScanSession]
     @Environment(ProAccess.self) private var access: ProAccess?
@@ -234,36 +235,160 @@ struct ExportView: View {
     private var hasFullAccess: Bool { access?.policy.allows(.dermPack) ?? true }
 
     var body: some View {
-        Form {
-            Section {
+        PlacePage(pinsGround: true) {
+            VStack(alignment: .leading, spacing: Spacing.lg) {
+                PaperStack(includePhotos: includePhotos, isMade: pdfURL != nil)
                 Text("A few pages for a skin appointment: your trend, each area's count, photos from across your scans, the products you used and your journal. It stays on your iPhone until you share it.")
-                    .font(.ds.footnote)
-                Toggle("Include photos", isOn: $includePhotos)
-                    .onChange(of: includePhotos) { pdfURL = nil }
+                    .font(.ds.callout.weight(.semibold))
+                    .foregroundStyle(Color.ds.ink)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            Section {
-                if let pdfURL {
-                    ShareLink("Share PDF", item: pdfURL)
-                        .accessibilityIdentifier("sharePack")
-                } else if !hasFullAccess {
-                    Button("Create the pack with Pro") { paywall = .dermPack }
-                } else {
-                    Button {
-                        working = true
-                        Task {
-                            let content = await DermPackBuilder.content(scans: scans, includePhotos: includePhotos, journal: journal)
-                            pdfURL = DermPackBuilder.render(content)
-                            working = false
-                        }
-                    } label: {
-                        if working { ProgressView() } else { Text("Create PDF") }
-                    }
-                    .disabled(scans.isEmpty || working)
-                    .accessibilityIdentifier("createPack")
+        } ground: {
+            VStack(spacing: Spacing.md) {
+                Toggle(isOn: $includePhotos) {
+                    Text("Include photos").font(PlaceType.rowTitle).foregroundStyle(Color.ds.ink)
                 }
+                .tint(Color.ds.positive)
+                .placeSurfaceRow()
+                .sensoryFeedback(Haptic.toggle, trigger: includePhotos)
+                .onChange(of: includePhotos) { pdfURL = nil }
+                Text(pimpiLine)
+                    .contentTransition(.opacity)
+                    .font(.ds.pimpi)
+                    .foregroundStyle(Color.ds.ink)
+                    .multilineTextAlignment(.center)
+                action
             }
         }
+        .dsAnimation(.bouncy, value: pdfURL)
+        .sensoryFeedback(Haptic.success, trigger: pdfURL != nil) { _, made in made }
         .navigationTitle("Visit pack")
+        .placeTitle("Visit pack")
         .paywallSheet($paywall)
+    }
+
+    /// Pimpi cheers the effort of getting ready, never the skin.
+    private var pimpiLine: LocalizedStringKey {
+        pdfURL == nil ? "I did the paperwork for you." : "Packed. Good luck in there."
+    }
+
+    @ViewBuilder private var action: some View {
+        if let pdfURL {
+            ShareLink("Share PDF", item: pdfURL)
+                .buttonStyle(.chunky)
+                .accessibilityIdentifier("sharePack")
+        } else if !hasFullAccess {
+            Button("Create the pack with Pro") { paywall = .dermPack }
+                .buttonStyle(.chunky)
+        } else {
+            Button {
+                working = true
+                Task {
+                    let content = await DermPackBuilder.content(scans: scans, includePhotos: includePhotos, journal: journal)
+                    pdfURL = DermPackBuilder.render(content)
+                    working = false
+                }
+            } label: {
+                if working { ProgressView().tint(Color.ds.canvas) } else { Text("Create PDF") }
+            }
+            .buttonStyle(.chunky)
+            .disabled(scans.isEmpty || working)
+            .accessibilityIdentifier("createPack")
+        }
+    }
+}
+
+/// A few loose pages, the top one sketching the summary, with Pimpi leaning on the pile. Decorative.
+private struct PaperStack: View {
+    let includePhotos: Bool
+    let isMade: Bool
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private enum Metrics {
+        static let page = CGSize(width: 156, height: 206)
+        static let height: CGFloat = 250
+        static let pimpi: CGFloat = 110
+        /// Tilt and nudge of the pages, back to front: stacked, then fanned out once the pack is made.
+        static let tilts: [Double] = [9, 3, -4]
+        static let nudges: [CGFloat] = [52, 26, 0]
+        static let fannedTilts: [Double] = [18, 7, -8]
+        static let fannedNudges: [CGFloat] = [84, 44, -6]
+        static let line: CGFloat = 6
+        static let lineWidths: [CGFloat] = [1, 0.8, 0.92]
+        static let photo: CGFloat = 36
+        static let photoRadius: CGFloat = 8
+        static let trendHeight: CGFloat = 40
+        static let trendStroke: CGFloat = 3
+    }
+
+    var body: some View {
+        ZStack(alignment: .bottomLeading) {
+            ZStack {
+                ForEach(0..<2, id: \.self) { index in
+                    blank.rotationEffect(.degrees(tilts[index])).offset(x: nudges[index])
+                }
+                front.rotationEffect(.degrees(tilts[2])).offset(x: nudges[2])
+            }
+            .frame(maxWidth: .infinity)
+            .animation(MotionToken.bouncy.resolved(reduceMotion: reduceMotion).animation, value: isMade)
+            .accessibilityHidden(true)
+            PokablePimpi(mood: isMade ? .excited : .happy, size: Metrics.pimpi, cheer: isMade ? 1 : 0)
+        }
+        .frame(height: Metrics.height)
+    }
+
+    private var tilts: [Double] { isMade && !reduceMotion ? Metrics.fannedTilts : Metrics.tilts }
+    private var nudges: [CGFloat] { isMade && !reduceMotion ? Metrics.fannedNudges : Metrics.nudges }
+
+    private var blank: some View {
+        Color.clear
+            .frame(width: Metrics.page.width, height: Metrics.page.height)
+            .dsSurface(radius: Radius.small)
+    }
+
+    private var front: some View {
+        VStack(alignment: .leading, spacing: Spacing.xs) {
+            Text("Skin tracking summary")
+                .font(.system(.caption2, design: .rounded).weight(.heavy))
+                .lineLimit(2)
+                .minimumScaleFactor(0.5)
+            PaperTrend()
+                .stroke(Color.ds.ink, style: StrokeStyle(lineWidth: Metrics.trendStroke, lineCap: .round, lineJoin: .round))
+                .frame(height: Metrics.trendHeight)
+            ForEach(Metrics.lineWidths, id: \.self) { fraction in
+                Capsule().fill(Color.ds.edge)
+                    .frame(height: Metrics.line)
+                    .padding(.trailing, (1 - fraction) * (Metrics.page.width - Spacing.sm * 2))
+            }
+            HStack(spacing: Spacing.xxs) {
+                ForEach([BreakoutBand.mild, .active, .calm], id: \.self) { band in
+                    RoundedRectangle(cornerRadius: Metrics.photoRadius, style: .continuous)
+                        .fill(Color.ds.band(band))
+                        .frame(width: Metrics.photo, height: Metrics.photo)
+                }
+            }
+            .opacity(includePhotos ? 1 : 0)
+            .animation(MotionToken.smooth.resolved(reduceMotion: reduceMotion).animation, value: includePhotos)
+            Spacer(minLength: 0)
+        }
+        .foregroundStyle(Color.ds.ink)
+        .padding(Spacing.sm)
+        .frame(width: Metrics.page.width, height: Metrics.page.height, alignment: .topLeading)
+        .dsSurface(radius: Radius.small)
+    }
+}
+
+/// A falling line, the way the summary page's trend usually reads. Decorative.
+private struct PaperTrend: Shape {
+    private static let points: [CGPoint] = [
+        CGPoint(x: 0, y: 0), CGPoint(x: 0.17, y: 0.5), CGPoint(x: 0.33, y: 0.6), CGPoint(x: 0.5, y: 0.5),
+        CGPoint(x: 0.67, y: 0.7), CGPoint(x: 0.83, y: 0.8), CGPoint(x: 1, y: 1),
+    ]
+
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.addLines(Self.points.map { CGPoint(x: rect.minX + $0.x * rect.width, y: rect.minY + $0.y * rect.height) })
+        return path
     }
 }

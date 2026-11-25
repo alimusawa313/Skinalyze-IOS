@@ -56,79 +56,107 @@ enum PaywallReason: Identifiable, Equatable {
     }
 }
 
-/// The paywall: Pimpi, what Pro adds, the plans as the App Store gives them, restore, and plain terms.
-/// It can always be closed.
+/// The paywall in Pimpi's place: Pimpi in its crown and what Pro adds on the sky, the plans as the App Store gives
+/// them, the one button, restore and plain terms on the hill. It can always be closed.
 struct PaywallView: View {
     let reason: PaywallReason
 
     @Environment(ProAccess.self) private var access
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.openURL) private var openURL
     @State private var selectedID = ProAccess.ProductID.annual
     @State private var isWorking = false
     @State private var message: LocalizedStringKey?
     @State private var trialEligible = false
     @State private var showsPrivacy = false
+    /// Pimpi hops when the paywall opens and whenever a plan is picked.
+    @State private var hops = 0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    private static let pimpiSide: CGFloat = 112
-    private static let contentWidth: CGFloat = 520
+    private enum Metrics {
+        static let pimpi: CGFloat = 124
+    }
+
     private static let termsURL = URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")
 
     private var selected: Product? { access.products.first { $0.id == selectedID } ?? access.products.first }
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(spacing: Spacing.lg) {
-                    VStack(spacing: Spacing.xs) {
-                        Pimpi(mood: .excited).frame(width: Self.pimpiSide, height: Self.pimpiSide)
-                        Text(verbatim: "Skinalyze Pro").font(.ds.display)
-                        reason.headline.font(.ds.callout).foregroundStyle(Color.ds.inkSecondary)
-                            .multilineTextAlignment(.center)
-                    }
-                    benefits
-                    plans
-                    footer
-                }
-                .padding(Spacing.lg)
-                .frame(maxWidth: Self.contentWidth)
-                .frame(maxWidth: .infinity)
+        PlacePage {
+            VStack(spacing: Spacing.lg) {
+                hero
+                benefits
             }
-            .dsCanvas()
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Not now") { dismiss() }.accessibilityIdentifier("paywallClose")
-                }
+        } ground: {
+            VStack(spacing: Spacing.md) {
+                plans
+                footer
             }
-            .sheet(isPresented: $showsPrivacy) { PrivacyPolicyView() }
         }
+        .safeAreaInset(edge: .top, spacing: 0) { topBar }
+        .sheet(isPresented: $showsPrivacy) { PrivacyPolicyView() }
         .task(id: selectedID) {
             trialEligible = await selected?.subscription?.isEligibleForIntroOffer ?? false
         }
         .task {
             if access.loadState != .loaded { await access.loadProducts() }
         }
+        .onAppear { hops += 1 }
+        .onChange(of: selectedID) { hops += 1 }
+        .sensoryFeedback(Haptic.toggle, trigger: selectedID)
         .onChange(of: access.policy.hasFullAccess) { _, full in
             if full { dismiss() }
         }
     }
 
-    private var benefits: some View {
-        VStack(alignment: .leading, spacing: Spacing.sm) {
-            benefit("infinity", "Scan as often as you like")
-            benefit("square.stack.3d.up", "Your whole history and Compare")
-            benefit("rotate.3d", "Turn your 3D scan and export the turntable")
-            benefit("checkmark.seal", "Unlimited product checks")
-            benefit("sparkles", "Share without the Skinalyze mark")
+    private var topBar: some View {
+        HStack {
+            Button("Not now") { dismiss() }
+                .buttonStyle(.chunky(.plain, fullWidth: false))
+                .accessibilityIdentifier("paywallClose")
+            Spacer(minLength: 0)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .dsCard()
+        .padding(.horizontal, Spacing.lg)
+        .padding(.top, Spacing.sm)
+        .background(Color.ds.canvas)
     }
 
-    private func benefit(_ icon: String, _ text: LocalizedStringKey) -> some View {
+    private var hero: some View {
+        VStack(spacing: Spacing.xs) {
+            PokablePimpi(mood: .excited, size: Metrics.pimpi, cheer: hops)
+                .environment(\.pimpiOutfit, .crown)
+            Text(verbatim: "Skinalyze Pro")
+                .font(.ds.display)
+                .foregroundStyle(Color.ds.ink)
+                .accessibilityAddTraits(.isHeader)
+            reason.headline
+                .font(.ds.callout.weight(.semibold))
+                .foregroundStyle(Color.ds.inkSecondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private var benefits: some View {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            benefit("Scan as often as you like")
+            benefit("Your whole history and Compare")
+            benefit("Turn your 3D scan and export the turntable")
+            benefit("Unlimited product checks")
+            benefit("Share without the Skinalyze mark")
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, Spacing.xs)
+    }
+
+    private func benefit(_ text: LocalizedStringKey) -> some View {
         Label {
-            Text(text).font(.ds.callout)
+            Text(text).font(PlaceType.rowTitle).foregroundStyle(Color.ds.ink)
         } icon: {
-            Image(systemName: icon).foregroundStyle(Color.ds.signal)
+            Image(systemName: "checkmark.circle.fill")
+                .font(.title3)
+                .symbolRenderingMode(.palette)
+                .foregroundStyle(Color.ds.canvas, Color.ds.positive)
         }
     }
 
@@ -137,54 +165,67 @@ struct PaywallView: View {
         case .loaded:
             VStack(spacing: Spacing.sm) {
                 ForEach(access.products, id: \.id) { product in
-                    PlanRow(product: product, isSelected: product.id == selected?.id) { selectedID = product.id }
+                    PlanRow(product: product, isSelected: product.id == selected?.id) {
+                        withDSAnimation(.bouncy, reduceMotion: reduceMotion) { selectedID = product.id }
+                    }
                 }
                 Button {
                     Task { await buy() }
                 } label: {
                     Group {
                         if isWorking {
-                            ProgressView()
+                            ProgressView().tint(Color.ds.canvas)
                         } else if trialEligible, selected?.subscription?.introductoryOffer?.paymentMode == .freeTrial {
-                            Text("Start free trial")
+                            Text("Start free trial").transition(.push(from: .bottom))
                         } else {
-                            Text("Continue")
+                            Text("Continue").transition(.push(from: .bottom))
                         }
                     }
                     .frame(maxWidth: .infinity)
+                    .dsAnimation(.bouncy, value: trialEligible)
                 }
-                .buttonStyle(.dsPrimary)
+                .buttonStyle(.chunky)
                 .disabled(isWorking || selected == nil)
+                .padding(.top, Spacing.xs)
                 .accessibilityIdentifier("paywallBuy")
                 if let message {
-                    Text(message).font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary).multilineTextAlignment(.center)
+                    Text(message).font(.ds.footnote.weight(.semibold)).foregroundStyle(Color.ds.ink)
+                        .multilineTextAlignment(.center)
                 }
             }
         case .unavailable:
             VStack(spacing: Spacing.sm) {
-                Text("Plans aren't available right now.").font(.ds.callout)
-                Button("Try again") { Task { await access.loadProducts() } }.buttonStyle(.glass)
+                Text("Plans aren't available right now.").font(PlaceType.rowTitle).foregroundStyle(Color.ds.ink)
+                Button("Try again") { Task { await access.loadProducts() } }
+                    .buttonStyle(.chunky(.plain, fullWidth: false))
             }
+            .accessibilityElement(children: .contain)
             .accessibilityIdentifier("paywallUnavailable")
         case .idle, .loading:
-            ProgressView()
+            ProgressView().tint(Color.ds.ink)
         }
     }
 
     private var footer: some View {
-        VStack(spacing: Spacing.sm) {
+        VStack(spacing: Spacing.xs) {
             Button("Restore purchases") { Task { await restore() } }
-                .font(.ds.callout.weight(.semibold))
+                .buttonStyle(PlaceTextButtonStyle())
                 .disabled(isWorking)
                 .accessibilityIdentifier("paywallRestore")
             Text("Plans renew automatically until you cancel. Cancel any time in Settings, at least a day before renewal. A free trial turns into the paid plan when it ends.")
-                .font(.ds.caption).foregroundStyle(Color.ds.inkTertiary).multilineTextAlignment(.center)
-            HStack(spacing: Spacing.lg) {
-                if let url = Self.termsURL { Link("Terms of use", destination: url) }
+                .font(.ds.caption.weight(.semibold))
+                .foregroundStyle(Color.ds.ink)
+                .multilineTextAlignment(.center)
+            HStack(spacing: Spacing.xs) {
+                if let url = Self.termsURL {
+                    Button("Terms of use") { openURL(url) }
+                        .accessibilityAddTraits(.isLink)
+                }
                 Button("Privacy policy") { showsPrivacy = true }
             }
-            .font(.ds.caption.weight(.semibold))
+            .buttonStyle(PlaceTextButtonStyle())
         }
+        .frame(maxWidth: .infinity)
     }
 
     private func buy() async {
@@ -210,38 +251,57 @@ struct PaywallView: View {
     }
 }
 
-/// One plan, with the price exactly as the App Store states it.
+/// One plan, with the price exactly as the App Store states it: a white row with a radio dot; the chosen one is
+/// ringed in ink.
 private struct PlanRow: View {
     let product: Product
     let isSelected: Bool
     let select: () -> Void
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private enum Metrics {
+        static let radio: CGFloat = 24
+        static let radioRing: CGFloat = 3
+        static let radioDot: CGFloat = 12
+    }
+
     var body: some View {
         Button(action: select) {
             HStack(spacing: Spacing.sm) {
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .font(.title3)
-                    .foregroundStyle(isSelected ? Color.ds.signal : Color.ds.inkTertiary)
+                radio
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(product.displayName).font(.ds.headline).foregroundStyle(Color.ds.ink)
+                    Text(product.displayName).font(.system(.headline, design: .rounded).weight(.heavy))
                     if product.subscription?.introductoryOffer?.paymentMode == .freeTrial {
-                        Text("Includes a free trial").font(.ds.caption).foregroundStyle(Color.ds.positive)
+                        Text("Includes a free trial")
+                            .font(.system(.caption, design: .rounded).weight(.heavy))
+                            .foregroundStyle(Color.ds.positive)
                     }
                 }
+                .multilineTextAlignment(.leading)
                 Spacer(minLength: Spacing.xs)
-                priceText.font(.ds.callout.weight(.semibold)).foregroundStyle(Color.ds.ink)
+                priceText.font(PlaceType.rowTitle)
             }
-            .padding(Spacing.md)
-            .frame(maxWidth: .infinity)
-            .background(Color.ds.surface, in: RoundedRectangle(cornerRadius: Radius.medium, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: Radius.medium, style: .continuous)
-                    .strokeBorder(isSelected ? Color.ds.signal : Color.ds.hairline, lineWidth: isSelected ? 2 : 1)
-            }
+            .padding(.horizontal, Spacing.md)
+            .padding(.vertical, Spacing.sm)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(ChunkyRowStyle(look: isSelected ? .outlined : .plain))
+        .popOnChange(isSelected)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
         .accessibilityIdentifier("plan.\(product.id)")
+    }
+
+    private var radio: some View {
+        Circle()
+            .strokeBorder(Color.ds.ink, lineWidth: Metrics.radioRing)
+            .frame(width: Metrics.radio, height: Metrics.radio)
+            .overlay {
+                Circle().fill(Color.ds.ink)
+                    .frame(width: Metrics.radioDot, height: Metrics.radioDot)
+                    .scaleEffect(isSelected ? 1 : 0)
+            }
+            .animation(MotionToken.bouncy.resolved(reduceMotion: reduceMotion).animation, value: isSelected)
+            .accessibilityHidden(true)
     }
 
     private var priceText: Text {
@@ -262,42 +322,86 @@ extension View {
     }
 }
 
-/// Profile row: shows what the user has and opens the paywall (which also holds Restore purchases).
+/// Profile row: shows what the user has and opens the paywall (which also holds Restore purchases). Pimpi wears its
+/// crown here.
 struct ProStatusRow: View {
     @Environment(ProAccess.self) private var access
     @State private var paywall: PaywallReason?
 
+    private enum Metrics {
+        static let pimpi: CGFloat = 64
+        static let rowHeight: CGFloat = 72
+    }
+
     var body: some View {
         if access.isSubscribed {
-            Label("Skinalyze Pro is active", systemImage: "checkmark.seal.fill")
+            resting {
+                Text("Skinalyze Pro is active").font(PlaceType.rowTitle)
+            }
         } else if access.policy.hasFullAccess {
-            Label {
+            resting {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Everything is unlocked")
+                    Text("Everything is unlocked").font(PlaceType.rowTitle)
                     Text("You were here before Pro, so you keep it all.")
-                        .font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
+                        .font(.ds.footnote.weight(.semibold)).foregroundStyle(Color.ds.inkSecondary)
                 }
-            } icon: {
-                Image(systemName: "heart.fill")
             }
         } else {
             Button { paywall = .profile } label: {
-                Label("See Skinalyze Pro", systemImage: "sparkles")
+                HStack(spacing: Spacing.xs) {
+                    crownedPimpi
+                    Text("See Skinalyze Pro")
+                        .font(.system(.title3, design: .rounded).weight(.heavy))
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Image(systemName: "chevron.right")
+                        .font(.system(.footnote, design: .rounded).weight(.heavy))
+                        .accessibilityHidden(true)
+                }
+                .padding(.leading, Spacing.xs)
+                .padding(.trailing, Spacing.lg)
+                .frame(minHeight: Metrics.rowHeight)
             }
+            .buttonStyle(ChunkyRowStyle(look: .chosen, radius: Radius.large))
             .accessibilityIdentifier("profilePro")
             .paywallSheet($paywall)
         }
+    }
+
+    private var crownedPimpi: some View {
+        Pimpi(mood: .excited)
+            .environment(\.pimpiOutfit, .crown)
+            .frame(width: Metrics.pimpi, height: Metrics.pimpi)
+    }
+
+    /// What you have, as a resting white row with Pimpi.
+    private func resting(@ViewBuilder _ text: () -> some View) -> some View {
+        HStack(spacing: Spacing.xs) {
+            crownedPimpi
+            text()
+                .foregroundStyle(Color.ds.ink)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(.leading, Spacing.xs)
+        .padding(.trailing, Spacing.lg)
+        .frame(minHeight: Metrics.rowHeight)
+        .dsSurface(radius: Radius.large)
+        .accessibilityElement(children: .combine)
     }
 }
 
 /// Over a scan card that free history no longer opens.
 struct LockedCardCover: View {
+    private enum Metrics {
+        static let veil = 0.88
+    }
+
     var body: some View {
         ZStack {
-            Rectangle().fill(.ultraThinMaterial)
+            Rectangle().fill(Color.ds.canvas.opacity(Metrics.veil))
             VStack(spacing: Spacing.xs) {
                 Image(systemName: "lock.fill").font(.title)
-                Text(verbatim: "Pro").font(.ds.headline)
+                Text(verbatim: "Pro").font(PlaceType.sectionTitle)
             }
             .foregroundStyle(Color.ds.ink)
         }
@@ -343,13 +447,13 @@ struct ProductCheckGate<Content: View>: View {
 
     private var locked: some View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
-            Label("Product check", systemImage: "lock.fill").font(.ds.headline)
+            Label("Product check", systemImage: "lock.fill").font(PlaceType.rowTitle).foregroundStyle(Color.ds.ink)
             Text("You've used this month's \(FreeLimits.productChecksPerMonth) free product checks. Products you already checked stay open.")
-                .font(.ds.callout).foregroundStyle(Color.ds.inkSecondary)
+                .font(.ds.callout.weight(.semibold)).foregroundStyle(Color.ds.inkSecondary)
             Button { paywall = .productChecks } label: {
                 Text("See Skinalyze Pro").frame(maxWidth: .infinity)
             }
-            .buttonStyle(.dsPrimary)
+            .buttonStyle(.chunky)
             .accessibilityIdentifier("productCheckLocked")
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -364,8 +468,9 @@ struct DebugAccessToggle: View {
 
     var body: some View {
         Toggle(isOn: Binding(get: { access.debugOverride == false }, set: { access.setDebugOverride($0 ? false : nil) })) {
-            Text(verbatim: "Act as a free user")
+            Text(verbatim: "Act as a free user").font(PlaceType.rowTitle).foregroundStyle(Color.ds.ink)
         }
+        .tint(Color.ds.positive)
     }
 }
 #endif

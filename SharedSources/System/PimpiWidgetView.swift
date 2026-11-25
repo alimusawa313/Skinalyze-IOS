@@ -27,18 +27,37 @@ struct PimpiWidgetView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         default:
-            VStack(spacing: Spacing.xxs) {
+            VStack(spacing: 0) {
                 Pimpi(mood: state.mood)
-                HStack(spacing: Spacing.xxs) {
-                    Image(systemName: "flame.fill").foregroundStyle(Color.ds.signal)
-                    Text(days, format: .number)
-                        .font(.system(.title2, design: .rounded).weight(.heavy)).foregroundStyle(Color.ds.ink)
+                    .frame(maxHeight: .infinity)
+                if days > 0 {
+                    Text("\(days)-day streak")
+                        .contentTransition(.numericText(value: Double(days)))
+                        .font(.system(.headline, design: .rounded).weight(.heavy))
+                        .foregroundStyle(Color.ds.ink)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
                 }
-                Text(line).font(.caption2).foregroundStyle(Color.ds.inkSecondary)
-                    .multilineTextAlignment(.center).lineLimit(2).minimumScaleFactor(0.8)
+                Text(line)
+                    .font(.system(.caption, design: .rounded).weight(.heavy))
+                    .foregroundStyle(Color.ds.ink)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.8)
             }
             .accessibilityElement(children: .combine)
         }
+    }
+
+    private enum Metrics {
+        /// Where the hill's top sits, as a fraction of the widget's height, and how much it bulges.
+        static let crest: CGFloat = 0.58
+        static let rise: CGFloat = 30
+    }
+
+    /// The cream sky with the pink hill Pimpi stands on. The widget's container background, and the gallery's.
+    static var background: some View {
+        HillBackdrop(crest: Metrics.crest, rise: Metrics.rise)
     }
 
     private var line: String {
@@ -90,7 +109,8 @@ struct PimpiWidgetGallery: View {
                     PimpiWidgetView(state: state, family: .systemSmall)
                         .padding(Spacing.md)
                         .frame(width: Self.smallSide, height: Self.smallSide)
-                        .background(Color.ds.canvas, in: .rect(cornerRadius: Radius.medium))
+                        .background { PimpiWidgetView.background }
+                        .clipShape(.rect(cornerRadius: Radius.medium))
                         .scaleEffect(Self.previewScale)
                         .frame(width: Self.smallSide * Self.previewScale, height: Self.smallSide * Self.previewScale)
                 }
@@ -109,10 +129,10 @@ struct PimpiWidgetGallery: View {
             HStack(spacing: Spacing.sm) {
                 PimpiWidgetView(state: Self.states[1], family: .accessoryCircular)
                     .frame(width: Self.circularSide, height: Self.circularSide)
-                    .background(.gray.opacity(Self.lockScreenTint), in: .circle)
+                    .background(Color.ds.inkTertiary.opacity(Self.lockScreenTint), in: .circle)
                 PimpiWidgetView(state: Self.states[1], family: .accessoryRectangular)
                     .frame(width: Self.rectangularSize.width, height: Self.rectangularSize.height)
-                    .background(.gray.opacity(Self.lockScreenTint), in: .rect(cornerRadius: Radius.small))
+                    .background(Color.ds.inkTertiary.opacity(Self.lockScreenTint), in: .rect(cornerRadius: Radius.small))
             }
             .foregroundStyle(Color.ds.ink)
         }

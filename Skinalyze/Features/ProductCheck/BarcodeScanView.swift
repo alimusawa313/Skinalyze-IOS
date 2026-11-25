@@ -37,19 +37,51 @@ struct BarcodeScanView: View {
         case found(OnlineProduct)
     }
 
+    private enum Metrics {
+        /// Width over height of the camera window.
+        static let windowAspect: CGFloat = 3 / 2
+        static let windowMaxHeight: CGFloat = 300
+    }
+
+    private var isCameraAvailable: Bool { DataScannerViewController.isSupported && DataScannerViewController.isAvailable }
+
+    /// Curious while reading, worried about a barcode it doesn't know, happy once it knows the product.
+    private var mood: MascotMood {
+        guard let code else { return .curious }
+        return BarcodeLinks.product(for: code) == nil ? .worried : .happy
+    }
+
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: Spacing.md) {
-                    if code == nil { scanner }
-                    if let code { result(for: code) }
+            ShelfPlacePage {
+                VStack(alignment: .leading, spacing: Spacing.sm) {
+                    if let code {
+                        Label(code, systemImage: "barcode")
+                            .font(.system(.headline, design: .rounded).weight(.heavy).monospacedDigit())
+                            .foregroundStyle(Color.ds.ink)
+                            .padding(.horizontal, Spacing.md)
+                            .frame(minHeight: Chunk.iconButton)
+                            .dsSurface(radius: Chunk.iconButton / 2)
+                    } else if isCameraAvailable {
+                        ShelfCameraWindow(sweep: .horizontal) { BarcodeCamera { found in accept(found) } }
+                            .aspectRatio(Metrics.windowAspect, contentMode: .fit)
+                            .frame(maxWidth: .infinity, maxHeight: Metrics.windowMaxHeight)
+                    }
+                    ShelfCrestRow(mood: mood) { crestText }
                 }
-                .padding(Spacing.md)
+            } ground: {
+                VStack(alignment: .leading, spacing: Spacing.md) {
+                    if let code { result(for: code) } else { typeIn }
+                }
+                .id(code) // a new result pops in fresh
+                .popIn()
             }
-            .dsCanvas()
-            .navigationTitle("Scan a barcode")
-            .toolbarTitleDisplayMode(.inline)
-            .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
+            .safeAreaInset(edge: .top, spacing: 0) {
+                ShelfSheetHeader(title: Text("Scan a barcode")) { dismiss() }
+                    .background(Color.ds.canvas.ignoresSafeArea())
+            }
+            .toolbarVisibility(.hidden, for: .navigationBar)
+            .sensoryFeedback(Haptic.capture, trigger: code) { _, new in new != nil }
             .navigationDestination(item: $linked) { ProductDetailView(product: $0) }
             .sheet(isPresented: $linking) {
                 if let code { LinkBarcodeView(code: code) { product in linked = product } }
@@ -57,24 +89,45 @@ struct BarcodeScanView: View {
         }
     }
 
-    @ViewBuilder private var scanner: some View {
-        if DataScannerViewController.isSupported && DataScannerViewController.isAvailable {
-            BarcodeCamera { found in accept(found) }
-                .clipShape(RoundedRectangle(cornerRadius: Radius.medium))
-                .frame(height: 280)
-            Text("Point the camera at the barcode on the pack.").font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
+    /// What sits beside Pimpi: the camera hint while reading, or that the barcode is new.
+    @ViewBuilder private var crestText: some View {
+        if let code {
+            if BarcodeLinks.product(for: code) == nil {
+                Text("Skinalyze doesn't know this barcode yet.")
+                    .font(.ds.titleSmall)
+                    .foregroundStyle(Color.ds.ink)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityAddTraits(.isHeader)
+            }
+        } else if isCameraAvailable {
+            Text("Point the camera at the barcode on the pack.")
+                .font(.system(.footnote, design: .rounded).weight(.heavy))
+                .foregroundStyle(Color.ds.ink)
         }
-        HStack {
+    }
+
+    /// The numbers typed by hand, and Pimpi's nudge while the camera reads.
+    @ViewBuilder private var typeIn: some View {
+        HStack(alignment: .top, spacing: Spacing.sm) {
             TextField("Or type the numbers", text: $typed)
                 .keyboardType(.numberPad)
-                .padding(Spacing.sm)
-                .frame(minHeight: 44)
-                .background(Color.ds.surfaceRaised, in: RoundedRectangle(cornerRadius: Radius.small))
+                .font(.system(.body, design: .rounded).weight(.heavy).monospacedDigit())
+                .foregroundStyle(Color.ds.ink)
+                .padding(.horizontal, Spacing.md)
+                .frame(minHeight: Chunk.controlHeight)
+                .dsSurface(radius: Chunk.controlHeight / 2)
                 .accessibilityIdentifier("barcodeField")
             Button("Check") { accept(typed) }
-                .buttonStyle(.borderedProminent).tint(Color.ds.signal)
+                .buttonStyle(.chunky(.filled, fullWidth: false, minHeight: Chunk.controlHeight))
                 .disabled(Barcode.normalized(typed) == nil)
                 .accessibilityIdentifier("barcodeCheck")
+        }
+        if isCameraAvailable {
+            Text("Stripy side up, please.")
+                .font(.ds.pimpi)
+                .foregroundStyle(Color.ds.ink)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
         }
     }
 
@@ -86,17 +139,15 @@ struct BarcodeScanView: View {
     }
 
     @ViewBuilder private func result(for code: String) -> some View {
-        Label(code, systemImage: "barcode").font(.ds.headline.monospacedDigit())
         if let product = BarcodeLinks.product(for: code) {
-            Button("Open \(product.name)") { linked = product }.buttonStyle(.borderedProminent).tint(Color.ds.signal)
+            Button("Open \(product.name)") { linked = product }.buttonStyle(.chunky)
         } else {
-            Text("Skinalyze doesn't know this barcode yet.").font(.ds.callout)
             Button("Link it to a product") { linking = true }
-                .buttonStyle(.bordered).frame(minHeight: 44)
+                .buttonStyle(.chunky)
                 .accessibilityIdentifier("linkBarcode")
             onlineLookup(code)
         }
-        Button("Scan another") { self.code = nil; typed = "" }.frame(minHeight: 44)
+        Button("Scan another") { self.code = nil; typed = "" }.buttonStyle(.chunkyPlain)
     }
 
     @ViewBuilder private func onlineLookup(_ code: String) -> some View {
@@ -104,43 +155,52 @@ struct BarcodeScanView: View {
             switch lookup {
             case .idle:
                 Button("Look it up online") { Task { await fetch(code) } }
-                    .buttonStyle(.bordered).frame(minHeight: 44)
+                    .buttonStyle(.chunkyPlain)
                     .accessibilityIdentifier("lookupOnline")
                 Text("Sends only this barcode number to Open Beauty Facts, a free public product database.")
-                    .font(.ds.caption).foregroundStyle(Color.ds.inkSecondary)
+                    .font(.ds.caption.weight(.semibold)).foregroundStyle(Color.ds.inkSecondary)
+                    .padding(.horizontal, Spacing.md)
             case .loading:
-                ProgressView()
+                ProgressView().tint(Color.ds.ink).frame(maxWidth: .infinity, minHeight: Chunk.controlHeight)
             case .notFound:
-                Text("Open Beauty Facts doesn't have it either. Try a label scan for the ingredients.")
-                    .font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
+                note(Text("Open Beauty Facts doesn't have it either. Try a label scan for the ingredients."))
             case .failed:
-                Text("Couldn't reach Open Beauty Facts. Check your connection and try again.")
-                    .font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
+                note(Text("Couldn't reach Open Beauty Facts. Check your connection and try again."))
             case let .found(product):
                 found(product)
             }
         }
-        .dsCard()
+        .dsAnimation(.bouncy, value: lookup)
+        .sensoryFeedback(Haptic.success, trigger: lookup) { _, new in if case .found = new { true } else { false } }
+    }
+
+    private func note(_ text: Text) -> some View {
+        text.font(.system(.callout, design: .rounded).weight(.bold)).foregroundStyle(Color.ds.ink)
+            .fixedSize(horizontal: false, vertical: true)
     }
 
     @ViewBuilder private func found(_ product: OnlineProduct) -> some View {
-        Text([product.brand, product.name].compactMap { $0 }.joined(separator: " · ")).font(.ds.headline)
-        if let match = ProductCatalog.shared.bestMatch(forTitle: "\(product.brand ?? "") \(product.name)") {
-            Button("Open \(match.name) in Skinalyze") {
-                BarcodeLinks.link(product.barcode, to: match.productID)
-                linked = match
+        VStack(alignment: .leading, spacing: Spacing.md) {
+            Text([product.brand, product.name].compactMap { $0 }.joined(separator: " · "))
+                .font(.ds.titleSmall).foregroundStyle(Color.ds.ink)
+            if let match = ProductCatalog.shared.bestMatch(forTitle: "\(product.brand ?? "") \(product.name)") {
+                Button("Open \(match.name) in Skinalyze") {
+                    BarcodeLinks.link(product.barcode, to: match.productID)
+                    linked = match
+                }
+                .buttonStyle(.chunky)
+            } else if let text = product.ingredients, IngredientParser.parse(text).count >= 3 {
+                ProductCheckGate(key: "barcode-\(product.barcode)", allowed: $checkAllowed) {
+                    VerdictCard(result: ProductVerdictEngine.evaluate(ingredients: IngredientParser.parse(text),
+                                                                      profile: VerdictProfileBuilder.make(latest: scans.first)))
+                }
+            } else {
+                note(Text("No ingredient list there. Try a label scan."))
             }
-            .buttonStyle(.borderedProminent).tint(Color.ds.signal)
-        } else if let text = product.ingredients, IngredientParser.parse(text).count >= 3 {
-            ProductCheckGate(key: "barcode-\(product.barcode)", allowed: $checkAllowed) {
-                VerdictCard(result: ProductVerdictEngine.evaluate(ingredients: IngredientParser.parse(text),
-                                                                  profile: VerdictProfileBuilder.make(latest: scans.first)))
-            }
-        } else {
-            Text("No ingredient list there. Try a label scan.").font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
+            Text("Product data from Open Beauty Facts (openbeautyfacts.org), shared under the Open Database License.")
+                .font(.ds.caption.weight(.semibold)).foregroundStyle(Color.ds.inkSecondary)
         }
-        Text("Product data from Open Beauty Facts (openbeautyfacts.org), shared under the Open Database License.")
-            .font(.ds.caption).foregroundStyle(Color.ds.inkTertiary)
+        .padding(.top, Spacing.sm)
     }
 
     private func fetch(_ code: String) async {
@@ -176,12 +236,20 @@ private struct LinkBarcodeView: View {
                     dismiss()
                     onLinked(product)
                 } label: {
-                    VStack(alignment: .leading) {
-                        Text(product.name).font(.ds.callout)
-                        Text(product.brand).font(.ds.caption).foregroundStyle(Color.ds.inkSecondary)
+                    HStack(spacing: Spacing.sm) {
+                        ProductThumbnail(product: product)
+                        VStack(alignment: .leading) {
+                            Text(product.name)
+                                .font(.system(.callout, design: .rounded).weight(.heavy))
+                                .foregroundStyle(Color.ds.ink)
+                            Text(product.brand).font(.ds.caption.weight(.semibold)).foregroundStyle(Color.ds.inkSecondary)
+                        }
                     }
                 }
+                .listRowBackground(Color.ds.surface)
             }
+            .scrollContentBackground(.hidden)
+            .dsCanvas()
             .searchable(text: $query, prompt: Text("Product or brand"))
             .navigationTitle("Which product is it?")
             .toolbarTitleDisplayMode(.inline)

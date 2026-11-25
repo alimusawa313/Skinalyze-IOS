@@ -46,27 +46,55 @@ enum JournalCopy {
     }
 }
 
-/// On the Shelf: today's quick check-in.
+/// On the Shelf: today's quick check-in. Chips sit straight on the ground; Pimpi thanks you for noting things.
 struct JournalCard: View {
     @Environment(JournalModel.self) private var journal
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var showsPatterns = false
+
+    private enum Metrics {
+        static let pimpi: CGFloat = 64
+    }
 
     var body: some View {
         let today = journal.tags(on: journal.today)
-        VStack(alignment: .leading, spacing: Spacing.sm) {
-            HStack {
-                SectionTitle("How was today?")
-                Spacer()
+        VStack(alignment: .leading, spacing: Spacing.md) {
+            PimpiRow(spacing: Spacing.sm) {
+                // Hops each time a tag is noted or cleared; its line counts them.
+                PokablePimpi(mood: today.isEmpty ? .happy : .excited, size: Metrics.pimpi, cheer: today.count)
+                VStack(alignment: .leading, spacing: Spacing.xxs) {
+                    SectionTitle("How was today?")
+                    line(today.count)
+                        .font(.ds.pimpiSmall)
+                        .foregroundStyle(Color.ds.ink)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .contentTransition(.numericText(value: Double(today.count)))
+                }
+            }
+            FlowChips(selected: today) { tag in
+                withDSAnimation(.bouncy, reduceMotion: reduceMotion) { journal.toggle(tag) }
+            }
+            PimpiRow(spacing: Spacing.sm) {
+                Text("Only you see this. It stays on this iPhone.")
+                    .font(.effortNote)
+                    .foregroundStyle(Color.ds.ink)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 Button("Patterns") { showsPatterns = true }
-                    .font(.ds.label)
-                    .frame(minHeight: 44)
+                    .buttonStyle(.chunky(.plain, fullWidth: false))
                     .accessibilityIdentifier("journalPatterns")
             }
-            FlowChips(selected: today) { journal.toggle($0) }
-            Text("Only you see this. It stays on this iPhone.").font(.ds.caption).foregroundStyle(Color.ds.inkTertiary)
         }
-        .dsCard()
+        .dsAnimation(.bouncy, value: today.count)
         .sheet(isPresented: $showsPatterns) { PatternsView() }
+    }
+
+    /// Pimpi thanks you for checking in, whatever the day held.
+    private func line(_ count: Int) -> Text {
+        switch count {
+        case 0: Text("Quiet day? Also fine.")
+        case 1: Text("1 thing noted. Thanks.")
+        default: Text("\(count) things noted. Thanks.")
+        }
     }
 }
 
@@ -74,29 +102,34 @@ struct JournalCard: View {
 struct FlowChips: View {
     let selected: Set<JournalTag>
     let toggle: (JournalTag) -> Void
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private enum FlowChipMetrics {
+        /// A tag bounces when it's picked or cleared.
+        static let pop: CGFloat = 1.12
+        static let popTime: Double = 0.1
+        static let settle: Double = 0.35
+    }
 
     var body: some View {
         WrapLayout(spacing: Spacing.xs) {
             ForEach(JournalTag.allCases, id: \.self) { tag in
-                let on = selected.contains(tag)
-                Button { toggle(tag) } label: {
-                    Label(JournalCopy.title(tag), systemImage: JournalCopy.symbol(tag))
-                        .font(.ds.footnote.weight(.semibold))
-                        .padding(.horizontal, Spacing.sm)
-                        .frame(minHeight: 36)
-                        .background(on ? Color.ds.signal : Color.ds.surfaceRaised, in: Capsule())
-                        .foregroundStyle(on ? Color.white : Color.ds.ink)
-                }
-                .buttonStyle(.plain)
-                .sensoryFeedback(Haptic.toggle, trigger: on)
-                .accessibilityAddTraits(on ? .isSelected : [])
-                .accessibilityIdentifier("journal.\(tag.rawValue)")
+                Chip(JournalCopy.title(tag), isSelected: selected.contains(tag)) { toggle(tag) }
+                    .keyframeAnimator(initialValue: CGFloat(1), trigger: selected.contains(tag)) { chip, scale in
+                        chip.scaleEffect(reduceMotion ? 1 : scale)
+                    } keyframes: { _ in
+                        KeyframeTrack {
+                            CubicKeyframe(FlowChipMetrics.pop, duration: FlowChipMetrics.popTime)
+                            SpringKeyframe(1, duration: FlowChipMetrics.settle, spring: .bouncy)
+                        }
+                    }
+                    .accessibilityIdentifier("journal.\(tag.rawValue)")
             }
         }
     }
 }
 
-/// Left-to-right rows that wrap, like words in a sentence.
+/// Left-to-right rows that wrap, like words in a sentence. Nothing is ever wider than the row.
 struct WrapLayout: Layout {
     var spacing: CGFloat
 
@@ -112,7 +145,7 @@ struct WrapLayout: Layout {
         for row in arrange(width: bounds.width, subviews: subviews) {
             var x = bounds.minX
             for index in row.indices {
-                let size = subviews[index].sizeThatFits(.unspecified)
+                let size = fitted(subviews[index], width: bounds.width)
                 subviews[index].place(at: CGPoint(x: x, y: y), proposal: ProposedViewSize(size))
                 x += size.width + spacing
             }
@@ -126,10 +159,17 @@ struct WrapLayout: Layout {
         var height: CGFloat = 0
     }
 
+    /// A subview's own size, wrapped onto more lines when it would be wider than the row.
+    private func fitted(_ subview: LayoutSubview, width: CGFloat) -> CGSize {
+        let ideal = subview.sizeThatFits(.unspecified)
+        guard ideal.width > width else { return ideal }
+        return subview.sizeThatFits(ProposedViewSize(width: width, height: nil))
+    }
+
     private func arrange(width: CGFloat, subviews: Subviews) -> [Row] {
         var rows: [Row] = [Row()]
         for index in subviews.indices {
-            let size = subviews[index].sizeThatFits(.unspecified)
+            let size = fitted(subviews[index], width: width)
             let needed = rows[rows.count - 1].indices.isEmpty ? size.width : rows[rows.count - 1].width + spacing + size.width
             if needed > width, !rows[rows.count - 1].indices.isEmpty {
                 rows.append(Row())
@@ -149,8 +189,13 @@ struct PatternsView: View {
     @Environment(JournalModel.self) private var journal
     @Environment(ProAccess.self) private var access: ProAccess?
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var typeSize
     @Query(sort: \ScanSession.createdAt) private var allScans: [ScanSession]
     @State private var paywall: PaywallReason?
+
+    private enum Metrics {
+        static let pimpi: CGFloat = 120
+    }
 
     private var hasFullAccess: Bool { access?.policy.hasFullAccess ?? true }
 
@@ -161,36 +206,42 @@ struct PatternsView: View {
         let patterns = TriggerEngine.patterns(entries: entries, scans: points, calendar: journal.calendar)
         let waitDays = TriggerEngine.daysUntilReady(entries, today: journal.today, calendar: journal.calendar)
         NavigationStack {
-            List {
-                Section {
+            EffortScroll {
+                PimpiRow(spacing: Spacing.xs) {
+                    PokablePimpi(mood: .curious, size: Metrics.pimpi, cheer: journal.usesHealth ? 1 : 0)
+                    SpeechBubble(Text("Clues, not culprits."), tail: typeSize.isAccessibilitySize ? .up : .leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+            } ground: {
+                VStack(alignment: .leading, spacing: Spacing.sm) {
+                    SectionTitle("What coincided")
                     if waitDays > 0 {
-                        Label("Keep checking in. Patterns can show after \(waitDays) more days.", systemImage: "hourglass")
+                        row(symbol: "hourglass", Text("Keep checking in. Patterns can show after \(waitDays) more days."))
                     } else if patterns.isEmpty {
-                        Label("Nothing stands out yet. That's good to know too.", systemImage: "checkmark.circle")
+                        row(symbol: "checkmark.circle", Text("Nothing stands out yet. That's good to know too."))
                     }
                     ForEach(patterns, id: \.tag) { pattern in
-                        Label(JournalCopy.pattern(pattern), systemImage: JournalCopy.symbol(pattern.tag))
-                            .font(.ds.callout)
+                        row(symbol: JournalCopy.symbol(pattern.tag), Text(JournalCopy.pattern(pattern)))
                     }
-                } header: {
-                    Text("What coincided")
-                } footer: {
-                    Text("Patterns in your own scans, counting the three days before each one. They show what happened together, not what caused it. Many things affect skin.")
-                }
-                Section {
+                    note(Text("Patterns in your own scans, counting the three days before each one. They show what happened together, not what caused it. Many things affect skin."))
+                    SectionTitle("Apple Health").padding(.top, Spacing.sm)
                     if hasFullAccess {
                         Toggle("Include sleep and period from Apple Health", isOn: Binding(
                             get: { journal.usesHealth },
                             set: { on in Task { await journal.setUsesHealth(on) } }))
+                            .font(.effortRow)
+                            .foregroundStyle(Color.ds.ink)
+                            .tint(Color.ds.positive)
+                            .sensoryFeedback(Haptic.toggle, trigger: journal.usesHealth)
+                            .dsCard()
                             .accessibilityIdentifier("healthToggle")
                     } else {
                         Button("Include Apple Health with Pro") { paywall = .healthPatterns }
+                            .buttonStyle(.chunkyPlain)
                     }
-                } header: {
-                    Text("Apple Health")
-                } footer: {
-                    Text("Read on this iPhone when you open this screen. Skinalyze never stores Health data or sends it to iCloud.")
+                    note(Text("Read on this iPhone when you open this screen. Skinalyze never stores Health data or sends it to iCloud."))
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
             .navigationTitle("Patterns")
             .toolbarTitleDisplayMode(.inline)
@@ -198,5 +249,23 @@ struct PatternsView: View {
         }
         .task { await journal.loadHealth() }
         .paywallSheet($paywall)
+    }
+
+    /// One finding, in the cautious wording, as a plain white row.
+    private func row(symbol: String, _ text: Text) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: Spacing.sm) {
+            Image(systemName: symbol).foregroundStyle(Color.ds.signal).accessibilityHidden(true)
+            text.foregroundStyle(Color.ds.ink).fixedSize(horizontal: false, vertical: true)
+        }
+        .font(.ds.callout.weight(.semibold))
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .dsCard()
+    }
+
+    private func note(_ text: Text) -> some View {
+        text.font(.ds.footnote.weight(.semibold))
+            .foregroundStyle(Color.ds.ink)
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.horizontal, Spacing.xxs)
     }
 }

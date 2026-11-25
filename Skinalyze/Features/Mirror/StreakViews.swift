@@ -1,123 +1,36 @@
 import SwiftUI
 import SkinalyzeKit
 
-/// Pimpi standing next to the shutter with the streak flame — the one engagement element on the Mirror.
-/// Tap for the streak sheet. Pimpi's mood comes from the streaks (effort), never from skin results.
-struct PimpiStreakBadge: View {
-    @Environment(EngagementModel.self) private var engagement
-    @Environment(QuestModel.self) private var quests: QuestModel?
-    @State private var showsStreak = false
-
-    var body: some View {
-        Button { showsStreak = true } label: {
-            Pimpi(mood: engagement.mood)
-                .frame(width: 76, height: 76)
-                .overlay(alignment: .topTrailing) {
-                    if engagement.routine.count > 0 {
-                        Label("\(engagement.routine.count)", systemImage: "flame.fill")
-                            .font(.system(.footnote, design: .rounded).weight(.heavy))
-                            .labelStyle(.titleAndIcon)
-                            .foregroundStyle(Color.ds.canvas)
-                            .padding(.horizontal, Spacing.xs)
-                            .padding(.vertical, 3)
-                            .background(Color.ds.signal, in: Capsule())
-                            .contentTransition(.numericText(value: Double(engagement.routine.count)))
-                            .offset(x: 6, y: -4)
-                    }
-                }
-                .overlay(alignment: .topLeading) {
-                    if (quests?.ledger.chestsWaiting ?? 0) > 0 {
-                        // A chest is waiting in the streak sheet.
-                        Image(systemName: "gift.fill")
-                            .font(.footnote.weight(.bold))
-                            .foregroundStyle(Color.ds.canvas)
-                            .padding(Spacing.xxs + 2)
-                            .background(Color.ds.positive, in: Circle())
-                            .offset(x: -4, y: -4)
-                    }
-                }
-                .contentShape(Rectangle())
-        }
-        .buttonStyle(.bouncy(0.88))
-        .accessibilityLabel(accessibilityLabel)
-        .accessibilityHint("Shows your streaks")
-        .accessibilityIdentifier("pimpiStreak")
-        .sheet(isPresented: $showsStreak) { StreakSheet() }
-        .onChange(of: engagement.milestone) { _, milestone in
-            if milestone != nil { showsStreak = true } // celebrate once, with Pimpi
-        }
-    }
-
-    private var accessibilityLabel: Text {
-        engagement.routine.count > 0
-            ? Text("Pimpi. Routine streak: \(engagement.routine.count) days")
-            : Text("Pimpi. No routine streak yet")
-    }
-}
-
-/// Streaks in one place: the daily routine streak, the weekly scan streak, freezes, weekend-off and repair.
+/// Streaks in one place: Pimpi beside the routine streak, today's quests and the chest, the wardrobe, then the weekly
+/// scan streak, freezes, weekend-off and repair. All of it counts showing up, never skin results.
 struct StreakSheet: View {
     @Environment(EngagementModel.self) private var engagement
+    @Environment(QuestModel.self) private var quests: QuestModel?
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @ScaledMetric(relativeTo: .largeTitle) private var numberSize: CGFloat = 72
+    @ScaledMetric(relativeTo: .largeTitle) private var numberSize = Metrics.number
     /// A streak worth showing off starts at two days.
     private static let minimumSharedDays = 2
 
+    private enum Metrics {
+        static let pimpi: CGFloat = 150
+        static let number: CGFloat = 96
+        static let numberShrink: CGFloat = 0.5
+        static let icon: CGFloat = 28
+    }
+
     var body: some View {
-        @Bindable var engagement = engagement
         NavigationStack {
-            ScrollView {
-                VStack(spacing: Spacing.lg) {
-                    Pimpi(mood: engagement.milestone != nil ? .excited : engagement.mood)
-                        .frame(width: 150, height: 150)
-                    if let milestone = engagement.milestone {
-                        Text(milestoneTitle(milestone))
-                            .font(.system(.title, design: .rounded).weight(.heavy))
-                            .multilineTextAlignment(.center)
-                            .popIn()
-                    }
-                    VStack(spacing: Spacing.xxs) {
-                        HStack(alignment: .firstTextBaseline, spacing: Spacing.xs) {
-                            Image(systemName: "flame.fill").font(.largeTitle).foregroundStyle(Color.ds.signal)
-                            Text(engagement.routine.count, format: .number)
-                                .font(.system(size: numberSize, weight: .heavy, design: .rounded).monospacedDigit())
-                                .contentTransition(.numericText(value: Double(engagement.routine.count)))
-                        }
-                        .accessibilityElement(children: .combine)
-                        .accessibilityLabel(Text("Routine streak: \(engagement.routine.count) days"))
-                        Text(routineLine).font(.ds.headline).multilineTextAlignment(.center)
-                    }
-                    if engagement.canRepair {
-                        Button { engagement.repair() } label: {
-                            Label("Repair yesterday's miss", systemImage: "bandage.fill").frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.dsPrimary)
-                    }
+            EffortScroll {
+                hero
+            } ground: {
+                VStack(alignment: .leading, spacing: Spacing.lg) {
                     QuestCard()
-                    VStack(spacing: Spacing.sm) {
-                        row(icon: "faceid", title: "Scan streak", value: scanValue, detail: scanLine)
-                        Divider()
-                        row(icon: "snowflake", title: "Streak freezes",
-                            value: Text("\(engagement.ledger.available) of \(FreezeLedger.cap)"),
-                            detail: Text("A freeze covers one missed day automatically. Earn one every \(StreakEngine.daysPerFreeze) days."))
-                        Divider()
-                        Toggle(isOn: $engagement.weekendOff) {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("Weekends off").font(.ds.headline)
-                                Text("Saturday and Sunday don't count and can't break your streak.")
-                                    .font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
-                            }
-                        }
-                        .tint(Color.ds.signal)
-                    }
-                    .dsCard()
                     WardrobeLink()
+                    streakRows
                     BadgeShelf()
                 }
-                .padding(Spacing.lg)
             }
-            .background(Color.ds.canvas)
             .navigationTitle("Streaks")
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
@@ -136,20 +49,111 @@ struct StreakSheet: View {
         }
     }
 
+    // MARK: Pimpi and the number
+
+    private var hero: some View {
+        VStack(spacing: Spacing.md) {
+            if let milestone = engagement.milestone {
+                Text(milestoneTitle(milestone))
+                    .font(.ds.display)
+                    .foregroundStyle(Color.ds.ink)
+                    .multilineTextAlignment(.center)
+                    .popIn()
+            }
+            PimpiRow {
+                // Wears its outfit (from the app's environment) and hops when a quest is done or a new outfit goes on.
+                PokablePimpi(mood: engagement.milestone != nil || allQuestsDone ? .excited : engagement.mood,
+                             size: Metrics.pimpi, cheer: cheer)
+                    .dsAnimation(.bouncy, value: quests?.ledger.worn)
+                VStack(alignment: .leading, spacing: Spacing.xxs) {
+                    HStack(alignment: .firstTextBaseline, spacing: Spacing.xs) {
+                        Text(engagement.routine.count, format: .number)
+                            .font(.system(size: numberSize, weight: .heavy, design: .rounded).monospacedDigit())
+                            .lineLimit(1)
+                            .minimumScaleFactor(Metrics.numberShrink)
+                            .contentTransition(.numericText(value: Double(engagement.routine.count)))
+                            .dsAnimation(.bouncy, value: engagement.routine.count)
+                        Image(systemName: "flame.fill").font(.ds.display).foregroundStyle(Color.ds.signal)
+                    }
+                    .foregroundStyle(Color.ds.ink)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(Text("Routine streak: \(engagement.routine.count) days"))
+                    Text(routineLine)
+                        .font(.effortRow)
+                        .foregroundStyle(Color.ds.ink)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            if engagement.canRepair {
+                Button { withDSAnimation(.bouncy, reduceMotion: reduceMotion) { engagement.repair() } } label: {
+                    Label("Repair yesterday's miss", systemImage: "bandage.fill")
+                }
+                // The chest, when one is waiting, is the screen's one filled button.
+                .buttonStyle(ChunkyButtonStyle(chestWaiting ? .plain : .filled))
+            }
+        }
+    }
+
+    private var chestWaiting: Bool { (quests?.ledger.chestsWaiting ?? 0) > 0 }
+
+    private var allQuestsDone: Bool {
+        guard let quests else { return false }
+        return !quests.todaysQuests.isEmpty && quests.todaysQuests.allSatisfy(quests.completedToday.contains)
+    }
+
+    /// Changes whenever something worth a hop happens here: a quest done, points earned, a new outfit worn.
+    private var cheer: Int {
+        var hasher = Hasher()
+        hasher.combine(quests?.completedToday.count)
+        hasher.combine(quests?.ledger.points)
+        hasher.combine(quests?.ledger.worn)
+        return hasher.finalize()
+    }
+
+    // MARK: Streak rows
+
+    private var streakRows: some View {
+        @Bindable var engagement = engagement
+        return VStack(spacing: Spacing.sm) {
+            row(icon: "faceid", title: "Scan streak", value: scanValue, detail: scanLine)
+            row(icon: "snowflake", title: "Streak freezes",
+                value: Text("\(engagement.ledger.available) of \(FreezeLedger.cap)"),
+                detail: Text("A freeze covers one missed day automatically. Earn one every \(StreakEngine.daysPerFreeze) days."))
+            Toggle(isOn: $engagement.weekendOff) {
+                VStack(alignment: .leading, spacing: Spacing.xxs) {
+                    Text("Weekends off").font(.effortRow).foregroundStyle(Color.ds.ink)
+                    Text("Saturday and Sunday don't count and can't break your streak.")
+                        .font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
+                }
+            }
+            .tint(Color.ds.positive)
+            .sensoryFeedback(Haptic.toggle, trigger: engagement.weekendOff)
+            .dsCard()
+        }
+    }
+
     private func row(icon: String, title: LocalizedStringKey, value: Text, detail: Text) -> some View {
         HStack(alignment: .top, spacing: Spacing.sm) {
-            Image(systemName: icon).font(.title3).foregroundStyle(Color.ds.signal).frame(width: 28)
-            VStack(alignment: .leading, spacing: 2) {
-                HStack {
-                    Text(title).font(.ds.headline)
-                    Spacer()
-                    value.font(.ds.headline.monospacedDigit())
+            Image(systemName: icon).font(.title3.weight(.bold)).foregroundStyle(Color.ds.signal)
+                .frame(minWidth: Metrics.icon)
+            VStack(alignment: .leading, spacing: Spacing.xxs) {
+                HStack(alignment: .firstTextBaseline) {
+                    Text(title)
+                    Spacer(minLength: Spacing.xs)
+                    value.monospacedDigit()
                 }
+                .font(.effortRow)
+                .foregroundStyle(Color.ds.ink)
                 detail.font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .dsCard()
         .accessibilityElement(children: .combine)
     }
+
+    // MARK: Words
 
     private func milestoneTitle(_ milestone: EngagementModel.Milestone) -> String {
         switch milestone.kind {

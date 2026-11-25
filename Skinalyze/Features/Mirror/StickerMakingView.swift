@@ -3,7 +3,8 @@ import SkinalyzeKit
 
 /// The signature moment after a scan: your photo → you lift out of it → a white die-cut edge grows → the sticker peels
 /// up and floats (holo foil) while the analysis runs → your result's colour card slides in and the sticker slaps onto
-/// it. Then the result opens. Reduce Motion: the same steps as cross-fades.
+/// it. Then the result opens. Reduce Motion: the same steps as cross-fades. The moment stays dark by design (the dusk
+/// palette, in the day palette too).
 struct StickerMakingView: View {
     let photo: UIImage?
     /// nil while analysing; the result band once saved (drives the card colour and the "stick").
@@ -25,6 +26,22 @@ struct StickerMakingView: View {
 
     private var motion: Animation { MotionToken.bouncy.resolved(reduceMotion: reduceMotion).animation }
 
+    private enum Metrics {
+        static let cardRatio: CGFloat = 0.78
+        /// How small the finished card gets as it drops into the Deck.
+        static let filedScale: CGFloat = 0.08
+        /// Where the card waits below the sticker before there is a result, in card heights.
+        static let cardWaitOffset: CGFloat = 1.4
+        static let liftBlur: CGFloat = 18
+        static let liftScale: CGFloat = 1.06
+        static let floatScale: CGFloat = 1.08
+        static let floatTilt: Double = 10
+        static let floatLift: CGFloat = -24
+        static let bob: CGFloat = -6
+        static let bobSeconds = 1.1
+        static let stuckTilt: Double = -3
+    }
+
     var body: some View {
         VStack(spacing: Spacing.xl) {
             Spacer(minLength: Spacing.md)
@@ -32,22 +49,24 @@ struct StickerMakingView: View {
                 card
                 sticker
             }
-            .aspectRatio(0.78, contentMode: .fit)
+            .aspectRatio(Metrics.cardRatio, contentMode: .fit)
             .padding(.horizontal, Spacing.xl)
             // Filed: the finished card drops into the Deck (the middle of the dock) before the result opens.
-            .scaleEffect(phase == .filed ? 0.08 : 1, anchor: .bottom)
+            .scaleEffect(phase == .filed ? Metrics.filedScale : 1, anchor: .bottom)
             .offset(y: phase == .filed ? Self.fileDrop : 0)
             .opacity(phase == .filed ? 0 : 1)
             Text(caption)
                 .font(.system(.title2, design: .rounded).weight(.heavy))
-                .foregroundStyle(.white)
+                .foregroundStyle(Color.ds.ink)
+                .multilineTextAlignment(.center)
                 .contentTransition(.opacity)
                 .animation(.smooth, value: caption)
                 .accessibilityIdentifier("stickerCaption")
             Spacer(minLength: Spacing.md)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.black.opacity(0.9).ignoresSafeArea())
+        .background(Color.ds.canvas.ignoresSafeArea())
+        .environment(\.colorScheme, .dark)
         .task { await run() }
         .onChange(of: band, initial: true) { _, newBand in
             resultBand = newBand
@@ -67,14 +86,15 @@ struct StickerMakingView: View {
 
     // MARK: Layers
 
-    /// The result's colour card; waits below until there is a result, then slides up behind the sticker.
+    /// The result's colour card with its hard bottom edge; waits below until there is a result, then slides up
+    /// behind the sticker.
     private var card: some View {
         GeometryReader { proxy in
-            RoundedRectangle(cornerRadius: Radius.large, style: .continuous)
-                .fill(LinearGradient(colors: [Color.ds.band(resultBand ?? .calm), Color.ds.band(resultBand ?? .calm).opacity(0.55)],
-                                     startPoint: .topLeading, endPoint: .bottomTrailing))
-                .shadow(color: Color.ds.band(resultBand ?? .calm).opacity(0.5), radius: 24, y: 14)
-                .offset(y: phase >= .stuck ? 0 : proxy.size.height * 1.4)
+            let shape = RoundedRectangle(cornerRadius: Radius.large, style: .continuous)
+            shape
+                .fill(Color.ds.band(resultBand ?? .calm))
+                .background(shape.fill(Color.ds.edge).offset(y: Chunk.depth))
+                .offset(y: phase >= .stuck ? 0 : proxy.size.height * Metrics.cardWaitOffset)
                 .opacity(phase >= .stuck ? 1 : 0)
         }
     }
@@ -88,22 +108,21 @@ struct StickerMakingView: View {
             if let photo = art?.photo ?? photo {
                 Image(uiImage: photo).resizable().scaledToFit()
                     .opacity(lifted ? 0 : 1)
-                    .blur(radius: lifted ? 18 : 0)
-                    .scaleEffect(lifted && !reduceMotion ? 1.06 : 1)
+                    .blur(radius: lifted ? Metrics.liftBlur : 0)
+                    .scaleEffect(lifted && !reduceMotion ? Metrics.liftScale : 1)
             }
             if let art {
                 StickerLayers(art: art, showsBacking: outlined, showsSubject: lifted, liftGlow: phase == .lifted)
-                    .shadow(color: .black.opacity(floating ? 0.45 : 0.25), radius: floating ? 28 : 6, y: floating ? 26 : 4)
             }
         }
         .padding(stuck ? Spacing.lg : 0)
-        .scaleEffect(floating && !reduceMotion ? 1.08 : 1)
-        .rotation3DEffect(.degrees(floating && !reduceMotion ? 10 : 0), axis: (x: 1, y: -0.4, z: 0), perspective: 0.5)
-        .rotationEffect(.degrees(stuck && !reduceMotion ? -3 : 0))
-        .offset(y: floating && !reduceMotion ? -24 : 0)
+        .scaleEffect(floating && !reduceMotion ? Metrics.floatScale : 1)
+        .rotation3DEffect(.degrees(floating && !reduceMotion ? Metrics.floatTilt : 0), axis: (x: 1, y: -0.4, z: 0), perspective: 0.5)
+        .rotationEffect(.degrees(stuck && !reduceMotion ? Metrics.stuckTilt : 0))
+        .offset(y: floating && !reduceMotion ? Metrics.floatLift : 0)
         .phaseAnimator(floating && !reduceMotion ? [0.0, 1.0] : [0.0]) { content, bob in
-            content.offset(y: -6 * bob)
-        } animation: { _ in .easeInOut(duration: 1.1) }
+            content.offset(y: Metrics.bob * bob)
+        } animation: { _ in .easeInOut(duration: Metrics.bobSeconds) }
         .keyframeAnimator(initialValue: CGFloat(1), trigger: stuck) { content, squash in
             content.scaleEffect(x: 2 - squash, y: squash) // slap: flatten, then settle
         } keyframes: { _ in

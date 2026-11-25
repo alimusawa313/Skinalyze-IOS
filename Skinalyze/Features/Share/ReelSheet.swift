@@ -54,46 +54,72 @@ struct VideoShareSheet: View {
         case failed
     }
 
-    private static let videoRatio: CGFloat = 9 / 16
-    private static let pimpiSide: CGFloat = 120
-    private static let progressWidth: CGFloat = 280
-    private static let controlsWidth: CGFloat = 520
+    private enum Metrics {
+        static let videoRatio: CGFloat = 9 / 16
+        static let pimpiSide: CGFloat = 120
+        static let progressWidth: CGFloat = 280
+        /// The white edge round the video.
+        static let videoBorder: CGFloat = 6
+    }
 
     var body: some View {
         NavigationStack {
-            let layout = verticalSizeClass == .compact
-                ? AnyLayout(HStackLayout(spacing: Spacing.lg))
-                : AnyLayout(VStackLayout(spacing: Spacing.md))
-            layout {
-                stage.frame(maxWidth: .infinity, maxHeight: .infinity)
-                controls.frame(maxWidth: Self.controlsWidth)
+            Group {
+                // Landscape (and iPhone Duo closed, landscape): the video beside the controls instead of above them.
+                if verticalSizeClass == .compact {
+                    HStack(spacing: Spacing.lg) {
+                        stage.frame(maxWidth: .infinity, maxHeight: .infinity)
+                        ScrollView { controls.padding(.vertical, Spacing.md) }
+                            .scrollBounceBehavior(.basedOnSize)
+                            .frame(maxWidth: ShareSheetMetrics.controlsWidth)
+                    }
+                    .padding(.horizontal, Spacing.lg)
+                    .dsHill(crest: ShareSheetMetrics.wideCrest, rise: ShareSheetMetrics.hillRise)
+                } else {
+                    VStack(spacing: 0) {
+                        stage
+                            .padding(Spacing.lg)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        controls.shareSheetHill()
+                    }
+                    .background(Color.ds.canvas.ignoresSafeArea())
+                }
             }
-            .padding(Spacing.md)
-            .dsCanvas()
             .navigationTitle(source.title)
             .toolbarTitleDisplayMode(.inline)
             .toolbar { Button("Done") { dismiss() } }
         }
         .task(id: hidesFace) { await make() }
         .onDisappear { player?.pause() }
+        .sensoryFeedback(Haptic.toggle, trigger: hidesFace)
+        .sensoryFeedback(Haptic.success, trigger: phase) { _, phase in
+            if case .done = phase { true } else { false }
+        }
+        .animation(MotionToken.snappy.resolved(reduceMotion: reduceMotion).animation, value: phase)
     }
 
     @ViewBuilder private var stage: some View {
         switch phase {
         case let .working(progress):
             VStack(spacing: Spacing.md) {
-                Pimpi(mood: .curious).frame(width: Self.pimpiSide, height: Self.pimpiSide)
-                ProgressView(value: progress) { Text("Making your video…").font(.ds.headline) }
-                    .tint(Color.ds.signal)
-                    .frame(maxWidth: Self.progressWidth)
+                Pimpi(mood: .curious).frame(width: Metrics.pimpiSide, height: Metrics.pimpiSide)
+                ProgressView(value: progress) {
+                    Text("Making your video…")
+                        .font(.system(.headline, design: .rounded).weight(.heavy))
+                        .foregroundStyle(Color.ds.ink)
+                }
+                .tint(Color.ds.ink)
+                .frame(maxWidth: Metrics.progressWidth)
             }
         case .done:
             if let player {
                 VideoPlayer(player: player)
-                    .aspectRatio(Self.videoRatio, contentMode: .fit)
+                    .aspectRatio(Metrics.videoRatio, contentMode: .fit)
                     .clipShape(RoundedRectangle(cornerRadius: Radius.medium, style: .continuous))
                     .accessibilityLabel(hidesFace ? Text("Your video with your face hidden") : Text("Your video"))
                     .accessibilityIdentifier("videoSharePlayer")
+                    .padding(Metrics.videoBorder)
+                    .dsSurface(radius: Radius.large)
             }
         case .failed:
             ContentUnavailableView("Couldn't make the video", systemImage: "film",
@@ -104,37 +130,27 @@ struct VideoShareSheet: View {
     private var controls: some View {
         VStack(spacing: Spacing.md) {
             if source.offersHideFace {
-                Toggle(isOn: $hidesFace) {
-                    Label {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Hide my face")
-                            Text("Shares your sticker's outline and numbers only.")
-                                .font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
-                        }
-                    } icon: {
-                        Image(systemName: "eye.slash")
-                    }
-                }
-                .tint(Color.ds.signal)
-                .accessibilityIdentifier("videoShareHideFace")
+                HideFaceRow(isOn: $hidesFace, identifier: "videoShareHideFace")
             }
-            shareButton
             Text("Skinalyze uploads nothing. The video goes only where you send it.")
-                .font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
+                .font(.ds.footnote.weight(.semibold))
+                .foregroundStyle(Color.ds.ink)
                 .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+            shareButton
         }
     }
 
     @ViewBuilder private var shareButton: some View {
-        let label = Label("Share", systemImage: "square.and.arrow.up").frame(maxWidth: .infinity)
+        let label = Label("Share", systemImage: "square.and.arrow.up")
         if case let .done(url) = phase {
             ShareLink(item: url) { label }
                 .simultaneousGesture(TapGesture().onEnded { quests?.did(.share, isPro: access?.policy.hasFullAccess ?? false) })
-                .buttonStyle(.dsPrimary)
+                .buttonStyle(.chunky)
                 .accessibilityIdentifier("videoShareButton")
         } else {
             Button {} label: { label }
-                .buttonStyle(.dsPrimary)
+                .buttonStyle(.chunky)
                 .disabled(true)
         }
     }

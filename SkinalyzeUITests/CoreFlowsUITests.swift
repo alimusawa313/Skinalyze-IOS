@@ -346,8 +346,9 @@ final class CoreFlowsUITests: XCTestCase {
         let denied = app.staticTexts["Camera access is off"]
         let deadline = Date.now.addingTimeInterval(15)
         while Date.now < deadline, !unavailable.exists, !denied.exists {
-            // Asks for the camera; a second tap lets the interruption monitor handle the permission alert.
-            if shutter.exists, shutter.isEnabled { shutter.tap() }
+            // Asks for the camera. While the scan screen is up (Scan hidden), a tap lets the interruption monitor
+            // handle the permission alert.
+            if shutter.exists, shutter.isEnabled { shutter.tap() } else { app.tap() }
             _ = unavailable.waitForExistence(timeout: 1)
         }
         XCTAssertTrue(unavailable.exists || denied.exists)

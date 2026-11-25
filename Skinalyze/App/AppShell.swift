@@ -260,6 +260,9 @@ struct MirrorDock: View {
         .background(Capsule().fill(Color.ds.surface))
         .background(Capsule().fill(Color.ds.edgeOnHill).offset(y: Chunk.depthSmall))
         .padding(.bottom, Chunk.depthSmall)
+        // Like the system tab bar: the bar stops growing at the largest standard size, and a long press shows each
+        // item enlarged (Large Content Viewer) so it never covers the page at accessibility sizes.
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         .sensoryFeedback(.selection, trigger: selection)
     }
 
@@ -286,6 +289,10 @@ struct MirrorDock: View {
             .contentShape(Capsule())
         }
         .buttonStyle(.plain)
+        .accessibilityShowsLargeContentViewer {
+            Image(systemName: item.symbol)
+            Text(item.title)
+        }
         .accessibilityLabel(Text(item.title))
         .accessibilityIdentifier(item.identifier)
         .accessibilityAddTraits(selected ? .isSelected : [])

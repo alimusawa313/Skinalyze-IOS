@@ -14,15 +14,10 @@ struct SkinCardWidgetView: View {
         snapshot.bandRaw.flatMap(BreakoutBand.init(rawValue:))
     }
 
-    /// The card's colour; the app's canvas before the first scan.
+    /// The card's colour: a flat band colour, like the skin card in the app; the sky before the first scan.
     static func background(for snapshot: WidgetSnapshot) -> some View {
-        let colors = band(of: snapshot).map { [Color.ds.band($0), Color.ds.band($0).opacity(0.7)] }
-            ?? [Color.ds.surfaceRaised, Color.ds.canvas]
-        return ZStack {
-            Color.ds.canvas
-            LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing)
-        }
-        .environment(\.colorScheme, .light)
+        (band(of: snapshot).map { Color.ds.band($0) } ?? Color.ds.canvas)
+            .environment(\.colorScheme, .light)
     }
 
     var body: some View {
@@ -36,7 +31,7 @@ struct SkinCardWidgetView: View {
             }
             VStack(alignment: .leading, spacing: 0) {
                 Text(snapshot.breakoutIndex.map(String.init) ?? "–").font(Self.numeral).lineLimit(1)
-                Text(caption).font(.caption.weight(.semibold)).lineLimit(1).minimumScaleFactor(0.7)
+                Text(caption).font(.system(.caption, design: .rounded).weight(.heavy)).lineLimit(1).minimumScaleFactor(0.7)
             }
         }
         .foregroundStyle(Color.ds.ink)

@@ -87,45 +87,152 @@ extension WatchRoutineModel: WCSessionDelegate {
     }
 }
 
+/// The watch has no SkinalyzeKit, so it carries the few Pimpi's Place colours it needs (the dusk values of
+/// `Palette`: pimpiBody, ink, canvas, positive, inkTertiary). Black is the watch's own background.
+private enum WatchPalette {
+    static let pink = Color(red: 1, green: 0x8A / 255, blue: 0x94 / 255)
+    static let row = Color(red: 0x23 / 255, green: 0x22 / 255, blue: 0x4F / 255)
+    static let cream = Color(red: 1, green: 0xF3 / 255, blue: 0xE4 / 255)
+    static let done = Color(red: 0x4C / 255, green: 0xD4 / 255, blue: 0x9A / 255)
+    static let idle = Color(red: 0x9A / 255, green: 0x93 / 255, blue: 0xB5 / 255)
+}
+
+private enum WatchMetrics {
+    static let spacing: CGFloat = 6
+    static let rowHeight: CGFloat = 44
+    static let check: CGFloat = 26
+    static let checkRing: CGFloat = 2.5
+    static let pillPadding: CGFloat = 3
+    static let checkPop: CGFloat = 1.25
+    static let popUp = 0.12
+    static let springDuration = 0.42
+    static let springBounce = 0.45
+}
+
 struct WatchRoutineView: View {
     @Environment(WatchRoutineModel.self) private var model
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Namespace private var pill
     @State private var evening = Calendar.current.component(.hour, from: .now) >= 15
 
     var body: some View {
-        NavigationStack {
-            Group {
-                if let state = model.today {
-                    let steps = evening ? state.evening : state.morning
-                    List {
-                        if state.streak > 0 {
-                            Label("\(state.streak)-day streak", systemImage: "flame.fill")
-                                .foregroundStyle(.pink)
-                                .listRowBackground(Color.clear)
-                        }
-                        Picker("Routine", selection: $evening) {
-                            Text("Morning").tag(false)
-                            Text("Evening").tag(true)
-                        }
+        Group {
+            if let state = model.today {
+                let steps = evening ? state.evening : state.morning
+                ScrollView {
+                    VStack(alignment: .leading, spacing: WatchMetrics.spacing) {
+                        header(streak: state.streak)
+                        picker
                         if steps.isEmpty {
-                            Text("Add products to your shelf on your iPhone.").font(.footnote)
+                            Text("Add products to your shelf on your iPhone.")
+                                .font(.system(.footnote, design: .rounded).weight(.bold))
+                                .foregroundStyle(WatchPalette.cream)
                         }
                         ForEach(steps) { step in
-                            Button { model.toggle(step) } label: {
-                                HStack {
-                                    Image(systemName: step.done ? "checkmark.circle.fill" : "circle")
-                                        .foregroundStyle(step.done ? .green : .secondary)
-                                    Text(step.title).lineLimit(2)
-                                }
-                            }
-                            .accessibilityValue(step.done ? Text("Done") : Text("Not done"))
+                            stepRow(step)
                         }
                     }
-                } else {
-                    ContentUnavailableView("Open Skinalyze on your iPhone", systemImage: "iphone",
-                                           description: Text("Your routine shows here once your iPhone has sent today's steps."))
                 }
+            } else {
+                ContentUnavailableView("Open Skinalyze on your iPhone", systemImage: "iphone",
+                                       description: Text("Your routine shows here once your iPhone has sent today's steps."))
             }
-            .navigationTitle("Routine")
         }
+        .background(Color.black.ignoresSafeArea())
+        .tint(WatchPalette.pink)
+    }
+
+    /// Bouncy on the way in; Reduce Motion gets a plain fade-speed change.
+    private var spring: Animation {
+        reduceMotion ? .easeInOut : .spring(duration: WatchMetrics.springDuration, bounce: WatchMetrics.springBounce)
+    }
+
+    private func header(streak: Int) -> some View {
+        HStack(alignment: .firstTextBaseline) {
+            Text("Routine")
+                .font(.system(.headline, design: .rounded).weight(.heavy))
+                .foregroundStyle(WatchPalette.pink)
+                .accessibilityAddTraits(.isHeader)
+            Spacer(minLength: WatchMetrics.spacing)
+            if streak > 0 {
+                Text("\(streak)-day streak")
+                    .font(.system(.footnote, design: .rounded).weight(.heavy))
+                    .foregroundStyle(WatchPalette.cream)
+            }
+        }
+        .padding(.horizontal, WatchMetrics.spacing)
+    }
+
+    /// Morning or evening, as a pill that slides.
+    private var picker: some View {
+        HStack(spacing: 0) {
+            pickerOption("Morning", isEvening: false)
+            pickerOption("Evening", isEvening: true)
+        }
+        .padding(WatchMetrics.pillPadding)
+        .background(WatchPalette.row, in: Capsule())
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Routine")
+        .sensoryFeedback(.selection, trigger: evening)
+    }
+
+    private func pickerOption(_ title: LocalizedStringKey, isEvening: Bool) -> some View {
+        let selected = evening == isEvening
+        return Button {
+            withAnimation(spring) { evening = isEvening }
+        } label: {
+            Text(title)
+                .font(.system(.footnote, design: .rounded).weight(.heavy))
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+                .foregroundStyle(selected ? Color.black : WatchPalette.cream)
+                .frame(maxWidth: .infinity, minHeight: WatchMetrics.rowHeight - WatchMetrics.pillPadding * 2)
+                .background {
+                    if selected { Capsule().fill(WatchPalette.pink).matchedGeometryEffect(id: "pill", in: pill) }
+                }
+                .contentShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(selected ? .isSelected : [])
+    }
+
+    private func stepRow(_ step: WatchRoutineState.Step) -> some View {
+        Button { model.toggle(step) } label: {
+            HStack(spacing: WatchMetrics.spacing * 2) {
+                ZStack {
+                    Circle()
+                        .strokeBorder(step.done ? WatchPalette.done : WatchPalette.idle, lineWidth: WatchMetrics.checkRing)
+                        .background(Circle().fill(step.done ? WatchPalette.done : Color.clear))
+                    if step.done {
+                        Image(systemName: "checkmark")
+                            .font(.system(.caption2, design: .rounded).weight(.black))
+                            .foregroundStyle(WatchPalette.row)
+                            .transition(.scale.combined(with: .opacity))
+                    }
+                }
+                .frame(width: WatchMetrics.check, height: WatchMetrics.check)
+                .animation(spring, value: step.done)
+                .keyframeAnimator(initialValue: CGFloat(1), trigger: step.done) { view, scale in
+                    view.scaleEffect(reduceMotion ? 1 : scale)
+                } keyframes: { _ in
+                    SpringKeyframe(WatchMetrics.checkPop, duration: WatchMetrics.popUp)
+                    SpringKeyframe(1, spring: .bouncy)
+                }
+                Text(step.title)
+                    .font(.system(.body, design: .rounded).weight(.heavy))
+                    .foregroundStyle(WatchPalette.cream)
+                    .lineLimit(2)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(.leading, WatchMetrics.spacing + 2)
+            .padding(.trailing, WatchMetrics.spacing * 2)
+            .padding(.vertical, WatchMetrics.spacing)
+            .frame(minHeight: WatchMetrics.rowHeight)
+            .background(WatchPalette.row, in: Capsule())
+            .contentShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .sensoryFeedback(trigger: step.done) { _, done in done ? .success : .selection }
+        .accessibilityValue(step.done ? Text("Done") : Text("Not done"))
     }
 }
