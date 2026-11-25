@@ -6,6 +6,7 @@ Read them before starting redesign work, and tick off checklist items there as y
 engagement, mascot (Pimpi) and paywall backlog lives in [docs/redesign/FEATURES.md](docs/redesign/FEATURES.md)
 (build phases and the definition of done: [docs/redesign/FEATURE-PHASES.md](docs/redesign/FEATURE-PHASES.md)) —
 its §0 rules (score effort never skin, the first scan of the day is always free, social shares no photos) are binding.
+Work on the acne detector's accuracy follows [docs/redesign/ML-PLAN.md](docs/redesign/ML-PLAN.md).
 
 ## 1. Every iPhone shape, every pose (NON-NEGOTIABLE)
 

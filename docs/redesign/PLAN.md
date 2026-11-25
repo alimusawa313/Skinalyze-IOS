@@ -765,6 +765,9 @@ with longer Indonesian strings.
 
 ### 12.3 Detector improvements
 
+> The detailed, step-by-step plan for this lives in [ML-PLAN.md](ML-PLAN.md) (benchmark harness → inference fixes →
+> data → retraining → on-device corrections). Work from that file.
+
 1. Phase 1: fix preprocessing, thresholds, NMS, dedupe — measure with the benchmark.
 2. If the benchmark still shows high variance or poor recall on small lesions → retrain/fine-tune (needs Q3):
    higher input resolution or tiling, more diverse skin tones and lighting, hard-negative mining (pores, freckles,
