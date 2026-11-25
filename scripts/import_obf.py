@@ -25,6 +25,7 @@ Takes ~15-20 minutes the first time.
 """
 import argparse
 import hashlib
+import html
 import json
 import os
 import re
@@ -79,21 +80,31 @@ EXCLUDE = re.compile(
     r"\b(body|hair|shampoo|conditioner|scalp|deodorant|antiperspirant|lip|lips|lipstick|lipbalm|lip balm|mascara|"
     r"eyeliner|eyeshadow|eye shadow|foundation|concealer|powder|blush|bronzer|primer|cushion|bb cream|cc cream|"
     r"tinted|nail|perfume|parfum|eau de|cologne|fragrance mist|shower|bath|soap bar|hand|hands|foot|feet|baby|"
-    r"kids|shaving|shave|after shave|aftershave|toothpaste|mouthwash|tattoo|tanning|self-tan|self tan|"
-    r"after sun|aftersun|insect|repellent|intimate|feminine|massage|candle)\b"
+    r"kid|kids|kinder|enfant|enfants|children|child|bébé|shaving|shave|after shave|aftershave|toothpaste|mouthwash|"
+    r"tattoo|tanning|self-tan|self tan|bronz\w*|after sun|aftersun|après-soleil|apres soleil|insect|repellent|"
+    r"intimate|feminine|massage|candle|elseve|elvive|elivive|combing|leave-in|sugar scrub|salt scrub|coffee scrub|"
+    r"serum-in-lotion|serum burst|körper|corps|cuerpo|corpo|lichaam|kropp\w*|gluta-hya|sonnenmilch|sun spray|"
+    r"sonnenspray|family|familie|famille|sport|beach|leg|legs|douche|dusch\w*|elvital|pediatric\w*|"
+    r"losyonu|vücut|bodylotion|jelly|kiss of petals|pretty as a peach|cocoa)\b"
 )
 # Checked in order: the first rule that matches decides the category.
 RULES = [
-    ("Spot care", r"\b(spot|acne gel|spot gel|spot treatment|acne treatment|(acne|pimple|blemish|jerawat)\b.*\bpatch\w*)"),
-    ("Mask", r"\b(mask|masker|sheet)\b"),
-    ("Eye care", r"\b(eye cream|eye serum|eye gel|under eye|eye contour)\b"),
-    ("Exfoliant", r"\b(exfoliat\w*|peeling|peel|scrub|aha|bha|aha/bha|aha bha|glycolic|lactic acid|mandelic|salicylic)\b"),
+    # Make-up removers (eye ones too) are cleansers.
+    ("Cleanser", r"\b(d[ée]maquill\w*|desmaquill\w*|remover|micella\w*|biphas\w*)"),
+    ("Mask", r"\b(masks?|masker|masques?|maske|maskesi|maschera|mascarilla|sheet|eye pads?)\b"),
+    ("Eye care", r"\b(eye|eyes|under-eye|regard|yeux|olhos|ojos|augen\w*|occhi)\b"),
     ("Sunscreen", r"\b(spf|sunscreen|sun screen|sunblock|sun block|sun protect\w*|sun cream|sun milk|sun gel|"
-                  r"sun essence|sun stick|uv protect\w*|uv aqua|uv shield|uv defen\w*|en:sunscreens|en:sun-protection)\b"),
-    ("Cleanser", r"\b(cleans\w*|face wash|facial wash|facial foam|face foam|foam|micellar|wash|en:facial-cleansers|"
+                  r"sun essence|sun stick|uv protect\w*|uv aqua|uv shield|uv defen\w*|anthelios|photoderm|"
+                  r"en:sunscreens|en:sun-protection)\b"),
+    # Acne spot products only: "dark spot" serums are serums.
+    ("Spot care", r"\b(drying lotion|spot treatment|spot gel|spot corrector|spot patch\w*|pimple|persa gel|acne gel|"
+                  r"acne treatment|blemish (gel|stick|patch\w*)|(acne|jerawat)\b.*\bpatch\w*)"),
+    ("Exfoliant", r"\b(exfolia\w*|peeling|peel|scrub|gommage|aha|bha|aha/bha|aha bha|glycolic|lactic acid|mandelic|salicylic)\b"),
+    ("Cleanser", r"\b(cleans\w*|face wash|facial wash|facial foam|face foam|foam|micellar|wash|nettoyant\w*|"
+                 r"démaquillant\w*|reinigung\w*|limpiador\w*|en:facial-cleansers|"
                  r"en:face-cleansers|en:face-washes|en:micellar-waters)\b"),
     ("Toner", r"\b(toner|tonic|toning|en:toners|en:facial-toners)\b"),
-    ("Serum", r"\b(serum|ampoule|ampule|essence|booster|en:face-serums|en:serums)\b"),
+    ("Serum", r"\b(serum|ampoule|ampule|essence|en:face-serums|en:serums)\b"),
     ("Moisturizer", r"\b(moistu?ri[sz]\w*|cream|creme|crème|gel cream|emulsion|lotion|day cream|night cream|"
                     r"sleeping|hydrat\w*|aloe|soothing gel|en:face-creams|en:day-creams|en:night-creams|en:moisturizers|"
                     r"en:face-moisturizers)\b"),
@@ -101,9 +112,28 @@ RULES = [
     ("Serum", r"\d+(\.\d+)?\s?%"),
 ]
 RULES = [(name, re.compile(pattern)) for name, pattern in RULES]
-# Lotions, washes and soaps are body products as often as face ones; for those, ask for a sign it's for the face.
-AMBIGUOUS = re.compile(r"\b(lotion|wash|soap)\b")
-FACE_SIGNAL = re.compile(r"\b(face|facial|wajah|muka|skin|kulit|acne|jerawat|pore|pori|en:face)")
+# Lotions, washes, soaps, scrubs, milks, sprays and oils are body products as often as face ones; for those (and
+# for every sunscreen) ask for a sign it's for the face.
+AMBIGUOUS = re.compile(r"\b(lotion|wash|soap|scrub|milk|lait|spray|oil)\b")
+FACE_SIGNAL = re.compile(r"\b(face|facial|wajah|muka|acne|jerawat|pore|pori|visage|gesicht|viso|rostro|yüz|"
+                         r"cara|ansikte|kasvo|gezicht|en:face\w*)")
+# Brands that mostly make body care: their products count only when they say they're for the face.
+BODY_FIRST_BRANDS = {"vaseline", "dove", "palmer's", "jergens"}
+# Face sunscreens that don't say "face": the light, face-only formats.
+FACE_SUN_FORMAT = re.compile(r"\b(fluid|fluide|essence|uv aqua|gel cream|anthelios|uvmune|invisible|matt\w*|serum)\b")
+# Ingredient lists that aren't INCI (translated names the matcher can't read) or aren't a list at all.
+NOT_INCI = re.compile(r"(?i)\b(água|ácido|acido|glicerina|extrato|extracto|óleo|aceite|sulfato de|wasser|huile de|"
+                      r"here are|as can be read|from the image|ingredient list)\b")
+# One spelling per brand.
+BRAND_NAMES = {
+    "loreal": "L'Oréal Paris", "loreal paris": "L'Oréal Paris", "l oreal": "L'Oréal Paris",
+    "l oreal paris": "L'Oréal Paris", "nivea sun": "Nivea", "nivea men": "Nivea", "biore": "Biore",
+    "st ives": "St. Ives", "himalaya": "Himalaya", "garnier skinactive": "Garnier", "la roche posay": "La Roche-Posay",
+    "cerave": "CeraVe", "the ordinary": "The Ordinary",
+}
+# Kept upper-case when a name is re-cased.
+KEEP_UPPER = {"spf", "aha", "bha", "pha", "uv", "uva", "uvb", "pa", "svr", "sas", "nyc", "spf50", "spf30", "spf50+",
+              "spf30+", "spf15", "b5", "c", "e", "q10", "dna", "lha"}
 
 
 def fetch(params, offline):
@@ -152,19 +182,38 @@ def latin_share(text):
     return sum(1 for c in letters if ord(c) < 0x250) / len(letters) if letters else 0
 
 
+def tidy_case(text):
+    """All-caps (longer than an acronym) or all-lowercase text in title case, keeping SPF, AHA and the like."""
+    if not (text.islower() or (text.isupper() and len(text) > 4)):
+        return text
+    return " ".join(word.upper() if word.lower() in KEEP_UPPER else word.capitalize() for word in text.split(" "))
+
+
 def clean_name(product):
     for key in ("product_name_en", "product_name", "product_name_id"):
-        name = re.sub(r"\s+", " ", (product.get(key) or "")).strip(" -–—")
+        name = re.sub(r"\s+", " ", html.unescape(product.get(key) or "")).strip(" -–—")
         if len(name) >= 3 and latin_share(name) > 0.9:
-            return name[:120]
+            return tidy_case(name)[:120]
     return None
 
 
 def clean_brand(product):
-    brand = (product.get("brands") or "").split(",")[0].strip()
+    brand = html.unescape((product.get("brands") or "").split(",")[0]).strip()
     if len(brand) < 2 or latin_share(brand) < 0.9:
         return None
-    return brand.title() if brand.islower() else brand
+    ascii_key = re.sub(r"[^a-z0-9]+", " ", brand.lower().replace("é", "e").replace("è", "e")).strip()
+    return BRAND_NAMES.get(ascii_key) or tidy_case(brand)
+
+
+def tidy_ingredient(item):
+    """An all-caps INCI name in title case ("CETEARYL ALCOHOL" -> "Cetearyl Alcohol"); codes like PEG-40 stay."""
+    if not item.isupper():
+        return item
+
+    def part(text):
+        return text if len(text) <= 3 or any(c.isdigit() for c in text) else text.capitalize()
+
+    return re.sub(r"[A-Z0-9]+", lambda match: part(match.group(0)), item)
 
 
 def clean_ingredients(product):
@@ -172,7 +221,11 @@ def clean_ingredients(product):
         text = (product.get(key) or "").strip()
         if not text:
             continue
-        text = re.sub(r"(?i)^.*?\b(ingredients|komposisi|bahan|ingrédients)\s*:\s*", "", text, count=1)
+        if NOT_INCI.search(text):
+            continue
+        text = html.unescape(text)
+        text = re.sub(r"(?i)^.*?\b(ingredients?|komposisi|bahan|ingrédients)\s*(\(inci\))?\s*:\s*", "", text, count=1)
+        text = re.sub(r"^[\d\s./-]+(?=[A-Za-z])", "", text)  # batch numbers printed before the list
         text = re.sub(r"(?i)\b(may contain|dapat mengandung|peut contenir)\b.*$", "", text)
         text = text.replace("\n", ", ").replace(";", ",").replace("•", ",").replace("·", ",")
         text = re.sub(r"_", "", text)  # Open Beauty Facts marks allergens as _name_
@@ -181,20 +234,36 @@ def clean_ingredients(product):
         long_items = sum(1 for item in items if len(item) > 80)
         if len(items) < 5 or long_items > 1 or latin_share(" ".join(items)) < 0.95:
             continue
-        return ", ".join(item[:80] for item in items)[:4000]
+        return ", ".join(tidy_ingredient(item)[:80] for item in items)[:4000]
     return None
 
 
-def classify(name, tags):
+def classify(name, tags, brand=""):
     haystack = f"{name} {' '.join(tags)}".lower()
-    if EXCLUDE.search(name.lower()):
+    if EXCLUDE.search(name.lower()) or any(re.search(r"make-?up|mascara|lip|nail", tag) and "remover" not in tag
+                                           for tag in tags):
+        return None
+    face = FACE_SIGNAL.search(haystack)
+    if brand.lower() in BODY_FIRST_BRANDS and not face:
         return None
     for category, pattern in RULES:
         if pattern.search(haystack):
-            if category in ("Moisturizer", "Cleanser") and AMBIGUOUS.search(haystack) and not FACE_SIGNAL.search(haystack):
+            if category == "Sunscreen" and not (face or FACE_SUN_FORMAT.search(name.lower())):
+                return None
+            if AMBIGUOUS.search(name.lower()) and not face:
                 return None
             return category
     return None
+
+
+def valid_barcode(code):
+    """EAN-8, UPC-A or EAN-13 with a correct check digit (Open Beauty Facts also holds internal codes)."""
+    if not code.isdigit() or len(code) not in (8, 12, 13):
+        return None
+    digits = [int(c) for c in code]
+    body = digits[:-1][::-1]
+    total = sum(d * (3 if i % 2 == 0 else 1) for i, d in enumerate(body))
+    return code if (10 - total % 10) % 10 == digits[-1] else None
 
 
 def key(name, brand):
@@ -228,7 +297,7 @@ def main():
         if not name or not brand:
             reject("no usable name or brand")
             continue
-        category = classify(name, product.get("categories_tags") or [])
+        category = classify(name, product.get("categories_tags") or [], brand)
         if not category:
             reject("not face care / unknown type")
             continue
@@ -252,7 +321,7 @@ def main():
             "photo": product.get("image_front_url") or "",
             "link": f"https://world.openbeautyfacts.org/product/{code}",
             "ingredients": ingredients,
-            "barcode": code,
+            "barcode": valid_barcode(code),
             "source": "Open Beauty Facts",
         })
 

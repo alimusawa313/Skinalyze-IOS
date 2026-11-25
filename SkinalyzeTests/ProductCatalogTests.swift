@@ -25,11 +25,13 @@ struct ProductCatalogTests {
         #expect(ProductCatalog.Kind.sunscreen.slot == .sunscreen)
     }
 
-    @Test("Products from Open Beauty Facts carry a valid barcode and are found by it, in any EAN/UPC spelling")
+    @Test("Imported products link their source, and any barcode they carry is valid and finds them, in any EAN/UPC spelling")
     func barcodeLookup() throws {
         let imported = catalog.products.filter(\.isFromOpenBeautyFacts)
-        #expect(imported.allSatisfy { $0.barcode.flatMap(Barcode.normalized) != nil && $0.link != nil })
-        guard let product = imported.first, let barcode = product.barcode else { return } // none imported yet
+        #expect(imported.allSatisfy { $0.link != nil })
+        // A barcode is kept only when it's a valid EAN/UPC.
+        #expect(imported.compactMap(\.barcode).allSatisfy { Barcode.normalized($0) != nil })
+        guard let product = imported.first(where: { $0.barcode != nil }), let barcode = product.barcode else { return }
         #expect(catalog.product(barcode: barcode)?.productID == product.productID)
         if barcode.count == 13, barcode.hasPrefix("0") {
             #expect(catalog.product(barcode: String(barcode.dropFirst()))?.productID == product.productID)
