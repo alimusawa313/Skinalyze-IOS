@@ -52,6 +52,20 @@ struct ProfileView: View {
     private var debug: some View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
             DebugAccessToggle().placeSurfaceRow()
+            // Try the new onboarding again without losing anything: answers, shelf and scans stay.
+            Button {
+                FirstScanCoaching.isPending = false
+                UserDefaults.standard.set(false, forKey: UserProfile.Key.onboardingComplete)
+                UserDefaults.standard.removeObject(forKey: UserProfile.Key.legacyUseSkincare)
+            } label: {
+                Label {
+                    Text(verbatim: "Show onboarding again")
+                } icon: {
+                    Image(systemName: "arrow.counterclockwise.circle")
+                }
+            }
+            .labelStyle(PlaceLinkLabelStyle())
+            .buttonStyle(ChunkyRowStyle())
             Text(verbatim: "Debug builds only.").font(.ds.footnote).foregroundStyle(Color.ds.inkSecondary)
                 .padding(.horizontal, Spacing.xxs)
         }
