@@ -42,6 +42,14 @@ final class PimpiTourUITests: XCTestCase {
 
     func testPimpiEverywhere() {
         pause("01 Mirror badge")
+        // Poke Pimpi on Home: it squashes, hops and says something else (check the motion in a screen recording).
+        let pimpi = app.buttons["homePimpi"]
+        if pimpi.waitForExistence(timeout: 5) {
+            pimpi.tap()
+            pause("01a Pimpi poked", 2)
+            pimpi.tap()
+            pause("01b Pimpi poked twice", 2)
+        }
         let badge = app.buttons["pimpiStreak"]
         if badge.waitForExistence(timeout: 5) {
             badge.tap()
