@@ -49,6 +49,7 @@
   during a scan < 350 MB. Measure on device after every inference change.
 - **Copy:** tracker, not diagnosis. Run `scripts/lint_copy.py`.
 - Work on a branch (`ml/detector-quality`), commit locally, **never push**.
+- Tools: `Tools/DetectorBench` (run instructions in [benchmarks/README.md](benchmarks/README.md)).
 
 ## 2. Phases
 
@@ -58,14 +59,16 @@ Order matters: measure (M0) before changing anything, so every later step can pr
 
 Goal: one command prints accuracy and consistency numbers for the current pipeline, so "inaccurate" becomes a number.
 
-- [ ] **M0.1 Move the pure pipeline into SkinalyzeKit.** Extract from `AcneDetector.detect` everything except the
+- [x] **M0.1 Move the pure pipeline into SkinalyzeKit.** Extract from `AcneDetector.detect` everything except the
   Core ML call into a `DetectionPipeline` in `SkinalyzeKit/Sources/SkinalyzeKit/Detection/` that takes a closure
   `(CGImage) throws -> [RawDetection]` (the model run, crop-normalised) and returns final detections. `AcneDetector`
   becomes a thin wrapper. Existing behaviour and tests must not change (InferencePipelineTests stay green).
-- [ ] **M0.2 Dataset layout + loader** (pure Swift, tested): a folder with `images/*.jpg|heic` and YOLO-format
+  *Done 2026-11-25:* `DetectionPipeline` (+ `VisionFaceAnalysis`, `CoreMLDetections`) in SkinalyzeKit; `AcneDetector` is a thin wrapper running `.shipping` (= baseline). Old tests unchanged and green.
+- [x] **M0.2 Dataset layout + loader** (pure Swift, tested): a folder with `images/*.jpg|heic` and YOLO-format
   `labels/*.txt` (`class cx cy w h`, normalised), plus `meta.csv` (`file, subject_id, session_id, angle,
   fitzpatrick, lighting`). Class indices fixed in the order of `LesionType.allCases`.
-- [ ] **M0.3 Metrics** (pure Swift, tested with hand-made fixtures):
+  *Done:* `Tools/DetectorBench/Sources/BenchCore/Dataset.swift`. A missing label file = unlabelled photo (still used for consistency); an empty one = checked, no spots.
+- [x] **M0.3 Metrics** (pure Swift, tested with hand-made fixtures):
   - matching: a prediction matches a ground-truth box of the same class if centre distance ≤ 0.5 × the GT box's
     larger side, or IoU ≥ 0.3 (IoU alone is too harsh for 3-px boxes); greedy by confidence;
   - per class: precision, recall, F1; a confusion matrix including "background" (missed / spurious);
@@ -74,21 +77,25 @@ Goal: one command prints accuracy and consistency numbers for the current pipeli
   - **consistency** across repeat sessions of the same subject: band agreement and index coefficient of variation
     (reuse `ConsistencyMetrics`);
   - every metric also sliced by Fitzpatrick group and lighting.
-- [ ] **M0.4 `DetectorBench` tool.** A macOS command-line SwiftPM package at `Tools/DetectorBench/` (path
+  *Done:* `BenchCore/Matching.swift`, `Evaluation.swift`. Matching rule shared with the app (`DetectionMatching`). Also reports class-agnostic "spots found", the proposed grouped index (M1.6), and how many photos had no face.
+- [x] **M0.4 `DetectorBench` tool.** A macOS command-line SwiftPM package at `Tools/DetectorBench/` (path
   dependency on `SkinalyzeKit`; compiles and runs the `.mlmodel` with Core ML on the Mac). Usage:
   `swift run DetectorBench --data ~/SkinalyzeData/bench --model Skinalyze/AIModel/acneObj28200.mlmodel --variant baseline`.
   It writes a Markdown report and a JSON file. Variants are flags (`--tiles 2x2`, `--class-thresholds file.json`,
   `--mask-landmarks`, …) so M1 changes can be compared side by side.
   Check the Mac and the iPhone produce the same detections on a few images (Core ML can differ slightly between
   CPU/GPU/ANE); if they differ, note the size of the difference in the report.
+  *Done:* runs end to end (checked on synthetic images only). `--model-floor` was checked to reach the model. Mac-vs-iPhone check: the app export writes `device_detections.csv` and the report has a "Device parity" section — still to run on real exports.
 - [ ] **M0.5 Collect the benchmark set** (owner + volunteers, with consent): ≥ 30 people, mixed skin tones and
   lighting; per person 3 sessions × (front, right, left) captured **with the app's own scan flow** (add a DEBUG-only
   "export last scan's photos" action in Profile that writes the three originals to the Files app). Label at least the
   front photos of every session; all three angles for 10 people.
+  *Tooling done:* the export is a DEBUG launch argument `-exportBenchPhotos YES` (not a Profile button: Profile was being redesigned in parallel), writing `Documents/BenchExport/` in the bench layout. **Collecting photos is still open.**
 - [ ] **M0.6 Labelling guide** in `docs/redesign/ml/LABELLING.md`: one paragraph and 3 example crops per class,
   what counts as background (pores, moles, freckles, scars, stubble, nostril shadow), minimum box size, how to box
   clusters. Two people label the same 30 photos; report per-class agreement (Cohen's κ). **If κ for
   papule/pustule/nodule is below ~0.5, the classes themselves are the problem** — feed that into M1.6.
+  *Guide written:* [ml/LABELLING.md](ml/LABELLING.md). **Labelling and the κ check are still open** (needs D5).
 - [ ] **M0.7 Baseline report** committed to `docs/redesign/benchmarks/YYYY-MM-DD-baseline.md` (numbers only, no
   photos). This is the bar every later change must beat.
 
@@ -106,30 +113,37 @@ consistency improves without recall dropping). Record the report in `docs/redesi
   sees them whole, then merge with the existing cross-class NMS. Pure tile maths and merging in SkinalyzeKit with
   tests (tile rects cover the crop; a box near a seam is kept once; coordinates round-trip). Expected: the largest
   gain on blackheads/whiteheads. Watch the time budget: 3 photos × 5 runs = 15 model runs.
+  *Code ready, not shipped:* `Tiling` + seam rule + merge in SkinalyzeKit with tests; bench flag `--tiles 2x2`. Decide with the benchmark.
 - [ ] **M1.2 Skin mask from face landmarks.** Run `VNDetectFaceLandmarksRequest` on each capture; drop detections
   whose centre falls inside the eyes, eyebrows, outer lips or nostrils (slightly dilated polygons) or above the
   hairline (outside the face contour). Pure geometry in SkinalyzeKit with tests; Vision call in the app. Expected:
   fewer false positives.
+  *Code ready, not shipped:* `SkinMask`/`SkinMaskBuilder` (eyes, brows, lips, lower nose outline as nostrils, below-jaw/outside-face). Vision has no hairline landmark, so the forehead top is the face box + 10%. Bench flag `--mask-landmarks`.
 - [ ] **M1.3 Per-class confidence thresholds.** Replace the single 0.4 with a threshold per class chosen on the
   benchmark (maximise F1, or fix precision ≥ 0.8 for nodule because of its weight). Store them in one table in
   `DetectionFilter` with a test that every class has one.
+  *Table in place:* `DetectionFilter.classThresholdTable`, every class 0.4 for now (no number change). Bench: `--class-thresholds file.json --model-floor 0.05`.
 - [ ] **M1.4 Colour normalisation.** Gray-world (or skin-patch) white-balance and exposure normalisation of the face
   crop before inference (Core Image, off the main actor). Must be identical in the app and the bench. Keep only if
   it helps on the lighting slices.
+  *Code ready, not shipped:* `ColorNormalization` (exposure + half-strength gray-world, gains clamped 0.5–2). Bench flag `--color-normalize`.
 - [ ] **M1.5 Multi-frame agreement (needs device testing).** For the front angle, capture 3 stills in quick
   succession (or use the depth burst's video frames if their resolution is enough), detect on each, and keep a
   detection only if a matching box (centre distance rule from M0.3) appears in ≥ 2 of 3. Optionally add a
   horizontally flipped pass. Main goal: repeat scans agree. Touches `CameraSession`/`ScanCaptureModel`: verify on
   the owner's iPhone with the `[scan]` console log, and check the scan still feels instant.
+  *Pure part ready:* `FrameAgreement.consensus`. Capture wiring and device testing still open.
 - [ ] **M1.6 Steadier scoring.** Owner decision needed before shipping (see §3). Proposal: keep the six labels for
   display, but compute the index from groups — comedones (blackhead + whitehead, weight 1), inflamed (papule +
   pustule, weight 2), nodule (weight 4 but only above a high confidence; otherwise counted as inflamed), marks
   (weight 0). Tested in `BreakoutIndex`.
+  *Proposal coded, not used for users' numbers:* `GroupedBreakoutIndex`; the bench reports its error next to the current index. Waits on D2.
 - [ ] **M1.7 Versioning.** Add `pipelineVersion` (optional String, additive CloudKit change) next to `modelVersion`
   on `ScanSession`; bump it with any M1 change that moves numbers. The trend chart and Compare must mark a point
   where the version changed ("counted differently from here"). Add a "Re-analyse with the new detector" action on
   old scans (photos are stored, so they can be re-run); it replaces counts only after the user confirms. Tests for
   the migration and for "never re-score silently".
+  *Storage done:* optional `ScanSession.pipelineVersion` (additive), set to `DetectionPipeline.shippingVersion` ("2d-1") on new scans; `CountingVersion` treats unversioned scans as 2d-1 and finds change points. **Still open:** the trend/Compare marker and the "Re-analyse" action (those screens were being redesigned in parallel).
 
 Done when: the benchmark shows a clear gain over baseline (target: small-object recall +20 points, band agreement
 across repeats ≥ 90%, index CV ≤ 25%, no skin-tone slice worse than baseline) and the 2.5 s budget holds on device.
@@ -182,11 +196,29 @@ across repeats ≥ 90%, index CV ≤ 25%, no skin-tone slice worse than baseline
 
 | # | Decision | Needed before | Recommendation |
 |---|---|---|---|
-| D1 | What data was `acneObj28200` trained on, and do we still have it? | M2 | — |
+| D1 | What data was `acneObj28200` trained on, and do we still have it? | M2 | Metadata says the Create ML app (6.0 beta, 28,200 iterations) — look for that Create ML project |
 | D2 | Change how the index is computed (grouped classes, nodule gate) even though it shifts users' numbers? | shipping M1.6 | Yes, with M1.7 versioning and a "counted differently from here" marker |
 | D3 | Training stack and licence (Ultralytics enterprise licence vs Apache-2.0 alternative vs Create ML) | M3 | Two-stage with an Apache-2.0 detector + Create ML classifier |
 | D4 | Opt-in data donation (photos leave the device with consent) | M4.3 | Only after M0–M3 show where more data would help |
 | D5 | Who labels (owner, paid annotators, dermatologist review of a sample)? | M0.6 | At least a dermatologist pass on the test set |
+
+## 5. Possible future: use an existing model instead of retraining (researched 2026-11-25)
+
+Owner asked whether a finished model could replace ours. Short answer: nothing found is ready to ship (on-device,
+licence fit for a paid closed app, trained on selfies). Keep these in mind; any candidate goes through the benchmark
+(`--model` takes any Core ML detector with the six labels) before anything else.
+
+| Option | Pros | Blockers |
+|---|---|---|
+| Roboflow Universe / Hugging Face acne detectors | Free, many of them | Usually hosted API (photos leave the device) or Ultralytics weights (AGPL); "CC BY" on the page covers the dataset, not the weights; trained on clinical close-ups |
+| ACNE04 (and its many re-uploads) | Standard benchmark, ~1,450 images, ~19k boxes | Original terms: academic use only — written permission from the author (Xiaoping Wu) needed for commercial use; re-uploads don't change that |
+| Research models (ACNE8M, 9,440 images; YOLOv11 + skin-tone study, 3,118 images) | Larger, some skin-tone work | Weights/data availability unconfirmed; YOLOv11 is AGPL |
+| Skin-analysis vendors with iOS SDKs (Perfect Corp, Haut.AI, GlamAR) | Proven, many skin tones | Paid; none confirmed on-device — cloud analysis breaks "photos never leave the device". Ask vendors about an on-device SDK before considering |
+| **RF-DETR** (Roboflow) Nano/Small/Medium/Large | **Apache-2.0**, trains on YOLO-format data (our label format) | No official Core ML export (ONNX only; a community Core AI port exists, unverified). Best base if M3 happens |
+| Our own Create ML project | Metadata shows the owner trained `acneObj28200` in the Create ML app — the project and labelled data may still exist | Find it (answers D1); retraining with more data is then cheap and licence-free |
+
+Order if the M1 fixes are not enough: (1) find the Create ML project and retrain with more data; (2) fine-tune RF-DETR
+on consented selfies plus licence-checked public data; (3) only then talk to vendors, on-device only.
 
 ## 4. Definition of done (whole plan)
 
