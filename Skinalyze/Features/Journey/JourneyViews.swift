@@ -77,6 +77,7 @@ struct JourneyCard: View {
 }
 
 struct JourneyView: View {
+    @Environment(TutorialModel.self) private var tutorial: TutorialModel?
     @Environment(QuestModel.self) private var quests
     @Environment(SchoolModel.self) private var school
     @Environment(\.dismiss) private var dismiss
@@ -100,6 +101,10 @@ struct JourneyView: View {
     }
 
     var body: some View {
+        journeyBody.onAppear { tutorial?.noteJourneyVisited() }
+    }
+
+    @ViewBuilder private var journeyBody: some View {
         let position = Journey.position(xp: Journey.xp(points: quests.ledger.points, schoolXP: school.progress.xp))
         NavigationStack {
             EffortScroll {

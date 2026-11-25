@@ -81,6 +81,10 @@ public enum QuestEngine {
 /// Cosmetic rewards from chests, drawn on Pimpi.
 public enum PimpiOutfit: String, CaseIterable, Codable, Sendable {
     case partyHat, beanie, flower, bow, crown, sunglasses
+    /// Earned by finishing the first week (ONBOARDING-PLAN.md §5.3); never in a chest.
+    case scarf
+
+    public var isFirstWeekReward: Bool { self == .scarf }
 
     /// Pro sets: only Pro chests hold them.
     public var isPro: Bool {
@@ -138,8 +142,9 @@ public struct RewardLedger: Codable, Equatable, Sendable {
         completed = try c.decodeIfPresent([String: Set<QuestKind>].self, forKey: .completed) ?? [:]
         chestsWaiting = try c.decodeIfPresent(Int.self, forKey: .chestsWaiting) ?? 0
         chestsOpened = try c.decodeIfPresent(Int.self, forKey: .chestsOpened) ?? 0
-        unlocked = try c.decodeIfPresent(Set<PimpiOutfit>.self, forKey: .unlocked) ?? []
-        worn = try c.decodeIfPresent(PimpiOutfit.self, forKey: .worn)
+        // Outfits added by a newer version are dropped, not an error (the rest of the ledger still loads).
+        unlocked = Set((try c.decodeIfPresent([String].self, forKey: .unlocked) ?? []).compactMap(PimpiOutfit.init(rawValue:)))
+        worn = (try c.decodeIfPresent(String.self, forKey: .worn)).flatMap(PimpiOutfit.init(rawValue:))
         latestDay = try c.decodeIfPresent(DayStamp.self, forKey: .latestDay)
         shares = try c.decodeIfPresent(Int.self, forKey: .shares) ?? 0
         productChecks = try c.decodeIfPresent(Int.self, forKey: .productChecks) ?? 0
@@ -210,7 +215,9 @@ public enum RewardEngine {
         var updated = ledger
         updated.chestsWaiting -= 1
         updated.chestsOpened += 1
-        let available = PimpiOutfit.allCases.filter { !ledger.unlocked.contains($0) && (isPro || !$0.isPro) }
+        let available = PimpiOutfit.allCases.filter {
+            !ledger.unlocked.contains($0) && (isPro || !$0.isPro) && !$0.isFirstWeekReward
+        }
         if available.isEmpty {
             updated.points += chestBonusPoints
             return (updated, ChestReward(outfit: nil, bonusPoints: chestBonusPoints))
@@ -219,6 +226,15 @@ public enum RewardEngine {
         let outfit = available[ledger.chestsOpened % available.count]
         updated.unlocked.insert(outfit)
         return (updated, ChestReward(outfit: outfit, bonusPoints: 0))
+    }
+
+    /// Finishing the first week: the scarf, put on straight away (once; already owned changes nothing).
+    public static func grantingFirstWeekReward(_ ledger: RewardLedger) -> RewardLedger {
+        guard !ledger.unlocked.contains(.scarf) else { return ledger }
+        var updated = ledger
+        updated.unlocked.insert(.scarf)
+        updated.worn = .scarf
+        return updated
     }
 
     /// Puts on an owned outfit (`nil` takes it off). Unowned outfits are ignored.

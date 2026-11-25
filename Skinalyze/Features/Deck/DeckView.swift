@@ -64,6 +64,10 @@ struct DeckView: View {
     private var isWide: Bool { verticalSizeClass == .compact }
 
     var body: some View {
+        deckBody.offersCoach([.deckCompare])
+    }
+
+    @ViewBuilder private var deckBody: some View {
         NavigationStack {
             Group {
                 if scans.isEmpty {
@@ -312,6 +316,7 @@ struct DeckView: View {
                 } else {
                     Button("Compare", action: togglePicking)
                         .buttonStyle(.chunky)
+                        .coachTarget(.deckCompare)
                 }
             }
             .frame(maxWidth: Metrics.cardMaxWidth)

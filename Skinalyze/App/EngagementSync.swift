@@ -20,10 +20,11 @@ struct EngagementSync {
 
     /// This device's copy. A device that has never synced is dated `distantPast`, so it never overrides iCloud.
     func local(rewards: RewardLedger, bestRoutineStreak: Int, school: SchoolProgress = .empty,
-               challenges: ChallengeBook = .empty, social: SocialState = .empty, now: Date = .now) -> SyncedEngagement {
+               challenges: ChallengeBook = .empty, social: SocialState = .empty, tutorial: TutorialState = TutorialState(),
+               now: Date = .now) -> SyncedEngagement {
         var copy = SyncedEngagement(doneDays: store.doneDays, freezes: store.ledger, weekendOff: store.weekendOff,
                                     celebrated: store.celebrated, rewards: rewards, bestRoutineStreak: bestRoutineStreak,
-                                    school: school, challenges: challenges, social: social,
+                                    school: school, challenges: challenges, social: social, tutorial: tutorial,
                                     updatedAt: .distantPast)
         guard let last = lastSynced else { return copy }
         var unchanged = copy

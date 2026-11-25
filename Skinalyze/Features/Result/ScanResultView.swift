@@ -40,6 +40,7 @@ struct ScanResultView: View {
     @Query(filter: #Predicate<ScanSession> { !$0.isHidden }, sort: \ScanSession.createdAt, order: .reverse) private var allScans: [ScanSession]
     @Environment(ShelfToolsModel.self) private var tools: ShelfToolsModel?
     @Environment(RoutineModel.self) private var routine: RoutineModel?
+    @Environment(TutorialModel.self) private var tutorial: TutorialModel?
     @State private var lightingTips: [LightingCoach.Tip] = []
     @AppStorage(UserProfile.Key.skinType) private var skinTypeRaw = ""
     @State private var angle: CaptureAngle = .front
@@ -94,6 +95,8 @@ struct ScanResultView: View {
         static let hopSquashSeconds = 0.08
         static let hopStretchSeconds = 0.18
         static let hopSettleSeconds = 0.32
+        /// The tour waits for the sticker to slap on.
+        static let tourDelay = 2.2
     }
 
     init(session: ScanSession, isFreshScan: Bool = false) {
@@ -115,6 +118,7 @@ struct ScanResultView: View {
             VStack(alignment: .leading, spacing: Spacing.lg) {
                 if isFreshScan, !lightingTips.isEmpty { LightingTipCard(tips: lightingTips) }
                 chapterTabs
+                    .coachTarget(.resultChapters)
                 chapterContent
                     .id(chapter)
                     .transition(.asymmetric(
@@ -153,6 +157,15 @@ struct ScanResultView: View {
             // Opening an earlier scan (not the one just taken) is looking back.
             if !isFreshScan { quests?.did(.lookBack, isPro: policy.hasFullAccess) }
         }
+        .task {
+            // The first scan's result gets a four-step tour, after the sticker has slapped on.
+            guard isFreshScan, FirstScanCoaching.resultTourPending else { return }
+            FirstScanCoaching.resultTourPending = false
+            try? await Task.sleep(for: .seconds(Metrics.tourDelay))
+            tutorial?.startResultTour()
+        }
+        .onDisappear { if tutorial?.current?.isResultTour == true { tutorial?.skipResultTour() } }
+        .coachHost(showsFreeStanding: true)
         .sheet(item: $sharedVideo) { VideoShareSheet(source: $0) }
         .paywallSheet($paywall)
         .sheet(item: $areaFollow) { AreaTimelineView(follow: $0) }
@@ -372,6 +385,7 @@ struct ScanResultView: View {
                     Face3DView(mesh: mesh, canTurn: policy.allows(.turn3D), onLockedTurn: { paywall = .turn3D },
                                onFacing: { facing = $0 })
                         .face3DStage()
+                        .coachTarget(.resultHead)
                     Text("Drag to turn · pinch to zoom · double-tap to reset")
                         .font(.ds.footnote.weight(.semibold))
                         .foregroundStyle(Color.ds.inkSecondary)
@@ -387,6 +401,7 @@ struct ScanResultView: View {
                         .accessibilityLabel("Angle")
                 }
                 photo
+                    .coachTarget(.resultHead)
             }
             if session.captureMode == .legacy {
                 Label("Saved with an earlier version — counts are shown as recorded.", systemImage: "clock.arrow.circlepath")
@@ -453,6 +468,10 @@ struct ScanResultView: View {
 
     /// The breakout index, huge, with its band and its name.
     private var indexBlock: some View {
+        indexContent.coachTarget(.resultIndex)
+    }
+
+    private var indexContent: some View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
             Text(shownIndex, format: .number)
                 .font(.system(size: indexSize, weight: .heavy, design: .rounded).monospacedDigit())

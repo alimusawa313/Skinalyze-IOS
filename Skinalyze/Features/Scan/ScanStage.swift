@@ -8,6 +8,8 @@ struct ScanStage: View {
     let model: ScanCaptureModel
     let cancel: () -> Void
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    /// The first scan after onboarding is coached a little more (ONBOARDING-PLAN.md §5.1); the scan itself is the same.
+    @State private var isFirstScan = FirstScanCoaching.isPending
 
     private enum Metrics {
         static let window: CGFloat = 340
@@ -34,6 +36,10 @@ struct ScanStage: View {
             .padding(Spacing.md)
         } secondary: {
             VStack(spacing: Spacing.lg) {
+                if isFirstScan, model.captures.isEmpty, !model.isScanning3D {
+                    FirstScanIntro(makes3D: model.supports3D)
+                        .transition(.scale(scale: 0.9).combined(with: .opacity))
+                }
                 steps
                 coach
                 if model.canCaptureManually {
@@ -144,7 +150,14 @@ struct ScanStage: View {
     }
 
     private var coachLine: LocalizedStringResource {
-        if model.isScanning3D { return "Freeze! Statue mode." }
+        if model.isScanning3D { return isFirstScan ? "Hold still a second. I'm making your 3D head." : "Freeze! Statue mode." }
+        if isFirstScan {
+            switch model.captures.count {
+            case 0: return "Look straight at me. I'll take it when you're still."
+            case 1: return "Now turn your head slowly, like a sunflower."
+            default: return "Last one: the other way. Nearly done!"
+            }
+        }
         switch model.captures.count {
         case 0: return "Eyes on me. I'm the cute one."
         case 1: return "Slowly. Like a sunflower."
@@ -157,5 +170,46 @@ struct ScanStage: View {
         if let hint = model.hint, hint != .turnHeadLeft, hint != .turnHeadRight { return GuidanceCopy.text(for: hint) }
         if model.captures[.front] == nil { return String(localized: "Look at me.") }
         return model.captures.count == 1 ? String(localized: "Slowly turn your head.") : String(localized: "Now the other way.")
+    }
+}
+
+/// Before the first scan's first photo: the three poses, in order, so nothing comes as a surprise.
+private struct FirstScanIntro: View {
+    let makes3D: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Spacing.xs) {
+            Text("Three quick poses")
+                .font(.system(.headline, design: .rounded).weight(.heavy))
+                .foregroundStyle(Color.ds.ink)
+            HStack(spacing: Spacing.sm) {
+                pose("face.smiling", "Look at me")
+                pose("arrow.turn.up.right", "Turn one way")
+                pose("arrow.turn.up.left", "Then the other")
+            }
+            Text(makes3D ? "Hold still when I ask: that's your 3D head being made." : "I take each photo by myself when you're still.")
+                .font(.ds.footnote.weight(.semibold))
+                .foregroundStyle(Color.ds.inkSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(Spacing.md)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .dsSurface(radius: Radius.medium)
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("firstScanIntro")
+    }
+
+    private func pose(_ symbol: String, _ title: LocalizedStringKey) -> some View {
+        VStack(spacing: Spacing.xxs) {
+            Image(systemName: symbol)
+                .font(.title3.weight(.bold))
+                .foregroundStyle(Color.ds.signal)
+                .accessibilityHidden(true)
+            Text(title)
+                .font(.system(.caption, design: .rounded).weight(.heavy))
+                .foregroundStyle(Color.ds.ink)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
     }
 }

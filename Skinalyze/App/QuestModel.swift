@@ -79,6 +79,11 @@ final class QuestModel {
         return reward
     }
 
+    /// The first week is done: Pimpi's scarf, worn straight away.
+    func grantFirstWeekReward() {
+        save(RewardEngine.grantingFirstWeekReward(ledger))
+    }
+
     func wear(_ outfit: PimpiOutfit?) {
         save(RewardEngine.wearing(outfit, ledger: ledger))
     }

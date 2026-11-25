@@ -13,6 +13,8 @@ struct Pimpi: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     /// The outfit won from a chest, set once at the app's root.
     @Environment(\.pimpiOutfit) private var outfit
+    /// An arm pose for the tutorial (waving hello, pointing at something); nil: the mood decides the arms.
+    @Environment(\.pimpiPose) private var pose
 
     var body: some View {
         // Self-contained vector art: every part is placed relative to the mascot's own square (GeometryReader is the
@@ -97,7 +99,34 @@ struct Pimpi: View {
         }
     }
 
-    private func arms(_ u: CGFloat) -> some View {
+    @ViewBuilder private func arms(_ u: CGFloat) -> some View {
+        if let pose {
+            posedArms(u, pose: pose)
+        } else {
+            moodArms(u)
+        }
+    }
+
+    /// Waving: the right hand up, rocking at the shoulder. Pointing: the right arm straight out to the right, the left
+    /// one resting. The rotation is applied before positioning, so each arm turns about its own shoulder.
+    private func posedArms(_ u: CGFloat, pose: PimpiPose) -> some View {
+        let waves = pose == .wave && !reduceMotion
+        return Group {
+            Capsule().fill(Color.ds.pimpiBody)
+                .frame(width: u * 0.2, height: u * 0.1)
+                .rotationEffect(.degrees(8), anchor: .trailing)
+                .position(x: u * 0.1, y: u * 0.56)
+            Capsule().fill(Color.ds.pimpiBody)
+                .frame(width: u * 0.2, height: u * 0.1)
+                // Up and out to the side (straight up would hide the hand behind the body), rocking at the shoulder.
+                .phaseAnimator(waves ? [-35.0, -62.0] : [pose == .wave ? -50.0 : -18.0]) { content, angle in
+                    content.rotationEffect(.degrees(angle), anchor: .leading)
+                } animation: { _ in .easeInOut(duration: 0.28) }
+                .position(x: u * 0.9, y: u * (pose == .wave ? 0.5 : 0.52))
+        }
+    }
+
+    private func moodArms(_ u: CGFloat) -> some View {
         let raised = mood == .excited
         // Left arm pivots at its inner (trailing) end: positive angles lift the hand, negative lower it.
         let leftAngle: Double = raised ? 55 : (mood == .sad || mood == .sleepy ? -28 : 8)
@@ -244,6 +273,13 @@ private struct PimpiBody: Shape {
 extension EnvironmentValues {
     /// What Pimpi wears everywhere it appears (nil: nothing).
     @Entry var pimpiOutfit: PimpiOutfit? = nil
+    /// An arm pose that overrides the mood's arms (tutorial and onboarding).
+    @Entry var pimpiPose: PimpiPose? = nil
+}
+
+/// Arm poses for the tutorial and onboarding (PI7).
+enum PimpiPose: Sendable {
+    case wave, point
 }
 
 /// Pimpi's accessories, in the same no-outline vector style. Placed on the mascot's own square.
@@ -322,6 +358,30 @@ struct PimpiOutfitLayer: View {
                 Capsule().fill(Color.ds.pimpiEye).frame(width: u * 0.1, height: u * 0.022).offset(y: -u * 0.02)
             }
             .position(x: u * 0.5, y: u * 0.52)
+        case .scarf:
+            // Wrapped under the face, one striped end hanging down at the side.
+            ZStack {
+                PimpiScarfBand()
+                    .fill(Color.ds.outfitRed)
+                    .frame(width: u * 0.74, height: u * 0.1)
+                    .overlay {
+                        HStack(spacing: u * 0.07) {
+                            ForEach(0..<5, id: \.self) { _ in
+                                Capsule().fill(Color.ds.outfitGold).frame(width: u * 0.03, height: u * 0.1)
+                            }
+                        }
+                        .mask(PimpiScarfBand().frame(width: u * 0.74, height: u * 0.1))
+                    }
+                RoundedRectangle(cornerRadius: u * 0.03, style: .continuous)
+                    .fill(Color.ds.outfitRed)
+                    .overlay(alignment: .bottom) {
+                        Rectangle().fill(Color.ds.outfitGold).frame(height: u * 0.025).padding(.bottom, u * 0.02)
+                    }
+                    .frame(width: u * 0.11, height: u * 0.2)
+                    .rotationEffect(.degrees(-10), anchor: .top)
+                    .offset(x: u * 0.17, y: u * 0.1)
+            }
+            .position(x: u * 0.5, y: u * 0.745)
         }
     }
 }
@@ -433,6 +493,13 @@ struct PimpiMotionLab: View {
                     .frame(width: 150, height: 150)
                 Pimpi(mood: Pimpi.Mood.allCases[moodIndex]).frame(width: 110, height: 110)
             }
+            // The tutorial poses: waving (it rocks) and pointing, also mid-resize.
+            HStack(spacing: Spacing.md) {
+                Pimpi(mood: .excited).frame(width: 110, height: 110).environment(\.pimpiPose, .wave)
+                Pimpi(mood: .happy).frame(width: 110, height: 110).environment(\.pimpiPose, .point)
+                Pimpi(mood: .happy).frame(width: big ? 110 : 60, height: big ? 110 : 60).frame(width: 110, height: 110)
+                    .environment(\.pimpiPose, .wave)
+            }
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
                 ForEach(PimpiOutfit.allCases, id: \.self) { outfit in
                     Pimpi(mood: .happy).frame(height: 110).environment(\.pimpiOutfit, outfit)
@@ -484,3 +551,17 @@ struct PimpiGallery: View {
     }
 }
 #endif
+
+/// The scarf's wrap: a band that curves down a little in the middle, following the body.
+struct PimpiScarfBand: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        let sag = rect.height * 0.35
+        path.move(to: CGPoint(x: rect.minX, y: rect.minY))
+        path.addQuadCurve(to: CGPoint(x: rect.maxX, y: rect.minY), control: CGPoint(x: rect.midX, y: rect.minY + sag))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - sag * 0.4))
+        path.addQuadCurve(to: CGPoint(x: rect.minX, y: rect.maxY - sag * 0.4), control: CGPoint(x: rect.midX, y: rect.maxY + sag))
+        path.closeSubpath()
+        return path
+    }
+}

@@ -37,6 +37,7 @@ extension PimpiOutfit {
         case .bow: "Bow"
         case .crown: "Crown"
         case .sunglasses: "Sunglasses"
+        case .scarf: "Scarf"
         }
     }
 }

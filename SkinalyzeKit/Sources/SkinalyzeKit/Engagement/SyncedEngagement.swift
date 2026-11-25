@@ -14,15 +14,19 @@ public struct SyncedEngagement: Codable, Equatable, Sendable {
     public var school: SchoolProgress
     public var challenges: ChallengeBook
     public var social: SocialState
+    /// Coach marks seen, tips switch, first-week reward (so a second device doesn't repeat the tutorial).
+    public var tutorial: TutorialState
     /// When this copy last changed. `distantPast` for a copy that has never been synced (a fresh install).
     public var updatedAt: Date
 
     public static let empty = SyncedEngagement(doneDays: [], freezes: FreezeLedger(available: 1), weekendOff: false,
                                                celebrated: [], rewards: .empty, bestRoutineStreak: 0, school: .empty,
-                                               challenges: .empty, social: .empty, updatedAt: .distantPast)
+                                               challenges: .empty, social: .empty, tutorial: TutorialState(),
+                                               updatedAt: .distantPast)
 
     public init(doneDays: Set<DayStamp>, freezes: FreezeLedger, weekendOff: Bool, celebrated: Set<String>,
-                rewards: RewardLedger, bestRoutineStreak: Int, school: SchoolProgress = .empty, challenges: ChallengeBook = .empty, social: SocialState = .empty, updatedAt: Date) {
+                rewards: RewardLedger, bestRoutineStreak: Int, school: SchoolProgress = .empty, challenges: ChallengeBook = .empty, social: SocialState = .empty,
+                tutorial: TutorialState = TutorialState(), updatedAt: Date) {
         self.doneDays = doneDays
         self.freezes = freezes
         self.weekendOff = weekendOff
@@ -32,11 +36,12 @@ public struct SyncedEngagement: Codable, Equatable, Sendable {
         self.school = school
         self.challenges = challenges
         self.social = social
+        self.tutorial = tutorial
         self.updatedAt = updatedAt
     }
 
     private enum CodingKeys: String, CodingKey {
-        case doneDays, freezes, weekendOff, celebrated, rewards, bestRoutineStreak, school, challenges, social, updatedAt
+        case doneDays, freezes, weekendOff, celebrated, rewards, bestRoutineStreak, school, challenges, social, tutorial, updatedAt
     }
 
     /// Tolerant: copies synced before a field existed still load.
@@ -51,6 +56,7 @@ public struct SyncedEngagement: Codable, Equatable, Sendable {
         school = try c.decodeIfPresent(SchoolProgress.self, forKey: .school) ?? .empty
         challenges = try c.decodeIfPresent(ChallengeBook.self, forKey: .challenges) ?? .empty
         social = (try? c.decodeIfPresent(SocialState.self, forKey: .social)) ?? .empty
+        tutorial = (try? c.decodeIfPresent(TutorialState.self, forKey: .tutorial)) ?? TutorialState()
         updatedAt = try c.decodeIfPresent(Date.self, forKey: .updatedAt) ?? .distantPast
     }
 
@@ -70,6 +76,7 @@ public struct SyncedEngagement: Codable, Equatable, Sendable {
                                 school: SchoolProgress.merged(a.school, b.school),
                                 challenges: ChallengeBook.merged(a.challenges, b.challenges),
                                 social: SocialState.merged(newer: newer.social, older: older.social),
+                                tutorial: TutorialState.merged(newer: newer.tutorial, older: older.tutorial),
                                 updatedAt: max(a.updatedAt, b.updatedAt))
     }
 

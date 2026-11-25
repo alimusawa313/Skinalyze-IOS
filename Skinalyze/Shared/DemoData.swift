@@ -106,6 +106,28 @@ enum DemoData {
         UserDefaults.standard.set(try? JSONEncoder().encode(journal), forKey: "journalEntries")
     }
 
+    /// `-resetOnboarding YES`: a first run again (answers, shelf, tutorial and first-scan coaching cleared), for the
+    /// onboarding UI tests and screenshots.
+    static func resetOnboardingIfRequested(defaults: UserDefaults = .standard) {
+        // `-resetTutorial YES`: only the coach marks, tours and first-week path start over.
+        if defaults.bool(forKey: "resetTutorial") {
+            for key in ["tutorialState", "tutorialSessions", "tutorialCompared", "tutorialJourneyVisited",
+                        "resultTourPending"] {
+                defaults.removeObject(forKey: key)
+            }
+        }
+        // `-firstWeekDemo YES`: walk the first-week path as if just onboarded.
+        if defaults.bool(forKey: "firstWeekDemo") { defaults.set(true, forKey: "firstWeekActive") }
+        guard defaults.bool(forKey: "resetOnboarding") else { return }
+        for key in [UserProfile.Key.onboardingComplete, UserProfile.Key.name, UserProfile.Key.skinType,
+                    UserProfile.Key.sensitivity, UserProfile.Key.goals, UserProfile.Key.legacyUseSkincare,
+                    UserProfile.Key.cleanserID, UserProfile.Key.tonerID, UserProfile.Key.moisturizerID,
+                    UserProfile.Key.sunscreenID, "tutorialState", "tutorialSessions", "tutorialCompared",
+                    "tutorialJourneyVisited", "firstScanCoachingPending", "resultTourPending", "firstWeekActive"] {
+            defaults.removeObject(forKey: key)
+        }
+    }
+
     /// `-debugMeshDir <folder>`: load a real captured mesh (vertices.bin / indices.bin / uvs.bin / texture.bin, as
     /// stored by `FaceMeshRecord`) so the phone's renderer can be checked in the Simulator on real scan data.
     private static func realMesh() -> FaceMeshDraft? {

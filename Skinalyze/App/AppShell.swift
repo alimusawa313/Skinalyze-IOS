@@ -19,6 +19,8 @@ struct AppShell: View {
     @State private var routine = RoutineModel()
     @State private var journal = JournalModel()
     @State private var uv = UVModel()
+    @State private var tutorial = TutorialModel()
+    @State private var showsFirstWeekDone = false
     /// Synced streaks and rewards; changes here come from the user's other devices (or a restore).
     @Query private var engagementRecords: [EngagementRecord]
     @Environment(\.scenePhase) private var scenePhase
@@ -52,6 +54,8 @@ struct AppShell: View {
         }
         // The sky stays put behind every page, so nothing behind the app ever shows through during a switch.
         .background(Color.ds.canvas.ignoresSafeArea())
+        // Pimpi's coach marks over whichever page is showing (ONBOARDING-PLAN.md §5.2).
+        .coachHost()
         .animation(MotionToken.smooth.resolved(reduceMotion: reduceMotion).animation, value: appModel.selectedTab)
         .animation(MotionToken.bouncy.resolved(reduceMotion: reduceMotion).animation, value: appModel.isScanning)
         .onChange(of: appModel.selectedTab) { _, tab in capture.setMirrorVisible(tab == .today) }
@@ -73,6 +77,7 @@ struct AppShell: View {
         .sheet(isPresented: $appModel.isShowingProfile) { ProfileView() }
         .sheet(item: $challenges.justFinished) { ChallengeFinishedView(challenge: $0) }
         .sheet(item: $appModel.pendingInvite) { InviteView(inviter: $0) }
+        .sheet(isPresented: $showsFirstWeekDone) { FirstWeekDoneView() }
         .sheet(item: $appModel.sharedShelf) { SharedShelfView(productIDs: $0.productIDs) }
         .paywallSheet($paywall)
         .environment(engagement)
@@ -84,9 +89,13 @@ struct AppShell: View {
         .environment(routine)
         .environment(journal)
         .environment(uv)
+        .environment(tutorial)
         .environment(\.pimpiOutfit, quests.ledger.worn)
+        .onAppear { connectTutorial() }
         .onChange(of: scenePhase, initial: true) { _, phase in
             if phase == .active {
+                tutorial.beginSession()
+                rewardFirstWeekIfDone()
                 prepareQuests()
                 publishSocial()
                 Task { await uv.refresh() }
@@ -94,6 +103,7 @@ struct AppShell: View {
             if phase == .active || phase == .background { syncEngagement() }
         }
         .onChange(of: engagementRecords.map(\.updatedAt)) { syncEngagement() }
+        .onChange(of: appModel.selectedTab) { _, _ in rewardFirstWeekIfDone() }
         #if DEBUG
         .fullScreenCover(isPresented: $showsPimpiGallery) { PimpiGallery() }
         .fullScreenCover(isPresented: $showsPimpiWidgetGallery) { PimpiWidgetGallery() }
@@ -160,6 +170,8 @@ struct AppShell: View {
                     showsZoneMapDebug = true
                 }
             }
+            // `-resultTourDemo YES` (with `-openLatestScan YES`): show that result as the first scan, with its tour.
+            if UserDefaults.standard.bool(forKey: "resultTourDemo") { FirstScanCoaching.resultTourPending = true }
             // `-openLatestScan YES`: present the newest scan's result (renderer checks in the Simulator).
             if UserDefaults.standard.bool(forKey: "openLatestScan") {
                 Task {
@@ -183,17 +195,39 @@ struct AppShell: View {
         }
     }
 
+    /// The seven first-week steps are all done: the scarf, once, with a celebration.
+    private func rewardFirstWeekIfDone() {
+        guard FirstWeekTracking.isActive, !tutorial.firstWeekRewarded,
+              FirstWeekPath.progress(tutorial.factsSource()).isComplete else { return }
+        quests.grantFirstWeekReward()
+        tutorial.markFirstWeekRewarded()
+        showsFirstWeekDone = true
+    }
+
+    /// The tutorial asks the shell what the person has done and whether something is in the way.
+    private func connectTutorial() {
+        let context = modelContext
+        tutorial.factsSource = { [tutorial, quests, school] in
+            tutorial.facts(scanCount: (try? context.fetchCount(FetchDescriptor<ScanSession>())) ?? 0,
+                           quests: quests, school: school)
+        }
+        tutorial.isBusySource = { [appModel] in
+            appModel.isScanning || appModel.presentedScan != nil || appModel.isShowingProfile
+        }
+    }
+
     /// Streaks and rewards through the user's own iCloud: merge, keep one copy, apply what changed.
     private func syncEngagement() {
         let sync = EngagementSync()
         let local = sync.local(rewards: quests.ledger, bestRoutineStreak: quests.bestRoutineStreak, school: school.progress,
-                               challenges: challenges.book, social: social.state)
+                               challenges: challenges.book, social: social.state, tutorial: tutorial.state)
         guard let merged = sync.sync(local: local, context: modelContext) else { return }
         sync.applyStreaks(merged)
         quests.applySynced(merged)
         school.applySynced(merged.school)
         challenges.applySynced(merged.challenges)
         social.applySynced(merged.social)
+        tutorial.applySynced(merged.tutorial)
         engagement.reloadFromStore()
     }
 

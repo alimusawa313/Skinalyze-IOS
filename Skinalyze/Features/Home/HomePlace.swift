@@ -5,6 +5,7 @@ import SkinalyzeKit
 /// Home is Pimpi's place: Pimpi on a hill with a line for you, today's three things (morning routine, scan, evening
 /// routine), your streak and a signpost to your latest scan. The camera is not running here — it opens when a scan starts.
 struct HomePlace: View {
+    @Environment(TutorialModel.self) private var tutorial: TutorialModel?
     let latest: ScanSession?
     let name: String
     let scannedToday: Bool
@@ -51,6 +52,10 @@ struct HomePlace: View {
     }
 
     var body: some View {
+        homeBody.offersCoach([.chest, .homeStreak, .homePimpi, .homeToday])
+    }
+
+    @ViewBuilder private var homeBody: some View {
         Group {
             if verticalSizeClass == .compact {
                 wide
@@ -73,6 +78,7 @@ struct HomePlace: View {
             HStack {
                 streakChip
                 Spacer()
+                firstWeekChip
                 profileButton
             }
             .padding(.horizontal, Spacing.lg)
@@ -108,6 +114,7 @@ struct HomePlace: View {
                 HStack {
                     streakChip
                     Spacer()
+                    firstWeekChip
                     latestChip
                     profileButton
                 }
@@ -168,6 +175,7 @@ struct HomePlace: View {
         .accessibilityLabel(Text("Pimpi"))
         .accessibilityHint(Text("Says something else"))
         .accessibilityIdentifier("homePimpi")
+        .coachTarget(.homePimpi)
     }
 
     /// Pimpi's bubble. A new line pops in each time it changes.
@@ -205,6 +213,13 @@ struct HomePlace: View {
 
     // MARK: Top bar
 
+    /// The first-week path, for people who came through the new onboarding, until the scarf is earned.
+    @ViewBuilder private var firstWeekChip: some View {
+        if FirstWeekTracking.isActive, let tutorial, !tutorial.firstWeekRewarded {
+            FirstWeekChip(progress: FirstWeekPath.progress(tutorial.factsSource()))
+        }
+    }
+
     private var streakChip: some View {
         Button { showsStreak = true } label: {
             HStack(spacing: Spacing.xs) {
@@ -225,6 +240,8 @@ struct HomePlace: View {
             : Text("Pimpi. No routine streak yet"))
         .accessibilityHint("Shows your streaks")
         .accessibilityIdentifier("pimpiStreak")
+        .coachTarget(.homeStreak)
+        .coachTarget(.chest)
     }
 
     private var hasChest: Bool { (quests?.ledger.chestsWaiting ?? 0) > 0 }
@@ -309,6 +326,7 @@ struct HomePlace: View {
         }
         .animation(MotionToken.bouncy.resolved(reduceMotion: reduceMotion).animation, value: doneCount)
         .sensoryFeedback(Haptic.success, trigger: doneCount) { old, new in new == 3 && old < 3 }
+        .coachTarget(.homeToday)
     }
 
     private func routineToken(_ part: RoutineChecklist.Part, symbol: String) -> some View {

@@ -352,6 +352,7 @@ struct ProductDetailView: View {
                 ProductCheckGate(key: "product-\(product.productID)", allowed: $checkAllowed) {
                     ProductCheckSummary(product: product)
                 }
+                .coachTarget(.productPage)
             }
         } ground: {
             VStack(alignment: .leading, spacing: Spacing.lg) {
@@ -377,6 +378,7 @@ struct ProductDetailView: View {
         }
         // Clear of the floating dock.
         .safeAreaPadding(.bottom, ShelfPlace.dockClearance)
+        .offersCoach([.productPage])
         .navigationTitle(product.name)
         .toolbarTitleDisplayMode(.inline)
         .toolbar {

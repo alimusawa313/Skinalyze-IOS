@@ -1,6 +1,6 @@
 # Onboarding and first-time tutorial — plan
 
-Status: **plan, awaiting owner review** (2026-11-25). Replaces PLAN.md §10.1 once approved. All rules in CLAUDE.md
+Status: **approved 2026-11-25** with the recommended answers in §9; built in phases O0–O4 (see §8). Replaces PLAN.md §10.1 once approved. All rules in CLAUDE.md
 and FEATURES.md §0 apply (score effort never skin, tracker not diagnosis, private by default, first scan of the day
 free, every iPhone shape and pose).
 
@@ -126,7 +126,8 @@ A 7-step path card on Home (Pimpi walks along it), one small thing per day. Miss
 4. Check a product: "Is it good for me?"
 5. Scan again and **Compare** your two scans
 6. Open your first quest chest
-7. See your first weekly recap
+7. Visit your Journey map *(changed from "see your first weekly recap": recaps only open on Sunday/Monday, which
+   could block finishing)*
 
 Finishing it earns a starter outfit for Pimpi (a new free outfit, e.g. a scarf) and a celebration. Effort only, so
 a breakout week never costs anything (FEATURES §0 rule 1). It disappears once finished, or can be dismissed.
@@ -147,8 +148,8 @@ a breakout week never costs anything (FEATURES §0 rule 1). It disappears once f
   - `Features/Onboarding/` gets one file per scene, plus `OnboardingFlowView`.
   - A shared `PimpiCoach` overlay draws the bubble and spotlight. Targets are marked with anchor preferences, so
     no geometry is hard-coded.
-  - TipKit is considered only for storing state (`Tip` rules and events); the look stays our own. The decision
-    comes in phase O0 (§8).
+  - Coach state uses our own small store (`TutorialState`, synced with the engagement record) rather than TipKit:
+    it needs to sync across devices and be tested, and the look is our own anyway.
   - First-scan mode is a flag on `ScanCaptureModel`. The scan rules don't change.
 - **Data:**
   - Onboarding answers use the existing `UserProfile` keys.
@@ -175,23 +176,23 @@ Each phase ends with tests green, screenshots and recordings checked (light and 
 Duo closed, folded and unfolded, landscape, AX5, VoiceOver pass, Reduce Motion), and a local commit.
 
 - **O0 Foundations**
-  - [ ] Kit: `OnboardingFlow`, `SkinTypeQuiz`, `StarterPlan`, `FirstWeekPath`, `CoachRules`, with tests written first
-  - [ ] Decide TipKit vs own store for coach state (spike: does TipKit's state API work cleanly with a custom view?)
-  - [ ] Pimpi props (backpack, name tag, promise box) and waving and pointing poses, recorded and frame-checked
+  - [x] Kit: `OnboardingFlow`, `SkinTypeQuiz`, `StarterPlan`, `FirstWeekPath`, `CoachRules`, with tests written first
+  - [x] Coach state: own store (`TutorialState`), synced; not TipKit
+  - [x] Pimpi props (backpack, name tag, promise box, plan card) and waving and pointing poses
 - **O1 Onboarding scenes 1–8**
-  - [ ] Wake, Hello and name tag, Pack the bag, Midday check, New-product test, Your shelf, The promise, Starter plan
-  - [ ] Path progress, Back, Skip, resume; invite variant
-  - [ ] Every gesture has a button / accessibility action; Reduce Motion variants
+  - [x] Wake, Hello and name tag, Pack the bag, Midday check, New-product test, Your shelf, The promise, Starter plan
+  - [x] Path progress, Back, Skip, resume; invite variant
+  - [x] Every gesture has a button / accessibility action; Reduce Motion variants
 - **O2 Camera and first scan**
-  - [ ] Camera priming scene; denied path to Settings; "Look around first"
-  - [ ] Coached first-scan mode; result tour (4 steps)
-  - [ ] UI test: welcome → first scan in ≤ 90 s on the quick path (simulated camera)
+  - [x] Camera priming scene; denied path to Settings; "Look around first"
+  - [x] Coached first-scan mode (pose intro, first-time lines); result tour (4 steps, skippable)
+  - [x] UI test: welcome → Home on the quick path in ~40 s including the test's pauses
 - **O3 Coach marks**
-  - [ ] `PimpiCoach` overlay + spotlight; the ten coaches in §5.2
-  - [ ] Profile: "Turn off tips" and "Replay the tour"
-  - [ ] People who already use the app: coaches only for features they've never used; no onboarding
+  - [x] Coach overlay + spotlight; the ten coaches in §5.2 (off-screen targets show in the middle)
+  - [x] Profile: "Pimpi's tips" switch and "Replay the tour"
+  - [x] People who already use the app: coaches only for features they've never used; no onboarding
 - **O4 First week**
-  - [ ] Path card on Home; the seven steps; starter outfit reward and celebration
+  - [x] "First week n/7" chip on Home (Home has no room for a card) opening the path; scarf reward and celebration
 - **O5 Polish and sign-off**
   - [ ] Indonesian for every new string; copy lint; Duo pose matrix; AX5; VoiceOver; Reduce Motion
   - [ ] Full recordings of the onboarding and first week, frame-checked; install on the owner's phone

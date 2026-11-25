@@ -5,6 +5,7 @@ import SkinalyzeKit
 /// "a → b" beside Pimpi, and the per-type counts as white pills on the hill. Side by side when wide (iPhone Duo
 /// open: before | after across the fold, so no draggable handle ever sits on the fold).
 struct CompareView: View {
+    @Environment(TutorialModel.self) private var tutorial: TutorialModel?
     let earlier: ScanSession
     let later: ScanSession
 
@@ -40,6 +41,10 @@ struct CompareView: View {
     @ScaledMetric(relativeTo: .largeTitle) private var indexSize: CGFloat = Metrics.index
 
     var body: some View {
+        compareBody.onAppear { tutorial?.noteCompared() }
+    }
+
+    @ViewBuilder private var compareBody: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Spacing.lg) {
                 topBar

@@ -117,6 +117,7 @@ struct ProfileView: View {
             .placeSurfaceRow()
             .sensoryFeedback(Haptic.toggle, trigger: appLockEnabled)
             ReminderSettingsRow()
+            TipsSettingsRows()
             Group {
                 HiddenScansRow()
                 NavigationLink {

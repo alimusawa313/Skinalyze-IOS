@@ -1,34 +1,33 @@
 import SwiftUI
 import SkinalyzeKit
 
-/// Short, paged onboarding in Pimpi's place: Pimpi hosts each step from the sky, the question and its options sit under
-/// it, and the one button waits on the hill. Progress + Back on every step; optional steps can be skipped.
+/// First run (docs/redesign/ONBOARDING-PLAN.md §4): ten short scenes in Pimpi's place. Pimpi hosts each one from the
+/// sky with a prop (name tag, backpack, promise box, plan); you do one small thing; the one button waits on the hill.
+/// Pimpi walking along a path is the progress; Back is always there; optional scenes can be skipped. The last scene
+/// goes straight into the first scan. The scene survives rotation, folding and quitting (`@SceneStorage`).
 struct OnboardingView: View {
-    enum Step: Int, CaseIterable {
-        case welcome, goals, skinType, sensitivity, name, privacy
-    }
-
     @AppStorage(UserProfile.Key.onboardingComplete) private var onboardingComplete = false
     @AppStorage(UserProfile.Key.name) private var name = ""
     @AppStorage(UserProfile.Key.skinType) private var skinTypeRaw = ""
     @AppStorage(UserProfile.Key.sensitivity) private var sensitivityRaw = ""
     @AppStorage(UserProfile.Key.goals) private var goalsRaw = ""
+    @SceneStorage("onboardingScene") private var storedScene: String?
 
+    @Environment(AppModel.self) private var appModel: AppModel?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @State private var step: Step = .welcome
-    @State private var goals: Set<UserProfile.Goal> = []
-    @State private var showsPrivacyPolicy = false
-    /// Counts the user's picks, so Pimpi hops for each one.
+    @State private var scene: OnboardingScene = .wake
+    @State private var flow = OnboardingSceneState()
+    /// Every answer makes Pimpi hop.
     @State private var cheers = 0
 
     private enum Metrics {
         static let pimpi: CGFloat = 150
-        static let pimpiCompact: CGFloat = 110
-        static let segmentHeight: CGFloat = 8
-        static let segmentGap: CGFloat = 6
+        static let pimpiCompact: CGFloat = 104
+        /// Scenes with more to read get a smaller Pimpi, so the options stay above the hill.
+        static let pimpiReading: CGFloat = 112
         static let contentWidth: CGFloat = 560
         static let hillRise: CGFloat = 40
         /// How far the hill reaches above the button.
@@ -40,6 +39,7 @@ struct OnboardingView: View {
     var body: some View {
         Group {
             if horizontalSizeClass == .regular {
+                // iPhone Duo unfolded (and other wide windows): Pimpi on one side, the question on the other.
                 VStack(spacing: 0) {
                     header
                     AdaptivePair(.split) {
@@ -70,7 +70,8 @@ struct OnboardingView: View {
             } else {
                 VStack(spacing: 0) {
                     header
-                    host(size: Metrics.pimpi)
+                    host(size: readingScenes.contains(scene) || dynamicTypeSize.isAccessibilitySize
+                         ? Metrics.pimpiReading : Metrics.pimpi)
                     scrollingContent
                     footer
                         .padding(.top, Metrics.hillAbove)
@@ -80,8 +81,14 @@ struct OnboardingView: View {
                 .background(Color.ds.canvas.ignoresSafeArea())
             }
         }
-        .sheet(isPresented: $showsPrivacyPolicy) { PrivacyPolicyView() }
-        .sensoryFeedback(Haptic.scrub, trigger: step)
+        .onAppear {
+            #if DEBUG
+            if UserDefaults.standard.bool(forKey: "resetOnboarding") { storedScene = nil }
+            #endif
+            scene = OnboardingFlow.resume(from: storedScene)
+        }
+        .onChange(of: scene) { _, new in storedScene = new.rawValue }
+        .sensoryFeedback(Haptic.scrub, trigger: scene)
     }
 
     // MARK: - Chrome
@@ -89,79 +96,52 @@ struct OnboardingView: View {
     private var header: some View {
         HStack(spacing: Spacing.sm) {
             Group {
-                if step != .welcome {
-                    Button { go(-1) } label: {
+                if OnboardingFlow.previous(before: scene) != nil {
+                    Button { go(back: true) } label: {
                         Image(systemName: "chevron.left")
                     }
                     .buttonStyle(.chunkyIcon)
                     .accessibilityLabel("Back")
+                    .accessibilityIdentifier("onboardingBack")
                 } else {
                     Color.clear.accessibilityHidden(true)
                 }
             }
             .frame(width: Chunk.iconButton, height: Chunk.iconButton + Chunk.depthSmall)
-            progress
-            Text("Step \(step.rawValue + 1) of \(Step.allCases.count)")
-                .font(.system(.footnote, design: .rounded).weight(.heavy))
-                .foregroundStyle(Color.ds.ink)
-                .lineLimit(1)
-                .minimumScaleFactor(0.6)
-                .accessibilityHidden(true)
+            PimpiPathProgress(progress: OnboardingFlow.progress(scene))
+            // A fixed-size placeholder when there's no Skip: a bare Color.clear would grow and stretch the header.
+            if OnboardingFlow.optionalScenes.contains(scene) {
+                Button("Skip") { go() }
+                    .buttonStyle(PlaceTextButtonStyle())
+                    .fixedSize()
+                    .accessibilityIdentifier("onboardingSkip")
+            } else {
+                Color.clear.frame(width: Chunk.iconButton, height: Chunk.iconButton).accessibilityHidden(true)
+            }
         }
         .padding(.horizontal, Spacing.lg)
         .padding(.top, Spacing.xs)
     }
 
-    /// One segment per step; the ones you've reached are ink.
-    private var progress: some View {
-        HStack(spacing: Metrics.segmentGap) {
-            ForEach(Step.allCases, id: \.self) { item in
-                Capsule()
-                    .fill(item.rawValue <= step.rawValue ? Color.ds.ink : Color.ds.edge)
-                    .frame(height: Metrics.segmentHeight)
-                    .popOnChange(item == step)
-            }
-        }
-        .dsAnimation(.bouncy, value: step)
-        .frame(maxWidth: .infinity)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Step \(step.rawValue + 1) of \(Step.allCases.count)")
-    }
-
-    /// Pimpi hosts every step, with a mood (and on two steps an outfit) that fits the question.
+    /// Pimpi and the scene's prop.
     private func host(size: CGFloat) -> some View {
-        PokablePimpi(mood: mood, size: size, cheer: cheers + step.rawValue)
-            .environment(\.pimpiOutfit, outfit)
-            .frame(maxWidth: .infinity)
-            .padding(.top, Spacing.xs)
-    }
-
-    private var mood: MascotMood {
-        switch step {
-        case .welcome: .excited
-        case .goals: .curious
-        case .skinType, .name, .privacy: .happy
-        case .sensitivity: .worried
+        OnboardingHost(scene: scene, state: flow, name: name, goals: answers.goals, size: size, cheer: cheers) {
+            if scene == .wake { wake() } else { cheers += 1 }
         }
-    }
-
-    private var outfit: PimpiOutfit? {
-        switch step {
-        case .name: .partyHat
-        case .privacy: .sunglasses
-        default: nil
-        }
+        .frame(maxWidth: .infinity)
+        .padding(.top, Spacing.xs)
     }
 
     private var scrollingContent: some View {
         ScrollView {
-            content
+            OnboardingSceneContent(scene: scene, state: $flow, answers: answersBinding, cheer: { cheers += 1 },
+                                   advance: advance)
                 .padding(.horizontal, Spacing.lg)
                 .padding(.vertical, Spacing.md)
                 .frame(maxWidth: Metrics.contentWidth)
                 .frame(maxWidth: .infinity)
-                .id(step)
-                .transition(.asymmetric(
+                .id(scene)
+                .transition(reduceMotion ? .opacity : .asymmetric(
                     insertion: .move(edge: .trailing).combined(with: .opacity),
                     removal: .move(edge: .leading).combined(with: .opacity)
                 ))
@@ -177,213 +157,161 @@ struct OnboardingView: View {
             .accessibilityHidden(true)
     }
 
-    private var footer: some View {
-        Button(action: advance) {
-            Text(primaryTitle).contentTransition(.interpolate)
+    @ViewBuilder private var footer: some View {
+        VStack(spacing: Spacing.xs) {
+            Button(action: primaryAction) {
+                Text(primaryTitle).contentTransition(.interpolate)
+            }
+            .buttonStyle(.chunky)
+            .disabled(!canContinue)
+            .accessibilityIdentifier("onboardingContinue")
+            if scene == .camera {
+                Button("Look around first") { finish(scanNow: false) }
+                    .buttonStyle(PlaceTextButtonStyle())
+                    .accessibilityIdentifier("onboardingLookAround")
+            }
         }
-        .buttonStyle(.chunky)
-        .disabled(!canContinue)
         .frame(maxWidth: Metrics.contentWidth)
         .padding(.horizontal, Spacing.lg)
         .padding(.bottom, Spacing.md)
         .frame(maxWidth: .infinity)
     }
 
-    // MARK: - Steps
+    private var readingScenes: Set<OnboardingScene> { [.skinCheck, .sensitivity, .shelf, .plan] }
 
-    @ViewBuilder private var content: some View {
-        switch step {
-        case .welcome:
-            StepText(title: "See how your skin is changing",
-                     message: "A one-minute scan, private to your phone. Track breakouts by face zone and see which products actually help.")
-        case .goals:
-            VStack(spacing: Spacing.md) {
-                StepText(title: "What would you like to focus on?", message: "Pick any — you can change this later.")
-                LazyVGrid(columns: goalColumns, spacing: Spacing.sm) {
-                    ForEach(UserProfile.Goal.allCases) { goal in
-                        SelectCard(title: goal.title, subtitle: nil, systemImage: goal.systemImage,
-                                   isSelected: goals.contains(goal), isTile: true) {
-                            goals.formSymmetricDifference([goal])
-                            cheers += 1
-                        }
-                    }
-                }
-            }
-        case .skinType:
-            VStack(spacing: Spacing.md) {
-                StepText(title: "How does your skin usually feel?", message: "This shapes ingredient suggestions.")
-                VStack(spacing: Spacing.sm) {
-                    ForEach(SkinType.allCases, id: \.self) { type in
-                        SelectCard(title: type.title, subtitle: type.blurb, systemImage: nil,
-                                   isSelected: !skinTypeRaw.isEmpty && SkinType(stored: skinTypeRaw) == type) {
-                            skinTypeRaw = type.rawValue.capitalized
-                            cheers += 1
-                        }
-                    }
-                }
-            }
-        case .sensitivity:
-            VStack(spacing: Spacing.md) {
-                StepText(title: "How sensitive is your skin?", message: "Does it sting or redden with new products?")
-                VStack(spacing: Spacing.sm) {
-                    ForEach(UserProfile.Sensitivity.allCases) { level in
-                        SelectCard(title: level.title, subtitle: nil, systemImage: nil,
-                                   isSelected: sensitivityRaw == level.rawValue) {
-                            sensitivityRaw = level.rawValue
-                            cheers += 1
-                        }
-                    }
-                }
-            }
-        case .name:
-            VStack(spacing: Spacing.md) {
-                StepText(title: "What should we call you?", message: "Optional — used only for greetings on this phone.")
-                TextField("Your name", text: $name)
-                    .textContentType(.givenName)
-                    .submitLabel(.continue)
-                    .onSubmit(advance)
-                    .font(.system(.title3, design: .rounded).weight(.heavy))
-                    .foregroundStyle(Color.ds.ink)
-                    .placeSurfaceRow()
-                Button("Skip") { go(1) }
-                    .buttonStyle(PlaceTextButtonStyle())
-            }
-        case .privacy:
-            VStack(spacing: Spacing.md) {
-                StepText(title: "Private by design",
-                         message: "Photos are analysed on this iPhone. Saved scans stay on your device and your own iCloud — never on our servers.")
-                Label("Skinalyze tracks visible changes. It isn't a medical device and doesn't diagnose.", systemImage: "info.circle")
-                    .font(.ds.footnote.weight(.semibold))
-                    .foregroundStyle(Color.ds.ink)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .dsCard()
-                Button("Read the privacy policy") { showsPrivacyPolicy = true }
-                    .buttonStyle(PlaceTextButtonStyle())
-            }
-        }
+    // MARK: - Answers
+
+    private var answers: OnboardingAnswers {
+        var answers = OnboardingAnswers()
+        answers.name = name
+        answers.goals = UserProfile.goals(from: goalsRaw)
+        answers.skinType = skinTypeRaw.isEmpty ? nil : SkinType(stored: skinTypeRaw)
+        answers.sensitivity = UserProfile.Sensitivity(rawValue: sensitivityRaw)
+        return answers
     }
 
-    /// Two tiles a row; one per row at the largest text sizes so the words never squeeze.
-    private var goalColumns: [GridItem] {
-        let count = dynamicTypeSize.isAccessibilitySize ? 1 : 2
-        return Array(repeating: GridItem(.flexible(), spacing: Spacing.sm, alignment: .top), count: count)
+    private var answersBinding: Binding<OnboardingAnswers> {
+        Binding {
+            answers
+        } set: { new in
+            name = new.name
+            goalsRaw = UserProfile.store(new.goals)
+            skinTypeRaw = new.skinType.map { $0.rawValue.capitalized } ?? ""
+            sensitivityRaw = new.sensitivity?.rawValue ?? ""
+        }
     }
 
     // MARK: - Logic
 
     private var primaryTitle: LocalizedStringKey {
-        switch step {
-        case .welcome: "Get started"
-        case .privacy: "Start using Skinalyze"
+        switch scene {
+        case .wake: flow.isAwake ? "Hi, Pimpi!" : "Wake Pimpi"
+        case .promise: flow.isSealed ? "Continue" : "Press and hold to seal it"
+        case .plan: "Keep my plan"
+        case .camera: flow.cameraDenied ? "Open Settings" : "Let Pimpi look"
         default: "Continue"
         }
     }
 
     private var canContinue: Bool {
-        switch step {
-        case .goals: !goals.isEmpty
-        case .skinType: !skinTypeRaw.isEmpty
-        case .sensitivity: !sensitivityRaw.isEmpty
-        default: true
+        switch scene {
+        case .promise: flow.isSealed
+        case .skinCheck: answers.skinType != nil && flow.skinCheckRevealed
+        default: OnboardingFlow.canContinue(scene, answers)
         }
+    }
+
+    private func primaryAction() {
+        switch scene {
+        case .wake where !flow.isAwake: wake()
+        case .camera: Task { await askForCamera() }
+        default: advance()
+        }
+    }
+
+    private func wake() {
+        guard !flow.isAwake else { return }
+        withDSAnimation(.bouncy, reduceMotion: reduceMotion) { flow.isAwake = true }
+        cheers += 1
     }
 
     private func advance() {
         guard canContinue else { return }
-        if step == .goals { goalsRaw = UserProfile.store(goals) }
-        if step == .privacy {
-            onboardingComplete = true
+        go()
+    }
+
+    private func go(back: Bool = false) {
+        let next = back ? OnboardingFlow.previous(before: scene) : OnboardingFlow.next(after: scene)
+        guard let next, next != .firstScan else { return }
+        withDSAnimation(.smooth, reduceMotion: reduceMotion) { scene = next }
+    }
+
+    private func askForCamera() async {
+        if flow.cameraDenied {
+            if let url = URL(string: UIApplication.openSettingsURLString) { await UIApplication.shared.open(url) }
+            return
+        }
+        let granted: Bool = switch CameraSession.authorizationStatus() {
+        case .authorized: true
+        case .notDetermined: await CameraSession.requestAccess()
+        default: false
+        }
+        if granted {
+            finish(scanNow: true)
         } else {
-            go(1)
+            withDSAnimation(.bouncy, reduceMotion: reduceMotion) { flow.cameraDenied = true }
         }
     }
 
-    private func go(_ delta: Int) {
-        guard let next = Step(rawValue: step.rawValue + delta) else { return }
-        withDSAnimation(.smooth, reduceMotion: reduceMotion) { step = next }
+    /// Onboarding is over: straight into the coached first scan, or Home with the first-week path waiting.
+    private func finish(scanNow: Bool) {
+        storedScene = nil
+        FirstScanCoaching.isPending = true
+        FirstWeekTracking.isActive = true
+        if scanNow { appModel?.startScan() }
+        onboardingComplete = true
     }
 }
 
-private struct StepText: View {
-    let title: LocalizedStringKey
-    let message: LocalizedStringKey
+/// What the scenes keep while the user is in them (the answers themselves are stored as they're given).
+struct OnboardingSceneState: Equatable {
+    var isAwake = false
+    var isSealed = false
+    var skinCheckRevealed = false
+    var cameraDenied = false
+}
 
-    var body: some View {
-        VStack(spacing: Spacing.xs) {
-            Text(title)
-                .font(.ds.display)
-                .foregroundStyle(Color.ds.ink)
-            Text(message)
-                .font(.ds.body.weight(.semibold))
-                .foregroundStyle(Color.ds.inkSecondary)
-        }
-        .multilineTextAlignment(.center)
-        .frame(maxWidth: .infinity)
-        .accessibilityElement(children: .combine)
-        .accessibilityAddTraits(.isHeader)
+/// Only people who came through this onboarding walk the first-week path (existing users get coach marks only).
+enum FirstWeekTracking {
+    private static let key = "firstWeekActive"
+
+    static var isActive: Bool {
+        get { UserDefaults.standard.bool(forKey: key) }
+        set { UserDefaults.standard.set(newValue, forKey: key) }
     }
 }
 
-/// A pressable option: a white row (or a square-ish tile) that turns ink-filled when chosen.
-struct SelectCard: View {
-    let title: String
-    let subtitle: String?
-    let systemImage: String?
-    let isSelected: Bool
-    var isTile = false
-    let action: () -> Void
+/// The first scan after onboarding is coached (ONBOARDING-PLAN.md §5.1); cleared when that scan is saved.
+enum FirstScanCoaching {
+    private static let key = "firstScanCoachingPending"
 
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
-    private enum Metrics {
-        static let tileHeight: CGFloat = 76
+    static var isPending: Bool {
+        get { UserDefaults.standard.bool(forKey: key) }
+        set { UserDefaults.standard.set(newValue, forKey: key) }
     }
 
-    var body: some View {
-        Button {
-            withDSAnimation(.bouncy, reduceMotion: reduceMotion, action)
-        } label: {
-            Group {
-                if isTile { tile } else { row }
-            }
-        }
-        .buttonStyle(ChunkyRowStyle(look: isSelected ? .chosen : .plain))
-        .popOnChange(isSelected)
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
-        .sensoryFeedback(Haptic.toggle, trigger: isSelected)
+    private static let tourKey = "resultTourPending"
+
+    /// The coached scan was saved: its result gets the tour.
+    static var resultTourPending: Bool {
+        get { UserDefaults.standard.bool(forKey: tourKey) }
+        set { UserDefaults.standard.set(newValue, forKey: tourKey) }
     }
 
-    private var tile: some View {
-        VStack(spacing: Spacing.xxs) {
-            if let systemImage {
-                Image(systemName: systemImage).font(.title3.weight(.bold)).accessibilityHidden(true)
-            }
-            Text(title)
-                .font(.system(.callout, design: .rounded).weight(.heavy))
-                .multilineTextAlignment(.center)
-        }
-        .padding(.horizontal, Spacing.sm)
-        .padding(.vertical, Spacing.sm)
-        .frame(maxWidth: .infinity, minHeight: Metrics.tileHeight)
-    }
-
-    private var row: some View {
-        HStack(spacing: Spacing.sm) {
-            if let systemImage {
-                Image(systemName: systemImage).font(.title3.weight(.bold)).accessibilityHidden(true)
-            }
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.system(.headline, design: .rounded).weight(.heavy))
-                if let subtitle {
-                    Text(subtitle)
-                        .font(.system(.footnote, design: .rounded).weight(.bold))
-                        .foregroundStyle(.secondary)
-                }
-            }
-            .multilineTextAlignment(.leading)
-            Spacer(minLength: 0)
-        }
-        .padding(.horizontal, Spacing.lg)
-        .padding(.vertical, Spacing.sm)
+    /// A scan was saved: if it was the coached one, hand over to the result tour.
+    static func scanSaved() {
+        guard isPending else { return }
+        isPending = false
+        resultTourPending = true
     }
 }

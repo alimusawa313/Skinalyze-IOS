@@ -43,6 +43,9 @@ struct ProductCheckLedger {
         (defaults.dictionary(forKey: Self.key) as? [String: Double]) ?? [:]
     }
 
+    /// Different products ever checked (the first-week path and coach marks ask whether there's been one).
+    var count: Int { entries.count }
+
     /// Whether this product may be checked now; one checked earlier this month stays open.
     func canCheck(_ productKey: String, policy: AccessPolicy, now: Date = .now, calendar: Calendar = .current) -> Bool {
         let checkedThisMonth = entries[productKey].map {

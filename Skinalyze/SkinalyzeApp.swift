@@ -16,6 +16,7 @@ struct SkinalyzeApp: App {
         }
         #if DEBUG
         DemoData.seedActivityIfRequested()
+        DemoData.resetOnboardingIfRequested()
         #endif
         WatchBridge.shared.start()
     }

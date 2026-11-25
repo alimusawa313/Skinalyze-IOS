@@ -52,6 +52,10 @@ struct ShelfView: View {
     private var pimpiStandsOnCrest: Bool { query.isEmpty && !typeSize.isAccessibilitySize }
 
     var body: some View {
+        shelfBody.offersCoach([.shelf])
+    }
+
+    @ViewBuilder private var shelfBody: some View {
         NavigationStack {
             ShelfPlacePage(maxWidth: Metrics.pageWidth) {
                 VStack(alignment: .leading, spacing: Spacing.lg) {
@@ -74,7 +78,11 @@ struct ShelfView: View {
                         ShelfToolsCard()
                         UVCard()
                         JourneyCard()
+                            .coachTarget(.journey)
+                            .offersCoachWhenVisible(.journey)
                         SkinSchoolCard()
+                            .coachTarget(.school)
+                            .offersCoachWhenVisible(.school)
                         ShareShelfButton()
                         RoutineChecklist(part: $part)
                         JournalCard()
@@ -122,6 +130,7 @@ struct ShelfView: View {
             .padding(.trailing, query.isEmpty ? Spacing.md : Spacing.xxs)
             .frame(minHeight: Chunk.controlHeight)
             .dsSurface(radius: Chunk.controlHeight / 2)
+            .coachTarget(.shelf)
             scanButton("text.viewfinder") { showsLabelScanner = true }
                 .accessibilityLabel("Scan a label")
             scanButton("barcode.viewfinder") { showsBarcode = true }

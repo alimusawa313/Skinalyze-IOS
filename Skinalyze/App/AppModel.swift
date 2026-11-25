@@ -40,6 +40,7 @@ final class AppModel {
     func scanFinished(_ id: PersistentIdentifier?) {
         isScanning = false
         pendingScan = false
+        if id != nil { FirstScanCoaching.scanSaved() }
         presentedScan = id.map(PresentedScan.init(id:))
     }
 

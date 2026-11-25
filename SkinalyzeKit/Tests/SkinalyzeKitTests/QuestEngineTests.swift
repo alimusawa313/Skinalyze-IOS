@@ -145,12 +145,13 @@ struct QuestEngineTests {
         for _ in PimpiOutfit.allCases {
             opened = RewardEngine.openChest(opened, isPro: false).0
         }
-        #expect(opened.unlocked == Set(PimpiOutfit.allCases.filter { !$0.isPro }))
+        // The first-week scarf is never in a chest.
+        #expect(opened.unlocked == Set(PimpiOutfit.allCases.filter { !$0.isPro && !$0.isFirstWeekReward }))
         var pro = ledger
         for _ in PimpiOutfit.allCases {
             pro = RewardEngine.openChest(pro, isPro: true).0
         }
-        #expect(pro.unlocked == Set(PimpiOutfit.allCases))
+        #expect(pro.unlocked == Set(PimpiOutfit.allCases.filter { !$0.isFirstWeekReward }))
     }
 
     @Test("When every outfit is owned, a chest gives bonus points instead")

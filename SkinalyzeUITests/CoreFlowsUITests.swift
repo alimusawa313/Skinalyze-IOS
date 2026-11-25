@@ -3,6 +3,9 @@ import XCTest
 /// End-to-end smoke of the core flows on seeded demo data (the Simulator has no camera, so scanning itself is
 /// verified on device; here we verify the camera-unavailable path is handled gracefully).
 final class CoreFlowsUITests: XCTestCase {
+    /// Rendering a video in the Simulator can take a couple of minutes on a busy Mac (it took 98–127 s on 2026-11-25).
+    private static let videoTimeout: TimeInterval = 180
+
     private var app: XCUIApplication!
 
     override func setUpWithError() throws {
@@ -98,7 +101,7 @@ final class CoreFlowsUITests: XCTestCase {
         let reel = app.buttons["deckReel"]
         XCTAssertTrue(reel.waitForExistence(timeout: 10))
         reel.tap()
-        XCTAssertTrue(app.buttons["videoShareButton"].waitForExistence(timeout: 60))
+        XCTAssertTrue(app.buttons["videoShareButton"].waitForExistence(timeout: Self.videoTimeout))
         attachScreenshot("Glow-up reel")
     }
 
@@ -204,7 +207,7 @@ final class CoreFlowsUITests: XCTestCase {
         let item = app.buttons["3D turntable"]
         XCTAssertTrue(item.waitForExistence(timeout: 5))
         item.tap()
-        XCTAssertTrue(app.buttons["videoShareButton"].waitForExistence(timeout: 60))
+        XCTAssertTrue(app.buttons["videoShareButton"].waitForExistence(timeout: Self.videoTimeout))
         attachScreenshot("3D turntable")
     }
 
@@ -306,7 +309,7 @@ final class CoreFlowsUITests: XCTestCase {
         waitForExpectations(timeout: 15)
         share.tap()
         app.buttons["Slider video"].tap()
-        XCTAssertTrue(app.buttons["videoShareButton"].waitForExistence(timeout: 60))
+        XCTAssertTrue(app.buttons["videoShareButton"].waitForExistence(timeout: Self.videoTimeout))
         attachScreenshot("Slider video")
     }
 

@@ -562,6 +562,22 @@
         }
       }
     },
+    "%lld/%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld/%2$lld"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld"
+          }
+        }
+      }
+    },
     "%lld/3" : {
       "shouldTranslate" : false
     },
@@ -875,6 +891,16 @@
         }
       }
     },
+    "A friend invited you. You'll be friends once we're done." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temanmu mengundangmu. Kalian langsung berteman setelah ini selesai."
+          }
+        }
+      }
+    },
     "A friend who joins through your invite gets a free month of Pro." : {
       "localizations" : {
         "id" : {
@@ -1085,6 +1111,16 @@
         }
       }
     },
+    "About the same as morning" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sama aja kayak pagi"
+          }
+        }
+      }
+    },
     "Active" : {
       "localizations" : {
         "id" : {
@@ -1175,6 +1211,26 @@
         }
       }
     },
+    "Add what you use now, so I can check it against your skin. You can skip this." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambahkan yang kamu pakai sekarang, biar aku cek cocok nggaknya sama kulitmu. Boleh dilewati."
+          }
+        }
+      }
+    },
+    "Add your extras. I'll flag pairs that don't mix." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambahkan langkah ekstramu. Aku tandai pasangan yang nggak cocok dipakai bareng."
+          }
+        }
+      }
+    },
     "Add yours" : {
       "localizations" : {
         "id" : {
@@ -1211,6 +1267,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Alkohol"
+          }
+        }
+      }
+    },
+    "Already a bit oily again" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Udah agak berminyak lagi"
           }
         }
       }
@@ -1341,6 +1407,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lengan dulu. Wajah nanti."
+          }
+        }
+      }
+    },
+    "Ask me “Is it good for me?” about any product." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanya aku “Cocok buatku?” soal produk apa aja."
+          }
+        }
+      }
+    },
+    "Ask “Is it good for me?”" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanya “Cocok buatku?”"
           }
         }
       }
@@ -1631,12 +1717,32 @@
         }
       }
     },
+    "Build a routine" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bikin rutinitas"
+          }
+        }
+      }
+    },
     "Bunny" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kelinci"
+          }
+        }
+      }
+    },
+    "By midday, your forehead and nose are…" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas siang, dahi dan hidungmu…"
           }
         }
       }
@@ -2067,6 +2173,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tersedia dengan Pro"
+          }
+        }
+      }
+    },
+    "Comfortable" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nyaman"
           }
         }
       }
@@ -2647,6 +2763,16 @@
         }
       }
     },
+    "Every point moves you along. All effort, never skin." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiap poin bikin kamu maju. Semua soal usaha, bukan kulit."
+          }
+        }
+      }
+    },
     "Every quest, lesson and routine day moves Pimpi along. Nothing ever moves you back." : {
       "localizations" : {
         "id" : {
@@ -2847,6 +2973,16 @@
         }
       }
     },
+    "Finish a day's quests to earn one." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selesaikan misi sehari untuk dapat satu."
+          }
+        }
+      }
+    },
     "Finish all three for a chest." : {
       "localizations" : {
         "id" : {
@@ -2887,6 +3023,16 @@
         }
       }
     },
+    "First scan, and one product on your shelf" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan pertama, dan satu produk di rakmu"
+          }
+        }
+      }
+    },
     "First share" : {
       "localizations" : {
         "id" : {
@@ -2903,6 +3049,32 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Langkah pertama"
+          }
+        }
+      }
+    },
+    "First week done!" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minggu pertama selesai!"
+          }
+        }
+      }
+    },
+    "First week: %lld of %lld done" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "First week: %1$lld of %2$lld done"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minggu pertama: %lld dari %lld selesai"
           }
         }
       }
@@ -2933,6 +3105,56 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fokus"
+          }
+        }
+      }
+    },
+    "Focus: a simple routine you'll actually keep" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fokus: rutinitas simpel yang beneran kamu jalani"
+          }
+        }
+      }
+    },
+    "Focus: fewer breakouts, one small habit at a time" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fokus: jerawat berkurang, satu kebiasaan kecil tiap kali"
+          }
+        }
+      }
+    },
+    "Focus: getting to know your skin, scan by scan" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fokus: kenalan sama kulitmu, scan demi scan"
+          }
+        }
+      }
+    },
+    "Focus: helping dark marks fade (sunscreen is your best friend)" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fokus: bantu bekas gelap memudar (sunscreen sahabatmu)"
+          }
+        }
+      }
+    },
+    "Focus: knowing what's in your products" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fokus: tahu isi produk-produkmu"
           }
         }
       }
@@ -3143,6 +3365,16 @@
         }
       }
     },
+    "Further down: what changed, what we noticed and what helps. Swipe between them." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Di bawah: apa yang berubah, apa yang kami lihat, dan apa yang membantu. Geser untuk pindah."
+          }
+        }
+      }
+    },
     "Gecko" : {
       "localizations" : {
         "id" : {
@@ -3199,6 +3431,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lembut"
+          }
+        }
+      }
+    },
+    "Gentle and widely tolerated." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lembut dan cocok untuk banyak orang."
           }
         }
       }
@@ -3313,6 +3555,16 @@
         }
       }
     },
+    "Got it" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oke"
+          }
+        }
+      }
+    },
     "Green tea extract" : {
       "localizations" : {
         "id" : {
@@ -3323,12 +3575,32 @@
         }
       }
     },
+    "HELLO" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HALO"
+          }
+        }
+      }
+    },
     "Habit hero" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pahlawan kebiasaan"
+          }
+        }
+      }
+    },
+    "Half an hour after washing, with nothing on, your skin feels…" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setengah jam setelah cuci muka, tanpa apa-apa, kulitmu terasa…"
           }
         }
       }
@@ -3463,6 +3735,26 @@
         }
       }
     },
+    "Hi, I'm Pimpi!" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hai, aku Pimpi!"
+          }
+        }
+      }
+    },
+    "Hi, Pimpi!" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hai, Pimpi!"
+          }
+        }
+      }
+    },
     "Hidden scans" : {
       "localizations" : {
         "id" : {
@@ -3543,12 +3835,42 @@
         }
       }
     },
+    "Hold" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tahan"
+          }
+        }
+      }
+    },
     "Hold still" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tahan posisi"
+          }
+        }
+      }
+    },
+    "Hold still a second. I'm making your 3D head." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diam sebentar ya. Aku lagi bikin kepala 3D-mu."
+          }
+        }
+      }
+    },
+    "Hold still when I ask: that's your 3D head being made." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diam pas aku minta: itu waktunya kepala 3D-mu dibuat."
           }
         }
       }
@@ -3613,6 +3935,16 @@
         }
       }
     },
+    "How does your skin usually react?" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biasanya kulitmu bereaksi gimana?"
+          }
+        }
+      }
+    },
     "How sensitive is your skin?" : {
       "localizations" : {
         "id" : {
@@ -3663,6 +3995,16 @@
         }
       }
     },
+    "I already know my skin type" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aku udah tahu jenis kulitku"
+          }
+        }
+      }
+    },
     "I did the paperwork for you." : {
       "localizations" : {
         "id" : {
@@ -3683,12 +4025,42 @@
         }
       }
     },
+    "I look at your skin right here on your phone, with the front camera. Nothing is uploaded." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aku lihat kulitmu langsung di HP-mu, pakai kamera depan. Nggak ada yang diunggah."
+          }
+        }
+      }
+    },
     "I opened it" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sudah kubuka"
+          }
+        }
+      }
+    },
+    "I take each photo by myself when you're still." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aku ambil tiap foto sendiri pas kamu diam."
+          }
+        }
+      }
+    },
+    "I'll help you keep an eye on your skin: one quick scan a day, private to your phone." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aku bantu kamu memantau kulitmu: satu scan singkat sehari, privat di HP-mu."
           }
         }
       }
@@ -3915,12 +4287,32 @@
         }
       }
     },
+    "It often stings or turns red" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sering perih atau memerah"
+          }
+        }
+      }
+    },
     "It's been %lld days since your last scan — a quick check keeps the trend honest." : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sudah %lld hari sejak pindaian terakhirmu — cek sebentar supaya trennya tetap akurat."
+          }
+        }
+      }
+    },
+    "It's usually fine" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biasanya aman"
           }
         }
       }
@@ -4011,6 +4403,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rahasiakan pindaian tersembunyi"
+          }
+        }
+      }
+    },
+    "Keep my plan" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Simpan rencanaku"
           }
         }
       }
@@ -4125,6 +4527,16 @@
         }
       }
     },
+    "Last one: the other way. Nearly done!" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terakhir: ke arah satunya. Hampir selesai!"
+          }
+        }
+      }
+    },
     "Later" : {
       "localizations" : {
         "id" : {
@@ -4191,6 +4603,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pelajaran selesai!"
+          }
+        }
+      }
+    },
+    "Let Pimpi look" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biarkan Pimpi lihat"
+          }
+        }
+      }
+    },
+    "Let me take a look" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coba aku lihat"
           }
         }
       }
@@ -4305,6 +4737,26 @@
         }
       }
     },
+    "Look around first" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lihat-lihat dulu"
+          }
+        }
+      }
+    },
+    "Look at me" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lihat aku"
+          }
+        }
+      }
+    },
     "Look at me." : {
       "localizations" : {
         "id" : {
@@ -4335,6 +4787,16 @@
         }
       }
     },
+    "Look for (good for %@ skin)" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cari ini (bagus untuk kulit %@)"
+          }
+        }
+      }
+    },
     "Look for the open-jar symbol on the pack, like \"12M\". It shows how many months it keeps once opened." : {
       "localizations" : {
         "id" : {
@@ -4351,6 +4813,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cari secara online"
+          }
+        }
+      }
+    },
+    "Look straight at me. I'll take it when you're still." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lihat lurus ke aku. Aku ambil fotonya pas kamu diam."
           }
         }
       }
@@ -4635,6 +5107,16 @@
         }
       }
     },
+    "My promise to you" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Janjiku untukmu"
+          }
+        }
+      }
+    },
     "My shelf" : {
       "localizations" : {
         "id" : {
@@ -4701,6 +5183,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Produk baru"
+          }
+        }
+      }
+    },
+    "Next" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lanjut"
           }
         }
       }
@@ -4815,6 +5307,16 @@
         }
       }
     },
+    "No problem" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nggak masalah"
+          }
+        }
+      }
+    },
     "No products recorded." : {
       "localizations" : {
         "id" : {
@@ -4885,6 +5387,16 @@
         }
       }
     },
+    "Not done yet" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belum selesai"
+          }
+        }
+      }
+    },
     "Not earned yet" : {
       "localizations" : {
         "id" : {
@@ -4931,6 +5443,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Belum tepat"
+          }
+        }
+      }
+    },
+    "Not quite? Choose it yourself" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurang pas? Pilih sendiri"
           }
         }
       }
@@ -5075,6 +5597,16 @@
         }
       }
     },
+    "Now turn your head slowly, like a sunflower." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sekarang putar kepalamu pelan-pelan, kayak bunga matahari."
+          }
+        }
+      }
+    },
     "Off — only you see your progress" : {
       "localizations" : {
         "id" : {
@@ -5131,6 +5663,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lagi semangat"
+          }
+        }
+      }
+    },
+    "On another day: Deck, then Compare." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Di hari lain: Dek, lalu Bandingkan."
           }
         }
       }
@@ -5255,6 +5797,16 @@
         }
       }
     },
+    "Open a quest chest" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka peti misi"
+          }
+        }
+      }
+    },
     "Open hidden scans" : {
       "localizations" : {
         "id" : {
@@ -5367,6 +5919,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Opsional — hanya dipakai untuk sapaan di ponsel ini."
+          }
+        }
+      }
+    },
+    "Optional. It stays on this phone." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opsional. Tetap di HP ini."
           }
         }
       }
@@ -5527,6 +6089,16 @@
         }
       }
     },
+    "Patch-test new products first. I'll remind you how." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uji tempel produk baru dulu. Nanti aku ingatkan caranya."
+          }
+        }
+      }
+    },
     "Patterns" : {
       "localizations" : {
         "id" : {
@@ -5623,6 +6195,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pilih yang mana saja — bisa diubah nanti."
+          }
+        }
+      }
+    },
+    "Pick any. Tap again to take it out." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih yang mana aja. Ketuk lagi untuk mengeluarkan."
           }
         }
       }
@@ -5730,12 +6312,32 @@
         }
       }
     },
+    "Pimpi's tips" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tips Pimpi"
+          }
+        }
+      }
+    },
     "Pimpi's wardrobe" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lemari Pimpi"
+          }
+        }
+      }
+    },
+    "Pimpi, asleep. Tap to wake" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pimpi, lagi tidur. Ketuk untuk membangunkan"
           }
         }
       }
@@ -5800,6 +6402,16 @@
         }
       }
     },
+    "Poke me any time. I've got tips." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colek aku kapan aja. Aku punya tips."
+          }
+        }
+      }
+    },
     "Post" : {
       "localizations" : {
         "id" : {
@@ -5816,6 +6428,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pengawet yang dihindari sebagian orang; bisa mengiritasi kulit sensitif."
+          }
+        }
+      }
+    },
+    "Press and hold to seal it" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tekan dan tahan untuk menyegel"
           }
         }
       }
@@ -6000,6 +6622,36 @@
         }
       }
     },
+    "Progress" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progres"
+          }
+        }
+      }
+    },
+    "Promise sealed" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Janji tersegel"
+          }
+        }
+      }
+    },
+    "Psst… Pimpi's napping" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sst… Pimpi lagi tidur siang"
+          }
+        }
+      }
+    },
     "Puppy" : {
       "localizations" : {
         "id" : {
@@ -6016,6 +6668,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pustula"
+          }
+        }
+      }
+    },
+    "Question %lld of %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Question %1$lld of %2$lld"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pertanyaan %lld dari %lld"
           }
         }
       }
@@ -6260,6 +6928,16 @@
         }
       }
     },
+    "Replay the tour" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ulangi tur"
+          }
+        }
+      }
+    },
     "Restore purchases" : {
       "localizations" : {
         "id" : {
@@ -6500,6 +7178,16 @@
         }
       }
     },
+    "Scan again and compare" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan lagi dan bandingkan"
+          }
+        }
+      }
+    },
     "Scan another" : {
       "localizations" : {
         "id" : {
@@ -6562,6 +7250,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pindaian %1$@, indeks jerawat %2$lld, %3$@"
+          }
+        }
+      }
+    },
+    "Scan from Home; add a product on the Shelf." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan dari Beranda; tambahkan produk di Rak."
           }
         }
       }
@@ -6748,6 +7446,16 @@
         }
       }
     },
+    "Scarf" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Syal"
+          }
+        }
+      }
+    },
     "Seal" : {
       "localizations" : {
         "id" : {
@@ -6758,12 +7466,42 @@
         }
       }
     },
+    "Seal the promise" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Segel janjinya"
+          }
+        }
+      }
+    },
+    "Sealed" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tersegel"
+          }
+        }
+      }
+    },
     "Search" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cari"
+          }
+        }
+      }
+    },
+    "Search any product on the Shelf." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cari produk apa aja di Rak."
           }
         }
       }
@@ -6854,6 +7592,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Serum"
+          }
+        }
+      }
+    },
+    "Seven small things. Do them any day. Finish them all and I get a scarf." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tujuh hal kecil. Kerjakan kapan aja. Selesaikan semua dan aku dapat syal."
           }
         }
       }
@@ -6988,12 +7736,32 @@
         }
       }
     },
+    "Shiny" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mengilap"
+          }
+        }
+      }
+    },
     "Shiny by midday, visible pores." : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mengilap di siang hari, pori terlihat."
+          }
+        }
+      }
+    },
+    "Shiny too" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mengilap juga"
           }
         }
       }
@@ -7044,6 +7812,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tampilkan UV hari ini dan pengingat sunscreen"
+          }
+        }
+      }
+    },
+    "Show up each day and this grows. Skin doesn't count, showing up does." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datang tiap hari dan ini bertambah. Yang dihitung kehadiranmu, bukan kulitmu."
           }
         }
       }
@@ -7398,6 +8176,16 @@
         }
       }
     },
+    "Skip tour" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lewati tur"
+          }
+        }
+      }
+    },
     "Slept badly" : {
       "localizations" : {
         "id" : {
@@ -7484,6 +8272,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ada perubahan di hari ke-%lld. Hentikan pemakaian di area itu. Kalau tidak membaik, tanyakan ke apoteker atau dokter."
+          }
+        }
+      }
+    },
+    "Sometimes it gets a bit red" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kadang agak memerah"
+          }
+        }
+      }
+    },
+    "Sounds like %@ skin" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kedengarannya kulit %@"
           }
         }
       }
@@ -8026,6 +8834,16 @@
         }
       }
     },
+    "Take the quick check instead" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ikut cek singkat aja"
+          }
+        }
+      }
+    },
     "Take today's scan" : {
       "localizations" : {
         "id" : {
@@ -8042,6 +8860,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ceritakan rutinitas dan kebiasaanmu — kulit berubah karena banyak hal."
+          }
+        }
+      }
+    },
+    "Tap Pimpi to wake it up." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketuk Pimpi untuk membangunkannya."
+          }
+        }
+      }
+    },
+    "Tap a dot to see what it is, or drag the 3D head to turn it." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketuk titik untuk lihat apa itu, atau geser kepala 3D untuk memutarnya."
           }
         }
       }
@@ -8116,6 +8954,16 @@
         }
       }
     },
+    "That's it! Come back tomorrow and we'll compare." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selesai! Balik lagi besok, nanti kita bandingkan."
+          }
+        }
+      }
+    },
     "That's your own code." : {
       "localizations" : {
         "id" : {
@@ -8156,6 +9004,16 @@
         }
       }
     },
+    "The journey card on the Shelf." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kartu perjalanan di Rak."
+          }
+        }
+      }
+    },
     "The light was cooler (more blue) than usual. Scanning in the same spot keeps scans comparable." : {
       "localizations" : {
         "id" : {
@@ -8172,6 +9030,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cahayanya lebih hangat (lebih kuning) dari biasanya. Memindai di tempat yang sama membuat hasil mudah dibandingkan."
+          }
+        }
+      }
+    },
+    "The morning or evening button on Home." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tombol pagi atau malam di Beranda."
           }
         }
       }
@@ -8206,12 +9074,52 @@
         }
       }
     },
+    "Then the other" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lalu sebaliknya"
+          }
+        }
+      }
+    },
+    "Then we'll go gently. I'll remind you to patch-test new things first." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kalau gitu kita pelan-pelan. Aku ingatkan uji tempel dulu untuk hal baru."
+          }
+        }
+      }
+    },
     "This area over time" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Area ini dari waktu ke waktu"
+          }
+        }
+      }
+    },
+    "This is how well it fits what you told me. A guide, not a rule." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ini seberapa cocok dengan yang kamu ceritakan. Panduan, bukan aturan."
+          }
+        }
+      }
+    },
+    "This is your starting point, not a grade." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ini titik awalmu, bukan nilai."
           }
         }
       }
@@ -8266,12 +9174,42 @@
         }
       }
     },
+    "Three quick poses" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiga pose singkat"
+          }
+        }
+      }
+    },
+    "Three small things a day: scan, routine, one lesson." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiga hal kecil sehari: scan, rutinitas, satu pelajaran."
+          }
+        }
+      }
+    },
     "Tick at least one step in the morning and one in the evening." : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Centang minimal satu langkah di pagi hari dan satu di malam hari."
+          }
+        }
+      }
+    },
+    "Tick off your routine" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Centang rutinitasmu"
           }
         }
       }
@@ -8292,6 +9230,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mencentang semua langkah rutinitas pagi atau malammu untuk hari ini."
+          }
+        }
+      }
+    },
+    "Tight or a bit flaky" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kencang atau agak mengelupas"
+          }
+        }
+      }
+    },
+    "Tight or rough" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kencang atau kasar"
+          }
+        }
+      }
+    },
+    "Tight, I want moisturiser" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kencang, pengin pakai pelembap"
           }
         }
       }
@@ -8396,6 +9364,16 @@
         }
       }
     },
+    "Today: your first scan." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hari ini: scan pertamamu."
+          }
+        }
+      }
+    },
     "Toner" : {
       "localizations" : {
         "id" : {
@@ -8432,6 +9410,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pegang wajah"
+          }
+        }
+      }
+    },
+    "Tour starts again as you go" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tur mulai lagi sambil jalan"
           }
         }
       }
@@ -8496,6 +9484,16 @@
         }
       }
     },
+    "Turn one way" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menoleh ke satu sisi"
+          }
+        }
+      }
+    },
     "Turn right" : {
       "localizations" : {
         "id" : {
@@ -8552,6 +9550,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kura-kura"
+          }
+        }
+      }
+    },
+    "Two minutes, on the Shelf." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dua menit, di Rak."
+          }
+        }
+      }
+    },
+    "Two scans! Tap Compare to see them side by side." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dua scan! Ketuk Bandingkan untuk lihat berdampingan."
+          }
+        }
+      }
+    },
+    "Two-minute lessons. Finish one for points." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pelajaran dua menit. Selesaikan satu untuk dapat poin."
           }
         }
       }
@@ -8632,6 +9660,16 @@
         }
       }
     },
+    "Up next" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berikutnya"
+          }
+        }
+      }
+    },
     "Use with care" : {
       "localizations" : {
         "id" : {
@@ -8682,12 +9720,32 @@
         }
       }
     },
+    "Visit your journey map" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunjungi peta perjalananmu"
+          }
+        }
+      }
+    },
     "Vitamin C" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vitamin C"
+          }
+        }
+      }
+    },
+    "Wake Pimpi" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bangunkan Pimpi"
           }
         }
       }
@@ -8802,6 +9860,16 @@
         }
       }
     },
+    "What are we packing for?" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kita mau bawa apa aja?"
+          }
+        }
+      }
+    },
     "What changed" : {
       "localizations" : {
         "id" : {
@@ -8828,6 +9896,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apa yang membantu"
+          }
+        }
+      }
+    },
+    "What should I call you?" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aku panggil kamu siapa?"
           }
         }
       }
@@ -8882,6 +9960,26 @@
         }
       }
     },
+    "What's on your shelf?" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apa aja di rakmu?"
+          }
+        }
+      }
+    },
+    "When you try something new…" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas kamu coba produk baru…"
+          }
+        }
+      }
+    },
     "Where this comes from" : {
       "localizations" : {
         "id" : {
@@ -8932,6 +10030,16 @@
         }
       }
     },
+    "Yay!" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Asyik!"
+          }
+        }
+      }
+    },
     "You" : {
       "localizations" : {
         "id" : {
@@ -8972,12 +10080,42 @@
         }
       }
     },
+    "You can let me use the camera in Settings any time. Everything else works without it." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu bisa izinkan kamera di Pengaturan kapan aja. Fitur lain tetap jalan tanpa kamera."
+          }
+        }
+      }
+    },
     "You control all saved data. Delete scans in the app (Profile → Delete all scans) or from your iCloud settings at any time." : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kamu mengendalikan semua data tersimpan. Hapus pindaian di aplikasi (Profil → Hapus semua pindaian) atau dari pengaturan iCloud kapan saja."
+          }
+        }
+      }
+    },
+    "You did your whole first week. The scarf is yours!" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu menyelesaikan minggu pertamamu. Syalnya buat kamu!"
+          }
+        }
+      }
+    },
+    "You earned a chest! Tap it to open." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu dapat peti! Ketuk untuk membuka."
           }
         }
       }
@@ -9028,6 +10166,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kamu hadir hampir setiap hari. Begitulah kebiasaan terbentuk."
+          }
+        }
+      }
+    },
+    "You showed up seven times. Pimpi's new scarf is in your wardrobe." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu datang tujuh kali. Syal baru Pimpi ada di lemarimu."
           }
         }
       }
@@ -9172,6 +10320,16 @@
         }
       }
     },
+    "Your cheeks usually feel…" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pipimu biasanya terasa…"
+          }
+        }
+      }
+    },
     "Your deck starts with one scan" : {
       "localizations" : {
         "id" : {
@@ -9188,6 +10346,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pindaian pertamamu menjadi titik awal."
+          }
+        }
+      }
+    },
+    "Your first week" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minggu pertamamu"
           }
         }
       }
@@ -9278,6 +10446,16 @@
         }
       }
     },
+    "Your photos stay on this iPhone and in your own iCloud. Never on our servers." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotomu tetap di iPhone ini dan di iCloud milikmu. Nggak pernah di server kami."
+          }
+        }
+      }
+    },
     "Your privacy comes first. This explains how your data is handled when you use Skinalyze." : {
       "localizations" : {
         "id" : {
@@ -9354,6 +10532,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kulitmu tampak tenang — tidak ada yang aktif menonjol."
+          }
+        }
+      }
+    },
+    "Your starter plan" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rencana awalmu"
           }
         }
       }

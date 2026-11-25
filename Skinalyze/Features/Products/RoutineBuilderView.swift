@@ -18,6 +18,12 @@ struct RoutineBuilderView: View {
     }
 
     var body: some View {
+        builderBody
+            .offersCoach([.routineBuilder])
+            .coachHost()
+    }
+
+    @ViewBuilder private var builderBody: some View {
         NavigationStack {
             // A list (not a scroll view) so extra steps keep swipe-to-delete and Edit's reordering.
             List {
@@ -146,6 +152,7 @@ struct RoutineBuilderView: View {
         }
         .buttonStyle(.bouncy)
         .accessibilityIdentifier("addRoutineStep")
+        .coachTarget(.routineBuilder)
     }
 
     private var spring: Animation { MotionToken.bouncy.resolved(reduceMotion: reduceMotion).animation }
