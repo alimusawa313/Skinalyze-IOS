@@ -116,6 +116,8 @@ struct AppShell: View {
             if let tab = UserDefaults.standard.string(forKey: "startTab"), let url = URL(string: "skinalyze://\(tab)") {
                 appModel.open(url)
             }
+            // `-appIconDump <folder>`: the three app icon PNGs, drawn from the real Pimpi.
+            if let folder = UserDefaults.standard.string(forKey: "appIconDump") { AppIconArt.dump(into: folder) }
             // `-pimpiGalleryDump <file.png>`: every mood and outfit, light and dark, rendered to an image.
             if let path = UserDefaults.standard.string(forKey: "pimpiGalleryDump") {
                 let renderer = ImageRenderer(content: PimpiGallery().frame(width: 402, height: 874))
