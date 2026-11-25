@@ -1,4 +1,5 @@
 import CloudKit
+import MachO
 import Foundation
 import OSLog
 import SkinalyzeKit
@@ -24,8 +25,20 @@ struct CloudSocialService: SocialService {
     static let leagueLimit = 50
     private static let logger = Logger(subsystem: "com.Patani.Skinalyze", category: "Social")
 
-    private let container = CKContainer(identifier: "iCloud.com.Patani.Skinalyze")
-    private var database: CKDatabase { container.publicCloudDatabase }
+    static let containerIdentifier = "iCloud.com.Patani.Skinalyze"
+
+    /// Made on first use, never at launch: `CKContainer(identifier:)` stops the app when the build has no iCloud
+    /// entitlement (an unsigned test build), so only the social features themselves may touch it. CloudKit keeps one
+    /// container per identifier, so asking again is cheap.
+    private var container: CKContainer {
+        get throws {
+            guard CloudKitEntitlement.isPresent else { throw SocialServiceError.iCloudUnavailable }
+            return CKContainer(identifier: Self.containerIdentifier)
+        }
+    }
+    private var database: CKDatabase {
+        get throws { try container.publicCloudDatabase }
+    }
 
     private enum Field {
         static let code = "code", adjective = "nameAdjective", animal = "nameAnimal", streak = "streak"
@@ -36,7 +49,8 @@ struct CloudSocialService: SocialService {
     static func recordID(_ code: FriendCode) -> CKRecord.ID { CKRecord.ID(recordName: "profile-\(code.value)") }
 
     func isAvailable() async -> Bool {
-        (try? await container.accountStatus()) == .available
+        guard CloudKitEntitlement.isPresent else { return false }
+        return (try? await container.accountStatus()) == .available
     }
 
     func publish(_ profile: SocialProfile) async throws {
@@ -138,3 +152,26 @@ actor DemoSocialService: SocialService {
     func withdraw(_ code: FriendCode) async throws { store[code] = nil }
 }
 #endif
+
+enum SocialServiceError: Error {
+    case iCloudUnavailable
+}
+
+/// Whether this build can use the iCloud container. Signed builds always can (devices only run signed builds). An
+/// unsigned simulator build — `scripts/test.sh` makes one — has no entitlements, and `CKContainer(identifier:)` then
+/// stops the app instead of failing, so the social features check first and stay off.
+enum CloudKitEntitlement {
+    #if targetEnvironment(simulator)
+    static let isPresent: Bool = {
+        // Simulator builds carry their entitlements in the main executable's __TEXT,__entitlements section.
+        guard let header = _dyld_get_image_header(0) else { return false }
+        var size: UInt = 0
+        let raw = UnsafeRawPointer(header).assumingMemoryBound(to: mach_header_64.self)
+        guard let bytes = getsectiondata(raw, "__TEXT", "__entitlements", &size), size > 0 else { return false }
+        let plist = String(decoding: UnsafeBufferPointer(start: bytes, count: Int(size)), as: UTF8.self)
+        return plist.contains(CloudSocialService.containerIdentifier)
+    }()
+    #else
+    static let isPresent = true
+    #endif
+}
