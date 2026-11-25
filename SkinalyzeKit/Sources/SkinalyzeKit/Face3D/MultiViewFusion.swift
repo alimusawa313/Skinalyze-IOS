@@ -28,10 +28,16 @@ public enum MultiViewFusion {
     static let columns = 250
     static let rows = 250
     static let azimuthLimit: Float = 135 * .pi / 180
-    static let textureSide = 1024
-    /// The front photo owns the front of the face: it dominates wherever it sees the surface within ~55°.
-    static let frontOwnsAbove: Float = 0.57
+    /// The texture wraps ±135° of head, so the face gets about a third of its width: 2048 keeps the face near the
+    /// front photo's own resolution (1024 left it at ~350 px across, visibly soft).
+    static let textureSide = 2048
+    /// The front photo owns the front of the face: its weight ramps up smoothly (no step, which drew a hard oval seam)
+    /// from this facing…
+    static let frontRampStart: Float = 0.4
+    /// …to full dominance here (~45°).
+    static let frontRampEnd: Float = 0.7
     static let frontDominance: Float = 6
+    static let bleedCells = 6
     /// Views count only where they see the surface better than this (cosine between surface direction and view).
     static let minimumFacing: Float = 0.25
     /// A view's own measured normal must face it at least this much (edge-on depth is unreliable).
@@ -129,7 +135,9 @@ public enum MultiViewFusion {
             let f = facing(view, p)
             guard f > MultiViewFusion.minimumFacing else { return 0 }
             let base = pow(f - MultiViewFusion.minimumFacing, 3)
-            return view == 0 && f > MultiViewFusion.frontOwnsAbove ? base * MultiViewFusion.frontDominance : base
+            guard view == 0 else { return base }
+            return base * (1 + (MultiViewFusion.frontDominance - 1) * MultiViewFusion.smoothstep(
+                MultiViewFusion.frontRampStart, MultiViewFusion.frontRampEnd, f))
         }
 
         func seen(by view: Int, _ p: SIMD3<Float>) -> (u: Float, v: Float)? {
@@ -227,30 +235,38 @@ public enum MultiViewFusion {
 
     // MARK: - Colour
 
-    /// One brightness gain per side view so its exposure matches the front's where both see the same skin.
-    /// Brightness only — skin colour must stay true to each photo.
-    static func brightnessGains(_ frame: HeadFrame) -> [Float] {
-        var gains = [Float](repeating: 1, count: frame.views.count)
+    static func smoothstep(_ edge0: Float, _ edge1: Float, _ x: Float) -> Float {
+        let t = min(max((x - edge0) / (edge1 - edge0), 0), 1)
+        return t * t * (3 - 2 * t)
+    }
+
+    /// Per-channel gains for each side view so its exposure and white balance match the front photo where both see
+    /// the same skin (each shot is auto-exposed and auto-white-balanced on its own, which left pink sides against a
+    /// yellower front). The front photo is the reference and is never changed.
+    static let gainLimits: ClosedRange<Float> = 0.8...1.25
+
+    static func brightnessGains(_ frame: HeadFrame) -> [SIMD3<Float>] {
+        var gains = [SIMD3<Float>](repeating: SIMD3(1, 1, 1), count: frame.views.count)
         for index in 1..<frame.views.count {
             let view = frame.views[index]
-            var ratios: [Float] = []
+            var ratios: [SIMD3<Float>] = []
             for pixel in stride(from: 0, to: view.width * view.height, by: 7) where view.mask[pixel] {
                 let p = frame.poses[index].apply(view.points[pixel])
                 guard let inFront = frame.seen(by: 0, p) else { continue }
                 let own = sample(view.photo, u: (Float(pixel % view.width) + 0.5) / Float(view.width),
                                  v: (Float(pixel / view.width) + 0.5) / Float(view.height))
                 let reference = sample(frame.views[0].photo, u: inFront.u, v: inFront.v)
-                let ownLuma = luma(own), referenceLuma = luma(reference)
-                if ownLuma > 20 { ratios.append(referenceLuma / ownLuma) }
+                if min(own.x, own.y, own.z) > 20 { ratios.append(reference / own) }
             }
             guard ratios.count > 200 else { continue }
-            ratios.sort()
-            gains[index] = min(max(ratios[ratios.count / 2], 0.85), 1.2)
+            func median(_ channel: KeyPath<SIMD3<Float>, Float>) -> Float {
+                let sorted = ratios.map { $0[keyPath: channel] }.sorted()
+                return min(max(sorted[sorted.count / 2], gainLimits.lowerBound), gainLimits.upperBound)
+            }
+            gains[index] = SIMD3(median(\.x), median(\.y), median(\.z))
         }
         return gains
     }
-
-    private static func luma(_ c: SIMD3<Float>) -> Float { 0.3 * c.x + 0.59 * c.y + 0.11 * c.z }
 
     /// Bilinear RGB sample at normalized (top-left) coordinates.
     static func sample(_ photo: PhotoPixels, u: Float, v: Float) -> SIMD3<Float> {
@@ -270,7 +286,7 @@ public enum MultiViewFusion {
 
     // MARK: - Mesh + texture
 
-    static func buildResult(_ frame: HeadFrame, radius: [Float], gains: [Float]) -> Result? {
+    static func buildResult(_ frame: HeadFrame, radius: [Float], gains: [SIMD3<Float>]) -> Result? {
         var points: [SIMD3<Float>] = [], uvs: [SIMD2<Float>] = [], projected: [SIMD2<Float>] = []
         var node = [Int](repeating: -1, count: columns * rows)
         for r in 0..<rows {
@@ -348,7 +364,7 @@ public enum MultiViewFusion {
     }
 
     /// Azimuth across, height down; every texel blends the photos that see that point of the head.
-    static func bakeTexture(_ frame: HeadFrame, radius: [Float], gains: [Float]) -> PhotoPixels {
+    static func bakeTexture(_ frame: HeadFrame, radius: [Float], gains: [SIMD3<Float>]) -> PhotoPixels {
         let side = textureSide
         var rgba = [UInt8](repeating: 0, count: side * side * 4)
         var covered = [Bool](repeating: false, count: side * side)
@@ -385,8 +401,9 @@ public enum MultiViewFusion {
                 covered[ty * side + tx] = true
             }
         }
-        // Bleed colour outward so mesh edges (and texels no view claimed) never sample empty texture.
-        for _ in 0..<24 {
+        // Bleed colour outward so mesh edges (and texels no view claimed) never sample empty texture: about six grid
+        // cells' worth, whatever the texture size.
+        for _ in 0..<(bleedCells * side / columns) {
             var next = rgba
             var nextCovered = covered
             var changed = false

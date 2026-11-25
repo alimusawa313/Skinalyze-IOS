@@ -38,6 +38,9 @@ struct ShelfView: View {
         static let bubbleReasons = 2
     }
 
+    /// How far Pimpi is lifted out of the ground so its feet land on the hill's crest.
+    private static var pimpiLift: CGFloat { ShelfPlace.hillRise + Metrics.pimpiStand - Metrics.pimpiFeet }
+
     private var results: [CatalogProduct] {
         let trimmed = query.trimmingCharacters(in: .whitespaces)
         return trimmed.isEmpty ? [] : Array(ProductCatalog.shared.search(trimmed).prefix(Metrics.maxResults))
@@ -250,12 +253,17 @@ struct ShelfView: View {
             }
             .frame(maxWidth: .infinity)
         } else {
-            HStack(alignment: .top, spacing: Spacing.xs) {
+            HStack(alignment: .pimpiMiddle, spacing: Spacing.xs) {
                 PokablePimpi(mood: mood(result), size: Metrics.pimpi, onPoke: poke)
-                    // Lifted out of the ground so its feet land on the crest.
-                    .padding(.top, -(ShelfPlace.hillRise + Metrics.pimpiStand - Metrics.pimpiFeet))
-                bubble(product, result: result).frame(maxWidth: .infinity, alignment: .leading)
+                    .alignmentGuide(.pimpiMiddle) { d in d.height / 2 }
+                // Beside Pimpi, level with its middle; a bubble taller than Pimpi lines up with its top instead,
+                // so it never rises into the shelf above.
+                bubble(product, result: result)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .alignmentGuide(.pimpiMiddle) { d in min(d.height, Metrics.pimpi) / 2 }
             }
+            // The row is lifted out of the ground so Pimpi's feet land on the crest, its bubble beside it.
+            .padding(.top, -Self.pimpiLift)
         }
     }
 }
@@ -481,4 +489,13 @@ private struct ShelfSlot: View {
         case .sunscreen: Color.ds.sun
         }
     }
+}
+
+private extension VerticalAlignment {
+    /// The middle of Pimpi on the Shelf, so its bubble sits level with it.
+    enum PimpiMiddle: AlignmentID {
+        static func defaultValue(in context: ViewDimensions) -> CGFloat { context[VerticalAlignment.center] }
+    }
+
+    static let pimpiMiddle = VerticalAlignment(PimpiMiddle.self)
 }

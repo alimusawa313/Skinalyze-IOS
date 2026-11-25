@@ -501,6 +501,7 @@ struct ScanResultView: View {
             Toggle(isOn: $shows3D.animation(motion)) { Label("3D view", systemImage: "cube.transparent") }
                 .toggleStyle(.button)
                 .buttonStyle(.chunky(shows3D ? .filled : .plain, fullWidth: false))
+                .accessibilityIdentifier("toggle3D")
         }
     }
 

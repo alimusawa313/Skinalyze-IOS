@@ -61,7 +61,11 @@ struct ScanPhotoView: View {
                     follow(detection)
                 }
             })
+            .frame(width: SpotDetail.popoverWidth)
+            .fixedSize(horizontal: false, vertical: true)
             .presentationCompactAdaptation(.popover)
+            // Solid, so the photo never shows through the words.
+            .presentationBackground(Color.ds.surface)
         }
         .sensoryFeedback(.selection, trigger: isSelected)
         .accessibilityLabel(SpotDetail.label(type: detection.lesionType, zone: detection.zone))
@@ -118,6 +122,10 @@ struct SpotDetail: View {
     private enum Metrics {
         static let width: CGFloat = 260
     }
+
+    /// Width of the pop-up on a scan photo. A pop-up sizes itself from its content's ideal size; with only a cap the
+    /// note is measured as one long line, the wrapped text overflows and the top and bottom get cut off.
+    static let popoverWidth = Metrics.width
 
     static func label(type: LesionType?, zone: FaceZone?) -> String {
         let name = type.map(LesionGlyph.displayName(for:)) ?? String(localized: "Spot")

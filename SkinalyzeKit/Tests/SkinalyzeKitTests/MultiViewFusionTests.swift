@@ -143,6 +143,25 @@ struct MultiViewFusionTests {
         }
     }
 
+    @Test("The texture keeps the face near photo resolution (2048 across the wrapped head)")
+    func textureResolution() throws {
+        let result = try #require(MultiViewFusion.fuse(front: Self.view(yaw: 0), sides: [Self.view(yaw: Self.rightYaw), Self.view(yaw: Self.leftYaw)]))
+        #expect(result.texture.width == 2048 && result.texture.height == 2048)
+    }
+
+    @Test("The front photo takes over smoothly, with no step that would draw a seam")
+    func frontRampHasNoStep() {
+        let start = MultiViewFusion.frontRampStart, end = MultiViewFusion.frontRampEnd
+        #expect(MultiViewFusion.smoothstep(start, end, start) == 0)
+        #expect(MultiViewFusion.smoothstep(start, end, end) == 1)
+        var previous: Float = 0
+        for step in 0...100 {
+            let value = MultiViewFusion.smoothstep(start, end, start + (end - start) * Float(step) / 100)
+            #expect(value >= previous && value - previous < 0.02)
+            previous = value
+        }
+    }
+
     @Test("Without usable side views there is no fused result (the caller keeps the front-only scan)")
     func noSidesNoFusion() {
         #expect(MultiViewFusion.fuse(front: Self.view(yaw: 0), sides: []) == nil)

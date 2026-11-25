@@ -40,7 +40,7 @@ final class VisualTourUITests: XCTestCase {
         }
 
         // Result: chapters + 3D hero.
-        let toggle = app.switches["3D view"]
+        let toggle = app.descendants(matching: .any)["toggle3D"]
         for _ in 0..<3 where !toggle.exists {
             app.buttons["mirrorIndex"].tap()
             _ = toggle.waitForExistence(timeout: 4)
@@ -55,8 +55,9 @@ final class VisualTourUITests: XCTestCase {
         app.buttons["What helps"].tap()
         sleep(1)
         snap("05 Result · What helps")
-        app.swipeDown()
-        app.swipeDown()
+        // Back to the top by tapping the status bar (a swipe on the 3D head turns it instead of scrolling).
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.01)).tap()
+        sleep(2) // let the scroll settle: a tap while it is still moving only stops it
         if toggle.exists {
             toggle.tap()
             sleep(1)
@@ -103,6 +104,13 @@ final class VisualTourUITests: XCTestCase {
         app.buttons["dock.shelf"].tap()
         sleep(2)
         snap("10 Shelf")
+        // Poke Pimpi for a longer line: the bubble must stay beside Pimpi, level with it.
+        let shelfPimpi = app.buttons["Pimpi"].firstMatch
+        if shelfPimpi.exists {
+            for _ in 0..<3 { shelfPimpi.tap() }
+            sleep(1)
+            snap("10b Shelf · Pimpi poked")
+        }
         let field = app.textFields["shelfSearch"]
         if field.waitForExistence(timeout: 5) {
             field.tap()
