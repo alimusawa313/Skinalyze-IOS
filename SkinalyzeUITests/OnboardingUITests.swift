@@ -27,6 +27,14 @@ final class OnboardingUITests: XCTestCase {
         attachment.name = name
         attachment.lifetime = .keepAlways
         add(attachment)
+        // iPhone Duo: the app's own screenshot is the outer display; when open, the app is on the inner one. Every
+        // other screen is attached too ("<name> · screen 2"), so each pose's picture is in the results.
+        for (index, screen) in XCUIScreen.screens.enumerated() where index > 0 {
+            let extra = XCTAttachment(screenshot: screen.screenshot())
+            extra.name = "\(name) · screen \(index + 1)"
+            extra.lifetime = .keepAlways
+            add(extra)
+        }
     }
 
     private var next: XCUIElement { app.buttons["onboardingContinue"] }

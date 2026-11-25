@@ -19,6 +19,8 @@ struct OnboardingView: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var scene: OnboardingScene = .wake
+    /// iPhone Duo half folded with the hinge across the screen: Pimpi above the fold, the question and button below.
+    @State private var hasHorizontalFold = false
     @State private var flow = OnboardingSceneState()
     /// Every answer makes Pimpi hop.
     @State private var cheers = 0
@@ -34,6 +36,8 @@ struct OnboardingView: View {
         static let hillAbove: CGFloat = 36
         /// Where the hill starts on short and wide screens, as a fraction of the height.
         static let wideCrest: CGFloat = 0.72
+        /// Tabletop: the hill starts at the fold, so the lower half is ground.
+        static let tabletopCrest: CGFloat = 0.5
     }
 
     var body: some View {
@@ -45,13 +49,22 @@ struct OnboardingView: View {
                     AdaptivePair(.split) {
                         host(size: Metrics.pimpi).frame(maxHeight: .infinity)
                     } secondary: {
-                        VStack(spacing: 0) {
-                            scrollingContent
-                            footer.onHill()
-                        }
+                        scrollingContent.safeAreaInset(edge: .bottom, spacing: 0) { footerOnFlatHill }
                     }
                 }
                 .dsHill(crest: Metrics.wideCrest, showsFarHill: true)
+            } else if hasHorizontalFold {
+                // Tabletop: nothing on the fold. The system's split puts Pimpi on the upper half (seen from a
+                // distance) and the question, options and button on the lower, stable half (for touch).
+                VStack(spacing: 0) {
+                    header
+                    AdaptivePair(.split) {
+                        host(size: Metrics.pimpiReading).frame(maxHeight: .infinity)
+                    } secondary: {
+                        scrollingContent.safeAreaInset(edge: .bottom, spacing: 0) { footerOnFlatHill }
+                    }
+                }
+                .dsHill(crest: Metrics.tabletopCrest, showsFarHill: true)
             } else if verticalSizeClass == .compact {
                 // A phone on its side, the iPhone Duo's outer display in landscape: Pimpi on the left.
                 VStack(spacing: 0) {
@@ -59,11 +72,9 @@ struct OnboardingView: View {
                     HStack(spacing: Spacing.lg) {
                         host(size: Metrics.pimpiCompact)
                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-                        VStack(spacing: 0) {
-                            scrollingContent
-                            footer.onHill()
-                        }
-                        .frame(maxWidth: .infinity)
+                        scrollingContent
+                            .safeAreaInset(edge: .bottom, spacing: 0) { footerOnFlatHill }
+                            .frame(maxWidth: .infinity)
                     }
                 }
                 .dsHill(crest: Metrics.wideCrest, showsFarHill: true)
@@ -72,15 +83,19 @@ struct OnboardingView: View {
                     header
                     host(size: readingScenes.contains(scene) || dynamicTypeSize.isAccessibilitySize
                          ? Metrics.pimpiReading : Metrics.pimpi)
-                    scrollingContent
-                    footer
-                        .padding(.top, Metrics.hillAbove)
-                        .background(alignment: .top) { hill }
-                        .onHill()
+                    // The footer is the scroll view's bottom inset: options scroll behind the hill (never under the
+                    // button), and the last one can always scroll fully above it.
+                    scrollingContent.safeAreaInset(edge: .bottom, spacing: 0) {
+                        footer
+                            .padding(.top, Metrics.hillAbove)
+                            .background(alignment: .top) { hill }
+                            .onHill()
+                    }
                 }
                 .background(Color.ds.canvas.ignoresSafeArea())
             }
         }
+        .onHorizontalFoldChange { hasHorizontalFold = $0 }
         .onAppear {
             #if DEBUG
             if UserDefaults.standard.bool(forKey: "resetOnboarding") { storedScene = nil }
@@ -155,6 +170,24 @@ struct OnboardingView: View {
             .fill(Color.ds.hill)
             .ignoresSafeArea(edges: [.bottom, .horizontal])
             .accessibilityHidden(true)
+    }
+
+    /// The footer where the whole screen already stands on a hill (wide and landscape layouts): an opaque strip of
+    /// hill behind the button with a soft top edge, so scrolled options pass behind it instead of under the button.
+    private var footerOnFlatHill: some View {
+        footer
+            .padding(.top, Spacing.sm)
+            .background(alignment: .top) {
+                VStack(spacing: 0) {
+                    LinearGradient(colors: [Color.ds.hill.opacity(0), Color.ds.hill], startPoint: .top, endPoint: .bottom)
+                        .frame(height: Spacing.md)
+                    Color.ds.hill
+                }
+                .padding(.top, -Spacing.md)
+                .ignoresSafeArea(edges: .bottom)
+                .accessibilityHidden(true)
+            }
+            .onHill()
     }
 
     @ViewBuilder private var footer: some View {
