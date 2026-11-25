@@ -10,6 +10,9 @@ DERIVED="${DERIVED_DATA:-$ROOT/.build/DerivedData}"
 echo "▶ SkinalyzeKit (swift test)"
 (cd "$ROOT/SkinalyzeKit" && swift test)
 
+echo "▶ DetectorBench (swift test)"
+(cd "$ROOT/Tools/DetectorBench" && swift test)
+
 echo "▶ Generate project"
 (cd "$ROOT" && xcodegen generate --quiet)
 

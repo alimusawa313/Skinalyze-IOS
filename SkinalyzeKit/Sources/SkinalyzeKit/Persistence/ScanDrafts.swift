@@ -66,6 +66,8 @@ public struct ScanDraft: Sendable, Hashable {
     public let createdAt: Date
     public let captureMode: CaptureMode
     public let modelVersion: String
+    /// `DetectionPipeline.shippingVersion` the scan was counted with; `nil` for converted legacy scans.
+    public let pipelineVersion: String?
     public let counts: LesionCounts
     public let legacyScore: Int
     public let captures: [CaptureDraft]
@@ -78,6 +80,7 @@ public struct ScanDraft: Sendable, Hashable {
         createdAt: Date,
         captureMode: CaptureMode,
         modelVersion: String,
+        pipelineVersion: String? = nil,
         counts: LesionCounts,
         legacyScore: Int,
         captures: [CaptureDraft],
@@ -88,6 +91,7 @@ public struct ScanDraft: Sendable, Hashable {
         self.createdAt = createdAt
         self.captureMode = captureMode
         self.modelVersion = modelVersion
+        self.pipelineVersion = pipelineVersion
         self.counts = counts
         self.legacyScore = legacyScore
         self.captures = captures

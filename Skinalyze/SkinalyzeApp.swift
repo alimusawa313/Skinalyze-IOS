@@ -32,6 +32,7 @@ struct SkinalyzeApp: App {
                     #if DEBUG
                     await proAccess.start(container: container, seedsDemoData: DemoData.isRequested)
                     await DemoData.seedIfRequested(into: container)
+                    BenchPhotoExport.runIfRequested(container: container)
                     #else
                     await proAccess.start(container: container)
                     #endif

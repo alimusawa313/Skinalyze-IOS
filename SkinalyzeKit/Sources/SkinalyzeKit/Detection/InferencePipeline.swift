@@ -64,21 +64,13 @@ public enum DetectionFilter {
         return union > 0 ? intersection / union : 0
     }
 
-    /// Confidence threshold + **cross-class** non-maximum suppression: one lesion is counted once,
-    /// under its most confident label.
+    /// One confidence threshold for every class + cross-class NMS (see `filter(_:thresholds:iouThreshold:)`).
     public static func filter(
         _ detections: [RawDetection],
         minConfidence: Double = defaultMinConfidence,
         iouThreshold: Double = defaultIoUThreshold
     ) -> [RawDetection] {
-        let candidates = detections
-            .filter { $0.confidence >= minConfidence }
-            .sorted { $0.confidence > $1.confidence }
-        return candidates.reduce(into: [RawDetection]()) { kept, candidate in
-            if kept.allSatisfy({ iou($0.box, candidate.box) < iouThreshold }) {
-                kept.append(candidate)
-            }
-        }
+        filter(detections, thresholds: .uniform(minConfidence), iouThreshold: iouThreshold)
     }
 }
 
