@@ -3,15 +3,18 @@ import SwiftUI
 import SkinalyzeKit
 import VisionKit
 
-// P8 barcode scan. The catalog has no barcodes, so a barcode is linked to a product once (remembered on this phone),
+// P8 barcode scan. Catalog products imported from Open Beauty Facts carry their barcode; any other barcode is linked
+// to a product once (remembered on this phone),
 // or — only when the user taps for it — looked up in Open Beauty Facts, a free public product database. Only the
 // barcode number is sent; nothing about the user.
 
 enum BarcodeLinks {
     private static let key = "barcodeLinks"
 
+    /// A product this phone linked the barcode to, else the catalog product carrying that barcode.
     static func product(for code: String) -> CatalogProduct? {
         (UserDefaults.standard.dictionary(forKey: key)?[code] as? Int).flatMap { ProductCatalog.shared.product(id: $0) }
+            ?? ProductCatalog.shared.product(barcode: code)
     }
 
     static func link(_ code: String, to productID: Int) {

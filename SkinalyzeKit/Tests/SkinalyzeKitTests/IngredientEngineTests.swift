@@ -27,6 +27,88 @@ struct IngredientParserTests {
     }
 }
 
+@Suite("Ingredient knowledge base")
+struct IngredientKnowledgeTests {
+    private func categories(_ ingredient: String) -> Set<IngredientCategory> {
+        IngredientKnowledge.match(ingredient)?.categories ?? []
+    }
+
+    @Test("Every name and alias is a unique, lowercase-able key — no two entries claim the same spelling")
+    func uniqueKeys() {
+        var owners: [String: String] = [:]
+        for entry in IngredientKnowledge.entries {
+            for key in [entry.name.lowercased()] + entry.aliases {
+                #expect(key == key.lowercased().trimmingCharacters(in: .whitespacesAndNewlines), "alias '\(key)' must be lowercase")
+                #expect(key != "alcohol", "plain 'alcohol' would catch fatty alcohols")
+                if let owner = owners[key], owner != entry.name {
+                    Issue.record("'\(key)' belongs to both \(owner) and \(entry.name)")
+                }
+                owners[key] = entry.name
+            }
+        }
+        #expect(Set(IngredientKnowledge.entries.map(\.name)).count == IngredientKnowledge.entries.count, "entry names are unique")
+        #expect(IngredientKnowledge.entries.count >= 140)
+        #expect(IngredientKnowledge.entries.allSatisfy { !$0.categories.isEmpty })
+    }
+
+    @Test("Real INCI spellings of actives match the right category", arguments: [
+        ("tretinoin", IngredientCategory.retinoid), ("retinyl propionate", .retinoid), ("retinyl acetate", .retinoid),
+        ("hydroxypinacolone retinoate", .retinoid), ("adapalene 0.1%", .retinoid),
+        ("gluconolactone", .exfoliantAHA), ("lactobionic acid", .exfoliantAHA), ("asam glikolat", .exfoliantAHA),
+        ("capryloyl salicylic acid", .exfoliantBHA), ("asam salisilat", .exfoliantBHA),
+        ("benzoyl peroxide 2.5%", .benzoylPeroxide), ("magnesium ascorbyl phosphate", .vitaminC),
+        ("3-o-ethyl ascorbic acid", .vitaminC), ("tetrahexyldecyl ascorbate", .vitaminC),
+        ("sodium acetylated hyaluronate", .humectant), ("sodium hyaluronate crosspolymer", .humectant),
+        ("butylene glycol", .humectant), ("sodium pca", .humectant), ("urea", .humectant), ("trehalose", .humectant),
+        ("ceramide ns", .barrier), ("cholesterol", .barrier), ("phytosphingosine", .barrier),
+        ("butyrospermum parkii butter", .emollient), ("caprylic/capric triglyceride", .emollient), ("dimethicone", .emollient),
+        ("madecassic acid", .soothing), ("dipotassium glycyrrhizate", .soothing), ("bisabolol", .soothing),
+        ("aloe barbadensis leaf juice", .soothing), ("avena sativa kernel flour", .soothing), ("ectoin", .soothing),
+        ("linalool", .fragrance), ("limonene", .fragrance), ("hexyl cinnamal", .fragrance), ("citronellol", .fragrance),
+        ("lavandula angustifolia oil", .essentialOil), ("citrus limon peel oil", .essentialOil),
+        ("mentha piperita oil", .essentialOil), ("citrus aurantium bergamia fruit oil", .essentialOil),
+        ("sd alcohol 40-b", .dryingAlcohol), ("isopropyl alcohol", .dryingAlcohol),
+        ("sodium coco-sulfate", .harshSurfactant), ("sodium lauryl sulphate", .harshSurfactant),
+        ("isopropyl isostearate", .comedogenicOil), ("myristyl myristate", .comedogenicOil),
+        ("triticum vulgare germ oil", .comedogenicOil), ("ethylhexyl palmitate", .comedogenicOil),
+    ])
+    func activesMatch(ingredient: String, category: IngredientCategory) {
+        #expect(categories(ingredient).contains(category), "\(ingredient) → \(category)")
+    }
+
+    @Test("Fatty alcohols, benzyl alcohol and ethanol look-alikes are never drying alcohol", arguments: [
+        "cetyl alcohol", "cetearyl alcohol", "stearyl alcohol", "behenyl alcohol", "myristyl alcohol", "arachidyl alcohol",
+        "lauryl alcohol", "isostearyl alcohol", "c14-22 alcohols", "lanolin alcohol", "benzyl alcohol", "phenethyl alcohol",
+        "phenoxyethanol", "triethanolamine", "ethanolamine", "polyvinyl alcohol", "t-butyl alcohol", "alcohol",
+    ])
+    func notDryingAlcohol(ingredient: String) {
+        #expect(!categories(ingredient).contains(.dryingAlcohol), "\(ingredient)")
+    }
+
+    @Test("Common neutral INCI names and look-alikes of known ones stay neutral", arguments: [
+        "water", "aqua", "phenoxyethanol", "ethylhexylglycerin", "caprylyl glycol", "1,2-hexanediol", "disodium edta",
+        "xanthan gum", "carbomer", "tocopherol", "tocopheryl acetate", "sodium benzoate", "potassium sorbate", "citric acid",
+        "sodium citrate", "sodium hydroxide", "glyceryl stearate", "peg-100 stearate", "stearic acid", "titanium dioxide",
+        "zinc oxide", "ethylhexyl salicylate", "homosalate", "butyloctyl salicylate", "ethylhexyl methoxycinnamate",
+        "cocamidopropyl betaine", "coco-betaine", "sodium laureth sulfate", "butylene glycol dicaprylate/dicaprate",
+        "propylene glycol dicaprylate/dicaprate", "lactic acid/glycolic acid copolymer", "imidazolidinyl urea",
+        "curcuma aromatica root oil", "salix alba bark extract", "methylparaben", "polyglycerin-3 methylglucose distearate",
+        "bha", "bht", "peg-10 dimethicone", "butyrospermum parkii seedcake extract", "vitamin e", "vitamin b5",
+    ])
+    func neutral(ingredient: String) {
+        #expect(IngredientKnowledge.match(ingredient) == nil, "\(ingredient) matched \(IngredientKnowledge.match(ingredient)?.name ?? "")")
+    }
+
+    @Test("Contained matches still catch percentages and plant-part variants")
+    func containedVariants() {
+        #expect(IngredientKnowledge.match("niacinamide 5%")?.name == "Niacinamide")
+        #expect(IngredientKnowledge.match("centella asiatica leaf extract")?.name == "Centella asiatica")
+        #expect(IngredientKnowledge.match("hydrolyzed hyaluronic acid")?.name == "Hyaluronic acid")
+        #expect(IngredientKnowledge.match("aloe barbadensis leaf juice powder")?.categories.contains(.soothing) == true)
+        #expect(IngredientKnowledge.match("hydrogenated cocos nucifera oil")?.name == "Coconut oil")
+    }
+}
+
 @Suite("Product verdicts")
 struct ProductVerdictTests {
     private func profile(_ type: SkinType = .normal, sensitive: Bool = false,

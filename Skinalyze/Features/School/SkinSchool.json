@@ -372,6 +372,830 @@
           ]
         }
       ]
+    },
+    {
+      "id": "routine-basics",
+      "title": { "en": "Routine basics", "id": "Dasar-dasar rutinitas" },
+      "lessons": [
+        {
+          "id": "routine-order",
+          "reviewed": false,
+          "title": { "en": "Morning and night, in order", "id": "Pagi dan malam, berurutan" },
+          "cards": [
+            { "en": "A simple morning routine has three steps: cleanser, moisturiser, then sunscreen.", "id": "Rutinitas pagi yang sederhana punya tiga langkah: pembersih, pelembap, lalu tabir surya." },
+            { "en": "A common rule of thumb: thinnest to thickest — watery serums first, creams after.", "id": "Patokan yang umum: dari yang paling encer ke yang paling kental — serum cair dulu, krim belakangan." },
+            { "en": "In the morning, sunscreen goes on last, on top of your moisturiser.", "id": "Di pagi hari, tabir surya dipakai paling akhir, di atas pelembap." },
+            { "en": "At night, wash off the day's sunscreen and makeup, then use any active, then moisturiser.", "id": "Malam hari, bersihkan tabir surya dan riasan seharian, lalu pakai bahan aktif kalau ada, lalu pelembap." },
+            { "en": "Some actives, like retinoids, are usually used at night.", "id": "Beberapa bahan aktif, seperti retinoid, biasanya dipakai di malam hari." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "In the morning, which step usually goes last?", "id": "Di pagi hari, langkah mana yang biasanya paling akhir?" },
+              "options": [
+                { "en": "Cleanser", "id": "Pembersih" },
+                { "en": "Serum", "id": "Serum" },
+                { "en": "Sunscreen", "id": "Tabir surya" }
+              ],
+              "answer": 2,
+              "explain": { "en": "Sunscreen goes on last in the morning, on top of moisturiser.", "id": "Tabir surya dipakai paling akhir di pagi hari, di atas pelembap." }
+            },
+            {
+              "question": { "en": "What's a common rule for the order of products?", "id": "Apa patokan umum untuk urutan produk?" },
+              "options": [
+                { "en": "Thinnest to thickest", "id": "Dari yang paling encer ke yang paling kental" },
+                { "en": "Thickest first", "id": "Yang paling kental dulu" },
+                { "en": "Whatever is closest to hand", "id": "Apa saja yang paling dekat" }
+              ],
+              "answer": 0,
+              "explain": { "en": "Thin, watery products usually go on before thicker creams.", "id": "Produk yang encer biasanya dipakai sebelum krim yang lebih kental." }
+            }
+          ],
+          "sources": [
+            { "title": "American Academy of Dermatology — Your winter skin survival kit", "url": "https://www.aad.org/public/everyday-care/skin-care-basics/care/winter-skin-survival-kit" },
+            { "title": "American Academy of Dermatology — Face washing 101", "url": "https://www.aad.org/public/everyday-care/skin-care-basics/care/face-washing-101" },
+            { "title": "DermNet — Topical retinoids", "url": "https://dermnetnz.org/topics/topical-retinoids" }
+          ]
+        },
+        {
+          "id": "how-much-product",
+          "reviewed": false,
+          "title": { "en": "How much to use", "id": "Seberapa banyak yang dipakai" },
+          "cards": [
+            { "en": "More product doesn't work faster. With actives, extra often just means extra dryness or irritation.", "id": "Lebih banyak produk tidak bekerja lebih cepat. Untuk bahan aktif, kebanyakan sering cuma bikin kulit lebih kering atau iritasi." },
+            { "en": "For spot products, dermatologists suggest a thin, even layer over the whole area where spots tend to appear — not a dab on each spot.", "id": "Untuk produk jerawat, dokter kulit menyarankan lapisan tipis dan rata di seluruh area yang sering berjerawat — bukan ditotol di tiap jerawat." },
+            { "en": "Moisturiser: enough to cover your face without a greasy layer. Too much can clog pores.", "id": "Pelembap: cukup untuk menutupi wajah tanpa meninggalkan lapisan berminyak. Terlalu banyak bisa menyumbat pori." },
+            { "en": "Sunscreen is the exception — most people use too little, so be generous.", "id": "Tabir surya pengecualiannya — kebanyakan orang memakai terlalu sedikit, jadi jangan pelit." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "How do dermatologists suggest putting on a spot product?", "id": "Bagaimana dokter kulit menyarankan memakai produk jerawat?" },
+              "options": [
+                { "en": "A dab on each spot only", "id": "Ditotol di tiap jerawat saja" },
+                { "en": "A thin layer over the whole area", "id": "Lapisan tipis di seluruh area" },
+                { "en": "As thick as possible", "id": "Setebal mungkin" }
+              ],
+              "answer": 1,
+              "explain": { "en": "A thin, even layer over the area where spots tend to appear is what dermatologists suggest.", "id": "Lapisan tipis dan rata di area yang sering berjerawat adalah saran dokter kulit." }
+            },
+            {
+              "question": { "en": "Which product do most people use too little of?", "id": "Produk mana yang biasanya dipakai terlalu sedikit?" },
+              "options": [
+                { "en": "Sunscreen", "id": "Tabir surya" },
+                { "en": "Cleanser", "id": "Pembersih" },
+                { "en": "Toner", "id": "Toner" }
+              ],
+              "answer": 0,
+              "explain": { "en": "Most people put on far less sunscreen than they need.", "id": "Kebanyakan orang memakai tabir surya jauh lebih sedikit dari yang dibutuhkan." }
+            }
+          ],
+          "sources": [
+            { "title": "American Academy of Dermatology — 10 skin care habits that can worsen acne", "url": "https://www.aad.org/public/diseases/acne/skin-care/habits-stop" },
+            { "title": "American Academy of Dermatology — How to control oily skin", "url": "https://www.aad.org/public/everyday-care/skin-care-basics/dry/oily-skin" },
+            { "title": "American Academy of Dermatology — Sunscreen FAQs", "url": "https://www.aad.org/public/everyday-care/sun-protection/shade-clothing-sunscreen/sunscreen-faqs" }
+          ]
+        },
+        {
+          "id": "give-it-time",
+          "reviewed": false,
+          "title": { "en": "Give it 6 to 8 weeks", "id": "Beri waktu 6 sampai 8 minggu" },
+          "cards": [
+            { "en": "Skin products work slowly. Dermatologists suggest using one for 6 to 8 weeks before deciding.", "id": "Produk perawatan kulit bekerja perlahan. Dokter kulit menyarankan memakainya 6 sampai 8 minggu sebelum memutuskan." },
+            { "en": "Switching products every week or so can irritate your skin.", "id": "Gonta-ganti produk tiap minggu bisa membuat kulitmu iritasi." },
+            { "en": "Some products take a few months to show their full effect.", "id": "Beberapa produk butuh beberapa bulan untuk menunjukkan hasil penuhnya." },
+            { "en": "Your scans make the wait easier — Compare shows slow changes that are easy to miss in the mirror.", "id": "Scan-mu membuat menunggu lebih mudah — Bandingkan menunjukkan perubahan pelan yang mudah terlewat di cermin." },
+            { "en": "No change after 6 to 8 weeks? That's a good time to try something else or ask a dermatologist.", "id": "Belum ada perubahan setelah 6 sampai 8 minggu? Itu saat yang pas untuk mencoba yang lain atau bertanya ke dokter kulit." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "How long do dermatologists suggest trying a product?", "id": "Berapa lama dokter kulit menyarankan mencoba sebuah produk?" },
+              "options": [
+                { "en": "2 or 3 days", "id": "2 atau 3 hari" },
+                { "en": "6 to 8 weeks", "id": "6 sampai 8 minggu" },
+                { "en": "Just one night", "id": "Satu malam saja" }
+              ],
+              "answer": 1,
+              "explain": { "en": "Most products need 6 to 8 weeks before you can judge them.", "id": "Kebanyakan produk butuh 6 sampai 8 minggu sebelum bisa dinilai." }
+            },
+            {
+              "question": { "en": "What can switching products every week do?", "id": "Apa akibat gonta-ganti produk tiap minggu?" },
+              "options": [
+                { "en": "Irritate your skin", "id": "Membuat kulit iritasi" },
+                { "en": "Speed things up", "id": "Mempercepat hasil" },
+                { "en": "Nothing at all", "id": "Tidak ada sama sekali" }
+              ],
+              "answer": 0,
+              "explain": { "en": "Frequent switching can irritate skin — giving one product time is gentler.", "id": "Sering ganti produk bisa membuat kulit iritasi — memberi satu produk waktu lebih lembut untuk kulit." }
+            }
+          ],
+          "sources": [
+            { "title": "American Academy of Dermatology — 10 skin care habits that can worsen acne", "url": "https://www.aad.org/public/diseases/acne/skin-care/habits-stop" },
+            { "title": "American Academy of Dermatology — Acne: Tips for managing", "url": "https://www.aad.org/public/diseases/acne/skin-care/tips" }
+          ]
+        },
+        {
+          "id": "one-new-thing",
+          "reviewed": false,
+          "title": { "en": "One new product at a time", "id": "Satu produk baru dulu" },
+          "cards": [
+            { "en": "When you add something new to your routine, add just one product at a time.", "id": "Saat menambah sesuatu yang baru ke rutinitasmu, tambahkan satu produk saja dulu." },
+            { "en": "If your skin reacts, you'll know which product it was.", "id": "Kalau kulitmu bereaksi, kamu jadi tahu produk mana penyebabnya." },
+            { "en": "Patch test it first, then give it a few weeks before adding anything else.", "id": "Uji tempel dulu, lalu beri waktu beberapa minggu sebelum menambah yang lain." },
+            { "en": "Jot down when you started it — comparing scans later is easier when you know what changed.", "id": "Catat kapan kamu mulai memakainya — nanti lebih mudah membandingkan scan kalau kamu tahu apa yang berubah." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "Why add one new product at a time?", "id": "Kenapa menambah satu produk baru dulu?" },
+              "options": [
+                { "en": "It's always cheaper", "id": "Selalu lebih murah" },
+                { "en": "Products never work together", "id": "Produk tidak pernah bisa dipakai bersamaan" },
+                { "en": "If skin reacts, you know which one it was", "id": "Kalau kulit bereaksi, kamu tahu produk mana penyebabnya" }
+              ],
+              "answer": 2,
+              "explain": { "en": "One change at a time makes it clear what your skin is reacting to.", "id": "Satu perubahan dalam satu waktu membuat jelas apa yang membuat kulitmu bereaksi." }
+            },
+            {
+              "question": { "en": "What's a good first step with a new product?", "id": "Apa langkah pertama yang baik untuk produk baru?" },
+              "options": [
+                { "en": "Patch test it", "id": "Uji tempel dulu" },
+                { "en": "Use it all over, twice a day, straight away", "id": "Langsung pakai di seluruh wajah, dua kali sehari" },
+                { "en": "Start three new products together", "id": "Mulai tiga produk baru sekaligus" }
+              ],
+              "answer": 0,
+              "explain": { "en": "A patch test first gives a reaction time to show on a small area.", "id": "Uji tempel dulu memberi waktu bagi reaksi untuk muncul di area kecil." }
+            }
+          ],
+          "sources": [
+            { "title": "American Academy of Dermatology — How to test skin care products before use", "url": "https://www.aad.org/news/how-to-test-skin-care-products-before-use" },
+            { "title": "American Academy of Dermatology — 10 skin care habits that can worsen acne", "url": "https://www.aad.org/public/diseases/acne/skin-care/habits-stop" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "actives-explained",
+      "title": { "en": "Actives, explained", "id": "Bahan aktif, dijelaskan" },
+      "lessons": [
+        {
+          "id": "salicylic-acid",
+          "reviewed": false,
+          "title": { "en": "Salicylic acid (BHA)", "id": "Asam salisilat (BHA)" },
+          "cards": [
+            { "en": "Salicylic acid is a beta hydroxy acid, often shortened to BHA.", "id": "Asam salisilat adalah beta hydroxy acid, sering disingkat BHA." },
+            { "en": "It helps loosen dead skin cells, which can help keep pores clear.", "id": "Bahan ini membantu meluruhkan sel kulit mati, sehingga bisa membantu menjaga pori-pori tetap bersih." },
+            { "en": "You'll find it in many face washes, toners and gels for spot-prone skin.", "id": "Kamu bisa menemukannya di banyak sabun cuci muka, toner, dan gel untuk kulit yang mudah berjerawat." },
+            { "en": "It can be drying. Start a few times a week, use it as the label says, and keep up your moisturiser.", "id": "Bahan ini bisa bikin kulit kering. Mulai beberapa kali seminggu, pakai sesuai petunjuk label, dan tetap pakai pelembap." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "Salicylic acid is a type of…", "id": "Asam salisilat termasuk jenis…" },
+              "options": [
+                { "en": "AHA", "id": "AHA" },
+                { "en": "BHA", "id": "BHA" },
+                { "en": "Sunscreen", "id": "Tabir surya" }
+              ],
+              "answer": 1,
+              "explain": { "en": "Salicylic acid is a beta hydroxy acid — a BHA.", "id": "Asam salisilat adalah beta hydroxy acid — BHA." }
+            },
+            {
+              "question": { "en": "How can salicylic acid help?", "id": "Bagaimana asam salisilat bisa membantu?" },
+              "options": [
+                { "en": "By loosening dead skin cells to help keep pores clear", "id": "Dengan meluruhkan sel kulit mati agar pori tetap bersih" },
+                { "en": "By blocking the sun", "id": "Dengan menghalangi sinar matahari" },
+                { "en": "By adding oil to skin", "id": "Dengan menambah minyak ke kulit" }
+              ],
+              "answer": 0,
+              "explain": { "en": "Loosening dead skin cells can help stop them clogging pores.", "id": "Meluruhkan sel kulit mati bisa membantu mencegahnya menyumbat pori." }
+            }
+          ],
+          "sources": [
+            { "title": "DermNet — Salicylic acid", "url": "https://dermnetnz.org/topics/salicylic-acid" },
+            { "title": "American Academy of Dermatology — Moisturizer: Why you may need it if you have acne", "url": "https://www.aad.org/public/diseases/acne/skin-care/moisturizer" }
+          ]
+        },
+        {
+          "id": "benzoyl-peroxide",
+          "reviewed": false,
+          "title": { "en": "Benzoyl peroxide", "id": "Benzoyl peroxide" },
+          "cards": [
+            { "en": "Benzoyl peroxide is found in many washes, creams and gels for spot-prone skin.", "id": "Benzoyl peroxide ada di banyak sabun, krim, dan gel untuk kulit yang mudah berjerawat." },
+            { "en": "It can help reduce the bacteria in pores that are linked to spots.", "id": "Bahan ini bisa membantu mengurangi bakteri di pori-pori yang berkaitan dengan jerawat." },
+            { "en": "It can dry or irritate skin. Many people start with a lower strength, which is often gentler.", "id": "Bahan ini bisa membuat kulit kering atau iritasi. Banyak orang mulai dari kadar yang lebih rendah, yang biasanya lebih lembut." },
+            { "en": "It can bleach fabric. Let it dry before it touches towels, clothes or pillowcases.", "id": "Bahan ini bisa memudarkan warna kain. Biarkan kering dulu sebelum kena handuk, baju, atau sarung bantal." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "What can benzoyl peroxide do to towels and pillowcases?", "id": "Apa yang bisa dilakukan benzoyl peroxide pada handuk dan sarung bantal?" },
+              "options": [
+                { "en": "Bleach them", "id": "Memudarkan warnanya" },
+                { "en": "Make them softer", "id": "Membuatnya lebih lembut" },
+                { "en": "Nothing", "id": "Tidak ada" }
+              ],
+              "answer": 0,
+              "explain": { "en": "It can bleach fabric, so let it dry before it touches towels or bedding.", "id": "Bahan ini bisa memudarkan warna kain, jadi biarkan kering dulu sebelum kena handuk atau seprai." }
+            },
+            {
+              "question": { "en": "If it feels too drying, what do many people try?", "id": "Kalau terasa terlalu mengeringkan, apa yang dicoba banyak orang?" },
+              "options": [
+                { "en": "A higher strength", "id": "Kadar yang lebih tinggi" },
+                { "en": "A lower strength", "id": "Kadar yang lebih rendah" },
+                { "en": "Using it more often", "id": "Memakainya lebih sering" }
+              ],
+              "answer": 1,
+              "explain": { "en": "Lower strengths are often gentler on skin.", "id": "Kadar yang lebih rendah biasanya lebih lembut untuk kulit." }
+            }
+          ],
+          "sources": [
+            { "title": "DermNet — Benzoyl peroxide", "url": "https://dermnetnz.org/topics/benzoyl-peroxide" },
+            { "title": "American Academy of Dermatology — Moisturizer: Why you may need it if you have acne", "url": "https://www.aad.org/public/diseases/acne/skin-care/moisturizer" }
+          ]
+        },
+        {
+          "id": "retinoids",
+          "reviewed": false,
+          "title": { "en": "Retinoids", "id": "Retinoid" },
+          "cards": [
+            { "en": "Retinoids are a family of vitamin A ingredients. Retinol is common in skin care; adapalene is another, sold over the counter in some countries.", "id": "Retinoid adalah kelompok bahan turunan vitamin A. Retinol umum di produk perawatan kulit; adapalene juga termasuk, dan dijual bebas di beberapa negara." },
+            { "en": "They help skin renew itself and can help keep pores from clogging.", "id": "Retinoid membantu kulit memperbarui diri dan bisa membantu mencegah pori-pori tersumbat." },
+            { "en": "They're usually used at night. Many people start two or three nights a week and build up slowly.", "id": "Biasanya dipakai di malam hari. Banyak orang mulai dua atau tiga malam seminggu, lalu menambah perlahan." },
+            { "en": "They can make skin dry and more sensitive to the sun, so sunscreen every morning matters.", "id": "Retinoid bisa membuat kulit kering dan lebih sensitif terhadap matahari, jadi tabir surya setiap pagi itu penting." },
+            { "en": "Pregnant or trying to be? Check with a doctor or pharmacist before using one.", "id": "Sedang hamil atau merencanakan kehamilan? Tanyakan dulu ke dokter atau apoteker sebelum memakainya." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "When are retinoids usually used?", "id": "Kapan retinoid biasanya dipakai?" },
+              "options": [
+                { "en": "Right before going out in the sun", "id": "Tepat sebelum keluar di bawah matahari" },
+                { "en": "At night", "id": "Malam hari" },
+                { "en": "Only in the morning", "id": "Hanya pagi hari" }
+              ],
+              "answer": 1,
+              "explain": { "en": "Retinoids are usually used at night.", "id": "Retinoid biasanya dipakai di malam hari." }
+            },
+            {
+              "question": { "en": "Why does sunscreen matter more with retinoids?", "id": "Kenapa tabir surya makin penting saat memakai retinoid?" },
+              "options": [
+                { "en": "They stop sunscreen working", "id": "Retinoid membuat tabir surya tidak bekerja" },
+                { "en": "It doesn't matter", "id": "Tidak penting" },
+                { "en": "They can make skin more sensitive to the sun", "id": "Retinoid bisa membuat kulit lebih sensitif terhadap matahari" }
+              ],
+              "answer": 2,
+              "explain": { "en": "Retinoids can make skin more sun-sensitive, so daily sunscreen helps.", "id": "Retinoid bisa membuat kulit lebih sensitif terhadap matahari, jadi tabir surya setiap hari membantu." }
+            }
+          ],
+          "sources": [
+            { "title": "DermNet — Topical retinoids", "url": "https://dermnetnz.org/topics/topical-retinoids" },
+            { "title": "American Academy of Dermatology — Moisturizer: Why you may need it if you have acne", "url": "https://www.aad.org/public/diseases/acne/skin-care/moisturizer" }
+          ]
+        },
+        {
+          "id": "aha-azelaic-vitamin-c",
+          "reviewed": false,
+          "title": { "en": "AHAs, azelaic acid and vitamin C", "id": "AHA, asam azelat, dan vitamin C" },
+          "cards": [
+            { "en": "AHAs, like glycolic and lactic acid, loosen dead cells on the skin's surface.", "id": "AHA, seperti asam glikolat dan asam laktat, meluruhkan sel kulit mati di permukaan kulit." },
+            { "en": "AHAs can make skin more sensitive to the sun — use sunscreen while you use them and for a week after.", "id": "AHA bisa membuat kulit lebih sensitif terhadap matahari — pakai tabir surya selama memakainya dan seminggu sesudahnya." },
+            { "en": "Azelaic acid is found in some products for spot-prone skin, and many people also use it for dark marks.", "id": "Asam azelat ada di beberapa produk untuk kulit yang mudah berjerawat, dan banyak orang juga memakainya untuk noda gelap." },
+            { "en": "Vitamin C is an antioxidant found in many serums. It's another ingredient people often use for dark marks.", "id": "Vitamin C adalah antioksidan yang ada di banyak serum. Bahan ini juga sering dipakai untuk noda gelap." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "Which of these is an AHA?", "id": "Mana yang termasuk AHA?" },
+              "options": [
+                { "en": "Salicylic acid", "id": "Asam salisilat" },
+                { "en": "Niacinamide", "id": "Niacinamide" },
+                { "en": "Glycolic acid", "id": "Asam glikolat" }
+              ],
+              "answer": 2,
+              "explain": { "en": "Glycolic and lactic acid are AHAs; salicylic acid is a BHA.", "id": "Asam glikolat dan asam laktat adalah AHA; asam salisilat adalah BHA." }
+            },
+            {
+              "question": { "en": "What's worth adding while you use AHAs?", "id": "Apa yang perlu ditambahkan saat memakai AHA?" },
+              "options": [
+                { "en": "Sunscreen", "id": "Tabir surya" },
+                { "en": "More AHAs", "id": "AHA lagi" },
+                { "en": "Very hot water", "id": "Air yang sangat panas" }
+              ],
+              "answer": 0,
+              "explain": { "en": "AHAs can make skin more sun-sensitive, so sunscreen matters while you use them and for a week after.", "id": "AHA bisa membuat kulit lebih sensitif terhadap matahari, jadi tabir surya penting selama memakainya dan seminggu sesudahnya." }
+            }
+          ],
+          "sources": [
+            { "title": "U.S. FDA — Alpha hydroxy acids", "url": "https://www.fda.gov/cosmetics/cosmetic-ingredients/alpha-hydroxy-acids" },
+            { "title": "DermNet — Azelaic acid", "url": "https://dermnetnz.org/topics/azelaic-acid" },
+            { "title": "American Academy of Dermatology — How to fade dark spots in darker skin tones", "url": "https://www.aad.org/public/everyday-care/skin-care-secrets/routine/fade-dark-spots" }
+          ]
+        },
+        {
+          "id": "pairing-actives",
+          "reviewed": false,
+          "title": { "en": "Taking turns with actives", "id": "Bergantian memakai bahan aktif" },
+          "cards": [
+            { "en": "Using several strong actives at once can irritate skin — more isn't better.", "id": "Memakai beberapa bahan aktif yang kuat sekaligus bisa membuat kulit iritasi — lebih banyak bukan berarti lebih baik." },
+            { "en": "Many people take turns: one active on some nights, a different one on other nights.", "id": "Banyak orang memakainya bergantian: satu bahan aktif di malam tertentu, bahan lain di malam lainnya." },
+            { "en": "Stinging, burning, redness or peeling are signs to ease off. Go back to cleanser, moisturiser and sunscreen for a while.", "id": "Perih, rasa panas, kemerahan, atau mengelupas adalah tanda untuk mengurangi. Kembali ke pembersih, pelembap, dan tabir surya untuk sementara." },
+            { "en": "Online you may hear about \"purging\" — new spots when starting a product. It's hard to tell apart from a reaction on your own.", "id": "Di internet kamu mungkin dengar soal \"purging\" — jerawat baru saat mulai memakai produk. Sulit membedakannya sendiri dari reaksi kulit." },
+            { "en": "If spots are painful, deep or don't settle, a pharmacist or dermatologist can help.", "id": "Kalau jerawat terasa sakit, dalam, atau tidak kunjung reda, apoteker atau dokter kulit bisa membantu." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "What do many people do instead of using several strong actives at once?", "id": "Apa yang dilakukan banyak orang daripada memakai beberapa bahan aktif kuat sekaligus?" },
+              "options": [
+                { "en": "Take turns on different nights", "id": "Bergantian di malam yang berbeda" },
+                { "en": "Layer them all twice a day", "id": "Menumpuk semuanya dua kali sehari" },
+                { "en": "Mix them in one bottle", "id": "Mencampurnya dalam satu botol" }
+              ],
+              "answer": 0,
+              "explain": { "en": "Taking turns gives skin a break between strong ingredients.", "id": "Bergantian memberi kulit jeda di antara bahan-bahan yang kuat." }
+            },
+            {
+              "question": { "en": "Your skin stings and peels after a new active. What's a gentle next step?", "id": "Kulitmu perih dan mengelupas setelah bahan aktif baru. Apa langkah lembut berikutnya?" },
+              "options": [
+                { "en": "Use more of it", "id": "Pakai lebih banyak" },
+                { "en": "Ease off and go back to basics", "id": "Kurangi dan kembali ke dasar" },
+                { "en": "Add another active", "id": "Tambah bahan aktif lain" }
+              ],
+              "answer": 1,
+              "explain": { "en": "Easing off gives skin a rest; a pharmacist or dermatologist can help if it carries on.", "id": "Mengurangi memberi kulit waktu istirahat; apoteker atau dokter kulit bisa membantu kalau terus berlanjut." }
+            }
+          ],
+          "sources": [
+            { "title": "American Academy of Dermatology — Moisturizer: Why you may need it if you have acne", "url": "https://www.aad.org/public/diseases/acne/skin-care/moisturizer" },
+            { "title": "American Academy of Dermatology — 10 skin care habits that can worsen acne", "url": "https://www.aad.org/public/diseases/acne/skin-care/habits-stop" },
+            { "title": "DermNet — Topical retinoids", "url": "https://dermnetnz.org/topics/topical-retinoids" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sun-and-marks",
+      "title": { "en": "Sun and marks", "id": "Matahari dan bekas jerawat" },
+      "lessons": [
+        {
+          "id": "uv-index",
+          "reviewed": false,
+          "title": { "en": "Reading the UV index", "id": "Membaca indeks UV" },
+          "cards": [
+            { "en": "The UV index tells you how strong the sun's UV rays are today. Most weather apps show it.", "id": "Indeks UV memberi tahu seberapa kuat sinar UV matahari hari ini. Kebanyakan aplikasi cuaca menampilkannya." },
+            { "en": "At 3 or higher, the World Health Organization suggests protecting your skin.", "id": "Di angka 3 atau lebih, Organisasi Kesehatan Dunia (WHO) menyarankan untuk melindungi kulit." },
+            { "en": "At 8 or higher, it suggests avoiding the midday sun where you can.", "id": "Di angka 8 atau lebih, WHO menyarankan menghindari matahari siang sebisa mungkin." },
+            { "en": "Clouds don't block all UV — you can still burn on a cloudy day.", "id": "Awan tidak menghalangi semua sinar UV — kamu tetap bisa terbakar matahari saat mendung." },
+            { "en": "Near the equator, like in Indonesia, the UV index is often high all year round.", "id": "Di dekat khatulistiwa, seperti di Indonesia, indeks UV sering tinggi sepanjang tahun." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "From which UV index is skin protection suggested?", "id": "Mulai indeks UV berapa perlindungan kulit disarankan?" },
+              "options": [
+                { "en": "1", "id": "1" },
+                { "en": "3", "id": "3" },
+                { "en": "10", "id": "10" }
+              ],
+              "answer": 1,
+              "explain": { "en": "At a UV index of 3 or higher, protecting your skin is suggested.", "id": "Di indeks UV 3 atau lebih, melindungi kulit disarankan." }
+            },
+            {
+              "question": { "en": "Can you burn on a cloudy day?", "id": "Bisakah kulit terbakar matahari saat mendung?" },
+              "options": [
+                { "en": "No, clouds block UV", "id": "Tidak, awan menghalangi sinar UV" },
+                { "en": "Only at the beach", "id": "Hanya di pantai" },
+                { "en": "Yes, clouds don't block all UV", "id": "Bisa, awan tidak menghalangi semua sinar UV" }
+              ],
+              "answer": 2,
+              "explain": { "en": "UV gets through clouds, so protection still counts on grey days.", "id": "Sinar UV bisa menembus awan, jadi perlindungan tetap penting saat mendung." }
+            }
+          ],
+          "sources": [
+            { "title": "World Health Organization — The ultraviolet (UV) index", "url": "https://www.who.int/news-room/questions-and-answers/item/radiation-the-ultraviolet-(uv)-index" },
+            { "title": "NHS — Sunscreen and sun safety", "url": "https://www.nhs.uk/live-well/seasonal-health/sunscreen-and-sun-safety/" }
+          ]
+        },
+        {
+          "id": "sunscreen-through-the-day",
+          "reviewed": false,
+          "title": { "en": "Sunscreen through the day", "id": "Tabir surya sepanjang hari" },
+          "cards": [
+            { "en": "Put sunscreen on before you head outside, not once you're already out.", "id": "Pakai tabir surya sebelum keluar rumah, bukan setelah sudah di luar." },
+            { "en": "Easy places to miss: ears, neck and along the hairline.", "id": "Bagian yang sering terlewat: telinga, leher, dan sepanjang garis rambut." },
+            { "en": "Water, sweat, towel drying and rubbing wear it off — put more on afterwards.", "id": "Air, keringat, mengeringkan dengan handuk, dan gesekan bisa menghapusnya — oleskan lagi setelahnya." },
+            { "en": "A small bottle in your bag makes topping up easy.", "id": "Botol kecil di tas memudahkan untuk mengoles ulang." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "When is the best time to put sunscreen on?", "id": "Kapan waktu terbaik memakai tabir surya?" },
+              "options": [
+                { "en": "Before you go outside", "id": "Sebelum keluar rumah" },
+                { "en": "After an hour outside", "id": "Setelah satu jam di luar" },
+                { "en": "Only when you feel hot", "id": "Hanya saat terasa panas" }
+              ],
+              "answer": 0,
+              "explain": { "en": "Putting it on before you go out means you're covered from the start.", "id": "Memakainya sebelum keluar berarti kulitmu terlindungi sejak awal." }
+            },
+            {
+              "question": { "en": "Which of these can wear sunscreen off?", "id": "Mana yang bisa menghapus tabir surya?" },
+              "options": [
+                { "en": "Reading a book", "id": "Membaca buku" },
+                { "en": "Towel drying and sweat", "id": "Mengeringkan dengan handuk dan keringat" },
+                { "en": "Wearing a hat", "id": "Memakai topi" }
+              ],
+              "answer": 1,
+              "explain": { "en": "Water, sweat, towels and rubbing wear sunscreen off, so put more on after.", "id": "Air, keringat, handuk, dan gesekan menghapus tabir surya, jadi oleskan lagi setelahnya." }
+            }
+          ],
+          "sources": [
+            { "title": "NHS — Sunscreen and sun safety", "url": "https://www.nhs.uk/live-well/seasonal-health/sunscreen-and-sun-safety/" },
+            { "title": "American Academy of Dermatology — How to apply sunscreen", "url": "https://www.aad.org/public/everyday-care/sun-protection/shade-clothing-sunscreen/how-to-apply-sunscreen" },
+            { "title": "American Academy of Dermatology — 10 skin care secrets for healthier-looking skin", "url": "https://www.aad.org/public/everyday-care/skin-care-basics/care/skin-care-tips-dermatologists-use" }
+          ]
+        },
+        {
+          "id": "shade-and-hats",
+          "reviewed": false,
+          "title": { "en": "Shade, hats and clothes", "id": "Teduh, topi, dan pakaian" },
+          "cards": [
+            { "en": "Sunscreen is one tool. Shade, hats and clothes help too.", "id": "Tabir surya hanyalah salah satu cara. Tempat teduh, topi, dan pakaian juga membantu." },
+            { "en": "The sun is usually strongest around the middle of the day — a good time to find shade.", "id": "Matahari biasanya paling kuat sekitar tengah hari — waktu yang pas untuk mencari tempat teduh." },
+            { "en": "A wide-brimmed hat shades your face, neck and ears better than a cap.", "id": "Topi bertepi lebar melindungi wajah, leher, dan telinga lebih baik daripada topi pet." },
+            { "en": "Sunglasses with UV protection look after your eyes and the skin around them.", "id": "Kacamata hitam dengan perlindungan UV menjaga mata dan kulit di sekitarnya." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "When is the sun usually strongest?", "id": "Kapan matahari biasanya paling kuat?" },
+              "options": [
+                { "en": "Early morning", "id": "Pagi-pagi sekali" },
+                { "en": "Around the middle of the day", "id": "Sekitar tengah hari" },
+                { "en": "Late evening", "id": "Sore menjelang malam" }
+              ],
+              "answer": 1,
+              "explain": { "en": "UV is usually strongest around midday, so shade helps most then.", "id": "Sinar UV biasanya paling kuat sekitar tengah hari, jadi saat itulah tempat teduh paling membantu." }
+            },
+            {
+              "question": { "en": "Which hat shades your face, neck and ears best?", "id": "Topi mana yang paling melindungi wajah, leher, dan telinga?" },
+              "options": [
+                { "en": "A wide-brimmed hat", "id": "Topi bertepi lebar" },
+                { "en": "A cap", "id": "Topi pet" },
+                { "en": "A headband", "id": "Bando" }
+              ],
+              "answer": 0,
+              "explain": { "en": "A wide brim shades more of your face, neck and ears.", "id": "Tepi yang lebar menaungi lebih banyak bagian wajah, leher, dan telinga." }
+            }
+          ],
+          "sources": [
+            { "title": "NHS — Sunscreen and sun safety", "url": "https://www.nhs.uk/live-well/seasonal-health/sunscreen-and-sun-safety/" },
+            { "title": "World Health Organization — The ultraviolet (UV) index", "url": "https://www.who.int/news-room/questions-and-answers/item/radiation-the-ultraviolet-(uv)-index" }
+          ]
+        },
+        {
+          "id": "marks-after-spots",
+          "reviewed": false,
+          "title": { "en": "Marks after spots", "id": "Bekas setelah jerawat" },
+          "cards": [
+            { "en": "After a spot goes, a flat pink, red or brown mark can stay for a while.", "id": "Setelah jerawat hilang, bekas datar berwarna merah muda, merah, atau cokelat bisa tertinggal untuk sementara." },
+            { "en": "These marks often fade on their own, but slowly — darker ones can take 6 to 12 months.", "id": "Bekas ini sering memudar sendiri, tapi pelan — yang lebih gelap bisa butuh 6 sampai 12 bulan." },
+            { "en": "Sun can make marks darker, so daily sunscreen helps them fade.", "id": "Sinar matahari bisa membuat bekas lebih gelap, jadi tabir surya setiap hari membantu bekasnya memudar." },
+            { "en": "Picking makes marks more likely — one more reason for hands off.", "id": "Mengorek jerawat membuat bekas lebih mungkin muncul — satu alasan lagi untuk tidak menyentuhnya." },
+            { "en": "Slow fading is hard to see day to day. Comparing scans months apart can show it.", "id": "Pemudaran yang pelan sulit terlihat dari hari ke hari. Membandingkan scan dengan jarak beberapa bulan bisa memperlihatkannya." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "What can make marks darker?", "id": "Apa yang bisa membuat bekas jerawat lebih gelap?" },
+              "options": [
+                { "en": "Sun", "id": "Sinar matahari" },
+                { "en": "Drinking water", "id": "Minum air" },
+                { "en": "Sleep", "id": "Tidur" }
+              ],
+              "answer": 0,
+              "explain": { "en": "UV can darken marks, which is why sunscreen helps them fade.", "id": "Sinar UV bisa menggelapkan bekas, itulah kenapa tabir surya membantu bekasnya memudar." }
+            },
+            {
+              "question": { "en": "How long can darker marks take to fade?", "id": "Berapa lama bekas yang lebih gelap bisa memudar?" },
+              "options": [
+                { "en": "One night", "id": "Satu malam" },
+                { "en": "About a week", "id": "Sekitar seminggu" },
+                { "en": "6 to 12 months", "id": "6 sampai 12 bulan" }
+              ],
+              "answer": 2,
+              "explain": { "en": "Darker marks can take 6 to 12 months, so patience and sunscreen go a long way.", "id": "Bekas yang lebih gelap bisa butuh 6 sampai 12 bulan, jadi sabar dan tabir surya sangat membantu." }
+            }
+          ],
+          "sources": [
+            { "title": "American Academy of Dermatology — How to fade dark spots in darker skin tones", "url": "https://www.aad.org/public/everyday-care/skin-care-secrets/routine/fade-dark-spots" },
+            { "title": "DermNet — Postinflammatory hyperpigmentation", "url": "https://dermnetnz.org/topics/postinflammatory-hyperpigmentation" },
+            { "title": "American Academy of Dermatology — Acne: Tips for managing", "url": "https://www.aad.org/public/diseases/acne/skin-care/tips" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "everyday-habits",
+      "title": { "en": "Everyday habits", "id": "Kebiasaan sehari-hari" },
+      "lessons": [
+        {
+          "id": "things-that-touch-your-face",
+          "reviewed": false,
+          "title": { "en": "Things that touch your face", "id": "Benda yang menyentuh wajahmu" },
+          "cards": [
+            { "en": "Your phone, pillowcase and hands all touch your face every day.", "id": "Ponsel, sarung bantal, dan tanganmu menyentuh wajah setiap hari." },
+            { "en": "Wiping your phone screen now and then keeps oil and dirt off your cheek.", "id": "Mengelap layar ponsel sesekali menjaga minyak dan kotoran tidak menempel di pipimu." },
+            { "en": "Washing pillowcases regularly is an easy habit to keep.", "id": "Mencuci sarung bantal secara rutin adalah kebiasaan yang mudah dijaga." },
+            { "en": "Resting your chin on your hand or touching your face through the day can make spots flare.", "id": "Menopang dagu dengan tangan atau sering menyentuh wajah sepanjang hari bisa memicu jerawat." },
+            { "en": "Helmets, straps and tight headbands rub and trap sweat — wash your face after wearing one for a long time.", "id": "Helm, tali, dan bando yang ketat bisa bergesekan dan menahan keringat — cuci muka setelah lama memakainya." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "Which of these touches your face every day?", "id": "Mana yang menyentuh wajahmu setiap hari?" },
+              "options": [
+                { "en": "Your shoes", "id": "Sepatumu" },
+                { "en": "Your phone", "id": "Ponselmu" },
+                { "en": "Your fridge", "id": "Kulkasmu" }
+              ],
+              "answer": 1,
+              "explain": { "en": "Phones, pillowcases and hands all spend time against your face.", "id": "Ponsel, sarung bantal, dan tangan sering bersentuhan dengan wajahmu." }
+            },
+            {
+              "question": { "en": "What's an easy habit for things that touch your face?", "id": "Kebiasaan mudah apa untuk benda yang menyentuh wajahmu?" },
+              "options": [
+                { "en": "Wipe your phone and wash pillowcases regularly", "id": "Lap ponsel dan cuci sarung bantal secara rutin" },
+                { "en": "Press your phone harder to your cheek", "id": "Tekan ponsel lebih keras ke pipi" },
+                { "en": "Never change your pillowcase", "id": "Tidak pernah mengganti sarung bantal" }
+              ],
+              "answer": 0,
+              "explain": { "en": "Keeping things that touch your face clean is a simple daily habit.", "id": "Menjaga benda yang menyentuh wajah tetap bersih adalah kebiasaan harian yang sederhana." }
+            }
+          ],
+          "sources": [
+            { "title": "Cleveland Clinic — What it means when acne is on certain areas of your face", "url": "https://health.clevelandclinic.org/acne-face-map" },
+            { "title": "American Academy of Dermatology — Face washing 101", "url": "https://www.aad.org/public/everyday-care/skin-care-basics/care/face-washing-101" },
+            { "title": "American Academy of Dermatology — Acne: Tips for managing", "url": "https://www.aad.org/public/diseases/acne/skin-care/tips" }
+          ]
+        },
+        {
+          "id": "after-a-workout",
+          "reviewed": false,
+          "title": { "en": "After a workout", "id": "Setelah berolahraga" },
+          "cards": [
+            { "en": "Sweat is fine — it's how your body cools down.", "id": "Keringat itu wajar — itu cara tubuhmu mendinginkan diri." },
+            { "en": "Gently pat sweat away with a clean towel. Rubbing hard can irritate skin.", "id": "Tepuk keringat perlahan dengan handuk bersih. Menggosok keras bisa membuat kulit iritasi." },
+            { "en": "Wash your face after a sweaty workout, especially if a hat or helmet trapped the sweat.", "id": "Cuci muka setelah olahraga yang bikin berkeringat, apalagi kalau topi atau helm menahan keringatnya." },
+            { "en": "Getting out of sweaty clothes soon after is a kind habit for the skin on your back and chest too.", "id": "Segera ganti baju yang basah keringat juga kebiasaan baik untuk kulit punggung dan dadamu." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "How should you get sweat off your face?", "id": "Bagaimana cara menghapus keringat di wajah?" },
+              "options": [
+                { "en": "Rub hard with a towel", "id": "Gosok keras dengan handuk" },
+                { "en": "Gently pat with a clean towel", "id": "Tepuk perlahan dengan handuk bersih" },
+                { "en": "Leave it until tomorrow", "id": "Biarkan sampai besok" }
+              ],
+              "answer": 1,
+              "explain": { "en": "Patting is gentler than rubbing, which can irritate skin.", "id": "Menepuk lebih lembut daripada menggosok, yang bisa membuat kulit iritasi." }
+            },
+            {
+              "question": { "en": "When is a good time to wash your face?", "id": "Kapan waktu yang baik untuk mencuci muka?" },
+              "options": [
+                { "en": "After a sweaty workout", "id": "Setelah olahraga yang bikin berkeringat" },
+                { "en": "Every 30 minutes", "id": "Setiap 30 menit" },
+                { "en": "Only once a week", "id": "Hanya seminggu sekali" }
+              ],
+              "answer": 0,
+              "explain": { "en": "Morning, night and after heavy sweating is plenty.", "id": "Pagi, malam, dan setelah banyak berkeringat sudah cukup." }
+            }
+          ],
+          "sources": [
+            { "title": "American Academy of Dermatology — 10 skin care habits that can worsen acne", "url": "https://www.aad.org/public/diseases/acne/skin-care/habits-stop" },
+            { "title": "American Academy of Dermatology — Face washing 101", "url": "https://www.aad.org/public/everyday-care/skin-care-basics/care/face-washing-101" }
+          ]
+        },
+        {
+          "id": "sleep-and-stress",
+          "reviewed": false,
+          "title": { "en": "Sleep and stress", "id": "Tidur dan stres" },
+          "cards": [
+            { "en": "Stress doesn't cause spots, but it can make breakouts you already have worse.", "id": "Stres tidak menyebabkan jerawat, tapi bisa memperburuk jerawat yang sudah ada." },
+            { "en": "Too little sleep may make breakouts worse too.", "id": "Kurang tidur juga bisa memperburuk jerawat." },
+            { "en": "A stressful week isn't your fault, and it doesn't undo the routine you've kept.", "id": "Minggu yang penuh tekanan bukan salahmu, dan tidak menghapus rutinitas yang sudah kamu jaga." },
+            { "en": "Small things help many people: a regular bedtime, a short walk, or a few slow breaths.", "id": "Hal kecil membantu banyak orang: jam tidur yang teratur, jalan kaki sebentar, atau beberapa tarikan napas pelan." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "Can stress cause spots on its own?", "id": "Bisakah stres sendiri menyebabkan jerawat?" },
+              "options": [
+                { "en": "Yes, always", "id": "Ya, selalu" },
+                { "en": "No, but it can make existing breakouts worse", "id": "Tidak, tapi bisa memperburuk jerawat yang sudah ada" },
+                { "en": "Only on weekends", "id": "Hanya di akhir pekan" }
+              ],
+              "answer": 1,
+              "explain": { "en": "Stress doesn't cause spots, but it can make breakouts you already have worse.", "id": "Stres tidak menyebabkan jerawat, tapi bisa memperburuk jerawat yang sudah ada." }
+            },
+            {
+              "question": { "en": "Which may make breakouts worse?", "id": "Mana yang bisa memperburuk jerawat?" },
+              "options": [
+                { "en": "A regular bedtime", "id": "Jam tidur yang teratur" },
+                { "en": "A short walk", "id": "Jalan kaki sebentar" },
+                { "en": "Too little sleep", "id": "Kurang tidur" }
+              ],
+              "answer": 2,
+              "explain": { "en": "Too little sleep may make breakouts worse, so rest counts.", "id": "Kurang tidur bisa memperburuk jerawat, jadi istirahat itu penting." }
+            }
+          ],
+          "sources": [
+            { "title": "American Academy of Dermatology — Acne: Who gets and causes", "url": "https://www.aad.org/public/diseases/acne/causes/acne-causes" },
+            { "title": "American Academy of Dermatology — 10 skin care secrets for healthier-looking skin", "url": "https://www.aad.org/public/everyday-care/skin-care-basics/care/skin-care-tips-dermatologists-use" }
+          ]
+        },
+        {
+          "id": "makeup-and-hair",
+          "reviewed": false,
+          "title": { "en": "Makeup and hair products", "id": "Riasan dan produk rambut" },
+          "cards": [
+            { "en": "Take makeup off before bed — even non-comedogenic makeup can lead to breakouts if you sleep in it.", "id": "Hapus riasan sebelum tidur — riasan non-comedogenic pun bisa memicu jerawat kalau dibawa tidur." },
+            { "en": "Keep your makeup, brushes and sponges to yourself.", "id": "Riasan, kuas, dan spons sebaiknya dipakai sendiri, jangan dipinjamkan." },
+            { "en": "Oily or waxy hair products, like pomade, can build up along the hairline.", "id": "Produk rambut yang berminyak atau berlilin, seperti pomade, bisa menumpuk di sepanjang garis rambut." },
+            { "en": "Keep them to the ends of your hair, away from your forehead, and wash oily hair regularly.", "id": "Pakai di ujung rambut, jauh dari dahi, dan keramas rutin kalau rambutmu berminyak." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "What should you do with makeup before bed?", "id": "Apa yang perlu dilakukan dengan riasan sebelum tidur?" },
+              "options": [
+                { "en": "Take it off", "id": "Menghapusnya" },
+                { "en": "Add another layer", "id": "Menambah satu lapisan lagi" },
+                { "en": "Keep it on if it's non-comedogenic", "id": "Membiarkannya kalau non-comedogenic" }
+              ],
+              "answer": 0,
+              "explain": { "en": "Even non-comedogenic makeup can lead to breakouts if you sleep in it.", "id": "Riasan non-comedogenic pun bisa memicu jerawat kalau dibawa tidur." }
+            },
+            {
+              "question": { "en": "Where can oily hair products build up?", "id": "Di mana produk rambut berminyak bisa menumpuk?" },
+              "options": [
+                { "en": "On your elbows", "id": "Di siku" },
+                { "en": "Along the hairline", "id": "Di sepanjang garis rambut" },
+                { "en": "On your knees", "id": "Di lutut" }
+              ],
+              "answer": 1,
+              "explain": { "en": "Waxy, oily products can build up at the hairline, so keep them to the ends of your hair.", "id": "Produk berlilin dan berminyak bisa menumpuk di garis rambut, jadi pakai di ujung rambut saja." }
+            }
+          ],
+          "sources": [
+            { "title": "American Academy of Dermatology — 10 skin care habits that can worsen acne", "url": "https://www.aad.org/public/diseases/acne/skin-care/habits-stop" },
+            { "title": "American Academy of Dermatology — Acne: Who gets and causes", "url": "https://www.aad.org/public/diseases/acne/causes/acne-causes" },
+            { "title": "Cleveland Clinic — What it means when acne is on certain areas of your face", "url": "https://health.clevelandclinic.org/acne-face-map" },
+            { "title": "American Academy of Dermatology — Acne: Tips for managing", "url": "https://www.aad.org/public/diseases/acne/skin-care/tips" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "myth-busting",
+      "title": { "en": "Myth busting", "id": "Membongkar mitos" },
+      "lessons": [
+        {
+          "id": "myth-toothpaste",
+          "reviewed": false,
+          "title": { "en": "Toothpaste on spots?", "id": "Pasta gigi untuk jerawat?" },
+          "cards": [
+            { "en": "Myth: toothpaste dries spots out. It's made for teeth, not skin.", "id": "Mitos: pasta gigi mengeringkan jerawat. Pasta gigi dibuat untuk gigi, bukan kulit." },
+            { "en": "Its ingredients can be too harsh for skin and may cause redness, stinging or burning.", "id": "Bahan-bahannya bisa terlalu keras untuk kulit dan bisa menimbulkan kemerahan, perih, atau rasa panas." },
+            { "en": "That irritation can leave the area redder than before.", "id": "Iritasi itu bisa membuat area tersebut lebih merah dari sebelumnya." },
+            { "en": "Products made for skin, like gels with salicylic acid or benzoyl peroxide, are what dermatologists point to instead.", "id": "Produk yang dibuat untuk kulit, seperti gel dengan asam salisilat atau benzoyl peroxide, adalah pilihan yang disarankan dokter kulit." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "Why skip toothpaste on a spot?", "id": "Kenapa sebaiknya tidak memakai pasta gigi di jerawat?" },
+              "options": [
+                { "en": "It's made for teeth and can irritate skin", "id": "Dibuat untuk gigi dan bisa membuat kulit iritasi" },
+                { "en": "It's too expensive", "id": "Terlalu mahal" },
+                { "en": "It's too minty", "id": "Terlalu mint" }
+              ],
+              "answer": 0,
+              "explain": { "en": "Toothpaste is made for teeth; on skin it can cause redness and stinging.", "id": "Pasta gigi dibuat untuk gigi; di kulit bisa menimbulkan kemerahan dan perih." }
+            },
+            {
+              "question": { "en": "What can toothpaste cause on skin?", "id": "Apa yang bisa ditimbulkan pasta gigi di kulit?" },
+              "options": [
+                { "en": "Nothing — it's gentle", "id": "Tidak ada — pasta gigi lembut" },
+                { "en": "Redness and stinging", "id": "Kemerahan dan perih" },
+                { "en": "Extra sun protection", "id": "Perlindungan matahari tambahan" }
+              ],
+              "answer": 1,
+              "explain": { "en": "Its ingredients can be harsh on skin, causing redness, stinging or burning.", "id": "Bahan-bahannya bisa keras untuk kulit dan menimbulkan kemerahan, perih, atau rasa panas." }
+            }
+          ],
+          "sources": [
+            { "title": "Cleveland Clinic — Why you should never put toothpaste on a pimple", "url": "https://health.clevelandclinic.org/toothpaste-on-pimples" }
+          ]
+        },
+        {
+          "id": "myth-sun-dries-spots",
+          "reviewed": false,
+          "title": { "en": "Does sun dry spots out?", "id": "Apakah matahari mengeringkan jerawat?" },
+          "cards": [
+            { "en": "Myth: sunbathing dries spots out. Dermatologists suggest avoiding too much sun and tanning beds instead.", "id": "Mitos: berjemur mengeringkan jerawat. Dokter kulit justru menyarankan menghindari terlalu banyak sinar matahari dan tanning bed." },
+            { "en": "Sun can make the marks left by spots darker.", "id": "Sinar matahari bisa membuat bekas jerawat lebih gelap." },
+            { "en": "Some ingredients, like retinoids and AHAs, make skin more sensitive to the sun.", "id": "Beberapa bahan, seperti retinoid dan AHA, membuat kulit lebih sensitif terhadap matahari." },
+            { "en": "So: a broad-spectrum, non-comedogenic sunscreen with SPF 30 or more, plus shade and a hat.", "id": "Jadi: tabir surya broad spectrum yang non-comedogenic dengan SPF 30 atau lebih, ditambah tempat teduh dan topi." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "What can sun do to marks left by spots?", "id": "Apa yang bisa dilakukan matahari pada bekas jerawat?" },
+              "options": [
+                { "en": "Erase them", "id": "Menghapusnya" },
+                { "en": "Nothing", "id": "Tidak ada" },
+                { "en": "Make them darker", "id": "Membuatnya lebih gelap" }
+              ],
+              "answer": 2,
+              "explain": { "en": "UV can darken marks, so sun protection helps them fade.", "id": "Sinar UV bisa menggelapkan bekas, jadi perlindungan dari matahari membantu bekasnya memudar." }
+            },
+            {
+              "question": { "en": "Which sunscreen do dermatologists suggest for spot-prone skin?", "id": "Tabir surya mana yang disarankan dokter kulit untuk kulit berjerawat?" },
+              "options": [
+                { "en": "Broad spectrum, non-comedogenic, SPF 30+", "id": "Broad spectrum, non-comedogenic, SPF 30+" },
+                { "en": "Baby oil", "id": "Minyak bayi" },
+                { "en": "SPF 4 tanning oil", "id": "Minyak berjemur SPF 4" }
+              ],
+              "answer": 0,
+              "explain": { "en": "Broad spectrum, SPF 30 or more, and made not to clog pores.", "id": "Broad spectrum, SPF 30 atau lebih, dan dibuat agar tidak menyumbat pori." }
+            }
+          ],
+          "sources": [
+            { "title": "American Academy of Dermatology — Acne: Tips for managing", "url": "https://www.aad.org/public/diseases/acne/skin-care/tips" },
+            { "title": "DermNet — Postinflammatory hyperpigmentation", "url": "https://dermnetnz.org/topics/postinflammatory-hyperpigmentation" },
+            { "title": "U.S. FDA — Alpha hydroxy acids", "url": "https://www.fda.gov/cosmetics/cosmetic-ingredients/alpha-hydroxy-acids" }
+          ]
+        },
+        {
+          "id": "myth-oily-skin-moisturiser",
+          "reviewed": false,
+          "title": { "en": "Oily skin and moisturiser", "id": "Kulit berminyak dan pelembap" },
+          "cards": [
+            { "en": "Myth: oily skin doesn't need moisturiser. Dermatologists say it still does.", "id": "Mitos: kulit berminyak tidak butuh pelembap. Kata dokter kulit, tetap butuh." },
+            { "en": "A harsh face wash can irritate skin and leave it making more oil.", "id": "Sabun cuci muka yang terlalu keras bisa membuat kulit iritasi dan malah menghasilkan lebih banyak minyak." },
+            { "en": "Light, oil-free gels labelled non-comedogenic or \"won't clog pores\" are a common pick.", "id": "Gel ringan bebas minyak berlabel non-comedogenic atau \"won't clog pores\" adalah pilihan yang umum." },
+            { "en": "Actives like benzoyl peroxide, salicylic acid and retinoids can dry skin — moisturiser helps you stick with them.", "id": "Bahan aktif seperti benzoyl peroxide, asam salisilat, dan retinoid bisa membuat kulit kering — pelembap membantumu tetap konsisten memakainya." },
+            { "en": "Shiny during the day? Press a blotting paper on gently — don't rub.", "id": "Wajah mengilap di siang hari? Tempelkan kertas minyak perlahan — jangan digosok." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "Does oily skin need moisturiser?", "id": "Apakah kulit berminyak butuh pelembap?" },
+              "options": [
+                { "en": "No, never", "id": "Tidak, sama sekali tidak" },
+                { "en": "Yes, it still does", "id": "Ya, tetap butuh" },
+                { "en": "Only when it's cold", "id": "Hanya saat cuaca dingin" }
+              ],
+              "answer": 1,
+              "explain": { "en": "Oily skin still needs moisture — a light, non-comedogenic one is a common pick.", "id": "Kulit berminyak tetap butuh kelembapan — pelembap ringan yang non-comedogenic adalah pilihan umum." }
+            },
+            {
+              "question": { "en": "What can a harsh face wash do to oily skin?", "id": "Apa akibat sabun cuci muka yang terlalu keras pada kulit berminyak?" },
+              "options": [
+                { "en": "Leave it making more oil", "id": "Membuatnya menghasilkan lebih banyak minyak" },
+                { "en": "Stop oil for good", "id": "Menghentikan minyak selamanya" },
+                { "en": "Nothing", "id": "Tidak ada" }
+              ],
+              "answer": 0,
+              "explain": { "en": "Harsh washes can irritate skin and lead to more oil, so gentle is better.", "id": "Sabun yang keras bisa membuat iritasi dan memicu lebih banyak minyak, jadi yang lembut lebih baik." }
+            }
+          ],
+          "sources": [
+            { "title": "American Academy of Dermatology — How to control oily skin", "url": "https://www.aad.org/public/everyday-care/skin-care-basics/dry/oily-skin" },
+            { "title": "American Academy of Dermatology — Moisturizer: Why you may need it if you have acne", "url": "https://www.aad.org/public/diseases/acne/skin-care/moisturizer" }
+          ]
+        },
+        {
+          "id": "myth-scrubbing",
+          "reviewed": false,
+          "title": { "en": "Scrub harder, cleaner skin?", "id": "Makin digosok, makin bersih?" },
+          "cards": [
+            { "en": "Myth: scrubbing harder gets skin cleaner. Scrubbing can irritate skin and make spots flare.", "id": "Mitos: menggosok lebih keras membuat kulit lebih bersih. Menggosok justru bisa membuat kulit iritasi dan jerawat bertambah." },
+            { "en": "Fingertips and a mild cleanser are enough. Washcloths and sponges can irritate.", "id": "Ujung jari dan pembersih yang lembut sudah cukup. Waslap dan spons bisa membuat iritasi." },
+            { "en": "Washing many times a day can irritate too — twice a day and after sweating is plenty.", "id": "Mencuci muka berkali-kali sehari juga bisa membuat iritasi — dua kali sehari dan setelah berkeringat sudah cukup." },
+            { "en": "Pat your face dry gently instead of rubbing.", "id": "Keringkan wajah dengan menepuk perlahan, bukan menggosok." }
+          ],
+          "quiz": [
+            {
+              "question": { "en": "What can scrubbing hard do?", "id": "Apa akibat menggosok terlalu keras?" },
+              "options": [
+                { "en": "Clean pores for good", "id": "Membersihkan pori selamanya" },
+                { "en": "Irritate skin", "id": "Membuat kulit iritasi" },
+                { "en": "Nothing", "id": "Tidak ada" }
+              ],
+              "answer": 1,
+              "explain": { "en": "Scrubbing can irritate skin and make spots flare.", "id": "Menggosok bisa membuat kulit iritasi dan jerawat bertambah." }
+            },
+            {
+              "question": { "en": "What's enough to wash your face with?", "id": "Apa yang cukup untuk mencuci muka?" },
+              "options": [
+                { "en": "A rough sponge", "id": "Spons yang kasar" },
+                { "en": "A body scrub", "id": "Scrub badan" },
+                { "en": "Fingertips and a mild cleanser", "id": "Ujung jari dan pembersih yang lembut" }
+              ],
+              "answer": 2,
+              "explain": { "en": "Fingertips and a mild cleanser clean without irritating.", "id": "Ujung jari dan pembersih yang lembut membersihkan tanpa membuat iritasi." }
+            }
+          ],
+          "sources": [
+            { "title": "American Academy of Dermatology — Face washing 101", "url": "https://www.aad.org/public/everyday-care/skin-care-basics/care/face-washing-101" },
+            { "title": "American Academy of Dermatology — 10 skin care habits that can worsen acne", "url": "https://www.aad.org/public/diseases/acne/skin-care/habits-stop" }
+          ]
+        }
+      ]
     }
   ]
 }

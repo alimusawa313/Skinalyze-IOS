@@ -11,9 +11,15 @@ struct CatalogProduct: Codable, Identifiable, Hashable, Sendable {
     let photo: String
     let link: String?
     let ingredients: String?
+    /// EAN/UPC barcode (products imported from Open Beauty Facts have one).
+    let barcode: String?
+    /// Where the product's data comes from, when it must be credited ("Open Beauty Facts").
+    let source: String?
 
     var id: Int { productID }
     var slot: ProductCatalog.Slot? { category.flatMap(ProductCatalog.Slot.init(rawValue:)) }
+    var kind: ProductCatalog.Kind? { category.flatMap(ProductCatalog.Kind.init(rawValue:)) }
+    var isFromOpenBeautyFacts: Bool { source == ProductCatalog.openBeautyFacts }
     var photoURL: URL? { URL(string: photo) }
 
     /// Ingredient list split into names (INCI order).
@@ -28,7 +34,7 @@ struct CatalogProduct: Codable, Identifiable, Hashable, Sendable {
         case productID = "product_id"
         case name
         case brand = "brand_name"
-        case category, photo, link, ingredients
+        case category, photo, link, ingredients, barcode, source
     }
 }
 
@@ -71,11 +77,73 @@ final class ProductCatalog: Sendable {
         }
     }
 
+    /// Every kind of product in the catalog: the four shelf slots plus the extra routine steps.
+    enum Kind: String, CaseIterable, Identifiable, Sendable {
+        case cleanser = "Cleanser"
+        case toner = "Toner"
+        case serum = "Serum"
+        case exfoliant = "Exfoliant"
+        case spotCare = "Spot care"
+        case moisturizer = "Moisturizer"
+        case eyeCare = "Eye care"
+        case mask = "Mask"
+        case sunscreen = "Sunscreen"
+
+        var id: String { rawValue }
+
+        var title: String {
+            switch self {
+            case .cleanser: String(localized: "Cleanser")
+            case .toner: String(localized: "Toner")
+            case .serum: String(localized: "Serum")
+            case .exfoliant: String(localized: "Exfoliant")
+            case .spotCare: String(localized: "Spot care")
+            case .moisturizer: String(localized: "Moisturizer")
+            case .eyeCare: String(localized: "Eye care")
+            case .mask: String(localized: "Mask")
+            case .sunscreen: String(localized: "Sunscreen")
+            }
+        }
+
+        var systemImage: String {
+            switch self {
+            case .cleanser: "bubbles.and.sparkles"
+            case .toner: "drop.halffull"
+            case .serum: "eyedropper"
+            case .exfoliant: "circle.dotted"
+            case .spotCare: "bandage"
+            case .moisturizer: "drop.fill"
+            case .eyeCare: "eye"
+            case .mask: "theatermask.and.paintbrush"
+            case .sunscreen: "sun.max"
+            }
+        }
+
+        /// The shelf slot this kind fills, if any.
+        var slot: Slot? { Slot(rawValue: rawValue) }
+
+        /// The routine-builder step this kind becomes when it isn't a shelf slot.
+        var extraStep: ExtraStepKind? {
+            switch self {
+            case .serum: .serum
+            case .exfoliant: .exfoliant
+            case .spotCare: .spotTreatment
+            case .eyeCare: .eyeCream
+            case .mask: .mask
+            case .cleanser, .toner, .moisturizer, .sunscreen: nil
+            }
+        }
+    }
+
+    /// Credited wherever its products appear (Open Database License).
+    static let openBeautyFacts = "Open Beauty Facts"
+
     static let shared = ProductCatalog()
     private static let logger = Logger(subsystem: "com.Patani.Skinalyze", category: "Catalog")
 
     let products: [CatalogProduct]
     private let byID: [Int: CatalogProduct]
+    private let byBarcode: [String: CatalogProduct]
     /// What matching rules (dupes, shop links) need, in catalog order.
     let facts: [ProductFacts]
 
@@ -90,12 +158,30 @@ final class ProductCatalog: Sendable {
             products = []
         }
         byID = Dictionary(products.map { ($0.productID, $0) }, uniquingKeysWith: { first, _ in first })
+        byBarcode = Dictionary(products.compactMap { product in
+            product.barcode.flatMap(Barcode.normalized).map { ($0, product) }
+        }, uniquingKeysWith: { first, _ in first })
         facts = products.map(Self.facts(for:))
     }
 
     func product(id: Int) -> CatalogProduct? { byID[id] }
 
     func slot(of productID: Int) -> Slot? { byID[productID]?.slot }
+
+    /// The catalog product with this barcode (any EAN/UPC spelling).
+    func product(barcode: String) -> CatalogProduct? { Barcode.normalized(barcode).flatMap { byBarcode[$0] } }
+
+    func products(of kind: Kind) -> [CatalogProduct] {
+        products.filter { $0.kind == kind }
+    }
+
+    /// What the user has now: the four shelf slots, then catalog products added as extra routine steps (each once).
+    func shelf(defaults: UserDefaults = .standard, plan: RoutinePlan?) -> [CatalogProduct] {
+        let slotIDs = Slot.allCases.map { defaults.integer(forKey: $0.storageKey) }.filter { $0 > 0 }
+        let stepIDs = (plan.map { $0.morning + $0.evening } ?? []).compactMap(\.productID)
+        var seen = Set<Int>()
+        return (slotIDs + stepIDs).filter { seen.insert($0).inserted }.compactMap(product(id:))
+    }
 
     func products(in slot: Slot) -> [CatalogProduct] {
         products.filter { $0.slot == slot }

@@ -153,18 +153,14 @@ struct ShelfPimpiHeading: View {
     }
 }
 
-/// What Pimpi says when poked on the Shelf screens: Home's quips, about showing up and small habits — never skin.
+/// What Pimpi says when poked on the Shelf screens (from the shared pool): small habits, showing up and Pimpi being
+/// Pimpi — never skin.
 enum ShelfQuips {
-    private static let quips: [(text: LocalizedStringResource, mood: MascotMood)] = [
-        ("You showed up. That already counts.", .excited),
-        ("Sunscreen first. Feelings later.", .happy),
-        ("Wash the pillowcase. That's the whole tip.", .happy),
-        ("I'm resting my eyes. You go ahead.", .sleepy),
-    ]
+    /// The line for the `pokes`-th poke (1-based), already in the app's language.
+    static func line(_ pokes: Int) -> String { quip(pokes).localized }
+    static func mood(_ pokes: Int) -> MascotMood { quip(pokes).mood }
 
-    /// The quip for the `pokes`-th poke (1-based).
-    static func line(_ pokes: Int) -> LocalizedStringResource { quips[(max(pokes, 1) - 1) % quips.count].text }
-    static func mood(_ pokes: Int) -> MascotMood { quips[(max(pokes, 1) - 1) % quips.count].mood }
+    private static func quip(_ pokes: Int) -> PimpiLine { PimpiLines.shared.line(poke: max(pokes, 1), place: .shelf) }
 }
 
 /// The big title and the Done pill at the top of a Shelf sheet.
@@ -272,7 +268,7 @@ struct ProductThumbnail: View {
         AsyncImage(url: product.photoURL) { image in
             image.resizable().scaledToFit()
         } placeholder: {
-            Image(systemName: product.slot?.systemImage ?? "drop")
+            Image(systemName: product.kind?.systemImage ?? "drop")
                 .foregroundStyle(Color.ds.inkTertiary)
         }
         .frame(width: Metrics.side, height: Metrics.side)
@@ -359,14 +355,23 @@ struct ProductDetailView: View {
             }
         } ground: {
             VStack(alignment: .leading, spacing: Spacing.lg) {
+                if product.kind?.extraStep != nil { AddToRoutineSection(product: product) }
                 ProductToolsSection(product: product)
                 ingredients(helpful: helpful, caution: caution)
                 if let link = product.link.flatMap(URL.init(string:)) {
-                    Link("View source page", destination: link)
+                    Link(product.isFromOpenBeautyFacts ? "View on Open Beauty Facts" : "View source page", destination: link)
                         .font(.system(.callout, design: .rounded).weight(.heavy))
                         .underline()
                         .foregroundStyle(Color.ds.ink)
                         .frame(maxWidth: .infinity, minHeight: Chunk.iconButton)
+                }
+                if product.isFromOpenBeautyFacts {
+                    // Credit required by the Open Database License.
+                    Text("Product data: Open Beauty Facts, under the Open Database License.")
+                        .font(.ds.caption)
+                        .foregroundStyle(Color.ds.inkSecondary)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity)
                 }
             }
         }
@@ -396,7 +401,7 @@ struct ProductDetailView: View {
                 image.resizable().scaledToFit()
                     .clipShape(RoundedRectangle(cornerRadius: Radius.small, style: .continuous))
             } placeholder: {
-                Image(systemName: product.slot?.systemImage ?? "drop")
+                Image(systemName: product.kind?.systemImage ?? "drop")
                     .font(.largeTitle.weight(.semibold))
                     .foregroundStyle(Color.ds.inkSecondary)
             }
@@ -410,8 +415,8 @@ struct ProductDetailView: View {
             .background(Circle().fill(Color.ds.hillFar))
             .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: Spacing.xs) {
-                if let slot = product.slot {
-                    Text(slot.title)
+                if let kind = product.kind {
+                    Text(kind.title)
                         .font(.system(.footnote, design: .rounded).weight(.heavy))
                         .foregroundStyle(Color.ds.ink)
                         .padding(.horizontal, Spacing.sm)
@@ -497,5 +502,41 @@ private struct IngredientPill: View {
 
     private func note(_ text: Text) -> some View {
         text.font(.ds.caption.weight(.semibold)).foregroundStyle(Color.ds.inkSecondary)
+    }
+}
+
+/// Serums, exfoliants, spot care, eye care and masks aren't shelf slots: they go into the morning or evening routine
+/// as an extra step (the routine builder warns about pairings from the product's ingredients).
+private struct AddToRoutineSection: View {
+    let product: CatalogProduct
+    @Environment(RoutineModel.self) private var routine: RoutineModel?
+
+    var body: some View {
+        if let routine, let step = product.kind?.extraStep {
+            VStack(alignment: .leading, spacing: Spacing.xs) {
+                ForEach(RoutinePart.allCases, id: \.self) { part in
+                    let isAdded = routine.plan[part].contains { $0.productID == product.productID }
+                    let isFull = routine.plan[part].count >= RoutinePlan.maximumExtraSteps
+                    Button {
+                        routine.add(RoutineStep(kind: step, productID: product.productID), to: part)
+                    } label: {
+                        Label(isAdded ? Self.added(part) : Self.add(part),
+                              systemImage: isAdded ? "checkmark.circle.fill" : "plus.circle.fill")
+                    }
+                    .buttonStyle(.chunky(isAdded ? .plain : .filled, fullWidth: true))
+                    .disabled(isAdded || isFull)
+                    .accessibilityIdentifier("addToRoutine.\(part.rawValue)")
+                }
+            }
+            .sensoryFeedback(.success, trigger: routine.plan)
+        }
+    }
+
+    private static func add(_ part: RoutinePart) -> LocalizedStringKey {
+        part == .morning ? "Add to morning routine" : "Add to evening routine"
+    }
+
+    private static func added(_ part: RoutinePart) -> LocalizedStringKey {
+        part == .morning ? "In your morning routine" : "In your evening routine"
     }
 }

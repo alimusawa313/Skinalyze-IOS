@@ -184,11 +184,11 @@ struct HomePlace: View {
     /// Effort only: the streak decides Pimpi's mood, and finishing today's three things makes it cheer.
     private var mood: MascotMood {
         if doneCount == 3 { return .excited }
-        return pokes == 0 ? engagement.mood : Self.quips[(pokes - 1) % Self.quips.count].mood
+        return pokes == 0 ? engagement.mood : pokedLine.mood
     }
 
     private var line: Text {
-        if pokes > 0 { return Text(Self.quips[(pokes - 1) % Self.quips.count].text) }
+        if pokes > 0 { return Text(verbatim: pokedLine.localized) }
         if doneCount == 3 { return Text("Three for three. Look at us go.") }
         guard latest != nil else {
             return (name.isEmpty ? Text("Hey.") : Text("Hey, \(name).")) + Text(verbatim: " ") + Text("Let's meet your skin.")
@@ -196,13 +196,12 @@ struct HomePlace: View {
         return Text(StreakCopy.routineLine(engagement.routine.status))
     }
 
-    /// What Pimpi says when poked. About showing up and small habits — never about how the skin looks.
-    private static let quips: [(text: LocalizedStringResource, mood: MascotMood)] = [
-        ("You showed up. That already counts.", .excited),
-        ("Sunscreen first. Feelings later.", .happy),
-        ("Wash the pillowcase. That's the whole tip.", .happy),
-        ("I'm resting my eyes. You go ahead.", .sleepy),
-    ]
+    /// What Pimpi says when poked (from the shared pool). About showing up and small habits — never about how the
+    /// skin looks.
+    private var pokedLine: PimpiLine {
+        PimpiLines.shared.line(poke: pokes, place: .home,
+                               hasStreak: engagement.routine.count >= PimpiLines.minimumStreakDays)
+    }
 
     // MARK: Top bar
 

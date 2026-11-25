@@ -155,6 +155,17 @@ struct ProfileView: View {
                 .foregroundStyle(Color.ds.ink)
                 .multilineTextAlignment(.center)
                 .padding(.top, Spacing.xs)
+            // Credit required by the Open Database License for imported product data.
+            if let url = URL(string: "https://world.openbeautyfacts.org") {
+                Link(destination: url) {
+                    Text("Product data includes Open Beauty Facts (ODbL)")
+                        .font(.ds.caption.weight(.semibold))
+                        .underline()
+                        .foregroundStyle(Color.ds.ink)
+                        .multilineTextAlignment(.center)
+                        .frame(minHeight: Chunk.iconButton)
+                }
+            }
         }
         .frame(maxWidth: .infinity)
     }

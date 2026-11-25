@@ -55,6 +55,13 @@ final class VisualTourUITests: XCTestCase {
         app.buttons["What helps"].tap()
         sleep(1)
         snap("05 Result · What helps")
+        // Drag the page up from a row (a plain swipe here can start on the chapter pager and not scroll).
+        for name in ["05b What helps · for what was noticed", "05c What helps · habits"] {
+            app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.85))
+                .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.15)))
+            sleep(1)
+            snap(name)
+        }
         // Back to the top by tapping the status bar (a swipe on the 3D head turns it instead of scrolling).
         app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.01)).tap()
         sleep(2) // let the scroll settle: a tap while it is still moving only stops it
@@ -62,6 +69,14 @@ final class VisualTourUITests: XCTestCase {
             toggle.tap()
             sleep(1)
             snap("06 Result · photo")
+            // Poke the small Pimpi beside the index: its handwritten line must still fit there.
+            let cheering = app.buttons.matching(identifier: "Pimpi").allElementsBoundByIndex.first { $0.isHittable }
+                ?? app.buttons["Pimpi"].firstMatch
+            if cheering.exists {
+                for _ in 0..<4 { cheering.tap() }
+                sleep(1)
+                snap("06a Result · Pimpi poked")
+            }
             let pin = app.buttons.matching(identifier: "spotPin").firstMatch
             if pin.waitForExistence(timeout: 3) {
                 pin.tap()

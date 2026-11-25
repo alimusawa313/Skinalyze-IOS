@@ -777,6 +777,16 @@
         }
       }
     },
+    "A BHA many people use to help keep pores clear." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BHA yang banyak dipakai untuk bantu menjaga pori tetap bersih."
+          }
+        }
+      }
+    },
     "A BHA that helps keep pores clear and reduce excess oil." : {
       "localizations" : {
         "id" : {
@@ -977,6 +987,36 @@
         }
       }
     },
+    "A retinoid sold over the counter that works on clogged pores. Give it 6–8 weeks." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retinoid yang dijual bebas dan bekerja pada pori tersumbat. Beri waktu 6–8 minggu."
+          }
+        }
+      }
+    },
+    "A retinoid that also helps with some pimples. Give it 6–8 weeks." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retinoid yang juga membantu untuk sebagian jerawat. Beri waktu 6–8 minggu."
+          }
+        }
+      }
+    },
+    "A retinoid that can help marks fade; start slowly." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retinoid yang bisa bantu bekas memudar; mulai pelan-pelan."
+          }
+        }
+      }
+    },
     "A tidy shelf is half the routine." : {
       "localizations" : {
         "id" : {
@@ -1097,6 +1137,26 @@
         }
       }
     },
+    "Add to evening routine" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambah ke rutinitas malam"
+          }
+        }
+      }
+    },
+    "Add to morning routine" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambah ke rutinitas pagi"
+          }
+        }
+      }
+    },
     "Add yours" : {
       "localizations" : {
         "id" : {
@@ -1137,12 +1197,32 @@
         }
       }
     },
+    "Already on your shelf" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sudah ada di rakmu"
+          }
+        }
+      }
+    },
     "Already your friend." : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sudah jadi temanmu."
+          }
+        }
+      }
+    },
+    "An AHA that helps marks fade with regular use." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AHA yang bantu bekas memudar kalau dipakai rutin."
           }
         }
       }
@@ -1163,6 +1243,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Antioksidan yang menenangkan."
+          }
+        }
+      }
+    },
+    "An antioxidant used to even out tone." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antioksidan yang dipakai untuk meratakan warna kulit."
           }
         }
       }
@@ -1359,6 +1449,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Jadi temanku di Skinalyze! Kodeku %@. Buka tautan ini di iPhone-mu: %@"
+          }
+        }
+      }
+    },
+    "Be patient: marks often fade on their own over 6 to 12 months." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sabar ya: bekas sering memudar sendiri dalam 6 sampai 12 bulan."
           }
         }
       }
@@ -2133,6 +2233,16 @@
         }
       }
     },
+    "Cuts down acne bacteria on the skin; works best alongside another product." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mengurangi bakteri jerawat di kulit; paling baik dipadukan dengan produk lain."
+          }
+        }
+      }
+    },
     "Dairy" : {
       "localizations" : {
         "id" : {
@@ -2539,6 +2649,16 @@
         }
       }
     },
+    "Everyday habits" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kebiasaan sehari-hari"
+          }
+        }
+      }
+    },
     "Everything Skinalyze can do, without limits." : {
       "localizations" : {
         "id" : {
@@ -2595,6 +2715,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Langkah tambahan"
+          }
+        }
+      }
+    },
+    "Eye care" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perawatan mata"
           }
         }
       }
@@ -2805,6 +2935,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Untuk kulit %@"
+          }
+        }
+      }
+    },
+    "For blackheads and whiteheads" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untuk komedo hitam dan putih"
+          }
+        }
+      }
+    },
+    "For marks left behind" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untuk bekas yang tertinggal"
+          }
+        }
+      }
+    },
+    "For red spots" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untuk jerawat merah"
           }
         }
       }
@@ -3165,12 +3325,32 @@
         }
       }
     },
+    "Hands off: squeezing or popping makes spots last longer." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jangan dipencet: memencet bikin jerawat lebih lama hilang."
+          }
+        }
+      }
+    },
     "Happy" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gembira"
+          }
+        }
+      }
+    },
+    "Has %@" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mengandung %@"
           }
         }
       }
@@ -3515,6 +3695,26 @@
         }
       }
     },
+    "In your evening routine" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ada di rutinitas malammu"
+          }
+        }
+      }
+    },
+    "In your morning routine" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ada di rutinitas pagimu"
+          }
+        }
+      }
+    },
     "Include Apple Health with Pro" : {
       "localizations" : {
         "id" : {
@@ -3793,6 +3993,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rahasiakan pindaian tersembunyi"
+          }
+        }
+      }
+    },
+    "Keep your hands away from your face during the day." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jauhkan tangan dari wajah sepanjang hari."
           }
         }
       }
@@ -4867,6 +5077,16 @@
         }
       }
     },
+    "Often used to help marks fade." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sering dipakai untuk bantu bekas memudar."
+          }
+        }
+      }
+    },
     "Oily" : {
       "localizations" : {
         "id" : {
@@ -5193,6 +5413,16 @@
         }
       }
     },
+    "Painful, deep spots are worth showing a dermatologist." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jerawat yang sakit dan dalam sebaiknya ditunjukkan ke dokter kulit."
+          }
+        }
+      }
+    },
     "Panda" : {
       "localizations" : {
         "id" : {
@@ -5375,6 +5605,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pilih yang mana saja — bisa diubah nanti."
+          }
+        }
+      }
+    },
+    "Pick gentle, alcohol-free products." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih produk yang lembut dan bebas alkohol."
           }
         }
       }
@@ -5652,6 +5892,26 @@
         }
       }
     },
+    "Product data includes Open Beauty Facts (ODbL)" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data produk termasuk dari Open Beauty Facts (ODbL)"
+          }
+        }
+      }
+    },
+    "Product data: Open Beauty Facts, under the Open Database License." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data produk: Open Beauty Facts, dengan Open Database License."
+          }
+        }
+      }
+    },
     "Product name" : {
       "localizations" : {
         "id" : {
@@ -5848,6 +6108,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Siap dimulai"
+          }
+        }
+      }
+    },
+    "Reapply every two hours outdoors, and after sweating." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oles ulang tiap dua jam saat di luar, dan setelah berkeringat."
           }
         }
       }
@@ -7100,6 +7370,16 @@
         }
       }
     },
+    "Skip scrubs and washcloths; rubbing irritates skin." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindari scrub dan waslap; menggosok bikin kulit iritasi."
+          }
+        }
+      }
+    },
     "Slept badly" : {
       "localizations" : {
         "id" : {
@@ -7594,6 +7874,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tabir surya"
+          }
+        }
+      }
+    },
+    "Sunscreen every day: sun keeps marks dark longer." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sunscreen setiap hari: sinar matahari bikin bekas lebih lama gelap."
           }
         }
       }
@@ -8344,6 +8634,16 @@
         }
       }
     },
+    "View on Open Beauty Facts" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lihat di Open Beauty Facts"
+          }
+        }
+      }
+    },
     "View source page" : {
       "localizations" : {
         "id" : {
@@ -8390,6 +8690,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pemanasan"
+          }
+        }
+      }
+    },
+    "Wash gently with your fingertips, up to twice a day and after sweating." : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuci lembut pakai ujung jari, maksimal dua kali sehari dan setelah berkeringat."
           }
         }
       }

@@ -20,7 +20,7 @@ targets:
   Skinalyze:
     type: application
     platform: iOS
-    sources: [Skinalyze, SharedSources/Catalog, SharedSources/System, SharedSources/Localization, SharedSources/Watch]
+    sources: [Skinalyze, SharedSources/Catalog, SharedSources/System, SharedSources/Localization, SharedSources/Watch, SharedSources/Pimpi]
     dependencies:
       - package: SkinalyzeKit
       - target: ProductCheckShare

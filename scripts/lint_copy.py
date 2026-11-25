@@ -105,9 +105,10 @@ def main(argv: list[str]) -> int:
             results += scan_swift(path)
         for path in root.rglob("*.xcstrings"):
             results += scan_catalog(path)
-        for path in root.rglob("SkinSchool.json"):
-            if ".build" not in path.parts:
-                results += scan_lessons(path)
+        for name in ("SkinSchool.json", "PimpiLines.json"):
+            for path in root.rglob(name):
+                if ".build" not in path.parts and "build" not in path.parts:
+                    results += scan_lessons(path)
     for file, line, text, hits in results:
         print(f"{file}:{line}: {sorted(set(h.lower() for h in hits))}  \"{text}\"")
     print(f"{len(results)} copy violation(s)")

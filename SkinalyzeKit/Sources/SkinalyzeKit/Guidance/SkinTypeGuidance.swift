@@ -34,6 +34,11 @@ public struct IngredientNote: Sendable, Hashable, Identifiable {
     public let name: String
     public let note: String
     public var id: String { name }
+
+    public init(name: String, note: String) {
+        self.name = name
+        self.note = note
+    }
 }
 
 public struct Citation: Sendable, Hashable, Identifiable {

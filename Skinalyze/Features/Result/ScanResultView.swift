@@ -39,6 +39,7 @@ struct ScanResultView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Query(filter: #Predicate<ScanSession> { !$0.isHidden }, sort: \ScanSession.createdAt, order: .reverse) private var allScans: [ScanSession]
     @Environment(ShelfToolsModel.self) private var tools: ShelfToolsModel?
+    @Environment(RoutineModel.self) private var routine: RoutineModel?
     @State private var lightingTips: [LightingCoach.Tip] = []
     @AppStorage(UserProfile.Key.skinType) private var skinTypeRaw = ""
     @State private var angle: CaptureAngle = .front
@@ -94,14 +95,6 @@ struct ScanResultView: View {
         static let hopStretchSeconds = 0.18
         static let hopSettleSeconds = 0.32
     }
-
-    /// What Pimpi says when poked: showing up and small habits, never how the skin looks. (Home's lines.)
-    private static let quips: [(text: LocalizedStringResource, mood: MascotMood)] = [
-        ("You showed up. That already counts.", .excited),
-        ("Sunscreen first. Feelings later.", .happy),
-        ("Wash the pillowcase. That's the whole tip.", .happy),
-        ("I'm resting my eyes. You go ahead.", .sleepy),
-    ]
 
     init(session: ScanSession, isFreshScan: Bool = false) {
         self.session = session
@@ -165,7 +158,7 @@ struct ScanResultView: View {
         .sheet(item: $areaFollow) { AreaTimelineView(follow: $0) }
         .sheet(item: $sharedCard) { ShareCardSheet(source: $0) }
         .sheet(isPresented: $showsSources) {
-            SourcesView(skinType: SkinType(stored: skinTypeRaw))
+            SourcesView(skinType: SkinType(stored: skinTypeRaw), patterns: SpotGuidance.patterns(for: session.counts))
         }
     }
 
@@ -267,13 +260,17 @@ struct ScanResultView: View {
 
     private var streakDays: Int { engagement?.routine.count ?? 0 }
 
-    private var pokeMood: MascotMood? {
-        pokes == 0 ? nil : Self.quips[(pokes - 1) % Self.quips.count].mood
+    /// What Pimpi says when poked (from the shared pool): showing up and small habits, never how the skin looks.
+    private var pokedLine: PimpiLine? {
+        guard pokes > 0 else { return nil }
+        return PimpiLines.shared.line(poke: pokes, place: .result, hasStreak: streakDays >= PimpiLines.minimumStreakDays)
     }
+
+    private var pokeMood: MascotMood? { pokedLine?.mood }
 
     /// Effort only: never the band, the index or how the skin looks.
     private var effortLine: Text {
-        if pokes > 0 { return Text(Self.quips[(pokes - 1) % Self.quips.count].text) }
+        if let pokedLine { return Text(verbatim: pokedLine.localized) }
         if streakDays >= Metrics.minimumStreak { return Text("\(streakDays) days in a row!") }
         return Text("You showed up. That already counts.")
     }
@@ -655,6 +652,9 @@ struct ScanResultView: View {
             HelpsTag(title: "Go easy on", systemImage: "minus.circle.fill", tint: Color.ds.caution)
                 .padding(.top, Spacing.xs)
             ForEach(guidance.avoid) { IngredientRow(note: $0) }
+            ForEach(SpotGuidance.patterns(for: session.counts), id: \.self) { pattern in
+                spotGuidance(SpotGuidance.for(pattern))
+            }
             if !products.isEmpty {
                 HelpsTag(title: "Using at the time", systemImage: "clock.fill", tint: Color.ds.inkSecondary)
                     .padding(.top, Spacing.xs)
@@ -665,7 +665,7 @@ struct ScanResultView: View {
                             Text(product.brand).font(.ds.caption).foregroundStyle(Color.ds.inkSecondary)
                         }
                     } icon: {
-                        Image(systemName: product.slot?.systemImage ?? "drop").foregroundStyle(Color.ds.ink)
+                        Image(systemName: product.kind?.systemImage ?? "drop").foregroundStyle(Color.ds.ink)
                     }
                     .helpsRow()
                 }
@@ -679,6 +679,34 @@ struct ScanResultView: View {
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+        }
+    }
+
+    /// What helps for one kind of spot this scan noticed: suggested ingredients (and which of your products have one),
+    /// then everyday habits.
+    @ViewBuilder private func spotGuidance(_ guidance: SpotGuidance) -> some View {
+        let shelf = ProductCatalog.shared.shelf(plan: routine?.plan)
+            .map { (name: $0.name, ingredients: $0.ingredientList) }
+        let matches = SpotGuidance.shelfMatches(for: guidance.pattern, shelf: shelf)
+        Text(guidance.title)
+            .font(.ds.titleSmall).foregroundStyle(Color.ds.ink).accessibilityAddTraits(.isHeader)
+            .padding(.top, Spacing.md)
+        HelpsTag(title: "Look for", systemImage: "checkmark.circle.fill", tint: Color.ds.positive)
+        ForEach(guidance.lookFor) { IngredientRow(note: $0) }
+        if !matches.isEmpty {
+            HelpsTag(title: "Already on your shelf", systemImage: "drop.fill", tint: Color.ds.signal)
+                .padding(.top, Spacing.xs)
+            ForEach(matches, id: \.self) { match in
+                IngredientRow(note: IngredientNote(name: match.product, note: String(localized: "Has \(match.ingredient)")))
+            }
+        }
+        HelpsTag(title: "Everyday habits", systemImage: "sparkles", tint: Color.ds.signal)
+            .padding(.top, Spacing.xs)
+        ForEach(guidance.habits, id: \.self) { habit in
+            Text(habit)
+                .font(.ds.callout).foregroundStyle(Color.ds.ink)
+                .fixedSize(horizontal: false, vertical: true)
+                .helpsRow()
         }
     }
 
@@ -812,6 +840,8 @@ private struct IngredientRow: View {
 
 struct SourcesView: View {
     let skinType: SkinType
+    /// What the scan noticed: their sources are listed too.
+    var patterns: [SpotGuidance.Pattern] = []
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -824,7 +854,7 @@ struct SourcesView: View {
                 }
                 .listRowBackground(Color.ds.surface)
                 Section("Sources") {
-                    ForEach(SkinTypeGuidance.for(skinType).sources) { source in
+                    ForEach(sources) { source in
                         if let url = URL(string: source.url) {
                             Link(source.title, destination: url)
                         }
@@ -838,6 +868,13 @@ struct SourcesView: View {
             .navigationTitle("Sources")
             .toolbar { Button("Done") { dismiss() } }
         }
+    }
+
+    /// Skin-type sources, then the spot sources, each listed once.
+    private var sources: [Citation] {
+        var seen = Set<String>()
+        return (SkinTypeGuidance.for(skinType).sources + patterns.flatMap { SpotGuidance.for($0).sources })
+            .filter { seen.insert($0.url).inserted }
     }
 }
 
