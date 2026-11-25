@@ -234,6 +234,7 @@ struct MirrorDock: View {
     var isVertical = false
     @Namespace private var pill
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     /// The room a page must leave on the trailing edge when the dock stands there.
     static let sideClearance: CGFloat = 76
@@ -264,9 +265,6 @@ struct MirrorDock: View {
         .background(Capsule().fill(Color.ds.surface))
         .background(Capsule().fill(Color.ds.edgeOnHill).offset(y: Chunk.depthSmall))
         .padding(.bottom, Chunk.depthSmall)
-        // Like the system tab bar: the bar stops growing at the largest standard size, and a long press shows each
-        // item enlarged (Large Content Viewer) so it never covers the page at accessibility sizes.
-        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         // The pill bounces between items; the page behind it only crossfades (the shell's smooth animation).
         .animation(MotionToken.bouncy.resolved(reduceMotion: reduceMotion).animation, value: selection)
         .sensoryFeedback(.selection, trigger: selection)
@@ -282,11 +280,13 @@ struct MirrorDock: View {
             HStack(spacing: Spacing.xs) {
                 Image(systemName: item.symbol).font(.body.weight(.semibold))
                     .symbolEffect(.bounce.up, value: selected)
-                if selected, !isVertical {
+                // At accessibility text sizes the dock shows icons only, so it stays small enough not to cover the
+                // page; a long press shows each item's name enlarged (Large Content Viewer).
+                if selected, !isVertical, !dynamicTypeSize.isAccessibilitySize {
                     Text(item.title).font(.system(.subheadline, design: .rounded).weight(.heavy)).fixedSize()
                 }
             }
-            .padding(.horizontal, selected && !isVertical ? Spacing.md + 2 : Spacing.sm + 2)
+            .padding(.horizontal, selected && !isVertical && !dynamicTypeSize.isAccessibilitySize ? Spacing.md + 2 : Spacing.sm + 2)
             .frame(minWidth: Self.itemSize, minHeight: Self.itemSize)
             .foregroundStyle(Color.ds.ink)
             .background {
