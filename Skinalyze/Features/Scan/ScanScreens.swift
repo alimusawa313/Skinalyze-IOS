@@ -3,7 +3,7 @@ import SwiftData
 import SwiftUI
 import SkinalyzeKit
 
-/// Screens the in-place Mirror scan still shows over the camera: the review of the three photos and plain messages
+/// Screens the in-place scan shows after capturing: the review of the three photos and plain messages
 /// (permission, failure), plus the capture sound.
 // MARK: - Sound
 
@@ -25,11 +25,12 @@ struct ReviewScreen: View {
     var body: some View {
         VStack(spacing: Spacing.lg) {
             HStack {
-                Button("Cancel", action: close).foregroundStyle(.white)
+                Button("Cancel", action: close)
+                    .buttonStyle(.chunky(.plain, fullWidth: false))
                 Spacer()
             }
-            Text("Looking good").font(.ds.display).foregroundStyle(.white)
-            Text("Retake any angle, or analyse now.").font(.ds.body).foregroundStyle(.white.opacity(0.75))
+            Text("Looking good").font(.ds.display).foregroundStyle(Color.ds.ink)
+            Text("Retake any angle, or analyse now.").font(.ds.body).foregroundStyle(Color.ds.inkSecondary)
             ScrollView(.horizontal) {
                 HStack(spacing: Spacing.md) {
                     ForEach(ScanFlow.sequence, id: \.self) { angle in
@@ -45,8 +46,7 @@ struct ReviewScreen: View {
                             } label: {
                                 Text("Retake \(GuidanceCopy.title(for: angle).lowercased())")
                             }
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(Color.ds.signal)
+                            .buttonStyle(.chunky(.plain, fullWidth: false))
                         }
                     }
                 }
@@ -56,10 +56,10 @@ struct ReviewScreen: View {
             if model.has3DScan {
                 Label("3D scan captured", systemImage: "cube.transparent.fill")
                     .font(.ds.callout.weight(.semibold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color.ds.ink)
                     .padding(.horizontal, Spacing.md)
                     .padding(.vertical, Spacing.xs)
-                    .glassEffect(.regular, in: Capsule())
+                    .dsSurface(radius: Radius.medium)
                     .accessibilityIdentifier("scan3DBadge")
             }
             Button("Analyse my skin", action: analyze)
@@ -84,12 +84,12 @@ struct MessageScreen: View {
             Spacer()
             Image(systemName: systemImage).font(.system(.largeTitle)).foregroundStyle(Color.ds.signal)
                 .accessibilityHidden(true)
-            Text(title).font(.ds.title).foregroundStyle(.white).multilineTextAlignment(.center)
-            Text(message).font(.ds.body).foregroundStyle(.white.opacity(0.75)).multilineTextAlignment(.center)
+            Text(title).font(.ds.title).foregroundStyle(Color.ds.ink).multilineTextAlignment(.center)
+            Text(message).font(.ds.body).foregroundStyle(Color.ds.inkSecondary).multilineTextAlignment(.center)
             Spacer()
             Button(primary.0, action: primary.1).buttonStyle(.dsPrimary)
             if let secondary {
-                Button(secondary.0, action: secondary.1).foregroundStyle(.white.opacity(0.8))
+                Button(secondary.0, action: secondary.1).buttonStyle(.chunkyPlain)
             }
         }
         .padding(Spacing.lg)

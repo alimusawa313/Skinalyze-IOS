@@ -24,6 +24,32 @@ struct DesignTokenTests {
         }
     }
 
+    @Test("Text stays readable on the hill, light and dark", arguments: [Palette.ink, Palette.inkSecondary])
+    func textContrastOnHill(token: ColorToken) {
+        for hill in [Palette.hill, Palette.hillFar] {
+            #expect(token.light.contrastRatio(with: hill.light) >= 4.5, "\(token.name) light on \(hill.name)")
+            #expect(token.dark.contrastRatio(with: hill.dark) >= 4.5, "\(token.name) dark on \(hill.name)")
+        }
+    }
+
+    @Test("The filled button's label reads on its fill, and the fill stands out from the canvas and the hill")
+    func chunkyButtonContrast() {
+        #expect(Palette.canvas.light.contrastRatio(with: Palette.ink.light) >= 4.5)
+        #expect(Palette.canvas.dark.contrastRatio(with: Palette.ink.dark) >= 4.5)
+        for ground in [Palette.canvas, Palette.hill] {
+            #expect(Palette.ink.light.contrastRatio(with: ground.light) >= 3)
+            #expect(Palette.ink.dark.contrastRatio(with: ground.dark) >= 3)
+        }
+    }
+
+    @Test("A pressed-in edge is darker than the thing it sits under")
+    func edgesAreDarker() {
+        #expect(Palette.edge.light.relativeLuminance < Palette.surface.light.relativeLuminance)
+        #expect(Palette.edgeOnHill.light.relativeLuminance < Palette.hill.light.relativeLuminance)
+        #expect(Palette.inkEdge.light.relativeLuminance < Palette.ink.light.relativeLuminance)
+        #expect(Palette.edge.dark.relativeLuminance < Palette.surface.dark.relativeLuminance)
+    }
+
     @Test("Accent and status colours meet 3:1 for non-text UI on the canvas",
           arguments: [Palette.signal, Palette.positive, Palette.caution])
     func uiContrast(token: ColorToken) {

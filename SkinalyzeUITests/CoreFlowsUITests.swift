@@ -10,7 +10,7 @@ final class CoreFlowsUITests: XCTestCase {
         app = XCUIApplication()
         // A fresh, complete set of demo scans for every test (an earlier test may have ended mid-seed).
         app.launchArguments = ["-seedDemoData", "-resetDemoData", "YES"]
-        // The Mirror asks for camera access on launch (system alert).
+        // Starting a scan asks for camera access (system alert).
         addUIInterruptionMonitor(withDescription: "Camera permission") { alert in
             for title in ["Allow", "OK", "Don’t Allow"] where alert.buttons[title].firstMatch.exists {
                 alert.buttons[title].firstMatch.tap()
@@ -338,13 +338,16 @@ final class CoreFlowsUITests: XCTestCase {
         attachScreenshot("Product check")
     }
 
+    /// Home never opens the camera; asking for a scan does. Without one, Home says so and the button turns off.
     func testMirrorWithoutCameraFailsGracefully() {
-        XCTAssertTrue(app.buttons["mirrorShutter"].waitForExistence(timeout: 10))
+        let shutter = app.buttons["mirrorShutter"]
+        XCTAssertTrue(shutter.waitForExistence(timeout: 10))
         let unavailable = app.staticTexts["Camera unavailable — scan on a real iPhone."]
         let denied = app.staticTexts["Camera access is off"]
         let deadline = Date.now.addingTimeInterval(15)
         while Date.now < deadline, !unavailable.exists, !denied.exists {
-            app.tap() // lets the interruption monitor handle the permission alert
+            // Asks for the camera; a second tap lets the interruption monitor handle the permission alert.
+            if shutter.exists, shutter.isEnabled { shutter.tap() }
             _ = unavailable.waitForExistence(timeout: 1)
         }
         XCTAssertTrue(unavailable.exists || denied.exists)

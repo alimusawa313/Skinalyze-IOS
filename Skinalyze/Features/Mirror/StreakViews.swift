@@ -158,15 +158,7 @@ struct StreakSheet: View {
         }
     }
 
-    private var routineLine: String {
-        switch engagement.routine.status {
-        case .none: String(localized: "Check off a routine step to start your streak.")
-        case .doneToday: String(localized: "Done for today. See you tomorrow.")
-        case .due: String(localized: "Check off today's routine to keep it going.")
-        case .atRisk: String(localized: "Today's almost over — one step keeps your streak.")
-        case let .broken(previous): String(localized: "Your \(previous)-day streak ended. Start a new one today.")
-        }
-    }
+    private var routineLine: String { StreakCopy.routineLine(engagement.routine.status) }
 
     private var scanValue: Text {
         engagement.scan.weeks == 1 ? Text("1 week") : Text("\(engagement.scan.weeks) weeks")
@@ -179,6 +171,19 @@ struct StreakSheet: View {
         case let .due(daysLeft): daysLeft == 1 ? Text("Scan by tomorrow to keep it.") : Text("Scan in the next \(daysLeft) days to keep it.")
         case .atRisk: Text("Last day to scan this week.")
         case .broken: Text("A new streak starts with your next scan.")
+        }
+    }
+}
+
+/// Where the routine streak stands, in one line. Pimpi says it on Home; the streak sheet shows it too.
+enum StreakCopy {
+    static func routineLine(_ status: RoutineStreak.Status) -> String {
+        switch status {
+        case .none: String(localized: "Check off a routine step to start your streak.")
+        case .doneToday: String(localized: "Done for today. See you tomorrow.")
+        case .due: String(localized: "Check off today's routine to keep it going.")
+        case .atRisk: String(localized: "Today's almost over — one step keeps your streak.")
+        case let .broken(previous): String(localized: "Your \(previous)-day streak ended. Start a new one today.")
         }
     }
 }

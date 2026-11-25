@@ -81,7 +81,29 @@ final class ScanCaptureModel {
         listenToFrames()
     }
 
-    /// Starts a scan in place on the already-running mirror camera.
+    /// True from the moment a scan is asked for until the user is back on Home. The camera only runs in between:
+    /// Home itself never opens it.
+    private(set) var isStageOpen = false
+
+    /// Opens the camera (asking for access the first time) and starts a scan.
+    func startScan() async {
+        isStageOpen = true
+        await startPreview()
+        guard isPreviewing else {
+            isStageOpen = false
+            return
+        }
+        beginScan()
+    }
+
+    /// Back to Home: clears the scan and stops the camera.
+    func leaveScan() {
+        isStageOpen = false
+        returnToMirror()
+        camera.stop()
+    }
+
+    /// Starts a scan in place on the already-running camera.
     func beginScan() {
         guard isPreviewing, state == .idle || state == .finished else { return }
         captures = [:]
@@ -103,7 +125,7 @@ final class ScanCaptureModel {
         frontDepth = nil
         resetHold()
         state = .idle
-        if isPreviewing { camera.start() }
+        if isPreviewing, isStageOpen { camera.start() }
     }
 
     // MARK: - Lifecycle
@@ -118,7 +140,7 @@ final class ScanCaptureModel {
     func resume() {
         switch state {
         case .capturing: camera.start()
-        case .idle where isPreviewing: camera.start()
+        case .idle where isPreviewing && isStageOpen: camera.start()
         default: break
         }
     }

@@ -15,7 +15,15 @@ public extension Font {
         public static let numeral = Font.system(size: 72, weight: .heavy, design: .rounded).monospacedDigit()
         public static let numeralSmall = Font.system(.title3, design: .rounded).weight(.bold).monospacedDigit()
         public static let label = Font.caption.weight(.semibold)
+        /// Pimpi's handwriting — only for what the mascot says, never for facts, verdicts or controls.
+        public static let pimpi = Font.custom(Handwriting.fontName, size: 24, relativeTo: .title2)
+        public static let pimpiSmall = Font.custom(Handwriting.fontName, size: 19, relativeTo: .body)
     }
+}
+
+/// The system handwriting face Pimpi speaks in (falls back to the system font where it is missing).
+public enum Handwriting {
+    public static let fontName = "BradleyHandITCTT-Bold"
 }
 
 /// 4-pt spacing grid.
@@ -31,7 +39,7 @@ public enum Spacing {
 
 /// The only corner radii in the app.
 public enum Radius {
-    public static let small: CGFloat = 10
-    public static let medium: CGFloat = 22
-    public static let large: CGFloat = 36
+    public static let small: CGFloat = 14
+    public static let medium: CGFloat = 24
+    public static let large: CGFloat = 30
 }

@@ -2,7 +2,8 @@ import SwiftData
 import SwiftUI
 import SkinalyzeKit
 
-/// V2 shell: no tab bar. Mirror is home; a floating Liquid Glass dock moves between Mirror · Deck · Shelf.
+/// The shell: no tab bar. Pimpi's place is home; a floating dock moves between Home · Deck · Shelf. The dock sits at
+/// the bottom on tall screens and down the trailing edge on short ones (landscape), where height is scarce.
 struct AppShell: View {
     @Environment(AppModel.self) private var appModel
     @Environment(\.modelContext) private var modelContext
@@ -23,6 +24,9 @@ struct AppShell: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var paywall: PaywallReason?
     @Environment(ProAccess.self) private var access: ProAccess?
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+    /// Short screens (landscape) keep their height for content: the dock moves to the trailing edge.
+    private var dockOnSide: Bool { verticalSizeClass == .compact }
     #if DEBUG
     @State private var showsPimpiGallery = UserDefaults.standard.bool(forKey: "pimpiGallery")
     @State private var showsPimpiWidgetGallery = UserDefaults.standard.bool(forKey: "pimpiWidgetGallery")
@@ -32,14 +36,16 @@ struct AppShell: View {
 
     var body: some View {
         @Bindable var appModel = appModel
-        ZStack(alignment: .bottom) {
+        let showsDock = !appModel.isScanning && !isKeyboardVisible
+        ZStack(alignment: dockOnSide ? .trailing : .bottom) {
             page
                 .id(appModel.selectedTab == .search ? AppModel.Tab.products : appModel.selectedTab)
                 .transition(reduceMotion ? .opacity : .opacity.combined(with: .scale(scale: 0.97)))
-            if !appModel.isScanning, !isKeyboardVisible {
-                MirrorDock(selection: $appModel.selectedTab)
-                    .padding(.bottom, Spacing.xs)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                .safeAreaPadding(.trailing, dockOnSide && showsDock ? MirrorDock.sideClearance : 0)
+            if showsDock {
+                MirrorDock(selection: $appModel.selectedTab, isVertical: dockOnSide)
+                    .padding(dockOnSide ? .trailing : .bottom, Spacing.xs)
+                    .transition(.move(edge: dockOnSide ? .trailing : .bottom).combined(with: .opacity))
             }
         }
         .animation(MotionToken.bouncy.resolved(reduceMotion: reduceMotion).animation, value: appModel.selectedTab)
@@ -218,10 +224,16 @@ struct AppShell: View {
     }
 }
 
-/// Three glyphs in one glass capsule; the selection is a white pill that slides between them.
+/// Home · Deck · Shelf in one white capsule with a hard edge; the selection is a pink pill that slides between them.
 struct MirrorDock: View {
     @Binding var selection: AppModel.Tab
+    var isVertical = false
     @Namespace private var pill
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// The room a page must leave on the trailing edge when the dock stands there.
+    static let sideClearance: CGFloat = 76
+    private static let itemSize: CGFloat = 48
 
     private struct Item: Identifiable {
         let tab: AppModel.Tab
@@ -232,19 +244,22 @@ struct MirrorDock: View {
     }
 
     private let items = [
-        Item(tab: .today, title: "Mirror", symbol: "faceid", identifier: "dock.mirror"),
+        Item(tab: .today, title: "Home", symbol: "house.fill", identifier: "dock.mirror"),
         Item(tab: .timeline, title: "Deck", symbol: "rectangle.stack.fill", identifier: "dock.deck"),
         Item(tab: .products, title: "Shelf", symbol: "drop.fill", identifier: "dock.shelf"),
     ]
 
     var body: some View {
-        HStack(spacing: Spacing.xxs) {
+        let layout = isVertical ? AnyLayout(VStackLayout(spacing: Spacing.xxs)) : AnyLayout(HStackLayout(spacing: Spacing.xxs))
+        layout {
             ForEach(items) { item in
                 button(item)
             }
         }
         .padding(Spacing.xxs + 2)
-        .glassEffect(.regular.interactive(), in: Capsule())
+        .background(Capsule().fill(Color.ds.surface))
+        .background(Capsule().fill(Color.ds.edgeOnHill).offset(y: Chunk.depthSmall))
+        .padding(.bottom, Chunk.depthSmall)
         .sensoryFeedback(.selection, trigger: selection)
     }
 
@@ -258,13 +273,15 @@ struct MirrorDock: View {
             HStack(spacing: Spacing.xs) {
                 Image(systemName: item.symbol).font(.body.weight(.semibold))
                     .symbolEffect(.bounce.up, value: selected)
-                if selected { Text(item.title).font(.subheadline.weight(.heavy)).fixedSize() }
+                if selected, !isVertical {
+                    Text(item.title).font(.system(.subheadline, design: .rounded).weight(.heavy)).fixedSize()
+                }
             }
-            .padding(.horizontal, selected ? 18 : 14)
-            .frame(minHeight: 48)
-            .foregroundStyle(selected ? Color.ds.canvas : Color.ds.ink)
+            .padding(.horizontal, selected && !isVertical ? Spacing.md + 2 : Spacing.sm + 2)
+            .frame(minWidth: Self.itemSize, minHeight: Self.itemSize)
+            .foregroundStyle(Color.ds.ink)
             .background {
-                if selected { Capsule().fill(Color.ds.ink).matchedGeometryEffect(id: "pill", in: pill) }
+                if selected { Capsule().fill(Color.ds.surfaceRaised).matchedGeometryEffect(id: "pill", in: pill) }
             }
             .contentShape(Capsule())
         }

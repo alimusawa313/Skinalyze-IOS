@@ -2,42 +2,21 @@ import SwiftUI
 
 // MARK: - Buttons
 
-/// The one filled, accent-coloured button style. Press: slight scale + darken; honours Reduce Motion.
+/// The one filled primary action: ink capsule that stands proud and sinks when pressed (see `ChunkyButtonStyle`).
 public struct PrimaryButtonStyle: ButtonStyle {
-    @Environment(\.isEnabled) private var isEnabled
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
     public init() {}
 
     public func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.headline)
-            .foregroundStyle(.white)
-            .frame(maxWidth: .infinity, minHeight: 52)
-            .padding(.horizontal, Spacing.lg)
-            .background(Capsule().fill(isEnabled ? Color.ds.signal : Color.ds.inkTertiary))
-            .brightness(configuration.isPressed ? -0.06 : 0)
-            .scaleEffect(configuration.isPressed && !reduceMotion ? 0.97 : 1)
-            .animation(MotionToken.snappy.resolved(reduceMotion: reduceMotion).animation, value: configuration.isPressed)
-            .contentShape(Capsule())
+        ChunkyButtonStyle(.filled).makeBody(configuration: configuration)
     }
 }
 
+/// The quieter white action with the same pressed-in edge.
 public struct SecondaryButtonStyle: ButtonStyle {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
     public init() {}
 
     public func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.headline)
-            .foregroundStyle(Color.ds.ink)
-            .frame(maxWidth: .infinity, minHeight: 52)
-            .padding(.horizontal, Spacing.lg)
-            .background(Capsule().strokeBorder(Color.ds.hairline, lineWidth: 1.5))
-            .scaleEffect(configuration.isPressed && !reduceMotion ? 0.97 : 1)
-            .animation(MotionToken.snappy.resolved(reduceMotion: reduceMotion).animation, value: configuration.isPressed)
-            .contentShape(Capsule())
+        ChunkyButtonStyle(.plain).makeBody(configuration: configuration)
     }
 }
 
@@ -52,12 +31,11 @@ public extension ButtonStyle where Self == SecondaryButtonStyle {
 // MARK: - Surfaces
 
 public extension View {
-    /// Quiet card: surface fill, hairline border, no drop shadow (PLAN.md §6.7).
+    /// A resting panel: white, rounded, with the hard bottom edge. No border, no drop shadow.
     func dsCard(padding: CGFloat = Spacing.md) -> some View {
         self
             .padding(padding)
-            .background(Color.ds.surface, in: RoundedRectangle(cornerRadius: Radius.medium, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: Radius.medium, style: .continuous).strokeBorder(Color.ds.hairline))
+            .dsSurface(radius: Radius.large)
     }
 
     /// App background.
@@ -68,7 +46,7 @@ public extension View {
 
 // MARK: - Chips
 
-/// Multi-select filter chip. The selected fill slides between chips via a shared namespace.
+/// Multi-select chip: a pressable white pill that turns ink-filled when chosen.
 public struct Chip: View {
     let title: String
     let systemImage: String?
@@ -88,14 +66,9 @@ public struct Chip: View {
                 if let systemImage { Image(systemName: systemImage).imageScale(.small) }
                 Text(title)
             }
-            .font(.subheadline.weight(.medium))
-            .foregroundStyle(isSelected ? Color.ds.signal : Color.ds.inkSecondary)
-            .padding(.horizontal, Spacing.sm)
-            .padding(.vertical, Spacing.xs)
-            .background(Capsule().fill(isSelected ? Color.ds.signalSoft : Color.clear))
-            .overlay(Capsule().strokeBorder(isSelected ? Color.ds.signal.opacity(0.4) : Color.ds.hairline))
+            .font(.system(.subheadline, design: .rounded).weight(.heavy))
         }
-        .buttonStyle(.plain)
+        .buttonStyle(ChunkyButtonStyle(isSelected ? .filled : .plain, fullWidth: false, minHeight: Chunk.iconButton))
         .accessibilityAddTraits(isSelected ? .isSelected : [])
         .sensoryFeedback(Haptic.toggle, trigger: isSelected)
     }

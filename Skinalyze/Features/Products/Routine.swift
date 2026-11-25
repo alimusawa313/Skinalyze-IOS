@@ -57,9 +57,16 @@ struct RoutineChecklist: View {
     @AppStorage(UserProfile.Key.tonerID) private var toner = 0
     @AppStorage(UserProfile.Key.moisturizerID) private var moisturizer = 0
     @AppStorage(UserProfile.Key.sunscreenID) private var sunscreen = 0
-    @State private var part: Part = Calendar.current.component(.hour, from: .now) < 15 ? .morning : .evening
+    @State private var part: Part
     @Environment(RoutineModel.self) private var routine: RoutineModel?
     @State private var showsBuilder = false
+
+    /// Opens on the given part of the day, or on the one that fits the time (evening from 15:00).
+    init(initialPart: Part? = nil) {
+        _part = State(initialValue: initialPart ?? (Calendar.current.component(.hour, from: .now) < Self.eveningFromHour ? .morning : .evening))
+    }
+
+    private static let eveningFromHour = 15
 
     private func productID(_ slot: ProductCatalog.Slot) -> Int {
         switch slot {

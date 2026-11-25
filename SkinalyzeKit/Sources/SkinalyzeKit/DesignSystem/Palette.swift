@@ -66,19 +66,30 @@ public struct ColorToken: Sendable, Hashable, CustomStringConvertible {
     }
 }
 
-/// "Glow" palette: warm-white / deep-night bases with a living, mood-driven accent (calm mint → flared magenta).
-/// Views use `Color.ds.*`; never raw hex.
+/// "Pimpi's Place" palette: a cream sky over a pink hill by day, a dusk sky over a violet hill by night. Navy ink,
+/// white pressable surfaces with a hard bottom edge. Views use `Color.ds.*`; never raw hex.
 public enum Palette {
-    public static let canvas = ColorToken("canvas", light: 0xFBF7F4, dark: 0x0E0C14)
-    public static let surface = ColorToken("surface", light: 0xFFFFFF, dark: 0x1A1722)
-    public static let surfaceRaised = ColorToken("surfaceRaised", light: 0xF4EEEA, dark: 0x241F2E)
-    public static let ink = ColorToken("ink", light: 0x17141F, dark: 0xF6F2FA)
-    public static let inkSecondary = ColorToken("inkSecondary", light: 0x585266, dark: 0xB6AFC3)
-    public static let inkTertiary = ColorToken("inkTertiary", light: 0x8C8696, dark: 0x7E788A)
-    public static let hairline = ColorToken("hairline", light: 0xECE5E0, dark: 0x2E2938)
-    public static let signal = ColorToken("signal", light: 0xE5484D, dark: 0xFF6B6F)
+    /// The sky.
+    public static let canvas = ColorToken("canvas", light: 0xFFF3E4, dark: 0x1E1D45)
+    public static let surface = ColorToken("surface", light: 0xFFFFFF, dark: 0x2E2D63)
+    public static let surfaceRaised = ColorToken("surfaceRaised", light: 0xFFE1D8, dark: 0x3B3A78)
+    public static let ink = ColorToken("ink", light: 0x23224F, dark: 0xFFF3E4)
+    public static let inkSecondary = ColorToken("inkSecondary", light: 0x6A4E5C, dark: 0xD6CFE6)
+    public static let inkTertiary = ColorToken("inkTertiary", light: 0x8C7480, dark: 0x9A93B5)
+    public static let hairline = ColorToken("hairline", light: 0xF1D9C6, dark: 0x45447F)
+    public static let signal = ColorToken("signal", light: 0xE0496A, dark: 0xFF8A94)
     public static let positive = ColorToken("positive", light: 0x1F8A5B, dark: 0x4CD49A)
     public static let caution = ColorToken("caution", light: 0xB06A00, dark: 0xF2A93B)
+
+    /// The hill Pimpi stands on, and the one behind it.
+    public static let hill = ColorToken("hill", light: 0xFFC9C4, dark: 0x4A3B7A)
+    public static let hillFar = ColorToken("hillFar", light: 0xFFE1D8, dark: 0x352C63)
+    /// The sun by day, the moon by night.
+    public static let sun = ColorToken("sun", light: 0xFFD95A, dark: 0xFFF3E4)
+    /// Hard bottom edges: under a surface on the sky, under a surface on the hill, under a filled (ink) button.
+    public static let edge = ColorToken("edge", light: 0xF1D9C6, dark: 0x131232)
+    public static let edgeOnHill = ColorToken("edgeOnHill", light: 0xEDA6A6, dark: 0x241D4A)
+    public static let inkEdge = ColorToken("inkEdge", light: 0x0F0E2E, dark: 0xD9C4A8)
 
     /// Pimpi, the mascot (the original character's pink, navy eyes and cream cheeks, with depth instead of outlines).
     public static let pimpiBody = ColorToken("pimpiBody", light: 0xFF7F8A, dark: 0xFF8A94)
@@ -86,6 +97,8 @@ public enum Palette {
     public static let pimpiHighlight = ColorToken("pimpiHighlight", light: 0xFFB4BA, dark: 0xFFBFC4)
     public static let pimpiEye = ColorToken("pimpiEye", light: 0x23224F, dark: 0x23224F)
     public static let pimpiCheek = ColorToken("pimpiCheek", light: 0xFFF3E4, dark: 0xFFF3E4)
+    /// The hard edge under a Pimpi-pink button (the scan button).
+    public static let pimpiEdge = ColorToken("pimpiEdge", light: 0xC2405A, dark: 0xB8445C)
 
     /// Calm → mild → active → flared. Always paired with a label + shape, never colour alone.
     public static let bandRamp: [ColorToken] = [
@@ -111,11 +124,19 @@ public extension Color {
         public static var positive: Color { Palette.positive.color }
         public static var caution: Color { Palette.caution.color }
 
+        public static var hill: Color { Palette.hill.color }
+        public static var hillFar: Color { Palette.hillFar.color }
+        public static var sun: Color { Palette.sun.color }
+        public static var edge: Color { Palette.edge.color }
+        public static var edgeOnHill: Color { Palette.edgeOnHill.color }
+        public static var inkEdge: Color { Palette.inkEdge.color }
+
         public static var pimpiBody: Color { Palette.pimpiBody.color }
         public static var pimpiBodyDeep: Color { Palette.pimpiBodyDeep.color }
         public static var pimpiHighlight: Color { Palette.pimpiHighlight.color }
         public static var pimpiEye: Color { Palette.pimpiEye.color }
         public static var pimpiCheek: Color { Palette.pimpiCheek.color }
+        public static var pimpiEdge: Color { Palette.pimpiEdge.color }
 
         public static func band(_ band: BreakoutBand) -> Color {
             Palette.bandRamp[BreakoutBand.allCases.firstIndex(of: band) ?? 0].color
