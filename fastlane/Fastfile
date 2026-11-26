@@ -56,9 +56,18 @@ platform :ios do
     upload_to_testflight(api_key: key, skip_waiting_for_build_processing: true)
   end
 
-  desc "Both: the build, then version #{VERSION}'s screenshots."
+  desc "Version #{VERSION}'s text from fastlane/metadata: description, What's New, promotional text, keywords, subtitle."
+  lane :metadata do
+    asc_key
+    deliver(app_version: VERSION, metadata_path: File.expand_path("metadata", __dir__), skip_screenshots: true,
+            skip_binary_upload: true, skip_app_version_update: false, submit_for_review: false,
+            run_precheck_before_submit: false, force: true)
+  end
+
+  desc "All of it: the build, then version #{VERSION}'s screenshots and text."
   lane :release do
     build
     screenshots
+    metadata
   end
 end
