@@ -92,3 +92,8 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
+# fastlane
+fastlane/report.xml
+fastlane/README.md
+fastlane/.env*
+*.p8

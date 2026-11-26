@@ -1,0 +1,64 @@
+# Skinalyze on App Store Connect. The API key comes from the environment, never from the repo:
+#   ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_PATH (the AuthKey_<id>.p8 file)
+# Nothing here submits for review.
+default_platform(:ios)
+
+VERSION = "2.0"
+SHOTS = File.expand_path("../docs/appstore/screenshots", __dir__)
+STAGED = File.expand_path("../build/fastlane-screenshots", __dir__)
+
+platform :ios do
+  private_lane :asc_key do
+    app_store_connect_api_key(key_id: ENV.fetch("ASC_KEY_ID"), issuer_id: ENV.fetch("ASC_ISSUER_ID"),
+                              key_filepath: ENV.fetch("ASC_KEY_PATH"), in_house: false)
+  end
+
+  # deliver reads one folder per language and sorts each display type by file name. iPhone Duo holds both its
+  # displays in one set of at most 10: the six inner-display shots, then four from the folded front display.
+  private_lane :stage_screenshots do
+    FileUtils.rm_rf(STAGED)
+    folder = File.join(STAGED, "en-US")
+    FileUtils.mkdir_p(folder)
+    copy = lambda do |set, names, prefix|
+      names.each_with_index do |name, index|
+        FileUtils.cp(File.join(SHOTS, set, name), File.join(folder, format("%s-%02d-%s", prefix, index + 1, name)))
+      end
+    end
+    all = ->(set) { Dir.children(File.join(SHOTS, set)).select { |f| f.end_with?(".png") }.sort }
+    copy.call("iphone-1206x2622", all.call("iphone-1206x2622"), "a")
+    copy.call("iphone-1320x2868", all.call("iphone-1320x2868"), "b")
+    copy.call("duo-inner-2853x2007", all.call("duo-inner-2853x2007"), "c")
+    copy.call("duo-outer-1398x2034", %w[02-scan.png 05-product.png 06-streaks.png 07-school.png], "d")
+    UI.message("Staged #{Dir.children(folder).count} screenshots in #{folder}")
+  end
+
+  desc "Make (or move) the App Store version #{VERSION} and replace its screenshots. Metadata text is left alone."
+  lane :screenshots do
+    asc_key
+    stage_screenshots
+    deliver(app_version: VERSION, screenshots_path: STAGED, overwrite_screenshots: true,
+            skip_binary_upload: true, skip_metadata: true, skip_app_version_update: false,
+            submit_for_review: false, run_precheck_before_submit: false, force: true)
+  end
+
+  desc "Archive version #{VERSION} (build number from the clock) and upload it to App Store Connect / TestFlight."
+  lane :build do
+    asc_key
+    sh("cd .. && /opt/homebrew/bin/xcodegen -q")
+    key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
+    build_app(project: "Skinalyze.xcodeproj", scheme: "Skinalyze", configuration: "Release",
+              export_method: "app-store", output_directory: "build/release", clean: true,
+              xcargs: "CURRENT_PROJECT_VERSION=#{Time.now.utc.strftime('%Y%m%d%H%M')} -allowProvisioningUpdates " \
+                      "-authenticationKeyPath #{ENV.fetch('ASC_KEY_PATH')} -authenticationKeyID #{ENV.fetch('ASC_KEY_ID')} " \
+                      "-authenticationKeyIssuerID #{ENV.fetch('ASC_ISSUER_ID')}",
+              export_xcargs: "-allowProvisioningUpdates -authenticationKeyPath #{ENV.fetch('ASC_KEY_PATH')} " \
+                             "-authenticationKeyID #{ENV.fetch('ASC_KEY_ID')} -authenticationKeyIssuerID #{ENV.fetch('ASC_ISSUER_ID')}")
+    upload_to_testflight(api_key: key, skip_waiting_for_build_processing: true)
+  end
+
+  desc "Both: the build, then version #{VERSION}'s screenshots."
+  lane :release do
+    build
+    screenshots
+  end
+end
