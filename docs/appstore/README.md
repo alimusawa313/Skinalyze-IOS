@@ -24,7 +24,9 @@ Captions (effort and fun only; no medical words, checked by `scripts/lint_copy.p
 7. Two-minute Skin School: *learn a little, earn a little*
 8. Private by default: *your photos stay yours*
 
-The inner display uses 1, 3, 4, 6, 7 and 8 (Skin School shows two columns there; the promise splits around Pimpi).
+The inner display uses 1, 3, 4, 6 and 8, plus **Folded or open**: *Pimpi fits every screen* (Skin School in two
+columns). On three of them the folded phone stands beside the open one, showing the same app on its front display
+(screens captured on the outer display). The open phone is drawn without a crease.
 
 The face in the scans is the debug demo data's illustrated portrait (`Skinalyze/Shared/DemoPortrait.swift`), never
 a real person's photo. The 3D view in shot 3 is the Simulator's stand-in mesh; a capture from a device with

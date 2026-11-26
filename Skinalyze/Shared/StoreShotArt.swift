@@ -14,6 +14,8 @@ struct StoreShotArt: View {
     let index: Int
     let canvas: StoreCanvas
     let screen: UIImage
+    /// iPhone Duo: the same app on the folded phone's front display, shown beside the open one.
+    var companion: UIImage?
 
     var body: some View {
         let size = canvas.points
@@ -35,6 +37,7 @@ struct StoreShotArt: View {
                 .frame(width: layout.phone.width, height: layout.phone.height)
                 .rotationEffect(.degrees(canvas == .duoInner ? shot.tilt * 0.3 : shot.tilt))
                 .offset(x: layout.phone.minX, y: layout.phone.minY)
+            if let companion { folded(companion, sky: sky, layout: layout) }
             if let sticker = shot.sticker, canvas.showsStickers { stickerView(sticker, layout: layout) }
             if !shot.pimpi.isBehindPhone { pimpi(layout: layout) }
         }
@@ -44,6 +47,18 @@ struct StoreShotArt: View {
     }
 
     // MARK: Pieces
+
+    /// The closed phone, front display on, standing in front of the open one's corner.
+    private func folded(_ image: UIImage, sky: StoreSky, layout: StoreLayout) -> some View {
+        let width = layout.size.width * 0.2
+        let height = width * image.size.height / image.size.width + width * 0.09
+        let left = !shot.pimpi.isLeft
+        return StorePhone(screen: image, kind: .plain, sky: sky)
+            .frame(width: width, height: height)
+            .shadow(color: .black.opacity(0.22), radius: width * 0.05, y: width * 0.03)
+            .rotationEffect(.degrees(left ? -6 : 6))
+            .position(x: layout.size.width * (left ? 0.1 : 0.9), y: layout.size.height - height / 2 + height * 0.06)
+    }
 
     private func headline(sky: StoreSky, layout: StoreLayout) -> some View {
         VStack(spacing: layout.headlineSize * 0.12) {
@@ -142,7 +157,9 @@ struct StoreShotArt: View {
                 let look = shot.isNight ? "dark" : "light"
                 let path = "\(source)/\(canvas.device)/\(look)/\(shot.screen).png"
                 guard let screen = UIImage(contentsOfFile: path) else { continue }
-                let renderer = ImageRenderer(content: StoreShotArt(shot: shot, index: index, canvas: canvas, screen: screen))
+                let companion = shot.companion.flatMap { UIImage(contentsOfFile: "\(source)/duo-outer/\(look)/\($0).png") }
+                let renderer = ImageRenderer(content: StoreShotArt(shot: shot, index: index, canvas: canvas, screen: screen,
+                                                                   companion: canvas == .duoInner ? companion : nil))
                 renderer.scale = canvas.pixels.width / canvas.points.width
                 renderer.isOpaque = true
                 let dir = out.appendingPathComponent(canvas.rawValue)
@@ -187,6 +204,8 @@ struct StoreShot {
     var pimpi = PimpiSpot()
     var sticker: Sticker?
     var tilt: Double = 0
+    /// iPhone Duo inner display: the folded phone's front display beside it (a screen captured on the outer display).
+    var companion: String?
 
     var isNight: Bool { time >= 1 }
     /// Where the sun sits across the sky.
@@ -223,8 +242,14 @@ struct StoreShot {
                       mood: .sleepy, pimpi: PimpiSpot(isLeft: false), tilt: -2.5),
         ]
         if canvas == .duoInner {
-            // The inner display: the screens where its two panes matter most.
-            shots = shots.filter { ["home", "result-3d", "compare", "streaks", "school", "ob-promise"].contains($0.screen) }
+            // The inner display: the screens where its room matters most, and the folded phone beside it on some.
+            shots = shots.filter { ["home", "result-3d", "compare", "streaks", "ob-promise"].contains($0.screen) }
+            shots[0].companion = "scan"
+            shots[0].pimpi.isLeft = true
+            let fits = StoreShot(screen: "school", headline: "Folded or open", line: "Pimpi fits every screen", time: 0.2,
+                                 mood: .excited, pimpi: PimpiSpot(isLeft: false), tilt: -2.5, companion: "home")
+            shots.insert(fits, at: 1)
+            shots[4].companion = "streaks" // [home, folded or open, result-3d, compare, streaks, promise]
         }
         return shots
     }
@@ -419,12 +444,6 @@ struct StorePhone: View {
                     Capsule().fill(.black)
                         .frame(width: screenSize.width * 0.31, height: screenSize.width * 0.092)
                         .padding(.top, bezel + screenSize.width * 0.027)
-                }
-                if kind == .unfolded {
-                    // The fold: a soft crease down the middle.
-                    LinearGradient(colors: [.clear, .black.opacity(0.07), .clear], startPoint: .leading, endPoint: .trailing)
-                        .frame(width: w * 0.03, height: screenSize.height)
-                        .padding(.top, bezel)
                 }
             }
         }
