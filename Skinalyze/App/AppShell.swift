@@ -123,6 +123,11 @@ struct AppShell: View {
                let source = UserDefaults.standard.string(forKey: "storeShotsSource") {
                 StoreShotArt.dump(into: folder, source: source)
             }
+            // `-storeHeroDump <folder> -storeShotsSource <raw folder>`: the product page header and search result.
+            if let folder = UserDefaults.standard.string(forKey: "storeHeroDump"),
+               let source = UserDefaults.standard.string(forKey: "storeShotsSource") {
+                Task { await StoreHero.dump(into: folder, source: source) }
+            }
             // `-pimpiGalleryDump <file.png>`: every mood and outfit, light and dark, rendered to an image.
             if let path = UserDefaults.standard.string(forKey: "pimpiGalleryDump") {
                 let renderer = ImageRenderer(content: PimpiGallery().frame(width: 402, height: 874))

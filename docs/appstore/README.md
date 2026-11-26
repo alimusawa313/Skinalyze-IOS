@@ -46,3 +46,20 @@ STORE_TEST=testOnboarding scripts/store-shots.sh <iPhone Duo udid> <raw>/duo-inn
 # 2. Frame them (StoreShotArt, a debug-only renderer in the app; build build/sim first).
 scripts/store-render.sh <raw> docs/appstore/screenshots
 ```
+
+## Product page header and search result
+
+In `hero/`, made to Apple's [asset best practices](https://developer.apple.com/app-store/asset-best-practices/):
+
+| File | Size | What |
+|---|---|---|
+| `header.png` / `header.mp4` | 3840 × 1646 (21:9), video 8 s, 30 fps | Pimpi waving "hi!" on the hill, stickers of real moments floating around it (streak, compare, Good match), the iPhone and the open iPhone Duo either side. No text. |
+| `search.png` / `search.mp4` | still 3840 × 2560, video 1920 × 1280 (3:2), 9 s, 30 fps | "Your tiny skin-care buddy": a phone stepping through real screens (Home, scan, compare, product check, streaks, Skin School), each moment's sticker popping out, Pimpi hopping beside it. |
+
+Key art sits inside Apple's safe areas (header 1646 × 661 at 1097, 493; search 2168 × 1030 at 836, 765, on the
+3840-wide template). The videos work silently (a silent stereo track only), loop seamlessly (every motion is a whole
+cycle per loop; the last frame differs from the first no more than any two neighbouring frames) and are H.264 MP4.
+Upload them in App Store Connect under the app's product page assets (fastlane doesn't handle these yet).
+
+Regenerate (after the raw screens above): `scripts/store-hero.sh <raw> docs/appstore/hero` (renderer:
+`Skinalyze/Shared/StoreHeroArt.swift`, debug builds only).
