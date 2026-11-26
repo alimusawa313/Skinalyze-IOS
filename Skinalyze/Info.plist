@@ -33,6 +33,8 @@
 	</array>
 	<key>NSHealthShareUsageDescription</key>
 	<string>Skinalyze can read your sleep and period days from Apple Health to show them next to your skin scans. Health data is read on your iPhone only when you open the patterns screen, is never stored by Skinalyze, and never goes to iCloud or anyone else.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Skinalyze never writes anything to Apple Health. It only reads the sleep and period days you allow, to show them next to your skin scans.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>If you turn on the daily UV nudge, Skinalyze asks Apple Weather for today's UV level where you are. Your location is used for that only, at reduced accuracy, and isn't stored or shared with anyone else.</string>
 	<key>NSLocationDefaultAccuracyReduced</key>
