@@ -56,7 +56,12 @@ enum DemoData {
                 counts: counts,
                 legacyScore: LegacySeverityScale.score(for: counts),
                 captures: CaptureAngle.legacyOrder.compactMap { angle in
-                    portrait(seed: index, angle: angle).map { CaptureDraft(angle: angle, imageData: $0) }
+                    let marks = detections.filter { $0.captureAngle == angle }.map { detection in
+                        DemoPortrait.Mark(type: detection.type,
+                                          center: CGPoint(x: detection.box.x + detection.box.width / 2,
+                                                          y: 1 - detection.box.y - detection.box.height / 2))
+                    }
+                    return DemoPortrait.jpeg(angle: angle, seed: index, marks: marks).map { CaptureDraft(angle: angle, imageData: $0) }
                 },
                 detections: detections,
                 productIDs: index >= 2 ? [18] : [],
@@ -181,22 +186,6 @@ enum DemoData {
         case .rightCheek, .rightJaw: (0.38 + jitter, 0.42)
         }
         return ImageRect(x: x, y: y, width: 0.03, height: 0.03)
-    }
-
-    /// A soft, abstract "face" placeholder — clearly not a real photo.
-    private static func portrait(seed: Int, angle: CaptureAngle) -> Data? {
-        let size = CGSize(width: 900, height: 1200)
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = 1
-        let image = UIGraphicsImageRenderer(size: size, format: format).image { context in
-            UIColor(red: 0.93, green: 0.90, blue: 0.86, alpha: 1).setFill()
-            context.fill(CGRect(origin: .zero, size: size))
-            let shift: CGFloat = angle == .front ? 0 : (angle == .right ? 70 : -70)
-            let tone = 0.78 - CGFloat(seed % 3) * 0.04
-            UIColor(red: tone + 0.1, green: tone, blue: tone - 0.08, alpha: 1).setFill()
-            context.cgContext.fillEllipse(in: CGRect(x: 180 + shift, y: 150, width: 540, height: 760))
-        }
-        return image.jpegData(compressionQuality: 0.8)
     }
 }
 #endif

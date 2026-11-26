@@ -26,6 +26,17 @@ guard let window = found,
 let sidebar: CGFloat = 240
 let inspector = CGFloat(Double(ProcessInfo.processInfo.environment["DUO_INSPECTOR"] ?? "0") ?? 0)
 let point = CGPoint(x: (x + sidebar + x + w - inspector) / 2 + dx, y: y + h - 26.5)
+// Never click into someone else's window: the frontmost normal window under the point must be Device Hub's.
+let onScreen = CGWindowListCopyWindowInfo([.optionOnScreenOnly, .excludeDesktopElements], kCGNullWindowID) as? [[String: Any]] ?? []
+let topmost = onScreen.first { info in
+    guard (info[kCGWindowLayer as String] as? Int) == 0, let r = info[kCGWindowBounds as String] as? [String: CGFloat],
+          let rx = r["X"], let ry = r["Y"], let rw = r["Width"], let rh = r["Height"] else { return false }
+    return CGRect(x: rx, y: ry, width: rw, height: rh).contains(point)
+}
+guard (topmost?[kCGWindowOwnerName as String] as? String) == "Device Hub" else {
+    print("not clicking: \(topmost?[kCGWindowOwnerName as String] as? String ?? "nothing") is on top of Device Hub's buttons")
+    exit(6)
+}
 let before = CGEvent(source: nil)?.location ?? .zero
 for type in [CGEventType.mouseMoved, .leftMouseDown, .leftMouseUp] {
     CGEvent(mouseEventSource: nil, mouseType: type, mouseCursorPosition: point, mouseButton: .left)?.post(tap: .cghidEventTap)

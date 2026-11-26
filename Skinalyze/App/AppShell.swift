@@ -118,6 +118,11 @@ struct AppShell: View {
             }
             // `-appIconDump <folder>`: the three app icon PNGs, drawn from the real Pimpi.
             if let folder = UserDefaults.standard.string(forKey: "appIconDump") { AppIconArt.dump(into: folder) }
+            // `-storeShotsDump <folder> -storeShotsSource <raw folder>`: the App Store set, framed from raw screens.
+            if let folder = UserDefaults.standard.string(forKey: "storeShotsDump"),
+               let source = UserDefaults.standard.string(forKey: "storeShotsSource") {
+                StoreShotArt.dump(into: folder, source: source)
+            }
             // `-pimpiGalleryDump <file.png>`: every mood and outfit, light and dark, rendered to an image.
             if let path = UserDefaults.standard.string(forKey: "pimpiGalleryDump") {
                 let renderer = ImageRenderer(content: PimpiGallery().frame(width: 402, height: 874))

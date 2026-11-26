@@ -593,7 +593,7 @@ considered, App Store presence ready (when a release is eventually planned).
 - [ ] Haptics review (no chatter, correct vocabulary)
 - [ ] Empty/error/loading states audit on every screen
 - [ ] Final `iphone-duo-design-review` across closed / open / book / tabletop / tent
-- [ ] App Store assets (when release is planned): screenshots across iPhone + Duo sizes/poses, preview video
+- [ ] App Store assets (when release is planned): screenshots across iPhone + Duo sizes/poses (done 2026-11-26, [docs/appstore](../appstore/README.md)), preview video
       (the `hyperframes` skills can produce a launch video), localized metadata
 
 **Exit criteria:**
