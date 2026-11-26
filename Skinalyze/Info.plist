@@ -31,6 +31,8 @@
 			</array>
 		</dict>
 	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>NSHealthShareUsageDescription</key>
 	<string>Skinalyze can read your sleep and period days from Apple Health to show them next to your skin scans. Health data is read on your iPhone only when you open the patterns screen, is never stored by Skinalyze, and never goes to iCloud or anyone else.</string>
 	<key>NSHealthUpdateUsageDescription</key>
