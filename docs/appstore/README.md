@@ -59,7 +59,9 @@ In `hero/`, made to Apple's [asset best practices](https://developer.apple.com/a
 Key art sits inside Apple's safe areas (header 1646 × 661 at 1097, 493; search 2168 × 1030 at 836, 765, on the
 3840-wide template). The videos work silently (a silent stereo track only), loop seamlessly (every motion is a whole
 cycle per loop; the last frame differs from the first no more than any two neighbouring frames) and are H.264 MP4.
-Upload them in App Store Connect under the app's product page assets (fastlane doesn't handle these yet).
+Upload with `fastlane creative` (the videos; `fastlane creative images:true` for the stills): it puts them in the
+app's Asset Library and places them on version 2.0 (en-US) through the App Store Connect API (`fastlane/creative_assets.rb`;
+deliver doesn't know these assets yet). They are reviewed with the version.
 
 Regenerate (after the raw screens above): `scripts/store-hero.sh <raw> docs/appstore/hero` (renderer:
 `Skinalyze/Shared/StoreHeroArt.swift`, debug builds only).

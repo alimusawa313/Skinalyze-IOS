@@ -64,10 +64,30 @@ platform :ios do
             run_precheck_before_submit: false, force: true)
   end
 
+  desc "Version #{VERSION}'s product page header and search result (docs/appstore/hero), videos by default."
+  lane :creative do |options|
+    asc_key
+    require_relative "creative_assets"
+    kind = options[:images] ? :image : :video
+    hero = File.expand_path("../docs/appstore/hero", __dir__)
+    client = CreativeAssets::Client.new(key_id: ENV.fetch("ASC_KEY_ID"), issuer_id: ENV.fetch("ASC_ISSUER_ID"),
+                                        key_path: ENV.fetch("ASC_KEY_PATH"))
+    app_id = Spaceship::ConnectAPI::App.find(CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)).id
+    localization = CreativeAssets.localization_id(client, app_id: app_id, version: VERSION, locale: "en-US")
+    log = ->(line) { UI.message(line) }
+    { "header" => "PRODUCT_PAGE_HEADER_ASSET", "search" => "APP_STORE_SEARCH_RESULTS_ASSET" }.each do |name, placement|
+      file = File.join(hero, "#{name}.#{kind == :video ? 'mp4' : 'png'}")
+      asset = CreativeAssets.upload(client, app_id: app_id, path: file, kind: kind, log: log)
+      CreativeAssets.place(client, localization_id: localization, placement_type: placement, asset_id: asset, kind: kind, log: log)
+    end
+    UI.success("Header and search result placed on #{VERSION} (en-US)")
+  end
+
   desc "All of it: the build, then version #{VERSION}'s screenshots and text."
   lane :release do
     build
     screenshots
     metadata
+    creative
   end
 end
