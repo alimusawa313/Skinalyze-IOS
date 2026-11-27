@@ -31,6 +31,15 @@ final class AppModel {
     var pendingInvite: FriendCode?
     /// Set by a shelf link (`skinalyze://shelf?p=1,2,3`).
     var sharedShelf: SharedShelf?
+    /// Set by `skinalyze://wrapped` (the Wrapped in-app event): the Wrapped to open.
+    var pendingRecap: RecapPeriod?
+    /// Set by `skinalyze://challenge/<kind>` (the challenge in-app event): the challenge to offer.
+    var pendingChallenge: ChallengeInvite?
+
+    struct ChallengeInvite: Identifiable, Hashable {
+        let kind: ChallengeKind
+        var id: ChallengeKind { kind }
+    }
 
     func startScan() {
         selectedTab = .today
@@ -44,9 +53,10 @@ final class AppModel {
         presentedScan = id.map(PresentedScan.init(id:))
     }
 
-    /// Handles `skinalyze://scan`, `skinalyze://timeline`, `skinalyze://products`, `skinalyze://search` and
-    /// `skinalyze://friend/<code>` (invites; an invalid code is ignored).
-    func open(_ url: URL) {
+    /// Handles `skinalyze://scan`, `skinalyze://timeline`, `skinalyze://products`, `skinalyze://search`,
+    /// `skinalyze://friend/<code>` (invites; an invalid code is ignored), and the in-app event links
+    /// `skinalyze://wrapped` and `skinalyze://challenge/<kind>` (an unknown kind goes to Today).
+    func open(_ url: URL, now: Date = .now, calendar: Calendar = .current) {
         guard url.scheme == "skinalyze" else { return }
         switch url.host() {
         case "scan": startScan()
@@ -57,6 +67,16 @@ final class AppModel {
             let ids = RoutineLink.productIDs(from: url)
             if !ids.isEmpty { sharedShelf = SharedShelf(productIDs: ids) }
         case "friend": pendingInvite = url.pathComponents.dropFirst().first.flatMap { FriendCode($0) }
+        case "wrapped":
+            // Last year's Wrapped in its first week of January, otherwise the last finished quarter.
+            pendingRecap = RecapEngine.dueWrapped(now: now, calendar: calendar)
+                ?? RecapEngine.latestWrapped(now: now, calendar: calendar)
+        case "challenge":
+            if let kind = url.pathComponents.dropFirst().first.flatMap(ChallengeKind.init(rawValue:)) {
+                pendingChallenge = ChallengeInvite(kind: kind)
+            } else {
+                selectedTab = .today
+            }
         default: selectedTab = .today
         }
     }

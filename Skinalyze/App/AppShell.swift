@@ -79,6 +79,8 @@ struct AppShell: View {
         .sheet(item: $appModel.pendingInvite) { InviteView(inviter: $0) }
         .sheet(isPresented: $showsFirstWeekDone) { FirstWeekDoneView() }
         .sheet(item: $appModel.sharedShelf) { SharedShelfView(productIDs: $0.productIDs) }
+        .sheet(item: $appModel.pendingRecap) { RecapView(period: $0) }
+        .sheet(item: $appModel.pendingChallenge) { ChallengeInviteView(kind: $0.kind) }
         .paywallSheet($paywall)
         .environment(engagement)
         .environment(quests)
@@ -127,6 +129,11 @@ struct AppShell: View {
             if let folder = UserDefaults.standard.string(forKey: "storeHeroDump"),
                let source = UserDefaults.standard.string(forKey: "storeShotsSource") {
                 Task { await StoreHero.dump(into: folder, source: source) }
+            }
+            // `-storeEventsDump <folder> -storeShotsSource <raw folder>`: the three in-app event films.
+            if let folder = UserDefaults.standard.string(forKey: "storeEventsDump"),
+               let source = UserDefaults.standard.string(forKey: "storeShotsSource") {
+                Task { await StoreEvents.dump(into: folder, source: source) }
             }
             // `-pimpiGalleryDump <file.png>`: every mood and outfit, light and dark, rendered to an image.
             if let path = UserDefaults.standard.string(forKey: "pimpiGalleryDump") {
