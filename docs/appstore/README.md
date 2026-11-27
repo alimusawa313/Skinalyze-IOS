@@ -68,7 +68,7 @@ Regenerate (after the raw screens above): `scripts/store-hero.sh <raw> docs/apps
 
 ## In-app events
 
-Three events, defined in `fastlane/metadata/events.json` (text, badge, schedule, deep link) with their films in
+Nine events through October 2027, defined in `fastlane/metadata/events.json` (text, badge, schedule, deep link) with their films in
 `events/`. Each film is a 10 s seamless loop at 30 fps (H.264, a silent stereo AAC track) in two sizes: the event card
 (`<event>-card.mp4`, 1920 × 1080) and the details page (`<event>-details.mp4`, 1080 × 1920); the PNGs are stills of the
 same frame. Apple asks for no text or logos in event media and lays the badge, name and description over the bottom,
@@ -79,11 +79,19 @@ so the key art sits in the top two-thirds and the near hill fills the rest.
 | Meet Pimpi: Skinalyze 2.0 | Major Update | Dec 3, 2026 – Jan 2, 2027 | `skinalyze://today` | Pimpi in a party hat waving hello in confetti, between Home and the scan |
 | Your 2026 Skin Wrapped | Special Event | Jan 1 – 7, 2027 (shown from Dec 25) | `skinalyze://wrapped` | A night of fireworks; a gift box opens and the year's stat cards fan out |
 | 30 Days of Sunscreen | Challenge | Jan 1 – 31, 2027 (shown from Dec 18) | `skinalyze://challenge/sunscreen` | Pimpi in sunglasses under a big sun while a 30-day card fills in, then a cheer |
+| 30 Days of Morning and Evening | Challenge | Feb 1 – 28, 2027 | `skinalyze://challenge/morningAndEvening` | Pimpi in a scarf beside a jar; the day turns to night and back while the card fills in |
+| 30 Days of Hands Off | Challenge | Mar 1 – 31, 2027 | `skinalyze://challenge/handsOff` | Pimpi in a bow beside a raised-hand sign |
+| Your Skin Wrapped: Jan–Mar | Special Event | Apr 1 – 7, 2027 | `skinalyze://wrapped` | The gift box under falling petals, Pimpi with a flower |
+| Summer Sunscreen Challenge | Challenge | Jun 1 – 30, 2027 | `skinalyze://challenge/sunscreen` | The sunscreen film with a flower and confetti |
+| Your Skin Wrapped: Apr–Jun | Special Event | Jul 1 – 7, 2027 | `skinalyze://wrapped` | The gift box under a big sun, Pimpi in sunglasses |
+| Your Skin Wrapped: Jul–Sep | Special Event | Oct 1 – 7, 2027 | `skinalyze://wrapped` | The gift box under falling leaves, Pimpi in a beanie |
 
-`skinalyze://wrapped` opens last year's Wrapped in the first week of January (otherwise the last finished quarter's);
+`skinalyze://wrapped` opens last year's Wrapped in the first week of January, the quarter that just ended in the first
+week of April, July and October (the app only offers it then), and otherwise the last finished quarter's;
 `skinalyze://challenge/<kind>` offers that 30-day challenge (`ChallengeInviteView`). Both links need 2.0.1 or later;
-in older builds they land on Home. The Wrapped and Sunscreen events start at 10:00 UTC so it's already Jan 1 in every
-time zone.
+in older builds they land on Home. Every event after Meet Pimpi starts at 10:00 UTC, so it's already the 1st in every
+time zone. The Wrapped and challenge films share two scenes, varied by a look (`WrappedLook`, `ChallengeLook`: sky,
+outfit, prop).
 
 Upload with `fastlane events`: it creates or updates each event (matched by reference name) in every territory the
 app is sold in, its en-US text and both videos, and leaves them as drafts (`fastlane/app_events.rb`). Submit each one

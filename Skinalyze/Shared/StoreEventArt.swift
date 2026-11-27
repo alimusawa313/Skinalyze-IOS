@@ -23,13 +23,52 @@ enum StoreEvents {
         case meetPimpi = "meet-pimpi"
         case wrapped
         case sunscreen
+        case morningEvening = "morning-evening"
+        case handsOff = "hands-off"
+        case summerSunscreen = "summer-sunscreen"
+        case wrappedQ1 = "wrapped-q1"
+        case wrappedQ2 = "wrapped-q2"
+        case wrappedQ3 = "wrapped-q3"
 
         /// The frame used for the still: the moment that reads best on its own.
         var stillTime: Double {
             switch self {
             case .meetPimpi: 0.12
-            case .wrapped: 0.5
-            case .sunscreen: 0.8
+            case .wrapped, .wrappedQ1, .wrappedQ2, .wrappedQ3: 0.5
+            case .sunscreen, .summerSunscreen, .handsOff: 0.8
+            case .morningEvening: 0.6
+            }
+        }
+
+        var wrappedLook: WrappedLook? {
+            switch self {
+            case .wrapped:
+                WrappedLook(sky: .fireworks, outfit: .crown,
+                            stats: [("flame.fill", Palette.signal, "42"), ("sun.max.fill", Palette.sun, "30"),
+                                    ("sparkles", Palette.outfitGold, "128")])
+            case .wrappedQ1:
+                WrappedLook(sky: .petals, outfit: .flower,
+                            stats: [("flame.fill", Palette.signal, "18"), ("graduationcap.fill", Palette.positive, "9"),
+                                    ("star.fill", Palette.outfitGold, "24")])
+            case .wrappedQ2:
+                WrappedLook(sky: .sunshine, outfit: .sunglasses,
+                            stats: [("sun.max.fill", Palette.sun, "61"), ("star.fill", Palette.outfitGold, "33"),
+                                    ("sparkles", Palette.outfitGold, "410")])
+            case .wrappedQ3:
+                WrappedLook(sky: .leaves, outfit: .beanie,
+                            stats: [("flame.fill", Palette.signal, "27"), ("graduationcap.fill", Palette.positive, "12"),
+                                    ("sparkles", Palette.outfitGold, "356")])
+            default: nil
+            }
+        }
+
+        var challengeLook: ChallengeLook? {
+            switch self {
+            case .sunscreen: ChallengeLook(outfit: .sunglasses, prop: .tube, sky: .sun, confetti: false)
+            case .summerSunscreen: ChallengeLook(outfit: .flower, prop: .tube, sky: .sun, confetti: true)
+            case .morningEvening: ChallengeLook(outfit: .scarf, prop: .jar, sky: .sunAndMoon, confetti: false)
+            case .handsOff: ChallengeLook(outfit: .bow, prop: .hand, sky: .sun, confetti: false)
+            default: nil
             }
         }
     }
@@ -106,10 +145,12 @@ struct EventScene {
 
     func at(_ t: Double) -> some View {
         ZStack(alignment: .topLeading) {
-            switch event {
-            case .meetPimpi: meetPimpi(t)
-            case .wrapped: wrapped(t)
-            case .sunscreen: sunscreen(t)
+            if let look = event.wrappedLook {
+                wrapped(t, look: look)
+            } else if let look = event.challengeLook {
+                challenge(t, look: look)
+            } else {
+                meetPimpi(t)
             }
         }
         .frame(width: w, height: h, alignment: .topLeading)
@@ -188,6 +229,18 @@ extension EventScene {
 
 // MARK: - Your Skin Wrapped
 
+/// What changes between the Wrapped events: what fills the season's sky, Pimpi's outfit, and the stat cards.
+struct WrappedLook {
+    enum Sky { case fireworks, petals, sunshine, leaves }
+
+    let sky: Sky
+    let outfit: PimpiOutfit
+    let stats: [(String, ColorToken, String)]
+
+    /// The year's Wrapped is a New Year's night; the quarters are daytime.
+    var night: Bool { sky == .fireworks }
+}
+
 extension EventScene {
     /// The lid's opening: up early, held while the cards are out, back down before the loop ends.
     static func lidOpen(_ t: Double) -> Double {
@@ -204,7 +257,7 @@ extension EventScene {
         return out * (1 - back)
     }
 
-    func wrapped(_ t: Double) -> some View {
+    func wrapped(_ t: Double, look: WrappedLook) -> some View {
         let side = u * (wide ? 0.4 : 0.42)
         let pimpiX = wide ? w * 0.3 : w * 0.28
         let boxWidth = wide ? w * 0.15 : w * 0.34
@@ -218,20 +271,18 @@ extension EventScene {
                (CGPoint(x: w * 0.76, y: h * 0.33), 10)]
             : [(CGPoint(x: w * 0.2, y: h * 0.3), -9), (CGPoint(x: w * 0.5, y: h * 0.24), 0),
                (CGPoint(x: w * 0.8, y: h * 0.3), 9)]
-        let stats: [(String, ColorToken, String)] = [("flame.fill", Palette.signal, "42"),
-                                                      ("sun.max.fill", Palette.sun, "30"),
-                                                      ("sparkles", Palette.outfitGold, "128")]
+        let stats = look.stats
         let hop = min(max((t - 0.15) / 0.3, 0), 1)
         return ZStack(alignment: .topLeading) {
-            world(t, sun: wide ? CGPoint(x: w * 0.1, y: h * 0.14) : CGPoint(x: w * 0.14, y: h * 0.07),
-                  sunRadius: u * 0.05, night: true, clouds: false)
-            EventStars(t: t, size: size, count: wide ? 60 : 54, band: wide ? 0.55 : 0.48)
-            EventFireworks(t: t, size: size, bursts: wide
-                ? [(CGPoint(x: w * 0.2, y: h * 0.24), 0.02), (CGPoint(x: w * 0.88, y: h * 0.2), 0.34),
-                   (CGPoint(x: w * 0.5, y: h * 0.14), 0.66)]
-                : [(CGPoint(x: w * 0.78, y: h * 0.1), 0.02), (CGPoint(x: w * 0.24, y: h * 0.1), 0.34),
-                   (CGPoint(x: w * 0.55, y: h * 0.42), 0.66)])
-            HeroGround(size: size, edge: groundEdge, crest: groundCrest, night: true)
+            wrappedSky(t, look: look)
+            HeroGround(size: size, edge: groundEdge, crest: groundCrest, night: look.night)
+            // Petals and leaves fall behind the cards, so they never cover a number.
+            if look.sky == .petals || look.sky == .leaves {
+                EventConfetti(t: t, size: size, count: wide ? 46 : 40, colors: look.sky == .petals
+                    ? [Palette.pimpiBody, Palette.surface, Palette.pimpiCheek, Palette.pimpiBody]
+                    : [Palette.outfitGold, Palette.signal, Palette.outfitRed, Palette.caution],
+                    piece: look.sky == .petals ? .petal : .leaf)
+            }
             ForEach(0..<3, id: \.self) { index in
                 let out = Self.cardOut(t, index: index)
                 let (target, tilt) = targets[index]
@@ -244,19 +295,53 @@ extension EventScene {
             }
             EventGiftBox(width: boxWidth, open: Self.lidOpen(t))
                 .position(x: boxX, y: boxBottom - boxWidth * 0.36)
-            pimpi(hop, hops: 2, size: side, x: pimpiX, outfit: .crown, pose: .point,
+            pimpi(hop, hops: 2, size: side, x: pimpiX, outfit: look.outfit, pose: .point,
                   mood: hop > 0 && hop < 1 ? .excited : .happy, sway: Self.sway(t))
         }
     }
 }
 
-// MARK: - 30 Days of Sunscreen
+extension EventScene {
+    @ViewBuilder func wrappedSky(_ t: Double, look: WrappedLook) -> some View {
+        let corner = wide ? CGPoint(x: w * 0.1, y: h * 0.14) : CGPoint(x: w * 0.14, y: h * 0.07)
+        switch look.sky {
+        case .fireworks:
+            world(t, sun: corner, sunRadius: u * 0.05, night: true, clouds: false)
+            EventStars(t: t, size: size, count: wide ? 60 : 54, band: wide ? 0.55 : 0.48)
+            EventFireworks(t: t, size: size, bursts: wide
+                ? [(CGPoint(x: w * 0.2, y: h * 0.24), 0.02), (CGPoint(x: w * 0.88, y: h * 0.2), 0.34),
+                   (CGPoint(x: w * 0.5, y: h * 0.14), 0.66)]
+                : [(CGPoint(x: w * 0.78, y: h * 0.1), 0.02), (CGPoint(x: w * 0.24, y: h * 0.1), 0.34),
+                   (CGPoint(x: w * 0.55, y: h * 0.42), 0.66)])
+        case .sunshine:
+            world(t, sun: CGPoint(x: -w, y: -h), sunRadius: 0)
+            EventBigSun(t: t, radius: u * (wide ? 0.1 : 0.09)).position(wide ? CGPoint(x: w * 0.14, y: h * 0.22) : CGPoint(x: w * 0.2, y: h * 0.1))
+        case .petals, .leaves:
+            world(t, sun: corner, sunRadius: u * 0.06)
+        }
+    }
+}
+
+// MARK: - 30-day challenges
+
+/// What changes between the challenge events: Pimpi's outfit, the prop beside it, and the sky.
+struct ChallengeLook {
+    enum Prop { case tube, jar, hand }
+    /// `sunAndMoon` turns the day to night and back once a loop: one step in the morning, one in the evening.
+    enum Sky { case sun, sunAndMoon }
+
+    let outfit: PimpiOutfit
+    let prop: Prop
+    let sky: Sky
+    /// A light shower of confetti (the summer edition).
+    let confetti: Bool
+}
 
 extension EventScene {
     /// Days ticked so far: one every few frames until all thirty are in, then held for the cheer.
     static func daysDone(_ t: Double) -> Double { min(t / 0.7, 1) * Double(ChallengeEngine.goalDays) }
 
-    func sunscreen(_ t: Double) -> some View {
+    func challenge(_ t: Double, look: ChallengeLook) -> some View {
         let side = u * (wide ? 0.4 : 0.38)
         let sunCenter = wide ? CGPoint(x: w * 0.2, y: h * 0.24) : CGPoint(x: w * 0.5, y: h * 0.1)
         let sunRadius = u * (wide ? 0.12 : 0.11)
@@ -267,18 +352,43 @@ extension EventScene {
         let cheer = min(max((t - 0.72) / 0.18, 0), 1)
         // The ticks clear in the last tenth, so the loop starts on an empty card again.
         let clear = min(max((t - 0.9) / 0.08, 0), 1)
+        // Morning and evening: night falls by mid-loop and lifts again by the end.
+        let night = look.sky == .sunAndMoon ? (1 - cos(2 * .pi * t)) / 2 : 0
+        let propWidth = u * (wide ? 0.11 : 0.12)
         return ZStack(alignment: .topLeading) {
             world(t, sun: CGPoint(x: -w, y: -h), sunRadius: 0)
-            EventBigSun(t: t, radius: sunRadius).position(sunCenter)
+            if night > 0 {
+                world(t, sun: CGPoint(x: -w, y: -h), sunRadius: 0, night: true, clouds: false).opacity(night)
+                EventStars(t: t, size: size, count: wide ? 44 : 40, band: wide ? 0.5 : 0.4).opacity(night)
+                EventMoon(radius: sunRadius * 0.8).position(sunCenter).opacity(night)
+            }
+            EventBigSun(t: t, radius: sunRadius).position(sunCenter).opacity(1 - night)
             HeroGround(size: size, edge: groundEdge, crest: groundCrest)
+            if night > 0 {
+                HeroGround(size: size, edge: groundEdge, crest: groundCrest, night: true).opacity(night)
+            }
+            if look.confetti {
+                EventConfetti(t: t, size: size, count: wide ? 30 : 26)
+            }
             EventDayCard(done: Self.daysDone(t), cheer: cheer, clear: clear, width: cardWidth)
                 .rotationEffect(.degrees(wide ? 3 : 2))
                 .position(cardCenter)
-            EventSunscreenTube(width: u * (wide ? 0.11 : 0.12))
+            prop(look.prop, width: propWidth)
                 .rotationEffect(.degrees(-10 + 3 * sin(2 * .pi * t)))
-                .position(x: tubeX, y: groundY(at: tubeX) - u * (wide ? 0.11 : 0.12) * 1.02)
-            pimpi(cheer, hops: 2, size: side, x: pimpiX, outfit: .sunglasses, pose: .wave,
+                .position(x: tubeX, y: groundY(at: tubeX) - propWidth * 1.02)
+            pimpi(cheer, hops: 2, size: side, x: pimpiX, outfit: look.outfit, pose: .wave,
                   mood: cheer > 0 && cheer < 1 ? .excited : .happy, sway: Self.sway(t))
+        }
+    }
+}
+
+extension EventScene {
+    /// Each prop is drawn in a box 1 × 2.1 of its width, standing on its base.
+    @ViewBuilder func prop(_ prop: ChallengeLook.Prop, width: CGFloat) -> some View {
+        switch prop {
+        case .tube: EventSunscreenTube(width: width)
+        case .jar: EventJar(width: width)
+        case .hand: EventHandBadge(width: width)
         }
     }
 }
@@ -295,12 +405,14 @@ enum EventNoise {
 
 /// Confetti falling a whole number of times per loop, each piece fluttering as it spins.
 struct EventConfetti: View {
+    enum Piece { case strip, petal, leaf }
+
     let t: Double
     let size: CGSize
     let count: Int
-
-    private static let colors: [ColorToken] = [Palette.outfitRed, Palette.outfitGreen, Palette.outfitGold,
-                                               Palette.signal, Palette.sun, Palette.pimpiCheek]
+    var colors: [ColorToken] = [Palette.outfitRed, Palette.outfitGreen, Palette.outfitGold,
+                                Palette.signal, Palette.sun, Palette.pimpiCheek]
+    var piece: Piece = .strip
 
     var body: some View {
         let u = min(size.width, size.height)
@@ -312,15 +424,24 @@ struct EventConfetti: View {
                 let fall = (EventNoise.value(index, 2) + t * falls).truncatingRemainder(dividingBy: 1)
                 let x = EventNoise.value(index, 1) * size.width + u * 0.025 * sin(2 * .pi * (t * falls + phase))
                 let y = fall * size.height * 1.1 - size.height * 0.05
-                RoundedRectangle(cornerRadius: u * 0.003)
-                    .fill(Self.colors[index % Self.colors.count].light.heroColor)
-                    .frame(width: u * 0.011, height: u * 0.022)
+                pieceView(colors[index % colors.count].light.heroColor, u: u)
                     .scaleEffect(x: cos(2 * .pi * (t * spins + phase)), y: 1)
                     .rotationEffect(.degrees(360 * (phase + t * spins)))
                     .position(x: x, y: y)
             }
         }
         .frame(width: size.width, height: size.height, alignment: .topLeading)
+    }
+
+    @ViewBuilder private func pieceView(_ color: Color, u: CGFloat) -> some View {
+        switch piece {
+        case .strip:
+            RoundedRectangle(cornerRadius: u * 0.003).fill(color).frame(width: u * 0.011, height: u * 0.022)
+        case .petal:
+            Ellipse().fill(color).frame(width: u * 0.036, height: u * 0.02)
+        case .leaf:
+            Image(systemName: "leaf.fill").font(.system(size: u * 0.032, weight: .bold)).foregroundStyle(color)
+        }
     }
 }
 
@@ -575,6 +696,75 @@ struct EventSunscreenTube: View {
                 .frame(width: width * 0.7, height: height * 0.2)
         }
         .frame(width: width, height: height)
+        .shadow(color: .black.opacity(0.12), radius: width * 0.08, y: width * 0.05)
+    }
+}
+#endif
+
+#if DEBUG
+/// A crescent moon for the evening half of the morning-and-evening film.
+struct EventMoon: View {
+    let radius: CGFloat
+
+    var body: some View {
+        let moon = Palette.sun.dark.heroColor
+        ZStack {
+            Circle().fill(moon.opacity(0.22)).frame(width: radius * 3.2, height: radius * 3.2)
+            Circle().fill(moon).frame(width: radius * 2, height: radius * 2)
+                .mask {
+                    ZStack {
+                        Rectangle()
+                        Circle().frame(width: radius * 1.7, height: radius * 1.7)
+                            .offset(x: radius * 0.6, y: -radius * 0.35)
+                            .blendMode(.destinationOut)
+                    }
+                    .compositingGroup()
+                }
+        }
+        .frame(width: radius * 3.4, height: radius * 3.4)
+    }
+}
+
+/// A moisturiser jar: a round lid on a squat pot with a little drop on its label.
+struct EventJar: View {
+    let width: CGFloat
+
+    var body: some View {
+        let height = width * 2.1
+        VStack(spacing: -width * 0.04) {
+            RoundedRectangle(cornerRadius: width * 0.12, style: .continuous)
+                .fill(Palette.outfitGreen.light.heroColor)
+                .frame(width: width * 1.08, height: width * 0.34)
+            RoundedRectangle(cornerRadius: width * 0.2, style: .continuous)
+                .fill(Palette.surface.light.heroColor)
+                .frame(width: width, height: width * 0.86)
+                .overlay {
+                    Image(systemName: "drop.fill").font(.system(size: width * 0.34, weight: .bold))
+                        .foregroundStyle(Palette.pimpiCheek.light.heroColor)
+                }
+        }
+        .frame(width: width * 1.1, height: height, alignment: .bottom)
+        .shadow(color: .black.opacity(0.12), radius: width * 0.08, y: width * 0.05)
+    }
+}
+
+/// A raised hand on a round sign: hands off your face.
+struct EventHandBadge: View {
+    let width: CGFloat
+
+    var body: some View {
+        let height = width * 2.1
+        VStack(spacing: 0) {
+            ZStack {
+                Circle().fill(Palette.surface.light.heroColor)
+                Circle().stroke(Palette.signal.light.heroColor, lineWidth: width * 0.09)
+                Image(systemName: "hand.raised.fill").font(.system(size: width * 0.5, weight: .bold))
+                    .foregroundStyle(Palette.signal.light.heroColor)
+            }
+            .frame(width: width * 1.1, height: width * 1.1)
+            Capsule().fill(Palette.ink.light.heroColor).frame(width: width * 0.12, height: width * 0.95)
+        }
+        .frame(width: width * 1.1, height: height, alignment: .bottom)
         .shadow(color: .black.opacity(0.12), radius: width * 0.08, y: width * 0.05)
     }
 }

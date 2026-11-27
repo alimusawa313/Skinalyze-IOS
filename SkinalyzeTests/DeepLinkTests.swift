@@ -33,6 +33,25 @@ struct DeepLinkTests {
         #expect(model.pendingRecap?.first == DayStamp(year: 2026, month: 10, day: 1))
     }
 
+    @Test("In the first week of a quarter, wrapped opens the quarter that just ended", arguments: [
+        (4, DayStamp(year: 2027, month: 1, day: 1)),
+        (7, DayStamp(year: 2027, month: 4, day: 1)),
+        (10, DayStamp(year: 2027, month: 7, day: 1)),
+    ])
+    func wrappedQuarter(month: Int, first: DayStamp) {
+        let model = AppModel()
+        model.open(URL(string: "skinalyze://wrapped")!, now: date(2027, month, 2), calendar: calendar)
+        #expect(model.pendingRecap?.kind == .quarter)
+        #expect(model.pendingRecap?.first == first)
+    }
+
+    @Test("Every challenge kind has its link", arguments: ChallengeKind.allCases)
+    func everyChallenge(kind: ChallengeKind) {
+        let model = AppModel()
+        model.open(URL(string: "skinalyze://challenge/\(kind.rawValue)")!)
+        #expect(model.pendingChallenge?.kind == kind)
+    }
+
     @Test("challenge/sunscreen offers the sunscreen challenge")
     func challenge() {
         let model = AppModel()

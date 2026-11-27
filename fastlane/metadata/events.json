@@ -49,5 +49,107 @@
       "shortDescription": "Start the year with SPF, one morning at a time.",
       "longDescription": "Tick off sunscreen each morning for 30 days. Pimpi keeps count, cheers you on and has a finisher card waiting."
     }
+  },
+  {
+    "referenceName": "30 Days of Morning and Evening (February 2027)",
+    "badge": "CHALLENGE",
+    "purpose": "APPROPRIATE_FOR_ALL_USERS",
+    "priority": "NORMAL",
+    "deepLink": "skinalyze://challenge/morningAndEvening",
+    "publishStart": "2027-01-25T10:00:00Z",
+    "eventStart": "2027-02-01T10:00:00Z",
+    "eventEnd": "2027-02-28T23:59:00Z",
+    "media": "morning-evening",
+    "previewFrame": "00:00:06:00",
+    "en-US": {
+      "name": "30 Days of Morning and Evening",
+      "shortDescription": "Tick a step in the morning and one at night.",
+      "longDescription": "One routine step in the morning and one in the evening, for 30 days. Pimpi counts every day you show up."
+    }
+  },
+  {
+    "referenceName": "30 Days of Hands Off (March 2027)",
+    "badge": "CHALLENGE",
+    "purpose": "APPROPRIATE_FOR_ALL_USERS",
+    "priority": "NORMAL",
+    "deepLink": "skinalyze://challenge/handsOff",
+    "publishStart": "2027-02-22T10:00:00Z",
+    "eventStart": "2027-03-01T10:00:00Z",
+    "eventEnd": "2027-03-31T23:59:00Z",
+    "media": "hands-off",
+    "previewFrame": "00:00:08:00",
+    "en-US": {
+      "name": "30 Days of Hands Off",
+      "shortDescription": "Keep your hands off your face for a month.",
+      "longDescription": "Each evening, tap if you kept your hands off your face. Thirty days in, Pimpi has a finisher card for you."
+    }
+  },
+  {
+    "referenceName": "Skin Wrapped Jan-Mar 2027",
+    "badge": "SPECIAL_EVENT",
+    "purpose": "KEEP_ACTIVE_USERS_INFORMED",
+    "priority": "NORMAL",
+    "deepLink": "skinalyze://wrapped",
+    "publishStart": "2027-03-25T10:00:00Z",
+    "eventStart": "2027-04-01T10:00:00Z",
+    "eventEnd": "2027-04-07T23:59:00Z",
+    "media": "wrapped-q1",
+    "previewFrame": "00:00:05:00",
+    "en-US": {
+      "name": "Your Skin Wrapped: Jan–Mar",
+      "shortDescription": "Your first three months of 2027, in one recap.",
+      "longDescription": "Your best streak, your lessons and the routine you kept, from January to March. Here April 1–7 only."
+    }
+  },
+  {
+    "referenceName": "Summer Sunscreen Challenge (June 2027)",
+    "badge": "CHALLENGE",
+    "purpose": "APPROPRIATE_FOR_ALL_USERS",
+    "priority": "HIGH",
+    "deepLink": "skinalyze://challenge/sunscreen",
+    "publishStart": "2027-05-25T10:00:00Z",
+    "eventStart": "2027-06-01T10:00:00Z",
+    "eventEnd": "2027-06-30T23:59:00Z",
+    "media": "summer-sunscreen",
+    "previewFrame": "00:00:08:00",
+    "en-US": {
+      "name": "Summer Sunscreen Challenge",
+      "shortDescription": "Thirty June mornings of SPF. Ready?",
+      "longDescription": "Tick sunscreen in your morning routine every day this June. Pimpi keeps count and cheers for each one."
+    }
+  },
+  {
+    "referenceName": "Skin Wrapped Apr-Jun 2027",
+    "badge": "SPECIAL_EVENT",
+    "purpose": "KEEP_ACTIVE_USERS_INFORMED",
+    "priority": "NORMAL",
+    "deepLink": "skinalyze://wrapped",
+    "publishStart": "2027-06-24T10:00:00Z",
+    "eventStart": "2027-07-01T10:00:00Z",
+    "eventEnd": "2027-07-07T23:59:00Z",
+    "media": "wrapped-q2",
+    "previewFrame": "00:00:05:00",
+    "en-US": {
+      "name": "Your Skin Wrapped: Apr–Jun",
+      "shortDescription": "April to June, in one swipeable recap.",
+      "longDescription": "Your best streak, your lessons and the routine you kept, from April to June. Here July 1–7 only."
+    }
+  },
+  {
+    "referenceName": "Skin Wrapped Jul-Sep 2027",
+    "badge": "SPECIAL_EVENT",
+    "purpose": "KEEP_ACTIVE_USERS_INFORMED",
+    "priority": "NORMAL",
+    "deepLink": "skinalyze://wrapped",
+    "publishStart": "2027-09-24T10:00:00Z",
+    "eventStart": "2027-10-01T10:00:00Z",
+    "eventEnd": "2027-10-07T23:59:00Z",
+    "media": "wrapped-q3",
+    "previewFrame": "00:00:05:00",
+    "en-US": {
+      "name": "Your Skin Wrapped: Jul–Sep",
+      "shortDescription": "July to September, in one swipeable recap.",
+      "longDescription": "Your best streak, your lessons and the routine you kept, from July to September. Here October 1–7 only."
+    }
   }
 ]
