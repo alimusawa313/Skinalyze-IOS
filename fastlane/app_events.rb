@@ -7,6 +7,7 @@ require_relative "creative_assets"
 
 module AppEvents
   ASSET_TYPES = { "card" => "EVENT_CARD", "details" => "EVENT_DETAILS_PAGE" }.freeze
+  EDITABLE_STATES = %w[DRAFT REJECTED].freeze
 
   def self.sync(client, app_id:, events_file:, media_dir:, log:)
     events = JSON.parse(File.read(events_file, encoding: "UTF-8"))
@@ -15,6 +16,12 @@ module AppEvents
     existing = client.request(:get, "/v1/apps/#{app_id}/appEvents?limit=50")["data"]
     events.map do |spec|
       event = existing.find { |e| e.dig("attributes", "referenceName") == spec["referenceName"] }
+      # Once an event is in review or live, App Store Connect only allows schedule and priority changes: leave it be.
+      state = event&.dig("attributes", "eventState")
+      if event && !EDITABLE_STATES.include?(state)
+        log.call("#{spec['referenceName']}: #{state}, left as it is")
+        next event["id"]
+      end
       event_id = event ? update_event(client, event["id"], spec, territories) : create_event(client, app_id, spec, territories)
       log.call("#{spec['referenceName']}: event #{event ? 'updated' : 'created'} (#{event_id})")
       localization = upsert_localization(client, event_id, spec["en-US"])
