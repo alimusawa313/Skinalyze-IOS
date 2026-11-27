@@ -195,7 +195,7 @@ enum HeroEase {
     }
 }
 
-private extension RGB {
+extension RGB {
     var heroColor: Color { Color(red: Double(red) / 255, green: Double(green) / 255, blue: Double(blue) / 255) }
 }
 
@@ -211,22 +211,25 @@ struct HeroWorld: View {
     let groundCrest: CGFloat
     let trailEdge: CGFloat
     let trailCrest: CGFloat
+    /// The dusk palette (the app's dark mode): violet hills under a night sky; the sun becomes a moon.
+    var night = false
+    /// Clouds off for skies that carry their own decoration (stars, confetti).
+    var clouds = true
 
     var body: some View {
         let w = size.width
         ZStack(alignment: .topLeading) {
-            LinearGradient(colors: [Palette.canvas.light.heroColor, Palette.surfaceRaised.light.heroColor],
-                           startPoint: .top, endPoint: .bottom)
+            LinearGradient(colors: [color(Palette.canvas), color(Palette.surfaceRaised)], startPoint: .top, endPoint: .bottom)
             let glow = 1 + 0.06 * sin(2 * .pi * t * 2)
-            Circle().fill(Palette.sun.light.heroColor.opacity(0.3))
+            Circle().fill(color(Palette.sun).opacity(0.3))
                 .frame(width: sunRadius * 3 * glow, height: sunRadius * 3 * glow).position(sun)
-            Circle().fill(Palette.sun.light.heroColor).frame(width: sunRadius * 2, height: sunRadius * 2).position(sun)
-            ForEach(0..<3) { index in cloud(index) }
+            Circle().fill(color(Palette.sun)).frame(width: sunRadius * 2, height: sunRadius * 2).position(sun)
+            if clouds { ForEach(0..<3) { index in cloud(index) } }
             // One wavelength per loop each: the far hill (more, shorter waves) drifts slower than the near one.
-            LoopHill(crest: farCrest, amplitude: w * 0.012, waves: Int(w / 640), shift: t, phase: 0.8)
-                .fill(Palette.hillFar.light.heroColor)
-            LoopHill(crest: midCrest, amplitude: w * 0.014, waves: Int(w / 960), shift: t, phase: 0)
-                .fill(Palette.hill.light.heroColor)
+            LoopHill(crest: farCrest, amplitude: w * 0.012, waves: max(Int(w / 640), 1), shift: t, phase: 0.8)
+                .fill(color(Palette.hillFar))
+            LoopHill(crest: midCrest, amplitude: w * 0.014, waves: max(Int(w / 960), 1), shift: t, phase: 0)
+                .fill(color(Palette.hill))
         }
         .frame(width: size.width, height: size.height)
     }
@@ -238,10 +241,12 @@ struct HeroWorld: View {
         let drift = w * 0.012 * sin(2 * .pi * (t + Double(index) * 0.3))
         let x = [0.16, 0.5, 0.84][index] * w + drift
         let y = [0.14, 0.09, 0.2][index] * size.height
-        return HeroCloud().fill(Palette.surface.light.heroColor.opacity(0.92))
+        return HeroCloud().fill(color(Palette.surface).opacity(0.92))
             .frame(width: cloudWidth, height: cloudWidth * 0.42)
             .position(x: x, y: y)
     }
+
+    private func color(_ token: ColorToken) -> Color { (night ? token.dark : token.light).heroColor }
 }
 
 /// The near hill everything stands on, with Pimpi's dotted trail.
@@ -249,6 +254,7 @@ struct HeroGround: View {
     let size: CGSize
     let edge: CGFloat
     let crest: CGFloat
+    var night = false
 
     var body: some View {
         let w = size.width
@@ -260,14 +266,14 @@ struct HeroGround: View {
                 path.addLine(to: CGPoint(x: 0, y: size.height))
                 path.closeSubpath()
             }
-            .fill(Palette.edgeOnHill.light.heroColor)
+            .fill((night ? Palette.edgeOnHill.dark : Palette.edgeOnHill.light).heroColor)
             Path { path in
                 let drop = (size.height - crest) * 0.32
                 path.move(to: CGPoint(x: -20, y: edge + drop))
                 path.addQuadCurve(to: CGPoint(x: w + 20, y: edge + drop),
                                   control: CGPoint(x: w / 2, y: crest * 2 - edge + drop))
             }
-            .stroke(Palette.surface.light.heroColor.opacity(0.85),
+            .stroke((night ? Palette.surface.dark : Palette.surface.light).heroColor.opacity(0.85),
                     style: StrokeStyle(lineWidth: w * 0.006, lineCap: .round, dash: [1, w * 0.018]))
         }
         .frame(width: size.width, height: size.height)
@@ -322,6 +328,8 @@ struct HeroPimpi: View {
     let pose: PimpiPose
     let mood: Pimpi.Mood
     var hopWindow: Double = 1
+    /// Degrees of side-to-side rock, around the feet.
+    var sway: Double = 0
 
     var body: some View {
         let phase = min(t / hopWindow, 1)
@@ -333,6 +341,7 @@ struct HeroPimpi: View {
             .environment(\.pimpiPose, pose)
             .frame(width: size, height: size)
             .scaleEffect(x: 2 - squash, y: squash, anchor: .bottom)
+            .rotationEffect(.degrees(sway), anchor: .bottom)
             .position(x: ground.x, y: ground.y - size / 2 - lift)
     }
 }

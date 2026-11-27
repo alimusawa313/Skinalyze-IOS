@@ -65,3 +65,29 @@ deliver doesn't know these assets yet). They are reviewed with the version.
 
 Regenerate (after the raw screens above): `scripts/store-hero.sh <raw> docs/appstore/hero` (renderer:
 `Skinalyze/Shared/StoreHeroArt.swift`, debug builds only).
+
+## In-app events
+
+Three events, defined in `fastlane/metadata/events.json` (text, badge, schedule, deep link) with their films in
+`events/`. Each film is a 10 s seamless loop at 30 fps (H.264, a silent stereo AAC track) in two sizes: the event card
+(`<event>-card.mp4`, 1920 × 1080) and the details page (`<event>-details.mp4`, 1080 × 1920); the PNGs are stills of the
+same frame. Apple asks for no text or logos in event media and lays the badge, name and description over the bottom,
+so the key art sits in the top two-thirds and the near hill fills the rest.
+
+| Event | Badge | Runs (UTC) | Opens | Film |
+|---|---|---|---|---|
+| Meet Pimpi: Skinalyze 2.0 | Major Update | Dec 3, 2026 – Jan 2, 2027 | `skinalyze://today` | Pimpi in a party hat waving hello in confetti, between Home and the scan |
+| Your 2026 Skin Wrapped | Special Event | Jan 1 – 7, 2027 (shown from Dec 25) | `skinalyze://wrapped` | A night of fireworks; a gift box opens and the year's stat cards fan out |
+| 30 Days of Sunscreen | Challenge | Jan 1 – 31, 2027 (shown from Dec 18) | `skinalyze://challenge/sunscreen` | Pimpi in sunglasses under a big sun while a 30-day card fills in, then a cheer |
+
+`skinalyze://wrapped` opens last year's Wrapped in the first week of January (otherwise the last finished quarter's);
+`skinalyze://challenge/<kind>` offers that 30-day challenge (`ChallengeInviteView`). Both links need 2.0.1 or later;
+in older builds they land on Home. The Wrapped and Sunscreen events start at 10:00 UTC so it's already Jan 1 in every
+time zone.
+
+Upload with `fastlane events`: it creates or updates each event (matched by reference name) in every territory the
+app is sold in, its en-US text and both videos, and leaves them as drafts (`fastlane/app_events.rb`). Submit each one
+from App Store Connect with, or after, the app version its link needs.
+
+Regenerate the films: `scripts/store-events.sh <raw> docs/appstore/events [event]` (renderer:
+`Skinalyze/Shared/StoreEventArt.swift`, debug builds only; `STILLS_ONLY=1` for just the stills).

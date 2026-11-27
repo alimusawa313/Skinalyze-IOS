@@ -1,0 +1,53 @@
+[
+  {
+    "referenceName": "Meet Pimpi (2.0 launch)",
+    "badge": "MAJOR_UPDATE",
+    "purpose": "APPROPRIATE_FOR_ALL_USERS",
+    "priority": "HIGH",
+    "deepLink": "skinalyze://today",
+    "publishStart": "2026-12-03T00:00:00Z",
+    "eventStart": "2026-12-03T00:00:00Z",
+    "eventEnd": "2027-01-02T23:59:00Z",
+    "media": "meet-pimpi",
+    "previewFrame": "00:00:01:06",
+    "en-US": {
+      "name": "Meet Pimpi: Skinalyze 2.0",
+      "shortDescription": "Your new skin-care buddy is here. Say hi!",
+      "longDescription": "Skinalyze 2.0 is a whole new app. Pimpi cheers on your routine, guides your scans and earns outfits with you."
+    }
+  },
+  {
+    "referenceName": "Your 2026 Skin Wrapped",
+    "badge": "SPECIAL_EVENT",
+    "purpose": "KEEP_ACTIVE_USERS_INFORMED",
+    "priority": "NORMAL",
+    "deepLink": "skinalyze://wrapped",
+    "publishStart": "2026-12-25T10:00:00Z",
+    "eventStart": "2027-01-01T10:00:00Z",
+    "eventEnd": "2027-01-07T23:59:00Z",
+    "media": "wrapped",
+    "previewFrame": "00:00:05:00",
+    "en-US": {
+      "name": "Your 2026 Skin Wrapped",
+      "shortDescription": "Your skin-care year, in one swipeable recap.",
+      "longDescription": "Your best streak, the products you stuck with and the habits that stayed. Here Jan 1–7 only."
+    }
+  },
+  {
+    "referenceName": "30 Days of Sunscreen (January 2027)",
+    "badge": "CHALLENGE",
+    "purpose": "APPROPRIATE_FOR_ALL_USERS",
+    "priority": "HIGH",
+    "deepLink": "skinalyze://challenge/sunscreen",
+    "publishStart": "2026-12-18T10:00:00Z",
+    "eventStart": "2027-01-01T10:00:00Z",
+    "eventEnd": "2027-01-31T23:59:00Z",
+    "media": "sunscreen",
+    "previewFrame": "00:00:08:00",
+    "en-US": {
+      "name": "30 Days of Sunscreen",
+      "shortDescription": "Start the year with SPF, one morning at a time.",
+      "longDescription": "Tick off sunscreen each morning for 30 days. Pimpi keeps count, cheers you on and has a finisher card waiting."
+    }
+  }
+]

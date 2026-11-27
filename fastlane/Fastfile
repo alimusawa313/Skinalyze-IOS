@@ -63,6 +63,19 @@ platform :ios do
   end
 
   desc "Version #{VERSION}'s product page header and search result (docs/appstore/hero), videos by default."
+  # The in-app events in metadata/events.json, with their videos from docs/appstore/events. Left as drafts: add them
+  # to a submission in App Store Connect when the app version they need is live (or submitted with it).
+  lane :events do
+    asc_key
+    require_relative "app_events"
+    client = CreativeAssets::Client.new(key_id: ENV.fetch("ASC_KEY_ID"), issuer_id: ENV.fetch("ASC_ISSUER_ID"),
+                                        key_path: ENV.fetch("ASC_KEY_PATH"))
+    app_id = Spaceship::ConnectAPI::App.find(CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)).id
+    AppEvents.sync(client, app_id: app_id, events_file: File.expand_path("metadata/events.json", __dir__),
+                   media_dir: File.expand_path("../docs/appstore/events", __dir__), log: ->(line) { UI.message(line) })
+    UI.success("In-app events are in App Store Connect as drafts")
+  end
+
   lane :creative do |options|
     asc_key
     require_relative "creative_assets"
