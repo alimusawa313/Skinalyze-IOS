@@ -32,3 +32,9 @@ PRIVATE BY DEFAULT
 Your photos, scans and 3D models stay on your iPhone and in your own iCloud, never on our servers. Nothing is shared unless you export it yourself.
 
 Skinalyze tracks visible changes. It isn't a medical device and doesn't diagnose. If something is painful, lasts a long time or worries you, consider seeing a dermatologist.
+
+SKINALYZE PRO
+The first scan of each day is always free. Skinalyze Pro is an optional auto-renewing subscription, billed weekly, monthly or yearly; the yearly plan starts with a 1-week free trial. Payment is charged to your Apple Account when you confirm. It renews automatically unless you cancel at least 24 hours before the current period ends. Manage or cancel it any time in Settings > [your name] > Subscriptions.
+
+Terms of Use (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+Privacy Policy: https://docs.google.com/document/d/11l6uYIBG4DMahbWM89i8ozp4J6EJDvD8AKI4_Rx7lo8/edit?usp=sharing
